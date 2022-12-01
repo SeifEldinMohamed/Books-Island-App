@@ -1,17 +1,37 @@
 package com.seif.booksislandapp.utils
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.Patterns
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+
+/**
+ * start the Activity [T], in a more concise way,
+ * while still allowing to configure the  [Intent] in
+ * the optional [block] lambda
+ * **/
+inline fun <reified T : Activity> Context.start(block: Intent.() -> Unit = {}) {
+    val intent = Intent(this, T::class.java)
+    block(intent)
+    startActivity(intent)
+}
+
+fun Context.loadColor(@ColorRes colorRes: Int): Int {
+    return ContextCompat.getColor(this, colorRes)
+}
+
 
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
