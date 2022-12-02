@@ -32,7 +32,6 @@ fun Context.loadColor(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
 }
 
-
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
