@@ -8,13 +8,7 @@
    <color name="blue">#3A4EFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
     <color name="chat_background">#EAECF2</color>
     <color name="facebook_button">#367FC0</color>
     <color name="google_button">#DD4B39</color>
-
-    <color name="bottomNavItemUnchecked">@color/gray_medium</color>
-    <color name="bottomNavItemChecked">@color/primary_dark</color>
-
-
 </resources>
