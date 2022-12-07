@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/bottom_fab_click_state.xml" value="0.136" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/bottom_nav_item_state.xml" value="0.136" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_home.xml" value="0.146" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/activity_home.xml" value="0.4" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/activity_intro.xml" value="0.2" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/activity_main.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_chats.xml" value="0.20052083333333334" />
@@ -14,11 +18,13 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_onboarding1.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_onboarding2.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_onboarding3.xml" value="0.1" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_profile.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_profile.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_register.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_splash.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_view_pager.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_wish_list.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/home_bottom_nav_menu.xml" value="0.20052083333333334" />
       </map>
     </option>
   </component>
