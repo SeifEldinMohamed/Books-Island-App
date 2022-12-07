@@ -44,8 +44,8 @@ android {
 tasks.getByPath("preBuild").dependsOn("ktlintFormat")
 
 ktlint {
-    android = true // to make kllint knows that it's android project
-    ignoreFailures = false // if there is a failure for this ktlint check  ( app will not launch until you fix this issues before)
+    android = true // to make kt-lint knows that it's android project
+    ignoreFailures = false // if there is a failure for this kt-lint check  ( app will not launch until you fix this issues before)
     disabledRules = ["import-ordering", "max-line-length", "final-newline", "no-wildcard-imports"]
     reporters { // one way of reporting linting issues
         reporter "plain" // plain.txt file
@@ -96,7 +96,6 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
     // Jetpack Navigation Component
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
@@ -144,4 +143,5 @@ dependencies {
     // coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3"
+
 }
