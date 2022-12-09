@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.seif.booksislandapp.R
 
-
 class AdDetailsFragment : Fragment() {
 
     override fun onCreateView(
@@ -18,5 +17,4 @@ class AdDetailsFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ad_details, container, false)
     }
-
 }

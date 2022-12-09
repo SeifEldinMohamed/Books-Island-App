@@ -147,4 +147,8 @@ dependencies {
     // PageIndicatorView
     implementation 'com.tbuonomo:dotsindicator:4.3'
 
+
+    //ssp and sdp
+    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
 }
