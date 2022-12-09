@@ -1,77 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.intro.onboarding.onboarding2.OnBoarding2Fragment">
 
-    <data>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_17sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingHorizontal="@dimen/_15ssp"
+        android:text="@string/onboarding_text_2"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/_25ssp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </data>
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/onboarding_image"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/onboarding_image_2" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".presentation.intro.onboarding.onboarding2.OnBoarding2Fragment">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_next"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginEnd="@dimen/_25sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/next"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_image" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_17sdp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="@string/onboarding_text_2"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/_25ssp"
-            app:layout_constraintBottom_toTopOf="@+id/iv_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingHorizontal="@dimen/_15ssp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_prev"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_25ssp"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/previous"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_next"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_next"
 
-        <ImageView
-            android:id="@+id/iv_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/onboarding_image"
-            app:layout_constraintBottom_toTopOf="@+id/btn_next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:srcCompat="@drawable/onboarding_image_2" />
+        />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_next"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:layout_marginEnd="@dimen/_25sdp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="@string/next"
-            android:textAllCaps="false"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/_17ssp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_image"
-            android:padding="@dimen/_10sdp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_prev"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_25ssp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="@string/previous"
-            android:textAllCaps="false"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/_17ssp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_next"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_next"
-            android:padding="@dimen/_10sdp"
-
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

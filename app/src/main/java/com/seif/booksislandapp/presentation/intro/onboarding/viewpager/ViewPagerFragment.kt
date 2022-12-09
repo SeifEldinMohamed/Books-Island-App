@@ -25,9 +25,8 @@ class ViewPagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dotsIndicator = binding.dotsIndicator
         viewPager = binding.viewPager
         viewPager.adapter = ViewPagerAdapter(requireContext() as FragmentActivity)
-        dotsIndicator.attachTo(viewPager)
+        binding.dotsIndicator.attachTo(viewPager)
     }
 }

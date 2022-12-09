@@ -13,9 +13,9 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapte
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 ->  OnBoarding1Fragment()
-            1 ->  OnBoarding2Fragment()
-            2 ->  OnBoarding3Fragment()
+            0 -> OnBoarding1Fragment()
+            1 -> OnBoarding2Fragment()
+            2 -> OnBoarding3Fragment()
             else -> { throw Resources.NotFoundException("Position Not Found") }
         }
     }

@@ -11,7 +11,7 @@
 
     <!-- Home Activity -->
     <string name="profile_floating_action_button">profile floating action button</string>
-    <!-- Intro Activity and viewPager Adapter-->
+    <!-- onBoarding Fragments and viewPager Adapter-->
     <string name="onboarding_text_1">Used And New Books With Great Prices</string>
     <string name="onboarding_text_2">More Than 20 Books Categories In One Place</string>
     <string name="onboarding_text_3">Sell, Donate, Exchange &amp; Bid Your Books With Us</string>
