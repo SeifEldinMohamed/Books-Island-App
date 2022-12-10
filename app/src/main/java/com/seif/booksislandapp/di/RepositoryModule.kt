@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.di
 
+import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
@@ -22,8 +23,9 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         auth: FirebaseAuth,
         resourceProvider: ResourceProvider,
-        sharedPrefs: SharedPrefs
+        sharedPrefs: SharedPrefs,
+        connectivityManager: ConnectivityManager
     ): AuthRepository {
-        return AuthRepositoryImp(firestore, auth, resourceProvider, sharedPrefs)
+        return AuthRepositoryImp(firestore, auth, resourceProvider, sharedPrefs, connectivityManager)
     }
 }
