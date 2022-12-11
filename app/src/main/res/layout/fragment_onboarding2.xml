@@ -10,62 +10,28 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_17sdp"
+        android:layout_marginTop="64dp"
+        android:gravity="center"
         android:fontFamily="@font/roboto_medium"
         android:paddingHorizontal="@dimen/_15ssp"
         android:text="@string/onboarding_text_2"
         android:textColor="@color/primary"
         android:textSize="@dimen/_25ssp"
-        app:layout_constraintBottom_toTopOf="@+id/iv_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:contentDescription="@string/onboarding_image"
-        app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/onboarding_image_2" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_next"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_50sdp"
-        android:layout_marginEnd="@dimen/_25sdp"
-        android:fontFamily="@font/roboto_medium"
-        android:padding="@dimen/_10sdp"
-        android:text="@string/next"
-        android:textAllCaps="false"
-        android:textColor="@color/primary"
-        android:textSize="@dimen/_17ssp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_image" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_prev"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_25ssp"
-        android:fontFamily="@font/roboto_medium"
-        android:padding="@dimen/_10sdp"
-        android:text="@string/previous"
-        android:textAllCaps="false"
-        android:textColor="@color/primary"
-        android:textSize="@dimen/_17ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_next"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_next"
-
-        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
