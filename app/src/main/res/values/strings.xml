@@ -19,5 +19,8 @@
     <string name="onboarding_image">onBoardingImage</string>
     <string name="previous">Previous</string>
     <string name="finish">Finish</string>
+    <!--splash screen-->
+    <string name="books_island">Books Island</string>
+    <string name="loading">loading..</string>
 
 </resources>
