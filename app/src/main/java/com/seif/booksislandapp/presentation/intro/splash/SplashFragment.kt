@@ -20,6 +20,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+        activity?.window?.statusBarColor = requireActivity().getColor(R.color.primary)
         binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,11 +30,16 @@ class SplashFragment : Fragment() {
         // splash screen
         Handler(Looper.getMainLooper()).postDelayed({
             findNavController().navigate(R.id.action_splashFragment_to_viewPagerFragment)
-        }, 1500)
+        }, 2000)
         binding.progressBar.max = 1000
-        val currentProgress = 1600
+        val currentProgress = 1500
         ObjectAnimator.ofInt(binding.progressBar, "progress", currentProgress)
-            .setDuration(2000)
+            .setDuration(1000)
             .start()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity?.window?.statusBarColor = requireActivity().getColor(R.color.white)
     }
 }
