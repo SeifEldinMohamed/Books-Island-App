@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Books Island App</string>
+    <string name="app_name">Books Island</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- home_bottom_nav_menu -->
@@ -11,6 +11,7 @@
 
     <!-- Home Activity -->
     <string name="profile_floating_action_button">profile floating action button</string>
+
     <!-- onBoarding Fragments and viewPager Adapter-->
     <string name="onboarding_text_1">Used And New Books With Great Prices</string>
     <string name="onboarding_text_2">More Than 20 Books Categories In One Place</string>
@@ -19,6 +20,7 @@
     <string name="onboarding_image">onBoardingImage</string>
     <string name="previous">Previous</string>
     <string name="finish">Finish</string>
+
     <!--splash screen-->
     <string name="books_island">Books Island</string>
     <string name="loading">loading..</string>
