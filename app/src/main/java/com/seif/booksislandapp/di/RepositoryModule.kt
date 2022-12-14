@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
 import com.seif.booksislandapp.domain.repository.AuthRepository
+import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,8 +19,9 @@ object RepositoryModule {
     @Singleton
     fun provideAuthRepository(
         firestore: FirebaseFirestore,
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        resourceProvider: ResourceProvider
     ): AuthRepository {
-        return AuthRepositoryImp(firestore, auth)
+        return AuthRepositoryImp(firestore, auth, resourceProvider)
     }
 }
