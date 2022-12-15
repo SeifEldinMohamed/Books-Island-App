@@ -13,6 +13,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.seif.booksislandapp.domain.model.User
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -81,6 +82,19 @@ fun Context.createDialog(layout: Int, cancelable: Boolean): Dialog {
     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     dialog.setCancelable(cancelable)
     return dialog
+}
+
+fun User.isValidUser(): Resource<String, String> {
+    val user = this
+    return if (user.username.length < 5) {
+        Resource.Error("title is too short min char = 5 !")
+    } else if (!isValidEmail(email)) {
+        Resource.Error("please enter a valid email !")
+    } else if (!isValidPasswordFormat(password)) {
+        Resource.Error("Not Valid Password Format !")
+    } else {
+        Resource.Success("valid User")
+    }
 }
 
 fun isValidEmailAndPassword(email: String, password: String): Resource<String, String> {
