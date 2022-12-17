@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Patterns
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.seif.booksislandapp.domain.model.User
@@ -122,7 +122,7 @@ fun isValidEmailInput(email: String): Resource<String, String> {
 }
 
 fun isValidEmail(email: String): Boolean {
-    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    return PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
 }
 
 fun isValidPasswordFormat(password: String): Boolean {
