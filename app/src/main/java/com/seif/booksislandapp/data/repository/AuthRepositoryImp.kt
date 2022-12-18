@@ -16,7 +16,7 @@ class AuthRepositoryImp @Inject constructor(
     private val auth: FirebaseAuth
 ) : AuthRepository {
     private val TAG = "AuthRepositoryImp"
-    override suspend fun register(user: User): Resource<String, String> {
+    override suspend fun register(user: User): Resource<User, String> {
         return try {
             val authResult = auth.createUserWithEmailAndPassword(user.email, user.password).await()
             authResult.user?.let { firebaseUser ->
@@ -24,7 +24,7 @@ class AuthRepositoryImp @Inject constructor(
             }
             when (val result: Resource<String, String> = addUser(user)) {
                 is Resource.Error -> Resource.Error(result.message)
-                is Resource.Success -> Resource.Success("Registered Successfully with id ${user.id}")
+                is Resource.Success -> Resource.Success(user)
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
