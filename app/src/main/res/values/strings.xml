@@ -25,4 +25,7 @@
     <string name="books_island">Books Island</string>
     <string name="loading">loading..</string>
 
+    <!-- AuthRepositoryImp -->
+    <string name="user_added_successfully">User Added Successfully</string>
+
 </resources>
