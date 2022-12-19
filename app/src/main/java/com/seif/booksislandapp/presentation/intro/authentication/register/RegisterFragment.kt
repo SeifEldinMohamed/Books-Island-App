@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.seif.booksislandapp.R
 
 class RegisterFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

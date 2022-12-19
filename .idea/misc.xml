@@ -12,7 +12,6 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/grass_image.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_home.xml" value="0.146" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_location_register.xml" value="0.1" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_username.xml" value="0.179" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/man_avatar_1.xml" value="0.143" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/man_avatar_2.xml" value="0.158" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/onboarding_image_1.xml" value="0.158" />
@@ -46,6 +45,30 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_wish_list.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/home_bottom_nav_menu.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/checkbox.xml" value="0.1475" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/custom_button.xml" value="0.1635" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/donate_category_image.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/exchange_category_image.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_ads.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_back.xml" value="0.116" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_chats.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_email.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_email_line.xml" value="0.1" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_eye.xml" value="0.121" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_filter.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_heart.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_heart_holo.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_home.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_launcher_background.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_location_register.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_logout.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_username.xml" value="0.116" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/splash_image.xml" value="0.1635" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_home.xml" value="0.25" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_intro.xml" value="0.25" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_intro.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_register.xml" value="0.264" />
       </map>
     </option>
   </component>
@@ -54,5 +77,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.264" />
+      </ProjectState>
+    </option>
   </component>
 </project>
