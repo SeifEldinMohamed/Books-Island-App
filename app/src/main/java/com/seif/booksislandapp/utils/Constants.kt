@@ -5,5 +5,8 @@ class Constants {
         const val PAGE_SIZE = 15
         const val USER_FireStore_Collection = "users"
         const val USER_ID = "userId"
+
+        // shared preference keys
+        const val USER_KEY = "user"
     }
 }
