@@ -27,8 +27,8 @@
     <!--fragment_intro-->
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="treeleafe">TreeLeafe</string>
-    <string name="treepeaper">TreePeaper</string>
+    <string name="tree_leaf">TreeLeaf</string>
+    <string name="tree_paper">TreePaper</string>
     <string name="todo">TODO</string>
     <string name="male">Male</string>
     <string name="female">Female</string>

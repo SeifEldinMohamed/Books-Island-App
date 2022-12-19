@@ -53,7 +53,7 @@
         android:src="@drawable/tree_leaves_image_intro"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/treeleafe" />
+        android:contentDescription="@string/tree_leaf" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -63,7 +63,7 @@
         android:src="@drawable/leaves_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/treepeaper" />
+        android:contentDescription="@string/tree_paper" />
 
     <ImageView
         android:id="@+id/imageView11"
