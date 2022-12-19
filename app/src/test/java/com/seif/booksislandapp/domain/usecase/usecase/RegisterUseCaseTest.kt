@@ -28,11 +28,11 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when email,  password and username are valid, then return success`() = runBlocking {
+    fun `registerUseCase(), when email, password and username are valid, then return success`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif123", "Maadi, Cairo", "Male")
-        whenever(authRepositoryImp.register(any())).thenReturn(Resource.Success(testUser))
-        val expected = Resource.Success(testUser)
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Maadi, Cairo", "Male")
+        whenever(authRepositoryImp.register(any())).thenReturn(Resource.Success("user Added Successfully"))
+        val expected = Resource.Success("user Added Successfully")
 
         // Act
         val actual = registerUseCase.invoke(testUser)
@@ -45,7 +45,7 @@ class RegisterUseCaseTest {
     @Test
     fun `registerUseCase(), when email and password are valid but username is not valid, then return error`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seif", "sm@gmail.com", "Seif123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seif", "sm@gmail.com", "Seif$123", "Maadi, Cairo", "Male")
         val expected = Resource.Error("title is too short min char = 5 !")
 
         // Act
@@ -59,7 +59,7 @@ class RegisterUseCaseTest {
     @Test
     fun `registerUseCase(), when username and password are valid but email is not valid, then return error`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "smgmail.com", "Seif123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "smgmail.com", "Seif$123", "Maadi, Cairo", "Male")
         val expected = Resource.Error("please enter a valid email !")
 
         // Act

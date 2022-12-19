@@ -1,9 +1,8 @@
-package com.seif.booksislandapp.ui.utils
+package com.seif.booksislandapp.utils
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.utils.ResourceProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +25,7 @@ class ResourceProviderTest {
     }
 
     @Test
-    fun `getString() from ResourceProvider, then return app name`() {
+    fun `string() from ResourceProvider, then return app name`() {
         // Arrange
         val resourceProvider = ResourceProvider.Base(mockContext)
         val expected = "Books Island"
