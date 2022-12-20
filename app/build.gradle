@@ -154,4 +154,6 @@ dependencies {
     //ssp and sdp
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
+    testImplementation 'io.mockk:mockk:1.13.3'
 }
