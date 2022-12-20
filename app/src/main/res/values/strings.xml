@@ -36,5 +36,6 @@
 
     <!-- AuthRepositoryImp -->
     <string name="user_added_successfully">User Added Successfully</string>
+    <string name="no_internet_connection">Check your Internet connection and try again.</string>
 
 </resources>

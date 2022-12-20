@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.data.repository
 
+import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
@@ -7,11 +8,9 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toUserDto
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.repository.AuthRepository
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FireStore_Collection
 import com.seif.booksislandapp.utils.Constants.Companion.USER_KEY
-import com.seif.booksislandapp.utils.Resource
-import com.seif.booksislandapp.utils.ResourceProvider
-import com.seif.booksislandapp.utils.SharedPrefs
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import javax.inject.Inject
@@ -20,12 +19,17 @@ class AuthRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val resourceProvider: ResourceProvider,
-    private val sharedPrefs: SharedPrefs
+    private val sharedPrefs: SharedPrefs,
+    private val connectivityManager: ConnectivityManager
 ) : AuthRepository {
     private val TAG = "AuthRepositoryImp"
     override suspend fun register(user: User): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) {
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        }
         return try {
-            val authResult = auth.createUserWithEmailAndPassword(user.email, user.password).await()
+            val authResult =
+                auth.createUserWithEmailAndPassword(user.email, user.password).await()
             authResult.user?.let { firebaseUser ->
                 user.id = firebaseUser.uid
             }

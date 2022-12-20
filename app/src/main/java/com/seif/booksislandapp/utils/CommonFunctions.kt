@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -86,14 +89,14 @@ fun Context.createDialog(layout: Int, cancelable: Boolean): Dialog {
 
 fun User.isValidUser(): Resource<String, String> {
     val user = this
-    return if (user.username.length < 5) {
-        Resource.Error("title is too short min char = 5 !")
-    } else if (!isValidEmail(email)) {
-        Resource.Error("please enter a valid email !")
-    } else if (!isValidPasswordFormat(password)) {
-        Resource.Error("Not Valid Password Format !")
-    } else {
-        Resource.Success("valid User")
+    return when {
+        user.username.length < 5 -> Resource.Error("username is too short min char = 5 !")
+        !isValidEmail(email) -> Resource.Error("please enter a valid email !")
+        !isValidPasswordFormat(password) -> Resource.Error("Not Valid Password Format !")
+        user.gender.isEmpty() -> Resource.Error("please choose your gender !")
+        user.government.isEmpty() -> Resource.Error("please choose your government !")
+        user.district.isEmpty() -> Resource.Error("please choose your district !")
+        else -> Resource.Success("valid User")
     }
 }
 
@@ -137,4 +140,16 @@ fun isValidPasswordFormat(password: String): Boolean {
             "$"
     )
     return passwordRegex.matcher(password).matches()
+}
+
+fun ConnectivityManager.checkInternetConnection(): Boolean {
+    val activeNetwork: Network = this.activeNetwork ?: return false
+    val capabilities: NetworkCapabilities =
+        this.getNetworkCapabilities(activeNetwork) ?: return false
+    return when { // return true if there is an internet connection from Wi-Fi, cellular and ethernet
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else -> false
+    }
 }

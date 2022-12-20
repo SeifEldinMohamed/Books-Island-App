@@ -28,9 +28,9 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when email, password and username are valid, then return success`() = runBlocking {
+    fun `registerUseCase(), when email, password and username are valid, then return Success_WithSuccessMessage`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "Maadi", "Male")
         whenever(authRepositoryImp.register(any())).thenReturn(Resource.Success("user Added Successfully"))
         val expected = Resource.Success("user Added Successfully")
 
@@ -43,10 +43,10 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when email and password are valid but username is not valid, then return error`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except username, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seif", "sm@gmail.com", "Seif$123", "Maadi, Cairo", "Male")
-        val expected = Resource.Error("title is too short min char = 5 !")
+        val testUser = User("", "image", "seif", "sm@gmail.com", "Seif$123", "Cairo", "Maadi", "Male")
+        val expected = Resource.Error("username is too short min char = 5 !")
 
         // Act
         val actual = registerUseCase.invoke(testUser)
@@ -57,9 +57,9 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when username and password are valid but email is not valid, then return error`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except email, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "smgmail.com", "Seif$123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "smgmail.com", "Seif$123", "Cairo", "Maadi", "Male")
         val expected = Resource.Error("please enter a valid email !")
 
         // Act
@@ -71,10 +71,50 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when username and email are valid but password is not valid, then return error`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except password, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "sm@gmail.com", "seif", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "seif", "Cairo", "Maadi", "Male")
         val expected = Resource.Error("Not Valid Password Format !")
+
+        // Act
+        val actual = registerUseCase.invoke(testUser)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).register(testUser)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `registerUseCase(), when all inputs are valid except government, then return Error_withErrorMessage`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "", "Maadi", "Male")
+        val expected = Resource.Error("please choose your government !")
+
+        // Act
+        val actual = registerUseCase.invoke(testUser)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).register(testUser)
+        assertThat(actual).isEqualTo(expected)
+    }
+    @Test
+    fun `registerUseCase(), when all inputs are valid except district, then return Error_withErrorMessage`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "", "Male")
+        val expected = Resource.Error("please choose your district !")
+
+        // Act
+        val actual = registerUseCase.invoke(testUser)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).register(testUser)
+        assertThat(actual).isEqualTo(expected)
+    }
+    @Test
+    fun `registerUseCase(), when all inputs are valid except gender, then return Error_withErrorMessage`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "Maadi", "")
+        val expected = Resource.Error("please choose your gender !")
 
         // Act
         val actual = registerUseCase.invoke(testUser)
