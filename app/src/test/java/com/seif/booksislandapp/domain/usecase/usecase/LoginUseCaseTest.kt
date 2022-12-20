@@ -29,7 +29,7 @@ class LoginUseCaseTest {
     @Test
     fun `loginUseCase(), when email and password are valid, then return success with message`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "Maadi", "Male")
         whenever(authRepositoryImp.login(testUser.email, testUser.password)).thenReturn(Resource.Success("Welcome Back"))
         val expected = Resource.Success("Welcome Back")
 
@@ -44,7 +44,7 @@ class LoginUseCaseTest {
     @Test
     fun `loginUseCase(), when email is valid and password is not valid, then return error with message`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "sm@gmail.com", "seif", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "seif", "Cairo", "Maadi", "Male")
         val expected = Resource.Error("please enter a valid password !")
 
         // Act
@@ -58,7 +58,7 @@ class LoginUseCaseTest {
     @Test
     fun `loginUseCase(), when email is not valid and password is valid, then return error with message`() = runBlocking {
         // Arrange
-        val testUser = User("", "image", "seifM", "smgmail.com", "Seif$123", "Maadi, Cairo", "Male")
+        val testUser = User("", "image", "seifM", "smgmail.com", "Seif$123", "Cairo", "Maadi", "Male")
         val expected = Resource.Error("please enter a valid email !")
 
         // Act
