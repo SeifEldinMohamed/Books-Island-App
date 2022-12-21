@@ -39,17 +39,17 @@ class AuthRepositoryImpTest {
     @Mock
     lateinit var sharedPrefs: SharedPrefs
 
-//    @Mock
-//    lateinit var connectivityManager: ConnectivityManager
     private var connectivityManager: ConnectivityManager = mockk(relaxed = true)
-
-    // private var common: Common = mockk(relaxed = true)
-//    @Mock
-//    lateinit var common: Common
 
     @Before
     fun setUp() {
-        authRepositoryImp = AuthRepositoryImp(firestore, firebaseAuth, resourceProvider, sharedPrefs, connectivityManager)
+        authRepositoryImp = AuthRepositoryImp(
+            firestore,
+            firebaseAuth,
+            resourceProvider,
+            sharedPrefs,
+            connectivityManager
+        )
         MockKAnnotations.init(this)
     }
 
@@ -90,12 +90,11 @@ class AuthRepositoryImpTest {
                 } doReturn collectionReference
             }
             // internet connection
-
             every {
                 connectivityManager.checkInternetConnection()
             } returns true
 
-            val expected = Resource.Success("User Added Successfully")
+            val expected = Resource.Success(resourceProvider.string(R.string.user_added_successfully))
 
             // Act
             val actual = authRepositoryImp.register(testUser)
@@ -107,11 +106,12 @@ class AuthRepositoryImpTest {
             assertThat(actual).isEqualTo(expected)
         }
 
-    @Test
-    fun `register(), when username in empty , then should return error with exception message_illegal argument exception`() =
+    @Test // not happending bec we check validation of user input in register usecase
+    fun `register(), when username in empty and there is internet connection , then should return error with exception message_illegal argument exception`() =
         runBlocking {
             // Arrange
-            val testUser = User("", "image", "", "sm@gmail.com", "Seif123", "Cairo", "Maadi", "Male")
+            val testUser =
+                User("", "image", "", "sm@gmail.com", "Seif123", "Cairo", "Maadi", "Male")
             whenever(firebaseAuth.createUserWithEmailAndPassword(any(), any())).thenThrow(
                 IllegalArgumentException("illegal argument exception")
             )
@@ -128,7 +128,7 @@ class AuthRepositoryImpTest {
         }
 
     @Test
-    fun `register(), when password is weak , then should return error with exception message_Error Weak Password`() =
+    fun `register(), when password is weak and there is internet connection, then should return error with exception message_Error Weak Password`() =
         runBlocking {
             // Arrange
             val testUser =
@@ -149,7 +149,33 @@ class AuthRepositoryImpTest {
         }
 
     @Test
-    fun `login(), when valid email and password, then should return success with loggedIn user`() =
+    fun `register(), when there is no internet connection , then should return error with no internet message`() =
+        runBlocking {
+            // Arrange
+            val testUser =
+                User("", "image", "seifM", "sm@gmail.com", "seif$123", "Cairo", "Maadi", "Male")
+
+            resourceProvider.stub {
+                on {
+                    string(R.string.no_internet_connection)
+                } doReturn "Check your Internet connection and try again."
+            }
+
+            every {
+                connectivityManager.checkInternetConnection()
+            } returns false
+
+            val expected = Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+            // Act
+            val actual = authRepositoryImp.register(testUser)
+
+            // Assert
+            assertThat(actual).isEqualTo(expected)
+        }
+
+    @Test
+    fun `login(), when valid email and password and there is internet connection, then should return success with loggedIn user`() =
         runBlocking {
             // Arrange
             val testUser =
@@ -159,10 +185,15 @@ class AuthRepositoryImpTest {
                     signInWithEmailAndPassword(testUser.email, testUser.password)
                 } doReturn Tasks.forResult(null)
             }
+            resourceProvider.stub {
+                on {
+                    string(R.string.welcome_back)
+                } doReturn "Welcome Back"
+            }
             every {
                 connectivityManager.checkInternetConnection()
             } returns true
-            val expected = Resource.Success("Welcome Back")
+            val expected = Resource.Success(resourceProvider.string(R.string.welcome_back))
 
             // Act
             val actual = authRepositoryImp.login(testUser.email, testUser.password)
@@ -172,7 +203,7 @@ class AuthRepositoryImpTest {
         }
 
     @Test
-    fun `login(), when valid email and not valid password, then should return error with message`() =
+    fun `login(), when valid email and not valid password and there is internet connection, then should return error with message`() =
         runBlocking {
             // Arrange
             val testUser =
@@ -202,7 +233,7 @@ class AuthRepositoryImpTest {
         }
 
     @Test
-    fun `register(), when there is no internet connection , then should return error with no internet message`() =
+    fun `login(), when there is no internet connection , then should return error with no internet message`() =
         runBlocking {
             // Arrange
             val testUser =
@@ -218,13 +249,66 @@ class AuthRepositoryImpTest {
                 connectivityManager.checkInternetConnection()
             } returns false
 
-            val expected = Resource.Error("Check your Internet connection and try again.")
+            val expected = Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
             // Act
-            val actual = authRepositoryImp.register(testUser)
+            val actual = authRepositoryImp.login(testUser.email, testUser.password)
 
             // Assert
             assertThat(actual).isEqualTo(expected)
         }
-    // private fun stubStringMessage(message:String) {}
+
+    @Test
+    fun `forgetPassword(), when email is valid and there is internet connection, then should return success with message`() =
+        runBlocking {
+            // Arrange
+            val userEmail = "sm@gmail.com"
+
+            resourceProvider.stub {
+                on {
+                    string(R.string.send_mail_to_reset_password)
+                } doReturn "Mail send successfully to reset your password"
+            }
+
+            every {
+                connectivityManager.checkInternetConnection()
+            } returns true
+
+            whenever(firebaseAuth.sendPasswordResetEmail(anyString())).thenReturn(Tasks.forResult(null))
+
+            val expected =
+                Resource.Success(resourceProvider.string(R.string.send_mail_to_reset_password))
+
+            // Act
+            val actual = authRepositoryImp.forgetPassword(userEmail)
+
+            // Assert
+            assertThat(actual).isEqualTo(expected)
+        }
+
+    @Test
+    fun `forgetPassword(), when there is no internet connection, then should return error with message`() =
+        runBlocking {
+            // Arrange
+            val userEmail = "sm@gmail.com"
+
+            resourceProvider.stub {
+                on {
+                    string(R.string.no_internet_connection)
+                } doReturn "Check your Internet connection and try again."
+            }
+
+            every {
+                connectivityManager.checkInternetConnection()
+            } returns false
+
+            val expected =
+                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+            // Act
+            val actual = authRepositoryImp.forgetPassword(userEmail)
+
+            // Assert
+            assertThat(actual).isEqualTo(expected)
+        }
 }

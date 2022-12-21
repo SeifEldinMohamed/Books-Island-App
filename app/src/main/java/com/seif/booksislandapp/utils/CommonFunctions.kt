@@ -91,7 +91,9 @@ fun User.isValidUser(): Resource<String, String> {
     val user = this
     return when {
         user.username.length < 5 -> Resource.Error("username is too short min char = 5 !")
+        email.isEmpty() -> Resource.Error("email can't be empty !")
         !isValidEmail(email) -> Resource.Error("please enter a valid email !")
+        password.isEmpty() -> Resource.Error("password can't be empty !")
         !isValidPasswordFormat(password) -> Resource.Error("Not Valid Password Format !")
         user.gender.isEmpty() -> Resource.Error("please choose your gender !")
         user.government.isEmpty() -> Resource.Error("please choose your government !")

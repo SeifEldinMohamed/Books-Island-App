@@ -71,6 +71,20 @@ class RegisterUseCaseTest {
     }
 
     @Test
+    fun `registerUseCase(), when all inputs are valid except email is empty, then return Error_withErrorMessage`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "", "Seif$123", "Cairo", "Maadi", "Male")
+        val expected = Resource.Error("email can't be empty !")
+
+        // Act
+        val actual = registerUseCase.invoke(testUser)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).register(testUser)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
     fun `registerUseCase(), when all inputs are valid except password, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
         val testUser = User("", "image", "seifM", "sm@gmail.com", "seif", "Cairo", "Maadi", "Male")
@@ -85,7 +99,21 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase(), when all inputs are valid except government, then return Error_withErrorMessage`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except password is empty, then return Error_withErrorMessage`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "sm@gmail.com", "", "Cairo", "Maadi", "Male")
+        val expected = Resource.Error("password can't be empty !")
+
+        // Act
+        val actual = registerUseCase.invoke(testUser)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).register(testUser)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `registerUseCase(), when all inputs are valid except government is empty, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
         val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "", "Maadi", "Male")
         val expected = Resource.Error("please choose your government !")
@@ -97,8 +125,9 @@ class RegisterUseCaseTest {
         verify(authRepositoryImp, times(0)).register(testUser)
         assertThat(actual).isEqualTo(expected)
     }
+
     @Test
-    fun `registerUseCase(), when all inputs are valid except district, then return Error_withErrorMessage`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except district is empty, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
         val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "", "Male")
         val expected = Resource.Error("please choose your district !")
@@ -111,7 +140,7 @@ class RegisterUseCaseTest {
         assertThat(actual).isEqualTo(expected)
     }
     @Test
-    fun `registerUseCase(), when all inputs are valid except gender, then return Error_withErrorMessage`() = runBlocking {
+    fun `registerUseCase(), when all inputs are valid except gender is empty, then return Error_withErrorMessage`() = runBlocking {
         // Arrange
         val testUser = User("", "image", "seifM", "sm@gmail.com", "Seif$123", "Cairo", "Maadi", "")
         val expected = Resource.Error("please choose your gender !")

@@ -68,4 +68,32 @@ class LoginUseCaseTest {
         verify(authRepositoryImp, times(0)).login(testUser.email, testUser.password)
         Truth.assertThat(actual).isEqualTo(expected)
     }
+
+    @Test
+    fun `loginUseCase(), when email is empty, then return error with message`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "", "Seif$123", "Cairo", "Maadi", "Male")
+        val expected = Resource.Error("email can't be empty !")
+
+        // Act
+        val actual = loginUseCase.invoke(testUser.email, testUser.password)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).login(testUser.email, testUser.password)
+        Truth.assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `loginUseCase(), when password is empty, then return error with message`() = runBlocking {
+        // Arrange
+        val testUser = User("", "image", "seifM", "sm@gamil.com", "", "Cairo", "Maadi", "Male")
+        val expected = Resource.Error("password can't be empty !")
+
+        // Act
+        val actual = loginUseCase.invoke(testUser.email, testUser.password)
+
+        // Assert
+        verify(authRepositoryImp, times(0)).login(testUser.email, testUser.password)
+        Truth.assertThat(actual).isEqualTo(expected)
+    }
 }
