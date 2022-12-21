@@ -24,9 +24,9 @@ class AuthRepositoryImp @Inject constructor(
 ) : AuthRepository {
     private val TAG = "AuthRepositoryImp"
     override suspend fun register(user: User): Resource<String, String> {
-        if (!connectivityManager.checkInternetConnection()) {
+        if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        }
+
         return try {
             val authResult =
                 auth.createUserWithEmailAndPassword(user.email, user.password).await()
@@ -60,9 +60,24 @@ class AuthRepositoryImp @Inject constructor(
     }
 
     override suspend fun login(email: String, password: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
-            Resource.Success("Welcome Back")
+            Resource.Success(resourceProvider.string(R.string.welcome_back))
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun forgetPassword(email: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            Resource.Success(resourceProvider.string(R.string.send_mail_to_reset_password))
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
