@@ -90,7 +90,7 @@ class AuthRepositoryImp @Inject constructor(
 
         return try {
             auth.signOut()
-            Resource.Success(resourceProvider.string(R.string.logged_out_successsfully))
+            Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }

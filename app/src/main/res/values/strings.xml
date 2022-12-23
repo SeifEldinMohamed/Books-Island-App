@@ -39,5 +39,6 @@
     <string name="no_internet_connection">Check your Internet connection and try again.</string>
     <string name="send_mail_to_reset_password">Mail send successfully to reset your password</string>
     <string name="welcome_back">Welcome Back</string>
+    <string name="logged_out_successfully">Logged Out Successfully</string>
 
 </resources>
