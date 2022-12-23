@@ -2,6 +2,7 @@ package com.seif.booksislandapp.data.repository
 
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.seif.booksislandapp.R
@@ -81,6 +82,22 @@ class AuthRepositoryImp @Inject constructor(
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
+    }
+
+    override suspend fun logout(): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            auth.signOut()
+            Resource.Success(resourceProvider.string(R.string.logged_out_successsfully))
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override fun getFirebaseCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 }
 // val user:User = sharedPrefs.get(USER_KEY, User::class.java)
