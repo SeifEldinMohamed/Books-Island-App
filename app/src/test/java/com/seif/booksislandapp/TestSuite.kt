@@ -1,7 +1,9 @@
 package com.seif.booksislandapp
 
 import com.seif.booksislandapp.data.repository.AuthRepositoryImpTest
+import com.seif.booksislandapp.domain.usecase.usecase.ForgetPasswordUseCaseTest
 import com.seif.booksislandapp.domain.usecase.usecase.LoginUseCaseTest
+import com.seif.booksislandapp.domain.usecase.usecase.LogoutUseCaseTest
 import com.seif.booksislandapp.domain.usecase.usecase.RegisterUseCaseTest
 import com.seif.booksislandapp.utils.ResourceProviderTest
 import com.seif.booksislandapp.utils.SharedPrefsTest
@@ -13,6 +15,8 @@ import org.junit.runners.Suite
     AuthRepositoryImpTest::class,
     RegisterUseCaseTest::class,
     LoginUseCaseTest::class,
+    ForgetPasswordUseCaseTest::class,
+    LogoutUseCaseTest::class,
     ResourceProviderTest::class,
     SharedPrefsTest::class
 )
