@@ -17,4 +17,9 @@ object AppModule {
     fun resourceProvider(@ApplicationContext context: Context): ResourceProvider {
         return ResourceProvider.Base(context = context)
     }
+    @Singleton
+    @Provides
+    fun provideApplicationContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }
