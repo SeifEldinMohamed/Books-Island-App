@@ -19,12 +19,12 @@
         android:background="@drawable/custom_button"
         android:text="@string/login"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/btn_registre"
+        app:layout_constraintBottom_toTopOf="@+id/btn_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btn_registre"
+        android:id="@+id/btn_register"
         android:layout_width="@dimen/_255sdp"
         android:layout_height="@dimen/_47sdp"
         android:layout_marginStart="50dp"
@@ -85,7 +85,7 @@
         android:layout_marginEnd="50dp"
         android:background="@color/white"
         android:contentDescription="@string/books_island"
-        android:src="@drawable/img"
+        android:src="@drawable/iv_book_island"
         app:layout_constraintBottom_toTopOf="@+id/imageView11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.393"

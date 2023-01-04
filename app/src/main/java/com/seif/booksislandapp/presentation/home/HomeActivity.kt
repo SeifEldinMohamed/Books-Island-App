@@ -10,7 +10,9 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ActivityHomeBinding
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
