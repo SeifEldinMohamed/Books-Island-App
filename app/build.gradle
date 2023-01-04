@@ -66,7 +66,7 @@ dependencies {
 
     // Unit Testing
     testImplementation 'junit:junit:4.13.2'
-   // testImplementation "org.robolectric:robolectric:4.3.1"
+    testImplementation "org.robolectric:robolectric:4.3.1"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     testImplementation "com.google.truth:truth:1.0.1"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
@@ -75,32 +75,46 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.0.0'
     // for mock-maker-inline
     testImplementation "org.mockito:mockito-inline:4.3.1"
-
+    // mockk
+    testImplementation 'io.mockk:mockk:1.13.3'
 
     // Instrumented Unit Tests
-    androidTestImplementation "junit:junit:4.13.2"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    androidTestImplementation "com.google.truth:truth:1.0.1"
+//    androidTestImplementation "junit:junit:4.13.2"
+//    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+//    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+ //   androidTestImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation "androidx.test:runner:1.5.1"
-    androidTestImplementation "androidx.test:core:1.5.0"
-    androidTestImplementation "androidx.test.ext:junit-ktx:1.1.4"
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.43.2'
+    androidTestImplementation "androidx.test:rules:1.5.0"
+ //   androidTestImplementation "androidx.test:core:1.4.0" // don't upgrade it bec it display error in ui testing bec of hilt version
+//    androidTestImplementation "androidx.test.ext:junit-ktx:1.1.4"
+//    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
+//    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.43.2'
     // mockito
-    androidTestImplementation "org.mockito:mockito-core:4.3.1"
-    androidTestImplementation 'org.mockito.kotlin:mockito-kotlin:4.0.0'
+//    androidTestImplementation "org.mockito:mockito-core:4.3.1"
+//    androidTestImplementation 'org.mockito.kotlin:mockito-kotlin:4.0.0'
 
     // Ui Testing
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.0'
+//    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.5.0'
 
+    // Testing Navigation
+    def nav_version = "2.5.3"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    def fragment_version = "1.5.5" // never make it debug implementation again
+   // androidTestImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    debugImplementation ("androidx.fragment:fragment-testing:$fragment_version"){
+        exclude group: 'androidx.test', module: 'core'
+    }
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
     // Jetpack Navigation Component
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //fragment
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
@@ -155,5 +169,4 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
-    testImplementation 'io.mockk:mockk:1.13.3'
 }
