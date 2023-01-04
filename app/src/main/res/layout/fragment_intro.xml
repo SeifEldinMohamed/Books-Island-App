@@ -84,7 +84,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:background="@color/white"
-        android:contentDescription="@string/books_island"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/img"
         app:layout_constraintBottom_toTopOf="@+id/imageView11"
         app:layout_constraintEnd_toEndOf="parent"

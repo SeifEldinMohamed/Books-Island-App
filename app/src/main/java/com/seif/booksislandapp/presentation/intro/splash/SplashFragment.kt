@@ -31,9 +31,9 @@ class SplashFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             findNavController().navigate(R.id.action_splashFragment_to_viewPagerFragment)
         }, 2000)
-        binding.progressBar.max = 1000
+        binding.progressBarSplash.max = 1000
         val currentProgress = 1500
-        ObjectAnimator.ofInt(binding.progressBar, "progress", currentProgress)
+        ObjectAnimator.ofInt(binding.progressBarSplash, "progress", currentProgress)
             .setDuration(1000)
             .start()
     }

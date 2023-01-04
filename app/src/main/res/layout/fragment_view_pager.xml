@@ -8,6 +8,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_next"
+        android:theme="@style/Theme.MaterialComponents.Light"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
         android:textAllCaps="false"
         android:textColor="@color/primary"
         android:textSize="@dimen/_17ssp"
+        android:theme="@style/Theme.MaterialComponents.Light"
         app:layout_constraintBottom_toBottomOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
