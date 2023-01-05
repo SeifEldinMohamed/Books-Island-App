@@ -35,6 +35,10 @@ class HomeActivity : AppCompatActivity() {
                     binding.bottomAppBar.hide()
                     binding.fabProfile.hide()
                 }
+                R.id.buyFragment -> {
+                    binding.bottomAppBar.hide()
+                    binding.fabProfile.hide()
+                }
                 else -> {
                     binding.bottomAppBar.show()
                     binding.fabProfile.show()

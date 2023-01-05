@@ -18,24 +18,26 @@
                 android:id="@+id/tv_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_25sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_6sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="@string/register"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_20ssp"
-                app:layout_constraintStart_toStartOf="@+id/til_username"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@+id/iv_back"
+                app:layout_constraintStart_toEndOf="@+id/iv_back"
+                app:layout_constraintTop_toTopOf="@+id/iv_back" />
+
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:contentDescription="@string/back_image"
+                android:padding="@dimen/_10sdp"
                 android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_register"
-                app:layout_constraintEnd_toStartOf="@+id/tv_register"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_register"
-                android:contentDescription="@string/back_image" />
+                app:layout_constraintTop_toTopOf="parent" />
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_username"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -81,7 +83,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailSubject"
-                    android:maxLength="30" />
+                    android:maxLength="30"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -103,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="none"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor,TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -125,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="none"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor,TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -151,7 +154,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:maxLength="18" />
+                    android:maxLength="18"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -176,7 +180,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:maxLength="18" />
+                    android:maxLength="18"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
