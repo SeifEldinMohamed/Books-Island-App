@@ -12,6 +12,7 @@ import com.seif.booksislandapp.domain.repository.AuthRepository
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FireStore_Collection
 import com.seif.booksislandapp.utils.Constants.Companion.USER_KEY
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import javax.inject.Inject
@@ -29,6 +30,8 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
+            delay(1000) // to show loading progress
+
             val authResult =
                 auth.createUserWithEmailAndPassword(user.email, user.password).await()
             authResult.user?.let { firebaseUser ->
