@@ -9,7 +9,6 @@ import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -27,7 +26,6 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             registerUseCase.invoke(user).let {
                 setLoading(true)
-                delay(1000)
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

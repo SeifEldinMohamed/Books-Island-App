@@ -22,8 +22,8 @@
     <string name="finish">Finish</string>
 
     <!--splash screen-->
-    <string name="books_island">Books Island</string>
     <string name="loading">loading..</string>
+
     <!--fragment_intro-->
     <string name="login">Login</string>
     <string name="register">Register</string>
@@ -32,14 +32,9 @@
     <string name="todo">TODO</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+
     <!--register fragment-->
     <string name="chooseQuesm">Choose Quesm</string>
-
-    <!-- AuthRepositoryImp -->
-    <string name="user_added_successfully">User Added Successfully</string>
-    <string name="no_internet_connection">Check your Internet connection and try again.</string>
-    <string name="send_mail_to_reset_password">Mail send successfully to reset your password</string>
-    <string name="welcome_back">Welcome Back</string>
     <string name="gender">Gender</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
@@ -48,5 +43,25 @@
     <string name="back_image">back image</string>
     <string name="username">Username</string>
 
+    <!-- AuthRepositoryImp -->
+    <string name="user_added_successfully">User Added Successfully</string>
+    <string name="no_internet_connection">Check your Internet connection and try again.</string>
+    <string name="send_mail_to_reset_password">Mail send successfully to reset your password</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="logged_out_successfully">Logged Out Successfully</string>
+
+    <!-- Buy Fragment -->
+    <string name="sort_by">Sort By</string>
+    <string name="buy">Buy</string>
+    <string name="search_by_book_name_or_author">Search by book name or author</string>
+    <string name="filter_image">filter image</string>
+    <string name="favourite_image">favourite image</string>
+    <string name="book_image">book image</string>
+    <string name="_120_egp">120 EGP</string>
+    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredibel exprience of how knowing the real business men</string>
+    <string name="book_title">Qudrant Flow of Money</string>
+    <string name="user_location">Maadi, Cairo</string>
+    <string name="adv_publish_date">11 NOV</string>
+    <string name="filter_image_button">filter image button</string>
 
 </resources>

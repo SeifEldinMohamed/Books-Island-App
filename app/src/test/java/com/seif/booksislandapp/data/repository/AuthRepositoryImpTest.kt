@@ -311,4 +311,51 @@ class AuthRepositoryImpTest {
             // Assert
             assertThat(actual).isEqualTo(expected)
         }
+
+    @Test
+    fun `logout(), when there is internet connection, then should return success with message`() = runBlocking {
+        // Arrange
+        resourceProvider.stub {
+            on {
+                string(R.string.logged_out_successfully)
+            } doReturn "Logged Out Successfully"
+        }
+        every {
+            connectivityManager.checkInternetConnection()
+        } returns true
+
+        doNothing().`when`(firebaseAuth).signOut()
+        val expected = Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
+
+        // Act
+        val actual = authRepositoryImp.logout()
+
+        // Assert
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `logout(), when there is no internet connection, then should return error with message`() =
+        runBlocking {
+            // Arrange
+
+            resourceProvider.stub {
+                on {
+                    string(R.string.no_internet_connection)
+                } doReturn "Check your Internet connection and try again."
+            }
+
+            every {
+                connectivityManager.checkInternetConnection()
+            } returns false
+
+            val expected =
+                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+            // Act
+            val actual = authRepositoryImp.logout()
+
+            // Assert
+            assertThat(actual).isEqualTo(expected)
+        }
 }
