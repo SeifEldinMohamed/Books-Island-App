@@ -96,7 +96,7 @@ fun User.isValidUser(): Resource<String, String> {
         password.isEmpty() -> Resource.Error("password can't be empty !")
         !isValidPasswordFormat(password) -> Resource.Error("Not Valid Password Format !")
         user.gender.isEmpty() -> Resource.Error("please choose your gender !")
-        user.government.isEmpty() -> Resource.Error("please choose your government !")
+        user.governorate.isEmpty() -> Resource.Error("please choose your government !")
         user.district.isEmpty() -> Resource.Error("please choose your district !")
         else -> Resource.Success("valid User")
     }

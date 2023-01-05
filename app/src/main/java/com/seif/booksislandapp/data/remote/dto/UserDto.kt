@@ -6,7 +6,7 @@ data class UserDto(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val government: String,
+    val governorate: String,
     val district: String,
     val gender: String = ""
 )

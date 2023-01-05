@@ -10,7 +10,7 @@ fun User.toUserDto(): UserDto {
         username = this.username,
         email = this.email,
         password = this.password,
-        government = this.government,
+        governorate = this.governorate,
         district = this.district,
         gender = this.gender
     )
@@ -23,7 +23,7 @@ fun UserDto.toUser(): User {
         username = this.username,
         email = this.email,
         password = this.password,
-        government = this.government,
+        governorate = this.governorate,
         district = this.district,
         gender = this.gender
     )
