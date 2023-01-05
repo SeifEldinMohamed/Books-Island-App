@@ -32,7 +32,16 @@
     <string name="todo">TODO</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+
     <!--register fragment-->
+    <string name="chooseQuesm">Choose Quesm</string>
+    <string name="gender">Gender</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="email">Email</string>
+    <string name="choose_governorate">Choose Governorate</string>
+    <string name="back_image">back image</string>
+    <string name="username">Username</string>
 
     <!-- AuthRepositoryImp -->
     <string name="user_added_successfully">User Added Successfully</string>
@@ -40,5 +49,7 @@
     <string name="send_mail_to_reset_password">Mail send successfully to reset your password</string>
     <string name="welcome_back">Welcome Back</string>
     <string name="logged_out_successfully">Logged Out Successfully</string>
+
+
 
 </resources>

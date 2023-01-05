@@ -169,4 +169,8 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
+    testImplementation 'io.mockk:mockk:1.13.3'
+
+    //No Internet Connection
+    implementation 'org.imaginativeworld.oopsnointernet:oopsnointernet:2.0.0'
 }
