@@ -50,6 +50,18 @@
     <string name="welcome_back">Welcome Back</string>
     <string name="logged_out_successfully">Logged Out Successfully</string>
 
-
+    <!-- Buy Fragment -->
+    <string name="sort_by">Sort By</string>
+    <string name="buy">Buy</string>
+    <string name="search_by_book_name_or_author">Search by book name or author</string>
+    <string name="filter_image">filter image</string>
+    <string name="favourite_image">favourite image</string>
+    <string name="book_image">book image</string>
+    <string name="_120_egp">120 EGP</string>
+    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredibel exprience of how knowing the real business men</string>
+    <string name="book_title">Qudrant Flow of Money</string>
+    <string name="user_location">Maadi, Cairo</string>
+    <string name="adv_publish_date">11 NOV</string>
+    <string name="filter_image_button">filter image button</string>
 
 </resources>
