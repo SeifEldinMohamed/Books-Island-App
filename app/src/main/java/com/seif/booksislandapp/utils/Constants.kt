@@ -11,5 +11,8 @@ class Constants {
 
         // shared preference keys
         const val USER_KEY = "user"
+
+        //
+        const val BUY_ADVERTISEMENT_COLLECTION = "buy advertisements"
     }
 }
