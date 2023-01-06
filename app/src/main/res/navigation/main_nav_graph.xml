@@ -46,7 +46,11 @@
         android:id="@+id/myAdsFragment"
         android:name="com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragment"
         android:label="fragment_my_ads"
-        tools:layout="@layout/fragment_my_ads" />
+        tools:layout="@layout/fragment_my_ads" >
+        <action
+            android:id="@+id/action_myAdsFragment_to_uploadAdvertisementFragment2"
+            app:destination="@id/uploadAdvertisementFragment" />
+    </fragment>
     <fragment
         android:id="@+id/buyFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.buy.BuyFragment"
@@ -97,4 +101,9 @@
         android:name="com.seif.booksislandapp.presentation.home.chat.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/uploadAdvertisementFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.UploadAdvertisementFragment"
+        android:label="fragment_upload_advertisement"
+        tools:layout="@layout/fragment_upload_advertisement" />
 </navigation>

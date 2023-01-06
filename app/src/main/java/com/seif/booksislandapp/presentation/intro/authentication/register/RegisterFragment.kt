@@ -80,7 +80,6 @@ class RegisterFragment : Fragment() {
     }
 
     private fun handleLoadingState(isLoading: Boolean) {
-
         when (isLoading) {
             true -> {
                 createAlertDialog()
