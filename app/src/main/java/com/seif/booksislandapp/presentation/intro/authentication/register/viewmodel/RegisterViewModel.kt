@@ -23,9 +23,9 @@ class RegisterViewModel @Inject constructor(
     private var _registerState = MutableStateFlow<RegisterState>(RegisterState.Init)
     val registerState = _registerState.asStateFlow()
     fun register(user: User) {
+        setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             registerUseCase.invoke(user).let {
-                setLoading(true)
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
