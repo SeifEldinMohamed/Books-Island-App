@@ -64,4 +64,7 @@
     <string name="adv_publish_date">11 NOV</string>
     <string name="filter_image_button">filter image button</string>
 
+    <!-- MyAds Fragment -->
+    <string name="add_adv_floating_button">add adv floating button</string>
+
 </resources>
