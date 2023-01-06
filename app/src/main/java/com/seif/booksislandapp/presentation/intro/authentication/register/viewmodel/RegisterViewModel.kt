@@ -52,7 +52,6 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun showError(message: String) {
-        setLoading(false)
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
                 _registerState.value = RegisterState.NoInternetConnection(message)
