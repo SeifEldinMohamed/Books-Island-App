@@ -67,4 +67,24 @@
     <!-- MyAds Fragment -->
     <string name="add_adv_floating_button">add adv floating button</string>
 
+    <!-- Upload Fragment -->
+    <string name="page_title">Sell</string>
+    <string name="mandatory_star">*</string>
+    <string name="title">Title</string>
+    <string name="author">Author</string>
+    <string name="price">Price</string>
+    <string name="choose">Choose</string>
+    <string name="condition">Condition</string>
+
+    <string-array name="condition">
+        <item>New</item>
+        <item>Used</item>
+    </string-array>
+
+    <!-- uploaded image item-->
+    <string name="cancel_uploaded_image">cancel uploaded image</string>
+    <string name="uploaded_image">uploaded image</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="at_least_one_image">At Least One Image</string>
+
 </resources>
