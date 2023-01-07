@@ -5,22 +5,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.databinding.FragmentUploadAdvertisementBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class UploadAdvertisementFragment : Fragment() {
-
+    lateinit var binding: FragmentUploadAdvertisementBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload_advertisement, container, false)
+        binding = FragmentUploadAdvertisementBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val conditions = resources.getStringArray(R.array.condition)
+        val arrayAdapter =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        binding.acCondition.setAdapter(arrayAdapter)
     }
 }
