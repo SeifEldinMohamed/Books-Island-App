@@ -84,7 +84,13 @@
     <!-- uploaded image item-->
     <string name="cancel_uploaded_image">cancel uploaded image</string>
     <string name="uploaded_image">uploaded image</string>
+
+    <!-- upload sell advertisement fragment -->
     <string name="upload_image">Upload Image</string>
     <string name="at_least_one_image">At Least One Image</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="edition">Edition</string>
+    <string name="submit_post">Submit Post</string>
 
 </resources>

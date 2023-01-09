@@ -7,19 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.databinding.FragmentUploadAdvertisementBinding
+import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UploadAdvertisementFragment : Fragment() {
-    lateinit var binding: FragmentUploadAdvertisementBinding
+class UploadSellAdvertisementFragment : Fragment() {
+    lateinit var binding: FragmentUploadSellAdvertisementBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentUploadAdvertisementBinding.inflate(inflater, container, false)
+        binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
         return binding.root
     }
 

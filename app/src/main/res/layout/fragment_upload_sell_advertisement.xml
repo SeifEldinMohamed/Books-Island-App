@@ -115,7 +115,7 @@
                 android:id="@+id/tv_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:text="@string/author"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/til_title"
@@ -159,7 +159,7 @@
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:text="@string/price"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/til_author"
@@ -169,7 +169,7 @@
                 android:id="@+id/tv_star_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:text="@string/mandatory_star"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_price"
@@ -177,20 +177,40 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_price" />
 
             <TextView
-                android:id="@+id/tv_condition"
+                android:id="@+id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:text="@string/description"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+            <TextView
+                android:id="@+id/tv_star_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mandatory_star"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_description"
+                app:layout_constraintStart_toEndOf="@+id/tv_description"
+                app:layout_constraintTop_toTopOf="@+id/tv_description" />
+
+            <TextView
+                android:id="@+id/tv_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:text="@string/condition"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@+id/til_price"
+                app:layout_constraintStart_toStartOf="@+id/til_author"
                 app:layout_constraintTop_toBottomOf="@+id/til_price" />
 
             <TextView
                 android:id="@+id/tv_star_condition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:text="@string/mandatory_star"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_condition"
@@ -215,14 +235,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="none"
-                    tools:ignore="LabelFor,TextContrastCheck" />
+                    tools:ignore="LabelFor,TextContrastCheck,DuplicateSpeakableTextCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tv_atleast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:text="@string/at_least_one_image"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/til_condition"
@@ -232,7 +252,7 @@
                 android:id="@+id/tv_star_atleast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:text="@string/mandatory_star"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_atleast"
@@ -243,7 +263,7 @@
                 android:id="@+id/constraintLayout3"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_160sdp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:background="@drawable/dotted_border"
                 app:layout_constraintEnd_toEndOf="@+id/til_condition"
                 app:layout_constraintStart_toStartOf="@+id/til_condition"
@@ -253,9 +273,10 @@
                     android:id="@+id/iv_upload_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/_26sdp"
                     android:contentDescription="@string/upload_image"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.501"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_upload"
@@ -278,11 +299,12 @@
                     android:id="@+id/btn_upload_images"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="@dimen/_6sdp"
                     android:paddingVertical="@dimen/_5sdp"
                     android:text="@string/upload_image"
                     android:textColor="@color/primary"
                     app:backgroundTint="@color/white"
+                    android:textAllCaps="false"
                     app:cornerRadius="@dimen/_4sdp"
                     app:icon="@drawable/ic_add"
                     app:iconTint="@color/primary"
@@ -293,6 +315,121 @@
                     app:strokeWidth="@dimen/_1sdp"
                     tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_description"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_description"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textMultiLine"
+                    android:gravity="start"
+                    android:textColor="@color/black"
+                    tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/category"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@+id/til_description"
+                app:layout_constraintTop_toBottomOf="@+id/til_description" />
+
+            <TextView
+                android:id="@+id/tv_star_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:text="@string/mandatory_star"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_category"
+                app:layout_constraintStart_toEndOf="@+id/tv_category"
+                app:layout_constraintTop_toTopOf="@+id/tv_category" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_14sdp"
+                android:text="@string/upload_image"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="@dimen/_4sdp"
+                app:icon="@drawable/ic_forward_arrow"
+                app:iconTint="@color/black"
+                app:iconGravity="end"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/tv_category"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_category"
+                app:strokeColor="@color/gray_light"
+                app:strokeWidth="@dimen/_1sdp"
+                tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+            <TextView
+                android:id="@+id/tv_edition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/edition"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@+id/btn_category"
+                app:layout_constraintTop_toBottomOf="@+id/btn_category" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_edition"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:hint="@string/choose"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_edition"
+                app:layout_constraintTop_toBottomOf="@+id/tv_edition">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ac_edition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="none"
+                    tools:ignore="LabelFor,TextContrastCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/_6sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:text="@string/submit_post"
+                android:textAllCaps="false"
+                android:scaleY="1.4"
+                app:cornerRadius="@dimen/_4sdp"
+                android:layout_marginVertical="@dimen/_24sdp"
+                app:layout_constraintTop_toBottomOf="@id/til_edition"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
