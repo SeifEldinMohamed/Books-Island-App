@@ -105,5 +105,18 @@
         android:id="@+id/uploadAdvertisementFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.UploadSellAdvertisementFragment"
         android:label="fragment_upload_advertisement"
-        tools:layout="@layout/fragment_upload_sell_advertisement" />
+        tools:layout="@layout/fragment_upload_sell_advertisement" >
+        <action
+            android:id="@+id/action_uploadAdvertisementFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.seif.booksislandapp.presentation.home.categories.book_categories.BookCategoriesFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category" >
+        <action
+            android:id="@+id/action_categoryFragment_to_uploadAdvertisementFragment"
+            app:destination="@id/uploadAdvertisementFragment" />
+    </fragment>
 </navigation>

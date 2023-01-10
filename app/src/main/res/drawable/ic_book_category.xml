@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/_85sdp"
+    android:height="@dimen/_95sdp"
+    android:viewportWidth="105"
+    android:viewportHeight="115">
+  <path
+      android:name="book"
+      android:pathData="M6.18,0C2.75,0 0,2.05 0,4.6L0,105.8c0,5.1 5.2,9.2 11.67,9.2h90.42c1.61,0 2.92,-1.03 2.92,-2.3s-1.31,-2.3 -2.92,-2.3L11.67,110.4c-3.23,0 -5.83,-2.05 -5.83,-4.6s2.6,-4.6 5.83,-4.6h90.42c1.61,0 2.92,-1.03 2.92,-2.3L105,4.6c0,-2.55 -2.75,-4.6 -6.18,-4.6L6.18,0Z"
+      android:fillColor="#5abd8c"/>
+  <path
+      android:pathData="M11.12,101.25h92.33v9.38L11.12,110.64c-3.3,0 -5.96,-2.09 -5.96,-4.69S7.82,101.25 11.12,101.25Z"
+      android:fillColor="#ececec"/>
+</vector>
