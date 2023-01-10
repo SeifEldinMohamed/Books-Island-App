@@ -93,4 +93,9 @@
     <string name="edition">Edition</string>
     <string name="submit_post">Submit Post</string>
 
+    <!-- category item-->
+    <string name="choose_category">Choose Category</string>
+    <string name="book_category_image">book category image</string>
+    <string name="self_development">Self Development</string>
+
 </resources>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +26,22 @@ class UploadSellAdvertisementFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupConditionDropdown()
+        receiveBookCategory()
+
+        binding.btnCategory.setOnClickListener {
+            findNavController().navigate(R.id.action_uploadAdvertisementFragment_to_categoryFragment)
+        }
+    }
+
+    private fun receiveBookCategory() {
+        val bookCategory = arguments?.getString("category")
+        bookCategory?.let { category ->
+            binding.btnCategory.text = category
+        }
+    }
+
+    private fun setupConditionDropdown() {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
