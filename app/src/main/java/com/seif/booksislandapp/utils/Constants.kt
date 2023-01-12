@@ -14,5 +14,7 @@ class Constants {
 
         //
         const val BUY_ADVERTISEMENT_COLLECTION = "buy advertisements"
+
+        const val MAX_UPLOADED_IMAGES_NUMBER = 5
     }
 }
