@@ -12,4 +12,7 @@
     <color name="chat_background">#EAECF2</color>
     <color name="facebook_button">#367FC0</color>
     <color name="google_button">#DD4B39</color>
+
+    <color name="ucrop_color_toolbar">@color/white</color>
+    <color name="ucrop_color_statusbar">@color/white</color>
 </resources>
