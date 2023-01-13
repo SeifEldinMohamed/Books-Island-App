@@ -103,7 +103,7 @@
         tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/uploadAdvertisementFragment"
-        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.UploadSellAdvertisementFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.sell.UploadSellAdvertisementFragment"
         android:label="fragment_upload_advertisement"
         tools:layout="@layout/fragment_upload_sell_advertisement" >
         <action
