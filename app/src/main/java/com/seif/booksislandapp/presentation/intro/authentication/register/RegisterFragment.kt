@@ -1,6 +1,5 @@
 package com.seif.booksislandapp.presentation.intro.authentication.register
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +17,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
+import com.seif.booksislandapp.utils.createAlertDialog
 import com.seif.booksislandapp.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,8 +42,9 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        dialog = requireContext().createAlertDialog(requireActivity())
         observe()
+
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -82,7 +83,6 @@ class RegisterFragment : Fragment() {
     private fun handleLoadingState(isLoading: Boolean) {
         when (isLoading) {
             true -> {
-                createAlertDialog()
                 startLoadingDialog()
             }
             false -> dismissLoadingDialog()
@@ -170,14 +170,6 @@ class RegisterFragment : Fragment() {
             getString(R.string.female) -> womenAvatarList.random().toString()
             else -> Unit.toString()
         }
-    }
-
-    @SuppressLint("InflateParams")
-    private fun createAlertDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setView(layoutInflater.inflate(R.layout.custom_loading_dialog, null))
-        builder.setCancelable(true)
-        dialog = builder.create()
     }
 
     private fun startLoadingDialog() {
