@@ -24,11 +24,10 @@ import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUM
 
 @AndroidEntryPoint
 class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
-    // lateinit var binding: FragmentUploadSellAdvertisementBinding
     private var _binding: FragmentUploadSellAdvertisementBinding? = null
     private val binding get() = _binding!!
 
-    var imageUris: MutableList<Uri> = arrayListOf()
+    private var imageUris: MutableList<Uri> = arrayListOf()
     private lateinit var dialog: AlertDialog
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
 
@@ -40,16 +39,15 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         // Inflate the layout for this fragment
         _binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        // binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupConditionDropdown()
         setupEditionDropdown()
         receiveBookCategory()
-
         dialog = requireContext().createAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
 
@@ -58,17 +56,21 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.btnUploadImages.setOnClickListener {
-            ImagePicker.with(this)
-                .crop()
-                .compress(1024) // Final image size will be less than 1 MB
-                .galleryOnly() // we use gallery only bec the camera option makes memory leak ( app size = 219 LOL)
-                .createIntent { intent ->
-                    startLoadingDialog()
-                    startForProfileImageResult.launch(intent)
-                }
+           startImagePicker()
         }
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun startImagePicker() {
+        ImagePicker.with(this)
+            .crop()
+            .compress(1024) // Final image size will be less than 1 MB
+            .galleryOnly() // we use gallery only bec the camera option makes memory leak ( app size = 219 LOL)
+            .createIntent { intent ->
+                startLoadingDialog()
+                startForProfileImageResult.launch(intent)
+            }
     }
 
     private val startForProfileImageResult =
@@ -163,6 +165,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     private fun dismissLoadingDialog() {
         dialog.dismiss()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
