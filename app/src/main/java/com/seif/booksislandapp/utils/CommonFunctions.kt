@@ -1,6 +1,8 @@
 package com.seif.booksislandapp.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -16,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
 import java.text.SimpleDateFormat
 import java.util.*
@@ -154,4 +157,12 @@ fun ConnectivityManager.checkInternetConnection(): Boolean {
         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
         else -> false
     }
+}
+
+@SuppressLint("InflateParams")
+fun Context.createAlertDialog(activity: Activity): AlertDialog {
+    val builder = AlertDialog.Builder(this)
+    builder.setView(activity.layoutInflater.inflate(R.layout.custom_loading_dialog, null))
+    builder.setCancelable(true)
+    return builder.create()
 }
