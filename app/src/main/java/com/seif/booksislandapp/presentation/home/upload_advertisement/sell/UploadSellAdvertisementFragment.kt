@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBinding
@@ -19,8 +20,10 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.Up
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUMBER
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
@@ -30,6 +33,9 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     private var imageUris: MutableList<Uri> = arrayListOf()
     private lateinit var dialog: AlertDialog
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
+    private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
+
+    private var categoryName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +53,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
 
         setupConditionDropdown()
         setupEditionDropdown()
-        receiveBookCategory()
         dialog = requireContext().createAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
 
@@ -56,7 +61,15 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.btnUploadImages.setOnClickListener {
-           startImagePicker()
+            startImagePicker()
+        }
+
+        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
+            name?.let {
+                Timber.d("onViewCreated: $it")
+                categoryName = it
+                binding.btnCategory.text = categoryName
+            }
         }
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
@@ -125,13 +138,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         binding.btnUploadImages.setIconTintResource(R.color.primary)
     }
 
-    private fun receiveBookCategory() {
-        val bookCategory = arguments?.getString("category")
-        bookCategory?.let { category ->
-            binding.btnCategory.text = category
-        }
-    }
-
     private fun setupConditionDropdown() {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
@@ -169,5 +175,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }
