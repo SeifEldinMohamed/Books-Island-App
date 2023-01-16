@@ -4,6 +4,6 @@ import com.seif.booksislandapp.domain.model.Advertisement
 import com.seif.booksislandapp.utils.Resource
 
 interface AdvertisementRepository {
-    suspend fun getAllBuyAds(): Resource<List<Advertisement>, String>
-    suspend fun addBuyAd(advertisement: Advertisement): Resource<String, String>
+    suspend fun getAllSellAds(): Resource<List<Advertisement>, String>
+    suspend fun addSellAd(advertisement: Advertisement): Resource<String, String>
 }

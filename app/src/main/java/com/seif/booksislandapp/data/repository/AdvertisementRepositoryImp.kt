@@ -10,7 +10,7 @@ import com.seif.booksislandapp.data.mapper.toAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.AdvertisementDto
 import com.seif.booksislandapp.domain.model.Advertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
-import com.seif.booksislandapp.utils.Constants.Companion.BUY_ADVERTISEMENT_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_COLLECTION
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
@@ -25,20 +25,20 @@ class AdvertisementRepositoryImp @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val connectivityManager: ConnectivityManager
 ) : AdvertisementRepository {
-    override suspend fun getAllBuyAds(): Resource<List<Advertisement>, String> {
+    override suspend fun getAllSellAds(): Resource<List<Advertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
             delay(1000) // to show loading progress
 
-            val querySnapshot = firestore.collection(BUY_ADVERTISEMENT_COLLECTION).get().await()
-            val buyAdvertisements = arrayListOf<AdvertisementDto>()
+            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_COLLECTION).get().await()
+            val sellAdvertisements = arrayListOf<AdvertisementDto>()
             for (document in querySnapshot) {
                 val advertisement = document.toObject(AdvertisementDto::class.java)
-                buyAdvertisements.add(advertisement)
+                sellAdvertisements.add(advertisement)
             }
             Resource.Success(
-                data = buyAdvertisements.map { advertisementDto ->
+                data = sellAdvertisements.map { advertisementDto ->
                     advertisementDto.toAdvertisement()
                 }.toCollection(ArrayList())
             )
@@ -47,14 +47,14 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun addBuyAd(advertisement: Advertisement): Resource<String, String> {
+    override suspend fun addSellAd(advertisement: Advertisement): Resource<String, String> {
         return when (val result = uploadMultipleImages(advertisement.book.images)) {
             is Resource.Error -> {
                 Resource.Error(result.message)
             }
             is Resource.Success -> {
                 try {
-                    val document = firestore.collection(BUY_ADVERTISEMENT_COLLECTION).document()
+                    val document = firestore.collection(SELL_ADVERTISEMENT_COLLECTION).document()
                     advertisement.id = document.id
                     document.set(advertisement.toAdvertisementDto()).await()
                     Resource.Success("Advertisement Added Successfully with id : ${document.id}")

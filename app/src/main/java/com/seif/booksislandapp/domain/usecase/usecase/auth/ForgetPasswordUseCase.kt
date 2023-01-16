@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.usecase.usecase
+package com.seif.booksislandapp.domain.usecase.usecase.auth
 
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
 import com.seif.booksislandapp.utils.Resource
