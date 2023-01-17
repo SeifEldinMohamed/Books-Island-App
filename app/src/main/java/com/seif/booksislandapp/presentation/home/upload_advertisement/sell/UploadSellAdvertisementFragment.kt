@@ -23,7 +23,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUMBER
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
@@ -153,8 +152,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     override fun onRemoveImageItemClick(item: Uri, position: Int) {
-        Timber.d(" size: ${imageUris.size}")
-        Timber.d("onRemoveImageItemClick: size: $position")
         imageUris.removeAt(position)
         uploadedImagesAdapter.updateList(imageUris)
         if (imageUris.size == 0)
