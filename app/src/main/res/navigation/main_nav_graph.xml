@@ -108,15 +108,11 @@
         tools:layout="@layout/fragment_upload_sell_advertisement" >
         <action
             android:id="@+id/action_uploadAdvertisementFragment_to_categoryFragment"
-            app:destination="@id/categoryFragment" />
+            app:destination="@id/bookCategoriesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/categoryFragment"
+        android:id="@+id/bookCategoriesFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.book_categories.BookCategoriesFragment"
         android:label="fragment_category"
-        tools:layout="@layout/fragment_category" >
-        <action
-            android:id="@+id/action_categoryFragment_to_uploadAdvertisementFragment"
-            app:destination="@id/uploadAdvertisementFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_book_categories" />
 </navigation>

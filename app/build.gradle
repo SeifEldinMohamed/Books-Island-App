@@ -182,4 +182,7 @@ dependencies {
 
     //ImagePicker
     implementation 'com.github.dhaval2404:imagepicker:2.1'
+
+    // VectorChildFinder for vector manipulation
+    implementation 'com.github.devsideal:VectorChildFinder:1.0.0'
 }
