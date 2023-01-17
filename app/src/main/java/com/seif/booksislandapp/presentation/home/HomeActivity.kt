@@ -43,6 +43,10 @@ class HomeActivity : AppCompatActivity() {
                     binding.bottomAppBar.hide()
                     binding.fabProfile.hide()
                 }
+                R.id.bookCategoriesFragment -> {
+                    binding.bottomAppBar.hide()
+                    binding.fabProfile.hide()
+                }
                 else -> {
                     binding.bottomAppBar.show()
                     binding.fabProfile.show()

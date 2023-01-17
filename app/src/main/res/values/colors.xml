@@ -15,4 +15,12 @@
 
     <color name="ucrop_color_toolbar">@color/white</color>
     <color name="ucrop_color_statusbar">@color/white</color>
+
+    <!-- Book Categories colors -->
+    <color name="literature_color">#0247FE</color>
+    <color name="historical_color">@color/primary</color>
+    <color name="religious_color">#FB9902</color>
+
+    <color name="scientific_color">#FB9902</color>
+    <color name="political_color">#FB9902</color>
 </resources>

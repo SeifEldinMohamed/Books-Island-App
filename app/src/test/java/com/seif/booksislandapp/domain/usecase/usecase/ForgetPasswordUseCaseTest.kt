@@ -2,6 +2,7 @@ package com.seif.booksislandapp.domain.usecase.usecase
 
 import com.google.common.truth.Truth
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
+import com.seif.booksislandapp.domain.usecase.usecase.auth.ForgetPasswordUseCase
 import com.seif.booksislandapp.utils.Resource
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

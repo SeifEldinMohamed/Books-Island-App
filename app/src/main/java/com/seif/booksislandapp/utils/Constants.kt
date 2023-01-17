@@ -13,7 +13,7 @@ class Constants {
         const val USER_KEY = "user"
 
         //
-        const val BUY_ADVERTISEMENT_COLLECTION = "buy advertisements"
+        const val SELL_ADVERTISEMENT_COLLECTION = "sell advertisements"
 
         const val MAX_UPLOADED_IMAGES_NUMBER = 5
     }

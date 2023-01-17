@@ -12,6 +12,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.view.*
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -165,4 +166,11 @@ fun Context.createAlertDialog(activity: Activity): AlertDialog {
     builder.setView(activity.layoutInflater.inflate(R.layout.custom_loading_dialog, null))
     builder.setCancelable(true)
     return builder.create()
+}
+
+fun ScrollView.scrollToBottom() {
+    val lastChild = getChildAt(childCount - 1)
+    val bottom = lastChild.bottom + paddingBottom
+    val delta = bottom - (scrollY + height)
+    smoothScrollBy(0, delta)
 }
