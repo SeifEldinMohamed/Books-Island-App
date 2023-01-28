@@ -69,6 +69,7 @@
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/custom_button.xml" value="0.1635" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/donate_category_image.xml" value="0.163" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/exchange_category_image.xml" value="0.163" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/grass_image.xml" value="0.1515" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_ads.xml" value="0.163" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_back.xml" value="0.116" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/ic_chats.xml" value="0.163" />
@@ -86,7 +87,9 @@
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/splash_image.xml" value="0.1635" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_intro.xml" value="0.25" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_forget_password.xml" value="0.25" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_intro.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_login.xml" value="0.2" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_register.xml" value="0.264" />
       </map>
     </option>

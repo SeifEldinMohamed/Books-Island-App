@@ -121,4 +121,9 @@
     <string name="book_category_image">book category image</string>
     <string name="self_development">Self Development</string>
 
+    <!--forgetPassword-->
+    <string name="ForgetPassword">ForgetPassword</string>
+    <string name="photo">photo</string>
+    <string name="forgetyourpassword">Forget Your Password?</string>
+    <string name="send_message">send_message</string>
 </resources>
