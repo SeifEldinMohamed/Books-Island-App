@@ -6,5 +6,4 @@ import javax.inject.Inject
 
 class UploadSellAdvertisementViewModel @Inject constructor(
     private val uploadSellAdvertisementUseCase: UploadSellAdvertisementUseCase
-): ViewModel() {
-}
+) : ViewModel()

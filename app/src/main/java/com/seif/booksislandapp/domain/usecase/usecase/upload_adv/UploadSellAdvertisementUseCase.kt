@@ -7,7 +7,6 @@ import javax.inject.Inject
 class UploadSellAdvertisementUseCase @Inject constructor(
     private val advertisementRepository: AdvertisementRepository
 ) {
-    suspend operator fun invoke(sellAdvertisement: Advertisement){
-
+    suspend operator fun invoke(sellAdvertisement: Advertisement) {
     }
 }
