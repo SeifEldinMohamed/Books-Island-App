@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/photo"
         android:src="@drawable/leaves_image"
-        app:layout_constraintBottom_toTopOf="@+id/tex_email"
+        app:layout_constraintBottom_toTopOf="@+id/til_Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText,ImageContrastCheck,ImageContrastCheck" />
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tex_password"
+        android:id="@+id/til_Password"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,23 +53,25 @@
         android:layout_marginEnd="@dimen/_24sdp"
         app:layout_constraintEnd_toEndOf="parent"
         android:hint="@string/password"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/primary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tex_email"
+        app:layout_constraintTop_toBottomOf="@+id/til_Email"
         app:startIconDrawable="@drawable/ic_password_line"
         app:startIconTint="@color/primary">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/texd_password"
+            android:id="@+id/et_Password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailSubject"
+            android:inputType="textPassword"
             android:maxLength="50"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tex_email"
+        android:id="@+id/til_Email"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +87,7 @@
         tools:ignore="HardcodedText">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/texd_email"
+            android:id="@+id/et_Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -101,8 +103,8 @@
         android:layout_height="wrap_content"
         android:text="@string/forgetyourpassword"
         app:layout_constraintBottom_toTopOf="@+id/btn_login"
-        app:layout_constraintEnd_toEndOf="@+id/tex_password"
-        app:layout_constraintTop_toBottomOf="@+id/tex_password"
+        app:layout_constraintEnd_toEndOf="@+id/til_Password"
+        app:layout_constraintTop_toBottomOf="@+id/til_Password"
         tools:ignore="MissingConstraints" />
 
     <com.google.android.material.button.MaterialButton
