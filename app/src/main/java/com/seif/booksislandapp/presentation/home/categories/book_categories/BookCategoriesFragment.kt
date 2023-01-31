@@ -43,12 +43,11 @@ class BookCategoriesFragment : Fragment(), OnCategoryItemClick<BookCategory> {
             BookCategory(name = "Literature", R.color.literature_color),
             BookCategory(name = "Historical", R.color.historical_color),
             BookCategory(name = "Religious", R.color.religious_color),
-
             BookCategory(name = "Scientific", R.color.scientific_color),
             BookCategory(name = "Political", R.color.political_color),
+            BookCategory(name = "Money and Business", R.color.money_business_color),
+            BookCategory(name = "Self Development", R.color.self_development_color),
 
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
             BookCategory(name = "Literature", R.color.literature_color),
             BookCategory(name = "Literature", R.color.literature_color),
             BookCategory(name = "Literature", R.color.literature_color),

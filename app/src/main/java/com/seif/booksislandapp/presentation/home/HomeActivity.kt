@@ -2,6 +2,7 @@ package com.seif.booksislandapp.presentation.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -33,23 +34,23 @@ class HomeActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.profileFragment -> {
                     binding.bottomAppBar.hide()
-                    binding.fabProfile.hide()
+                    binding.fabProfile.visibility = View.GONE
                 }
                 R.id.buyFragment -> {
+                    binding.fabProfile.visibility = View.GONE
                     binding.bottomAppBar.hide()
-                    binding.fabProfile.hide()
                 }
                 R.id.uploadAdvertisementFragment -> {
                     binding.bottomAppBar.hide()
-                    binding.fabProfile.hide()
+                    binding.fabProfile.visibility = View.GONE
                 }
                 R.id.bookCategoriesFragment -> {
                     binding.bottomAppBar.hide()
-                    binding.fabProfile.hide()
+                    binding.fabProfile.visibility = View.GONE
                 }
                 else -> {
                     binding.bottomAppBar.show()
-                    binding.fabProfile.show()
+                    binding.fabProfile.visibility = View.VISIBLE
                 }
             }
         }
