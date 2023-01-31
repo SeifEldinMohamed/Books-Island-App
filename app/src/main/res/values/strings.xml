@@ -126,4 +126,9 @@
     <string name="photo">photo</string>
     <string name="forgetyourpassword">Forget Your Password?</string>
     <string name="send_message">send_message</string>
+    <!--homepage-->
+    <string name="hello_heba">Hello Heba,</string>
+    <string name="donation">Donation</string>
+    <string name="exchange">Exchange</string>
+    <string name="bid">Bid</string>
 </resources>
