@@ -10,7 +10,7 @@ import com.seif.booksislandapp.data.mapper.toSellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
-import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
@@ -32,7 +32,7 @@ class AdvertisementRepositoryImp @Inject constructor(
         return try {
             delay(1000) // to show loading progress
 
-            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_COLLECTION).get().await()
+            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).get().await()
             val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
             for (document in querySnapshot) {
                 val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
@@ -59,7 +59,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
             is Resource.Success -> {
                 try {
-                    val document = firestore.collection(SELL_ADVERTISEMENT_COLLECTION).document()
+                    val document = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
                     sellAdvertisement.id = document.id
                     sellAdvertisement.book.images = result.data
                     document.set(sellAdvertisement.toSellAdvertisementDto()).await()
