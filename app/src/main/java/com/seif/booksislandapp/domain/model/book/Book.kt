@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.model
+package com.seif.booksislandapp.domain.model.book
 
 import android.net.Uri
 import kotlin.String
