@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.usecase.usecase.auth.RegisterUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
+    private val saveInSharedPreference: SaveInSharedPreference,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _registerState = MutableStateFlow<RegisterState>(RegisterState.Init)
@@ -60,5 +62,8 @@ class RegisterViewModel @Inject constructor(
                 _registerState.value = RegisterState.ShowError(message)
             }
         }
+    }
+    fun <T> saveInSP(key: String, data: T) {
+        saveInSharedPreference(key, data)
     }
 }

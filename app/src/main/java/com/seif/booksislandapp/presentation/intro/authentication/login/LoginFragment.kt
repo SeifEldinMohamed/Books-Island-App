@@ -15,10 +15,12 @@ import com.seif.booksislandapp.databinding.FragmentLoginBinding
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginState
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginViewModel
+import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
 import com.seif.booksislandapp.utils.handleNoInternetConnectionState
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -55,6 +57,8 @@ class LoginFragment : Fragment() {
                     LoginState.Init -> Unit
                     is LoginState.IsLoading -> handleLoadingState(it.isLoading)
                     is LoginState.LoginSuccessfully -> {
+                        loginViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
+                        Timber.d("observeLogin: logged in successfully")
                         Intent(requireActivity(), HomeActivity::class.java).also { intent ->
                             startActivity(intent)
                             requireActivity().finish()

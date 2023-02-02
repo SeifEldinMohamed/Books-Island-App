@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.auth.LoginUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val saveInSharedPreference: SaveInSharedPreference,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _loginState = MutableStateFlow<LoginState>(LoginState.Init)
@@ -59,5 +61,8 @@ class LoginViewModel @Inject constructor(
             true -> { _loginState.value = LoginState.IsLoading(true) }
             false -> { _loginState.value = LoginState.IsLoading(false) }
         }
+    }
+    fun <T> saveInSP(key: String, data: T) {
+        saveInSharedPreference(key, data)
     }
 }
