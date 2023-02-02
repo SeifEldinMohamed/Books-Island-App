@@ -12,6 +12,8 @@ class Constants {
 
         // shared preference keys
         const val USER_KEY = "user"
+        const val IS_FIRST_TIME_KEY = "is_first_time"
+        const val IS_LOGGED_IN_KEY = "is_logged_in"
 
         //
         const val SELL_ADVERTISEMENT_COLLECTION = "sell advertisements"

@@ -100,5 +100,13 @@ class AuthRepositoryImp @Inject constructor(
     override fun getFirebaseCurrentUser(): FirebaseUser? {
         return auth.currentUser
     }
+
+    override fun <T> saveInSharedPreference(key: String, data: T) {
+        sharedPrefs.put(key, data)
+    }
+
+    override fun <T> getFromSharedPreference(key: String, clazz: Class<T>): T {
+        return sharedPrefs.get(key, clazz)
+    }
 }
 // val user:User = sharedPrefs.get(USER_KEY, User::class.java)

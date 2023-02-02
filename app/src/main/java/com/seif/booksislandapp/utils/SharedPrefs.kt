@@ -8,7 +8,7 @@ import androidx.annotation.Keep
 @Keep
 class SharedPrefs(context: Context) {
     companion object {
-        private const val PREF = "MyAppPref"
+        private const val PREF = "BooksIslandPreference"
     }
 
     private val sharedPref: SharedPreferences =

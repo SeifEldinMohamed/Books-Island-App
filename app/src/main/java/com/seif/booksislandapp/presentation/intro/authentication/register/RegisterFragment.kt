@@ -17,6 +17,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
+import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
 import com.seif.booksislandapp.utils.createAlertDialog
 import com.seif.booksislandapp.utils.handleNoInternetConnectionState
 import com.seif.booksislandapp.utils.showErrorSnackBar
@@ -59,6 +60,7 @@ class RegisterFragment : Fragment() {
                     RegisterState.Init -> Unit
                     is RegisterState.IsLoading -> handleLoadingState(it.isLoading)
                     is RegisterState.RegisteredSuccessfully -> {
+                        registerViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
                         Intent(requireActivity(), HomeActivity::class.java).also { intent ->
                             startActivity(intent)
                             requireActivity().finish()
