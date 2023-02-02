@@ -24,14 +24,14 @@
         android:text="@string/hello_heba"
         android:fontFamily="@font/roboto_regular"
         android:textColor="@color/flat_grey_dark_2"
-        android:textSize="@dimen/_25sdp"
+        android:textSize="@dimen/_25ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </com.google.android.material.textview.MaterialTextView>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_wellcom"
+        android:id="@+id/tv_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_wellcom">
+        app:layout_constraintTop_toBottomOf="@+id/tv_welcome">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_donate"
