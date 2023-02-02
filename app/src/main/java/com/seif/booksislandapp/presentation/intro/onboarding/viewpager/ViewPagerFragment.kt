@@ -14,14 +14,15 @@ import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
 
 class ViewPagerFragment : Fragment() {
-    private lateinit var binding: FragmentViewPagerBinding
+    private var _binding: FragmentViewPagerBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewPager: ViewPager2
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentViewPagerBinding.inflate(inflater, container, false)
+        _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -83,5 +84,11 @@ class ViewPagerFragment : Fragment() {
                 binding.btnNext.show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewPager.adapter = null
+        _binding = null
     }
 }
