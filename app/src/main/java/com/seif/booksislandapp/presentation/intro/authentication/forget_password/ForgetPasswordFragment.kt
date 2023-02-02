@@ -13,12 +13,12 @@ import com.seif.booksislandapp.databinding.FragmentForgetPasswordBinding
 import com.seif.booksislandapp.presentation.intro.authentication.forget_password.viewmodel.ForgetPasswordState
 import com.seif.booksislandapp.presentation.intro.authentication.forget_password.viewmodel.ForgetPasswordViewModel
 import com.seif.booksislandapp.utils.createAlertDialog
-import com.seif.booksislandapp.utils.showSnackBar
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
-import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
 class ForgetPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgetPasswordBinding
@@ -62,45 +62,13 @@ class ForgetPasswordFragment : Fragment() {
                         handleErrorState(it.message)
                     }
                     is ForgetPasswordState.NoInternetConnection -> {
-                        handleNoInternetConnectionState()
+                        handleNoInternetConnectionState(binding.root)
                     }
                 }
             }
         }
     }
-    private fun handleNoInternetConnectionState() {
-        NoInternetDialogPendulum.Builder(
-            requireActivity(),
-            lifecycle
-        ).apply {
-            dialogProperties.apply {
-                connectionCallback = object : ConnectionCallback { // Optional
-                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
-                        // ...
-                        when (hasActiveConnection) {
-                            true -> binding.root.showSnackBar("Internet connection is back")
-                            false -> Unit
-                        }
-                    }
-                }
 
-                cancelable = true // Optional
-                noInternetConnectionTitle = "No Internet" // Optional
-                noInternetConnectionMessage =
-                    "Check your Internet connection and try again." // Optional
-                showInternetOnButtons = true // Optional
-                pleaseTurnOnText = "Please turn on" // Optional
-                wifiOnButtonText = "Wifi" // Optional
-                mobileDataOnButtonText = "Mobile data" // Optional
-
-                onAirplaneModeTitle = "No Internet" // Optional
-                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
-                pleaseTurnOffText = "Please turn off" // Optional
-                airplaneModeOffButtonText = "Airplane mode" // Optional
-                showAirplaneModeOffButtons = true // Optional
-            }
-        }.build()
-    }
     private fun startLoadingDialog() {
         dialog.create()
         dialog.show()
@@ -110,7 +78,7 @@ class ForgetPasswordFragment : Fragment() {
         dialog.dismiss()
     }
     private fun handleErrorState(message: String) {
-        binding.root.showSnackBar(message)
+        binding.root.showErrorSnackBar(message)
     }
 
     private fun handleLoadingState(isLoading: Boolean) {

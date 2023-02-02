@@ -15,11 +15,11 @@ import com.seif.booksislandapp.databinding.FragmentLoginBinding
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginState
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginViewModel
-import com.seif.booksislandapp.utils.showSnackBar
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
-import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -64,7 +64,7 @@ class LoginFragment : Fragment() {
                         handleErrorState(it.message)
                     }
                     is LoginState.NoInternetConnection -> {
-                        handleNoInternetConnectionState()
+                        handleNoInternetConnectionState(binding.root)
                     }
                 }
             }
@@ -75,39 +75,7 @@ class LoginFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         loginViewModel.login(email, password)
     }
-    private fun handleNoInternetConnectionState() {
-        NoInternetDialogPendulum.Builder(
-            requireActivity(),
-            lifecycle
-        ).apply {
-            dialogProperties.apply {
-                connectionCallback = object : ConnectionCallback { // Optional
-                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
-                        // ...
-                        when (hasActiveConnection) {
-                            true -> binding.root.showSnackBar("Internet connection is back")
-                            false -> Unit
-                        }
-                    }
-                }
 
-                cancelable = true // Optional
-                noInternetConnectionTitle = "No Internet" // Optional
-                noInternetConnectionMessage =
-                    "Check your Internet connection and try again." // Optional
-                showInternetOnButtons = true // Optional
-                pleaseTurnOnText = "Please turn on" // Optional
-                wifiOnButtonText = "Wifi" // Optional
-                mobileDataOnButtonText = "Mobile data" // Optional
-
-                onAirplaneModeTitle = "No Internet" // Optional
-                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
-                pleaseTurnOffText = "Please turn off" // Optional
-                airplaneModeOffButtonText = "Airplane mode" // Optional
-                showAirplaneModeOffButtons = true // Optional
-            }
-        }.build()
-    }
     private fun startLoadingDialog() {
         dialog.create()
         dialog.show()
@@ -117,7 +85,7 @@ class LoginFragment : Fragment() {
         dialog.dismiss()
     }
     private fun handleErrorState(message: String) {
-        binding.root.showSnackBar(message)
+        binding.root.showErrorSnackBar(message)
     }
 
     private fun handleLoadingState(isLoading: Boolean) {

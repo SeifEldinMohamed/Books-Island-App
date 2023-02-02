@@ -8,6 +8,7 @@ class Constants {
         const val USER_FireStore_Collection = "users"
         const val Governments_FireStore_Collection = "governments"
         const val qesm_FireStore_Collection = "Districts"
+        const val FIREBASE_STORAGE_ROOT_DIRECTORY = "app"
 
         // shared preference keys
         const val USER_KEY = "user"
