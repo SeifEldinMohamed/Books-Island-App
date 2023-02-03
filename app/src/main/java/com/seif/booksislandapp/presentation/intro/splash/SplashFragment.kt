@@ -14,8 +14,12 @@ import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentSplashBinding
 import com.seif.booksislandapp.presentation.home.HomeActivity
+import com.seif.booksislandapp.utils.Constants.Companion.ANIMATION_DURATION
+import com.seif.booksislandapp.utils.Constants.Companion.CURRENT_PROGRESS_ANIMATION
+import com.seif.booksislandapp.utils.Constants.Companion.HANDLER_DELAY
 import com.seif.booksislandapp.utils.Constants.Companion.IS_FIRST_TIME_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.MAX_PROGRESS_BAR
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -38,13 +42,9 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // splash screen
         Handler(Looper.getMainLooper()).postDelayed({
-          handleNextNavigation()
-        }, 2000)
-        binding.progressBarSplash.max = 1000
-        val currentProgress = 1500
-        ObjectAnimator.ofInt(binding.progressBarSplash, "progress", currentProgress)
-            .setDuration(1000)
-            .start()
+            handleNextNavigation()
+        }, HANDLER_DELAY)
+        animateProgressBar()
     }
 
     private fun handleNextNavigation() {
@@ -65,6 +65,13 @@ class SplashFragment : Fragment() {
                 findNavController().navigate(R.id.action_splashFragment_to_introFragment)
             }
         }
+    }
+
+    private fun animateProgressBar() {
+        binding.progressBarSplash.max = MAX_PROGRESS_BAR
+        ObjectAnimator.ofInt(binding.progressBarSplash, "progress", CURRENT_PROGRESS_ANIMATION)
+            .setDuration(ANIMATION_DURATION)
+            .start()
     }
 
     override fun onDestroyView() {

@@ -17,7 +17,11 @@ class Constants {
 
         //
         const val SELL_ADVERTISEMENT_COLLECTION = "sell advertisements"
-
         const val MAX_UPLOADED_IMAGES_NUMBER = 5
+        // splash
+        const val HANDLER_DELAY = 2000L
+        const val MAX_PROGRESS_BAR = 1000
+        const val CURRENT_PROGRESS_ANIMATION = 1500
+        const val ANIMATION_DURATION = 1000L
     }
 }
