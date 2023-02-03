@@ -89,14 +89,20 @@
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/drawable/splash_image.xml" value="0.1635" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_home.xml" value="0.264" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/activity_intro.xml" value="0.25" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/buy_donate_adv_item.xml" value="0.24615384615384617" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/buy_item_layout.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/category_list.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/category_list_item.xml" value="0.18671875" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_ad_details.xml" value="0.25" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_buy.xml" value="0.264" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_forget_password.xml" value="0.1" />
-        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_home.xml" value="0.1" />
-        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_intro.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_home.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_intro.xml" value="0.1" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_login.xml" value="0.264" />
-        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_my_ads.xml" value="0.2" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/fragment_register.xml" value="0.264" />
+        <entry key="..\:/Users/dell/AndroidStudioProjects/Books-Island-App/app/src/main/res/layout/myads_item.xml" value="0.24895833333333334" />
       </map>
     </option>
   </component>

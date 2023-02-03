@@ -131,4 +131,12 @@
     <string name="donation">Donation</string>
     <string name="exchange">Exchange</string>
     <string name="bid">Bid</string>
+    <string name="logout">Logout</string>
+    <string name="heba_adel">Heba Adel</string>
+    <!--profile-->
+    <string name="cairo">Cairo</string>
+    <string name="october">october</string>
+    <string name="update">Update</string>
+    <!--my ads-->
+    <string name="biding">Biding</string>
 </resources>
