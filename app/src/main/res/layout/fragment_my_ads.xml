@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_myads"
+        android:id="@+id/rv_my_ads"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_margin="@dimen/_10sdp"
@@ -37,7 +37,7 @@
         android:paddingHorizontal="@dimen/_4sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_myads"
+        app:layout_constraintTop_toBottomOf="@+id/rv_my_ads"
         tools:itemCount="2"
         tools:listitem="@layout/myads_item" />
 
