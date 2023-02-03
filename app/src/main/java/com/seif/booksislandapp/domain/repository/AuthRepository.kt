@@ -2,6 +2,8 @@ package com.seif.booksislandapp.domain.repository
 
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.auth.District
+import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.utils.Resource
 
 interface AuthRepository {
@@ -12,4 +14,6 @@ interface AuthRepository {
     fun getFirebaseCurrentUser(): FirebaseUser?
     fun <T> saveInSharedPreference(key: String, data: T)
     fun <T> getFromSharedPreference(key: String, clazz: Class<T>): T
+    suspend fun getGovernorates(): Resource<List<Governorate>, String>
+    suspend fun getDistrictsInGovernorate(governorateId: String): Resource<List<District>, String>
 }
