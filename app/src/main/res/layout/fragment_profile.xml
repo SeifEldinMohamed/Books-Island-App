@@ -48,7 +48,7 @@
         tools:ignore="TextContrastCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/constraintLayout4"
         android:layout_width="@dimen/_300sdp"
         android:layout_height="@dimen/_400sdp"
         android:layout_marginTop="@dimen/_70sdp"
@@ -206,7 +206,7 @@
         android:id="@+id/constraintLayout5"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_90sdp"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
 
@@ -219,7 +219,7 @@
         android:layout_marginTop="@dimen/_70sdp"
         android:contentDescription="@string/photo"
         android:src="@drawable/woman_avatar_2"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout5"
         tools:ignore="MissingConstraints" />
