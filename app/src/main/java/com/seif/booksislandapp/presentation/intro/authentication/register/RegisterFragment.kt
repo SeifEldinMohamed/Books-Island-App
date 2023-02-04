@@ -17,12 +17,12 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
+import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
 import com.seif.booksislandapp.utils.createAlertDialog
-import com.seif.booksislandapp.utils.showSnackBar
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
-import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -60,6 +60,7 @@ class RegisterFragment : Fragment() {
                     RegisterState.Init -> Unit
                     is RegisterState.IsLoading -> handleLoadingState(it.isLoading)
                     is RegisterState.RegisteredSuccessfully -> {
+                        registerViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
                         Intent(requireActivity(), HomeActivity::class.java).also { intent ->
                             startActivity(intent)
                             requireActivity().finish()
@@ -69,7 +70,7 @@ class RegisterFragment : Fragment() {
                         handleErrorState(it.message)
                     }
                     is RegisterState.NoInternetConnection -> {
-                        handleNoInternetConnectionState()
+                        handleNoInternetConnectionState(binding.root)
                     }
                 }
             }
@@ -77,7 +78,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun handleErrorState(message: String) {
-        binding.root.showSnackBar(message)
+        binding.root.showErrorSnackBar(message)
     }
 
     private fun handleLoadingState(isLoading: Boolean) {
@@ -87,40 +88,6 @@ class RegisterFragment : Fragment() {
             }
             false -> dismissLoadingDialog()
         }
-    }
-
-    private fun handleNoInternetConnectionState() {
-        NoInternetDialogPendulum.Builder(
-            requireActivity(),
-            lifecycle
-        ).apply {
-            dialogProperties.apply {
-                connectionCallback = object : ConnectionCallback { // Optional
-                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
-                        // ...
-                        when (hasActiveConnection) {
-                            true -> binding.root.showSnackBar("Internet connection is back")
-                            false -> Unit
-                        }
-                    }
-                }
-
-                cancelable = true // Optional
-                noInternetConnectionTitle = "No Internet" // Optional
-                noInternetConnectionMessage =
-                    "Check your Internet connection and try again." // Optional
-                showInternetOnButtons = true // Optional
-                pleaseTurnOnText = "Please turn on" // Optional
-                wifiOnButtonText = "Wifi" // Optional
-                mobileDataOnButtonText = "Mobile data" // Optional
-
-                onAirplaneModeTitle = "No Internet" // Optional
-                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
-                pleaseTurnOffText = "Please turn off" // Optional
-                airplaneModeOffButtonText = "Airplane mode" // Optional
-                showAirplaneModeOffButtons = true // Optional
-            }
-        }.build()
     }
 
     private fun registerUser() {

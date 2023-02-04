@@ -123,6 +123,7 @@
 
     <!--forgetPassword-->
     <string name="ForgetPassword">ForgetPassword</string>
+    <string name="no_internet">A network error (such as timeout, interrupted connection or unreachable host) has occurred.</string>
     <string name="photo">photo</string>
     <string name="forgetyourpassword">Forget Your Password?</string>
     <string name="send_message">send_message</string>

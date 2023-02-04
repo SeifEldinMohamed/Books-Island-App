@@ -20,7 +20,8 @@
     <color name="literature_color">#0247FE</color>
     <color name="historical_color">@color/primary</color>
     <color name="religious_color">#FB9902</color>
-
-    <color name="scientific_color">#FB9902</color>
-    <color name="political_color">#FB9902</color>
+    <color name="scientific_color">#3D01A4</color>
+    <color name="political_color">#A7194B</color>
+    <color name="money_business_color">#66B032</color>
+    <color name="self_development_color">#FABC02</color>
 </resources>

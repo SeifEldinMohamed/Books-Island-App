@@ -1,5 +1,7 @@
 package com.seif.booksislandapp.domain.model
 
+import kotlin.String
+
 data class User(
     var id: String,
     val avatarImage: String,

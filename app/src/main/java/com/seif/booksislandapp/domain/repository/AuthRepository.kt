@@ -10,4 +10,6 @@ interface AuthRepository {
     suspend fun forgetPassword(email: String): Resource<String, String>
     suspend fun logout(): Resource<String, String>
     fun getFirebaseCurrentUser(): FirebaseUser?
+    fun <T> saveInSharedPreference(key: String, data: T)
+    fun <T> getFromSharedPreference(key: String, clazz: Class<T>): T
 }

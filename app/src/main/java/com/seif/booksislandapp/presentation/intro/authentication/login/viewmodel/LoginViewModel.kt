@@ -1,10 +1,9 @@
-package com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel
+package com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.usecase.usecase.auth.RegisterUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.auth.LoginUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -17,17 +16,17 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase,
+class LoginViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase,
     private val saveInSharedPreference: SaveInSharedPreference,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
-    private var _registerState = MutableStateFlow<RegisterState>(RegisterState.Init)
-    val registerState = _registerState.asStateFlow()
-    fun register(user: User) {
+    private var _loginState = MutableStateFlow<LoginState>(LoginState.Init)
+    val loginState = _loginState.asStateFlow()
+    fun login(email: String, password: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            registerUseCase.invoke(user).let {
+            loginUseCase.invoke(email, password).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -38,7 +37,7 @@ class RegisterViewModel @Inject constructor(
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
-                            _registerState.value = RegisterState.RegisteredSuccessfully(it.data)
+                            _loginState.value = LoginState.LoginSuccessfully(it.data)
                         }
                     }
                 }
@@ -46,21 +45,21 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun setLoading(status: Boolean) {
-        when (status) {
-            true -> { _registerState.value = RegisterState.IsLoading(true) }
-            false -> { _registerState.value = RegisterState.IsLoading(false) }
-        }
-    }
-
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _registerState.value = RegisterState.NoInternetConnection(message)
+                _loginState.value = LoginState.NoInternetConnection(message)
             }
             else -> {
-                _registerState.value = RegisterState.ShowError(message)
+                _loginState.value = LoginState.ShowError(message)
             }
+        }
+    }
+
+    private fun setLoading(status: Boolean) {
+        when (status) {
+            true -> { _loginState.value = LoginState.IsLoading(true) }
+            false -> { _loginState.value = LoginState.IsLoading(false) }
         }
     }
     fun <T> saveInSP(key: String, data: T) {

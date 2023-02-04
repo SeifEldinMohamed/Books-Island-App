@@ -18,9 +18,13 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
+import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.Book
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -44,8 +48,14 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
-fun View.showSnackBar(message: String) {
-    Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
+fun View.showSuccessSnackBar(message: String) {
+    Snackify.success(this, message, Snackify.LENGTH_SHORT).show()
+}
+fun View.showErrorSnackBar(message: String) {
+    Snackify.error(this, message, Snackify.LENGTH_SHORT).show()
+}
+fun View.showInfoSnackBar(message: String) {
+    Snackify.info(this, message, Snackify.LENGTH_SHORT).show()
 }
 
 fun Fragment.toast(msg: String?) {
@@ -173,4 +183,75 @@ fun ScrollView.scrollToBottom() {
     val bottom = lastChild.bottom + paddingBottom
     val delta = bottom - (scrollY + height)
     smoothScrollBy(0, delta)
+}
+
+fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
+    return if (this.ownerId.isEmpty()) {
+        Resource.Error("User is not LoggedIn !")
+    } else if (this.publishTime.toString().isEmpty()) {
+        Resource.Error("problem in Phone Time !")
+    } else if (this.location.isEmpty()) {
+        Resource.Error("Location Can't be Empty")
+    } else if (this.status.toString().isEmpty()) {
+        Resource.Error("Status Can't be Empty")
+    } else if (this.price.isEmpty()) {
+        Resource.Error("Price Can't be Empty")
+    } else {
+        return when (val result = this.book.validateBookData()) {
+            is Resource.Error -> Resource.Error(result.message)
+            is Resource.Success -> Resource.Success(result.data)
+        }
+    }
+}
+
+private fun Book.validateBookData(): Resource<String, String> {
+    return if (this.author.isEmpty()) {
+        Resource.Error("Please add the author of the book!")
+    } else if (this.title.isEmpty()) {
+        Resource.Error("Please add the title of the book!")
+    } else if (this.category.isEmpty()) {
+        Resource.Error("Please choose the category of the book!")
+    } else if (this.condition == null) {
+        Resource.Error("Please choose the condition of the book!")
+    } else if (this.description.isEmpty()) {
+        Resource.Error("Please add the description of the book!")
+    } else if (this.images.isEmpty()) {
+        Resource.Error("Please add at least one image for the book!")
+    } else {
+        Resource.Success("All Book Data is Valid")
+    }
+}
+
+fun Fragment.handleNoInternetConnectionState(view: View) {
+    NoInternetDialogPendulum.Builder(
+        requireActivity(),
+        lifecycle
+    ).apply {
+        dialogProperties.apply {
+            connectionCallback = object : ConnectionCallback { // Optional
+                override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                    // ...
+                    when (hasActiveConnection) {
+                        true -> view.showInfoSnackBar("Internet connection is back")
+                        false -> Unit
+                    }
+                }
+            }
+
+            cancelable = true // Optional
+            noInternetConnectionTitle = "No Internet" // Optional
+            noInternetConnectionMessage =
+                "Check your Internet connection and try again." // Optional
+            showInternetOnButtons = true // Optional
+            pleaseTurnOnText = "Please turn on" // Optional
+            wifiOnButtonText = "Wifi" // Optional
+            mobileDataOnButtonText = "Mobile data" // Optional
+
+            onAirplaneModeTitle = "No Internet" // Optional
+            onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+            pleaseTurnOffText = "Please turn off" // Optional
+            airplaneModeOffButtonText = "Airplane mode" // Optional
+            showAirplaneModeOffButtons = true // Optional
+        }
+    }.build()
 }

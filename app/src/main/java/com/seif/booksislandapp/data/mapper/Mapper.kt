@@ -1,9 +1,9 @@
 package com.seif.booksislandapp.data.mapper
 
-import com.seif.booksislandapp.data.remote.dto.AdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
-import com.seif.booksislandapp.domain.model.Advertisement
+import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -20,34 +20,36 @@ fun User.toUserDto(): UserDto {
 
 fun UserDto.toUser(): User {
     return User(
-        id = this.id,
-        avatarImage = this.avatarImage,
-        username = this.username,
-        email = this.email,
-        password = this.password,
-        governorate = this.governorate,
-        district = this.district,
-        gender = this.gender
+        id = id,
+        avatarImage = avatarImage,
+        username = username,
+        email = email,
+        password = password,
+        governorate = governorate,
+        district = district,
+        gender = gender
     )
 }
 
-fun AdvertisementDto.toAdvertisement(): Advertisement {
-    return Advertisement(
+fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
+    return SellAdvertisement(
         id = id,
-        owner = owner,
+        ownerId = ownerId,
         book = book,
-        isDonateAdv = isDonateAdv,
         status = status,
-        publishTime = publishTime
+        publishTime = publishTime,
+        location = location,
+        price = price
     )
 }
-fun Advertisement.toAdvertisementDto(): AdvertisementDto {
-    return AdvertisementDto(
+fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
+    return SellAdvertisementDto(
         id = id,
-        owner = owner,
+        ownerId = ownerId,
         book = book,
-        isDonateAdv = isDonateAdv,
         status = status,
-        publishTime = publishTime
+        publishTime = publishTime,
+        location = location,
+        price = price
     )
 }
