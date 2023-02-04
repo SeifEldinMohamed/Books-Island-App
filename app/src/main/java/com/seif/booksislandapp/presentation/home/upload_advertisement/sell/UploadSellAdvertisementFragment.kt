@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,10 +27,9 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.Up
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import com.google.firebase.auth.FirebaseUser
-import com.musfickjamil.snackify.Snackify
-import com.seif.booksislandapp.domain.model.AdvStatus
-import com.seif.booksislandapp.domain.model.Book
-import com.seif.booksislandapp.domain.model.BookCondition
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.book.BookCondition
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.utils.*
@@ -184,11 +184,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                     is UploadState.NoInternetConnection -> handleNoInternetConnectionState(binding.root)
                     is UploadState.ShowError -> handleErrorState(it.message)
                     is UploadState.UploadedSuccessfully -> {
-                        Snackify.success(
-                            binding.root,
-                            "Uploaded Successfully",
-                            Snackify.LENGTH_SHORT
-                        ).show()
+                        binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
                 }
@@ -206,8 +202,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun handleErrorState(message: String) {
-        // binding.root.showSnackBar(message)
-        Snackify.error(binding.root, message, Snackify.LENGTH_SHORT).show()
+        binding.root.showErrorSnackBar(message)
     }
 
     private fun prepareSellAdvertisement(): SellAdvertisement {
