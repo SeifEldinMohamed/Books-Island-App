@@ -8,7 +8,7 @@
     tools:context=".presentation.home.profile.ProfileFragment">
 
     <TextView
-        android:id="@+id/tv_Profile"
+        android:id="@+id/tv_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
@@ -42,9 +42,9 @@
         android:textColor="@color/black_60"
         android:textSize="@dimen/_20ssp"
         app:drawableEndCompat="@drawable/ic_logout"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_Profile"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_Profile"
+        app:layout_constraintTop_toTopOf="@+id/tv_profile"
         tools:ignore="TextContrastCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,7 +54,7 @@
         android:layout_marginTop="@dimen/_70sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_Profile"
+        app:layout_constraintTop_toBottomOf="@+id/tv_profile"
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.card.MaterialCardView
