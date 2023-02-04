@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/til_email">
 
                 <AutoCompleteTextView
-                    android:id="@+id/ac_governorate"
+                    android:id="@+id/ac_governorates"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -110,20 +110,20 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_qusem"
+                android:id="@+id/til_districts"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_25sdp"
-                android:hint="@string/chooseQuesm"
+                android:hint="@string/chooseDistrict"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_governorate">
 
                 <AutoCompleteTextView
-                    android:id="@+id/ac_quesm"
+                    android:id="@+id/ac_districts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -143,7 +143,7 @@
                 app:endIconTint="@color/primary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_qusem"
+                app:layout_constraintTop_toBottomOf="@+id/til_districts"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/primary"
                 app:startIconDrawable="@drawable/ic_password_line"
@@ -221,27 +221,27 @@
                     tools:ignore="MissingConstraints,RtlSymmetry" />
             </RadioGroup>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_25sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/custom_button"
                 android:text="@string/register"
+                android:textSize="@dimen/_14ssp"
                 android:textAllCaps="false"
+                android:paddingVertical="@dimen/_5sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rg_gender"
                 tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck"
-
-
                 />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

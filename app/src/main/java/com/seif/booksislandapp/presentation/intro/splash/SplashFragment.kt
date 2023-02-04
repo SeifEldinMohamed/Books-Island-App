@@ -25,7 +25,9 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class SplashFragment : Fragment() {
-    lateinit var binding: FragmentSplashBinding
+    private var _binding: FragmentSplashBinding? = null
+    private val binding get() = _binding!!
+
     private val splashViewModel: SplashViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +36,7 @@ class SplashFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         activity?.window?.statusBarColor = requireActivity().getColor(R.color.primary)
-        binding = FragmentSplashBinding.inflate(inflater, container, false)
+        _binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -76,6 +78,7 @@ class SplashFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         activity?.window?.statusBarColor = requireActivity().getColor(R.color.white)
     }
 }
