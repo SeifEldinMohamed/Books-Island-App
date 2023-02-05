@@ -4,14 +4,25 @@ import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.data.mapper.toDistricts
+import com.seif.booksislandapp.data.mapper.toGovernorate
 import com.seif.booksislandapp.data.mapper.toUserDto
+import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
+import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.auth.District
+import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.repository.AuthRepository
 import com.seif.booksislandapp.utils.*
-import com.seif.booksislandapp.utils.Constants.Companion.USER_FireStore_Collection
-import com.seif.booksislandapp.utils.Constants.Companion.USER_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.DISTRICTS_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.GOVERNORATES_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.USERNAME_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_AVATAR_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import javax.inject.Inject
@@ -40,9 +51,7 @@ class AuthRepositoryImp @Inject constructor(
                 is Resource.Error -> Resource.Error(result.message)
                 is Resource.Success -> {
                     // save user data in shared preference
-                    val userJson = Gson().toJson(user)
-                    sharedPrefs.put(USER_KEY, userJson)
-
+                    saveUserData(user)
                     Resource.Success(result.data)
                 }
             }
@@ -51,9 +60,17 @@ class AuthRepositoryImp @Inject constructor(
         }
     }
 
+    private fun saveUserData(user: User) {
+        sharedPrefs.put(USER_ID_KEY, user.id)
+        sharedPrefs.put(USERNAME_KEY, user.username)
+        sharedPrefs.put(USER_GOVERNORATE_KEY, user.governorate)
+        sharedPrefs.put(USER_DISTRICT_KEY, user.district)
+        sharedPrefs.put(USER_AVATAR_KEY, user.avatarImage)
+    }
+
     private suspend fun addUser(user: User): Resource<String, String> {
         return try {
-            firestore.collection(USER_FireStore_Collection).document(user.id).set(user.toUserDto())
+            firestore.collection(USER_FIRESTORE_COLLECTION).document(user.id).set(user.toUserDto())
                 .await()
             Resource.Success(resourceProvider.string(R.string.user_added_successfully))
         } catch (e: Exception) {
@@ -107,6 +124,45 @@ class AuthRepositoryImp @Inject constructor(
 
     override fun <T> getFromSharedPreference(key: String, clazz: Class<T>): T {
         return sharedPrefs.get(key, clazz)
+    }
+
+    override suspend fun getGovernorates(): Resource<List<Governorate>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            val querySnapShot = firestore.collection(GOVERNORATES_FIRESTORE_COLLECTION)
+                .orderBy("name").get()
+                .await()
+            val governorates = arrayListOf<GovernorateDto>()
+            for (document in querySnapShot) {
+                val governorate = document.toObject(GovernorateDto::class.java)
+                governorates.add(governorate)
+            }
+            Resource.Success(data = governorates.map { it.toGovernorate() })
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getDistrictsInGovernorate(governorateId: String): Resource<List<District>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            val querySnapShot = firestore.collection(DISTRICTS_FIRESTORE_COLLECTION)
+                .whereEqualTo("governorateId", governorateId)
+                .orderBy("name").get()
+                .await()
+            val districts = arrayListOf<DistrictDto>()
+            for (document in querySnapShot) {
+                val district = document.toObject(DistrictDto::class.java)
+                districts.add(district)
+            }
+            Resource.Success(data = districts.map { it.toDistricts() })
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
     }
 }
 // val user:User = sharedPrefs.get(USER_KEY, User::class.java)

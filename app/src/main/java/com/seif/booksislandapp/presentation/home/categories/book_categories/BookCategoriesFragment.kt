@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentBookCategoriesBinding
-import com.seif.booksislandapp.domain.model.BookCategory
+import com.seif.booksislandapp.domain.model.book.BookCategory
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.categories.book_categories.adapter.BookCategoriesAdapter
 import com.seif.booksislandapp.presentation.home.categories.book_categories.adapter.OnCategoryItemClick

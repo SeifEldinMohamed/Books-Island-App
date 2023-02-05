@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.model
+package com.seif.booksislandapp.domain.model.book
 
 import androidx.annotation.ColorRes
 import kotlin.String

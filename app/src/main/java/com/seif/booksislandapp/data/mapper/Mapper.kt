@@ -2,8 +2,12 @@ package com.seif.booksislandapp.data.mapper
 
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
+import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.auth.District
+import com.seif.booksislandapp.domain.model.auth.Governorate
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -51,5 +55,26 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
         publishTime = publishTime,
         location = location,
         price = price
+    )
+}
+
+fun GovernorateDto.toGovernorate(): Governorate {
+    return Governorate(
+        id = id,
+        name = name
+    )
+}
+
+fun Governorate.toGovernorateDto(): GovernorateDto {
+    return GovernorateDto(
+        id = id,
+        name = name
+    )
+}
+fun DistrictDto.toDistricts(): District {
+    return District(
+        id = id,
+        name = name,
+        governorateId = governorateId
     )
 }

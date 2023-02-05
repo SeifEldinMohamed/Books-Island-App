@@ -1,7 +1,6 @@
 package com.seif.booksislandapp.domain.model.adv
 
-import com.seif.booksislandapp.domain.model.AdvStatus
-import com.seif.booksislandapp.domain.model.Book
+import com.seif.booksislandapp.domain.model.book.Book
 import java.util.*
 
 abstract class Advertisement {

@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.usecase.usecase.auth.GetDistrictsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.auth.GetGovernoratesUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.RegisterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
 import com.seif.booksislandapp.utils.Resource
@@ -20,10 +22,61 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val saveInSharedPreference: SaveInSharedPreference,
+    private val getGovernoratesUseCase: GetGovernoratesUseCase,
+    private val getDistrictsUseCase: GetDistrictsUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _registerState = MutableStateFlow<RegisterState>(RegisterState.Init)
     val registerState = _registerState.asStateFlow()
+
+    init {
+        getGovernorates()
+    }
+
+    fun getGovernorates() {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getGovernoratesUseCase().let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _registerState.value = RegisterState.GetGovernoratesSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getDistricts(governorateId: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getDistrictsUseCase(governorateId = governorateId).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _registerState.value = RegisterState.GetDistrictsSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
     fun register(user: User) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,8 +91,8 @@ class RegisterViewModel @Inject constructor(
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
-                            _registerState.value = RegisterState.RegisteredSuccessfully(it.data)
                         }
+                        _registerState.value = RegisterState.RegisteredSuccessfully(it.data)
                     }
                 }
             }
@@ -48,8 +101,12 @@ class RegisterViewModel @Inject constructor(
 
     private fun setLoading(status: Boolean) {
         when (status) {
-            true -> { _registerState.value = RegisterState.IsLoading(true) }
-            false -> { _registerState.value = RegisterState.IsLoading(false) }
+            true -> {
+                _registerState.value = RegisterState.IsLoading(true)
+            }
+            false -> {
+                _registerState.value = RegisterState.IsLoading(false)
+            }
         }
     }
 
@@ -63,6 +120,7 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
+
     fun <T> saveInSP(key: String, data: T) {
         saveInSharedPreference(key, data)
     }

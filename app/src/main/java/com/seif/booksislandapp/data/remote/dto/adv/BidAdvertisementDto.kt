@@ -1,7 +1,7 @@
 package com.seif.booksislandapp.data.remote.dto.adv
 
-import com.seif.booksislandapp.domain.model.AdvStatus
-import com.seif.booksislandapp.domain.model.Book
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.book.Book
 import java.util.*
 
 data class BidAdvertisementDto(

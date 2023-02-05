@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.utils.*
-import com.seif.booksislandapp.utils.Constants.Companion.USER_FireStore_Collection
+import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
@@ -86,7 +86,7 @@ class AuthRepositoryImpTest {
             }
             firestore.stub {
                 on {
-                    collection(USER_FireStore_Collection)
+                    collection(USER_FIRESTORE_COLLECTION)
                 } doReturn collectionReference
             }
             // internet connection
@@ -102,7 +102,7 @@ class AuthRepositoryImpTest {
             // Assert
             verify(firebaseAuth, times(1)).createUserWithEmailAndPassword(any(), any())
             verify(firestore, times(1)).collection(any())
-            verify(sharedPrefs, times(1)).put(anyString(), anyString())
+            verify(sharedPrefs, times(5)).put(anyString(), anyString()) // to save user data
             assertThat(actual).isEqualTo(expected)
         }
 
