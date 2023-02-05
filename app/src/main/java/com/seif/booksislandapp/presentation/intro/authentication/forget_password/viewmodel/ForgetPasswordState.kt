@@ -1,6 +1,6 @@
 package com.seif.booksislandapp.presentation.intro.authentication.forget_password.viewmodel
 
-sealed class ForgetPasswordState() {
+sealed class ForgetPasswordState {
     object Init : ForgetPasswordState()
     data class IsLoading(val isLoading: Boolean) : ForgetPasswordState()
     data class ShowError(val message: String) : ForgetPasswordState()
