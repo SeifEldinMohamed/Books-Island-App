@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -29,7 +28,6 @@ import timber.log.Timber
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.book.Book
-import com.seif.booksislandapp.domain.model.book.BookCondition
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.utils.*
@@ -206,10 +204,10 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun prepareSellAdvertisement(): SellAdvertisement {
-        val bookCondition: BookCondition? =
+        val isUsed: Boolean? =
             when (binding.acCondition.text.toString()) {
-                "New" -> BookCondition.New
-                "Used" -> BookCondition.Used
+                "New" -> false
+                "Used" -> true
                 else -> null
             }
         val book = Book(
@@ -218,7 +216,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             title = binding.etTitle.text.toString(),
             author = binding.etAuthor.text.toString(),
             category = categoryName,
-            condition = bookCondition,
+            isUsed = isUsed,
             description = binding.etDescription.text.toString()
         )
         return SellAdvertisement(
