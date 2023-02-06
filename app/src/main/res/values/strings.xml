@@ -139,4 +139,23 @@
     <string name="october">october</string>
     <string name="update">Update</string>
     <string name="biding">Biding</string>
+    <!--DetailsFragment-->
+    <string name="Title">النموذج الرباعي للتدفقات النقدية</string>
+    <string name="Price">120 EGP</string>
+    <string name="maadi_cairo">Maadi, Cairo</string>
+    <string name="_11_11_2022">11/11/2022</string>
+    <string name="about_the_book">About The Book</string>
+    <string name="paragraph">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It advocates the importance of financial literacy, financial independence and building wealth through investing in assets, real estate investing, starting and owning businesses, as well as increasing one\'s financial intelligence</string>
+    <string name="author_name">Robert T. Kiyosaki and Sharon Lechter</string>
+    <string name="used">Used</string>
+    <string name="safety">Your Safety Comes First !</string>
+    <string name="instructions1">Never go alone to meet a buyer / seller, always take someone with you.</string>
+    <string name="instructions2">Only meet in public / crowded places for example metro stations and malls.</string>
+    <string name="instructions3">Check and inspect the product properly before purchasing it.</string>
+    <string name="details">Details</string>
+    <string name="instructions4">Never pay anything in advance or transfer money before inspecting the product.</string>
+    <string name="condition_">Condition :</string>
+    <string name="author_">Author :</string>
+    <string name="hazem_khaled">Hazem Khaled</string>
+    <string name="related_ads">Related Ads</string>
 </resources>

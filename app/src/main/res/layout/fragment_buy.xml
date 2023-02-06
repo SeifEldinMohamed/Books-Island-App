@@ -105,7 +105,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="SpeakableTextPresentCheck,RedundantDescriptionCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -115,10 +114,8 @@
         android:paddingVertical="@dimen/_6sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-        app:layout_constraintVertical_bias="1.0"
         tools:itemCount="10"
         tools:listitem="@layout/buy_donate_adv_item" />
 

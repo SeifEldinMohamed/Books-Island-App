@@ -19,5 +19,4 @@ class SplashViewModel @Inject constructor(
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreference(key, clazz)
     }
-
 }
