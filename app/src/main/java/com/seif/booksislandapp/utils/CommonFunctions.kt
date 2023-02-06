@@ -20,7 +20,7 @@ import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.model.Book
+import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -230,7 +230,6 @@ fun Fragment.handleNoInternetConnectionState(view: View) {
         dialogProperties.apply {
             connectionCallback = object : ConnectionCallback { // Optional
                 override fun hasActiveConnection(hasActiveConnection: Boolean) {
-                    // ...
                     when (hasActiveConnection) {
                         true -> view.showInfoSnackBar("Internet connection is back")
                         false -> Unit
@@ -240,13 +239,11 @@ fun Fragment.handleNoInternetConnectionState(view: View) {
 
             cancelable = true // Optional
             noInternetConnectionTitle = "No Internet" // Optional
-            noInternetConnectionMessage =
-                "Check your Internet connection and try again." // Optional
+            noInternetConnectionMessage = "Check your Internet connection and try again." // Optional
             showInternetOnButtons = true // Optional
             pleaseTurnOnText = "Please turn on" // Optional
             wifiOnButtonText = "Wifi" // Optional
             mobileDataOnButtonText = "Mobile data" // Optional
-
             onAirplaneModeTitle = "No Internet" // Optional
             onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
             pleaseTurnOffText = "Please turn off" // Optional

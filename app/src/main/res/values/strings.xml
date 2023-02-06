@@ -34,7 +34,7 @@
     <string name="female">Female</string>
 
     <!--register fragment-->
-    <string name="chooseQuesm">Choose Quesm</string>
+    <string name="chooseDistrict">Choose District</string>
     <string name="gender">Gender</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>

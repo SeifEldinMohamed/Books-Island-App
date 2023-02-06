@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devs.vectorchildfinder.VectorChildFinder
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.CategoryItemBinding
-import com.seif.booksislandapp.domain.model.BookCategory
+import com.seif.booksislandapp.domain.model.book.BookCategory
 
 class BookCategoriesAdapter : ListAdapter<BookCategory, BookCategoriesAdapter.MyViewHolder>(
     diffCallBack
