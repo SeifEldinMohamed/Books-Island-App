@@ -127,6 +127,18 @@
     <string name="photo">photo</string>
     <string name="forgetyourpassword">Forget Your Password?</string>
     <string name="send_message">send_message</string>
+    <!--homepage-->
+    <string name="hello_heba">Hello Heba,</string>
+    <string name="donation">Donation</string>
+    <string name="exchange">Exchange</string>
+    <string name="bid">Bid</string>
+    <string name="logout">Logout</string>
+    <string name="heba_adel">Heba Adel</string>
+    <!--profile-->
+    <string name="cairo">Cairo</string>
+    <string name="october">october</string>
+    <string name="update">Update</string>
+    <string name="biding">Biding</string>
     <!--DetailsFragment-->
     <string name="Title">النموذج الرباعي للتدفقات النقدية</string>
     <string name="Price">120 EGP</string>
