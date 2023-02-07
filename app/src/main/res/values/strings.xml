@@ -158,4 +158,8 @@
     <string name="author_">Author :</string>
     <string name="hazem_khaled">Hazem Khaled</string>
     <string name="related_ads">Related Ads</string>
+
+    <!-- Buy Adapter -->
+    <string name="free">FREE</string>
+    <string name="egypt_pound">%1$s EGP</string>
 </resources>
