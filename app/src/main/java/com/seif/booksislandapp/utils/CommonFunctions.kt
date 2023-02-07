@@ -83,8 +83,30 @@ fun View.enabled() {
 }
 
 fun Date.formatDate(): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy - hh:mm a", Locale.getDefault())
-    return formatter.format(this)
+    val formatter = SimpleDateFormat("dd/MM", Locale.getDefault())
+    return formatMonth(formatter.format(this))
+}
+
+fun formatMonth(date: String): String {
+    val day = date.substring(0, 2)
+    var month = date.substring(3)
+    month = when (month) {
+        "01" -> " JAN"
+        "02" -> " FEB"
+        "03" -> " MAR"
+        "04" -> " APR"
+        "05" -> " MAY"
+        "06" -> " JUN"
+        "07" -> " JUL"
+        "08" -> " AUG"
+        "09" -> " SEP"
+        "10" -> " OCT"
+        "11" -> " NOV"
+        "12" -> " DEC"
+        else -> month
+    }
+
+    return (day + month)
 }
 
 fun Context.createDialog(layout: Int, cancelable: Boolean): Dialog {
@@ -211,7 +233,7 @@ private fun Book.validateBookData(): Resource<String, String> {
         Resource.Error("Please add the title of the book!")
     } else if (this.category.isEmpty()) {
         Resource.Error("Please choose the category of the book!")
-    } else if (this.condition == null) {
+    } else if (this.isUsed == null) {
         Resource.Error("Please choose the condition of the book!")
     } else if (this.description.isEmpty()) {
         Resource.Error("Please add the description of the book!")

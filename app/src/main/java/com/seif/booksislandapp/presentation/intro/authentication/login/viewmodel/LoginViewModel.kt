@@ -37,8 +37,8 @@ class LoginViewModel @Inject constructor(
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
-                            _loginState.value = LoginState.LoginSuccessfully(it.data)
                         }
+                        _loginState.value = LoginState.LoginSuccessfully(it.data)
                     }
                 }
             }
