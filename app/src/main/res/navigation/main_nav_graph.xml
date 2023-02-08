@@ -64,37 +64,28 @@
         android:id="@+id/bidFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.bid.BidFragment"
         android:label="fragment_bid"
-        tools:layout="@layout/fragment_bid" >
-        <action
-            android:id="@+id/action_bidFragment_to_adDetailsFragment"
-            app:destination="@id/adDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_bid" />
     <fragment
         android:id="@+id/donationFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.donation.DonationFragment"
         android:label="fragment_donation"
-        tools:layout="@layout/fragment_donation" >
-        <action
-            android:id="@+id/action_donationFragment_to_adDetailsFragment"
-            app:destination="@id/adDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_donation" />
     <fragment
         android:id="@+id/exchangeFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.exchange.ExchangeFragment"
         android:label="fragment_exchange"
-        tools:layout="@layout/fragment_exchange" >
-        <action
-            android:id="@+id/action_exchangeFragment_to_adDetailsFragment"
-            app:destination="@id/adDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_exchange" />
     <fragment
         android:id="@+id/adDetailsFragment"
-        android:name="com.seif.booksislandapp.presentation.home.ad_details.AdDetailsFragment"
+        android:name="com.seif.booksislandapp.presentation.home.ad_details.SellAdDetailsFragment"
         android:label="fragment_ad_details"
-        tools:layout="@layout/fragment_ad_details" >
+        tools:layout="@layout/fragment_sell_ad_details" >
         <action
             android:id="@+id/action_adDetailsFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+        <argument
+            android:name="buyAdvertisement"
+            app:argType="com.seif.booksislandapp.domain.model.adv.SellAdvertisement" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
