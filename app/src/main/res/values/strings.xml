@@ -158,6 +158,9 @@
     <string name="author_">Author :</string>
     <string name="hazem_khaled">Hazem Khaled</string>
     <string name="related_ads">Related Ads</string>
+    <string name="no_related_ads_yet">No Related Ads Yet!</string>
+    <string name="investment">Investment</string>
+    <string name="category_">Category:</string>
 
     <!-- Buy Adapter -->
     <string name="free">FREE</string>
