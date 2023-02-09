@@ -9,6 +9,6 @@ data class Book(
     val title: String,
     val author: String,
     val category: String,
-    val condition: BookCondition?,
+    val isUsed: Boolean?,
     val description: String,
 )

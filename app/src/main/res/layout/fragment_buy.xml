@@ -112,6 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingVertical="@dimen/_6sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

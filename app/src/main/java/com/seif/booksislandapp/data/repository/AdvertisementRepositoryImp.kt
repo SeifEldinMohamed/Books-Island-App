@@ -3,6 +3,7 @@ package com.seif.booksislandapp.data.repository
 import android.net.ConnectivityManager
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toSellAdvertisement
@@ -26,13 +27,16 @@ class AdvertisementRepositoryImp @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val connectivityManager: ConnectivityManager
 ) : AdvertisementRepository {
-    override suspend fun getAllSellAds(): Resource<List<SellAdvertisement>, String> {
+    override suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
-            delay(1000) // to show loading progress
+            delay(500) // to show loading progress
 
-            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).get().await()
+            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                .orderBy("publishTime", Query.Direction.DESCENDING)
+                .get()
+                .await()
             val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
             for (document in querySnapshot) {
                 val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
@@ -59,7 +63,8 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
             is Resource.Success -> {
                 try {
-                    val document = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                    val document =
+                        firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
                     sellAdvertisement.id = document.id
                     sellAdvertisement.book.images = result.data
                     document.set(sellAdvertisement.toSellAdvertisementDto()).await()
@@ -69,6 +74,34 @@ class AdvertisementRepositoryImp @Inject constructor(
                     Resource.Error(e.message.toString())
                 }
             }
+        }
+    }
+
+    override suspend fun searchSellAdv(searchQuery: String): Resource<ArrayList<SellAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            val querySnapshot =
+                firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .orderBy("publishTime", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+
+            val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+            for (document in querySnapshot) {
+                val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                sellAdvertisementsDto.add(sellAdvertisementDto)
+            }
+
+            Timber.d("searchSellAdv: $sellAdvertisementsDto")
+            Resource.Success(
+                sellAdvertisementsDto.filter { it.book!!.title.contains(searchQuery, true) }
+                    .map { it.toSellAdvertisement() }
+                    .toCollection(ArrayList())
+            )
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
         }
     }
 
