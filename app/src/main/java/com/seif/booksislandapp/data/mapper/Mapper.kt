@@ -1,5 +1,7 @@
 package com.seif.booksislandapp.data.mapper
 
+import android.net.Uri
+import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
@@ -8,6 +10,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
+import com.seif.booksislandapp.domain.model.book.Book
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -39,22 +42,54 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
     return SellAdvertisement(
         id = id,
         ownerId = ownerId,
-        book = book,
+        book = book!!.toBook(),
+        status = status!!,
+        publishTime = publishTime!!,
+        location = location,
+        price = price
+    )
+}
+
+fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
+    return SellAdvertisementDto(
+        id = id,
+        ownerId = ownerId,
+        book = book.toBookDto(),
         status = status,
         publishTime = publishTime,
         location = location,
         price = price
     )
 }
-fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
-    return SellAdvertisementDto(
+
+fun Book.toBookDto(): BookDto {
+    return BookDto(
         id = id,
-        ownerId = ownerId,
-        book = book,
-        status = status,
-        publishTime = publishTime,
-        location = location,
-        price = price
+        images = images.map { it.toString() },
+        title = title,
+        author = author,
+        category = category,
+        condition = isUsed.toString(),
+        description = description
+    )
+}
+
+fun BookDto.toBook(): Book {
+    val isUsed: Boolean = when (condition) {
+        "Used" -> true
+        "New" -> false
+        else -> {
+            false
+        }
+    }
+    return Book(
+        id = id,
+        images = images.map { Uri.parse(it) },
+        title = title,
+        author = author,
+        category = category,
+        isUsed = isUsed,
+        description = description
     )
 }
 
@@ -71,6 +106,7 @@ fun Governorate.toGovernorateDto(): GovernorateDto {
         name = name
     )
 }
+
 fun DistrictDto.toDistricts(): District {
     return District(
         id = id,
