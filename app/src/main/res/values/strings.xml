@@ -162,4 +162,6 @@
     <!-- Buy Adapter -->
     <string name="free">FREE</string>
     <string name="egypt_pound">%1$s EGP</string>
+    <string name="titles">Title</string>
+    <string name="one_for_one">One For One</string>
 </resources>
