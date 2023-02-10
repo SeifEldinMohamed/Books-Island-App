@@ -484,7 +484,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_related"
-                tools:listitem="@layout/relative_ads_item" />
+                tools:listitem="@layout/related_ads_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

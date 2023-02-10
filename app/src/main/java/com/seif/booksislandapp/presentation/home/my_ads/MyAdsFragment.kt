@@ -12,14 +12,14 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentMyAdsBinding
-import com.seif.booksislandapp.presentation.home.my_ads.Adapters.myadsPagerAdapter
+import com.seif.booksislandapp.presentation.home.my_ads.adapter.MyAdsPagerAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MyAdsFragment : Fragment() {
     private var _binding: FragmentMyAdsBinding? = null
     private val binding get() = _binding!!
-    private val tabTitle = arrayListOf("  Buy  ", "Exchange", " Donate ", " Biding ")
+    private val tabTitle = arrayListOf("  Buy  ", " Exchange ", " Donate ", " Biding ")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,14 +35,14 @@ class MyAdsFragment : Fragment() {
 
     @SuppressLint("InflateParams")
     private fun setupTabLayoutWithViewPager() {
-        binding.viewPager.adapter = myadsPagerAdapter(this)
-        TabLayoutMediator(binding.tlMyads, binding.viewPager) { tab, position ->
+        binding.viewPager.adapter = MyAdsPagerAdapter(this)
+        TabLayoutMediator(binding.tlMyAds, binding.viewPager) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
         for (i in 0..4) {
-            val textView = LayoutInflater.from(requireContext()).inflate(R.layout.myads_tab_title, null)
+            val textView = LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
                 as TextView
-            binding.tlMyads.getTabAt(i)?.customView = textView
+            binding.tlMyAds.getTabAt(i)?.customView = textView
         }
     }
 

@@ -7,11 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.seif.booksislandapp.R
 
-class maExchangeFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
+class MyExchangeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

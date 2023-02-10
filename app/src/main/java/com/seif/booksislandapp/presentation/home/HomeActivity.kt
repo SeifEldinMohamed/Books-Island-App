@@ -50,11 +50,11 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.adDetailsFragment -> {
                     binding.bottomAppBar.hide()
-                    binding.fabProfile.hide()
+                    binding.fabProfile.visibility = View.GONE
                 }
                 else -> {
-                    binding.bottomAppBar.show()
                     binding.fabProfile.visibility = View.VISIBLE
+                    binding.bottomAppBar.show()
                 }
             }
         }
