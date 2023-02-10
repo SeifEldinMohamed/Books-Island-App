@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true"
-        android:drawable="@drawable/myads_tab_selected_background"/>
-    <item android:drawable="@drawable/myads_tab_unselected_background"/>
+        android:drawable="@drawable/my_ads_tab_selected_background"/>
+    <item android:drawable="@drawable/my_ads_tab_unselected_background"/>
 
 </selector>
