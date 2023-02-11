@@ -3,7 +3,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.seif.booksislandapp.utils.createAlertDialog
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +38,7 @@ class LoginFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog = requireContext().createAlertDialog(requireActivity())
+        dialog = requireContext().createLoadingAlertDialog(requireActivity())
         observe()
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()

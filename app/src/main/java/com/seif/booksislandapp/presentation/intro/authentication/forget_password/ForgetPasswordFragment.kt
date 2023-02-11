@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentForgetPasswordBinding
 import com.seif.booksislandapp.presentation.intro.authentication.forget_password.viewmodel.ForgetPasswordState
 import com.seif.booksislandapp.presentation.intro.authentication.forget_password.viewmodel.ForgetPasswordViewModel
-import com.seif.booksislandapp.utils.createAlertDialog
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.handleNoInternetConnectionState
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.toast
@@ -34,7 +34,7 @@ class ForgetPasswordFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog = requireContext().createAlertDialog(requireActivity())
+        dialog = requireContext().createLoadingAlertDialog(requireActivity())
         observe()
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()

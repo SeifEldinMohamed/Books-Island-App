@@ -47,7 +47,7 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog = requireContext().createAlertDialog(requireActivity())
+        dialog = requireContext().createLoadingAlertDialog(requireActivity())
         observe()
 
         binding.ivBack.setOnClickListener {
