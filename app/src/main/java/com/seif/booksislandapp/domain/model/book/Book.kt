@@ -1,8 +1,10 @@
 package com.seif.booksislandapp.domain.model.book
 
 import android.net.Uri
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlin.String
-
+@Parcelize
 data class Book(
     val id: String,
     var images: List<Uri>,
@@ -11,4 +13,4 @@ data class Book(
     val category: String,
     val isUsed: Boolean?,
     val description: String,
-)
+) : Parcelable
