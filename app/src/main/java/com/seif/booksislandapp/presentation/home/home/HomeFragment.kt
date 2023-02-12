@@ -10,16 +10,18 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.cvDonate.setOnClickListener {
@@ -34,5 +36,10 @@ class HomeFragment : Fragment() {
         binding.cvBid.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_bidFragment)
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
