@@ -21,12 +21,10 @@ class BuyViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _buyState = MutableStateFlow<BuyState>(BuyState.Init)
-    val buyState = _buyState.asStateFlow()
+    val buyState get() = _buyState.asStateFlow()
     private var searchJob: Job? = null
-
-    init {
-        fetchAllSellAdvertisement()
-    }
+    var firstTime = true
+    var isSearching = false
 
     fun fetchAllSellAdvertisement() {
         setLoading(true)
@@ -51,10 +49,12 @@ class BuyViewModel @Inject constructor(
     }
 
     fun searchSellAdvertisements(searchQuery: String) {
-        setLoading(true)
-
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                setLoading(true)
+            }
             Timber.d("searchSellAdvertisements: hello")
             searchSellAdvertisementUseCase(searchQuery).let {
                 when (it) {
@@ -95,5 +95,9 @@ class BuyViewModel @Inject constructor(
                 _buyState.value = BuyState.ShowError(message)
             }
         }
+    }
+
+    fun resetState() {
+        _buyState.value = BuyState.Init
     }
 }
