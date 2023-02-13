@@ -27,7 +27,7 @@ class SellAdDetailsFragment : Fragment() {
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
-    private val relatedAdsAdapter: RelatedAdsAdapter by lazy { RelatedAdsAdapter() }
+    private val relatedSellAdsAdapter: RelatedSellAdsAdapter by lazy { RelatedSellAdsAdapter() }
     private var owner: User? = null
     private var relatedAds: List<SellAdvertisement> = emptyList()
     override fun onCreateView(
@@ -50,7 +50,7 @@ class SellAdDetailsFragment : Fragment() {
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
-        binding.rvRelatedAds.adapter = relatedAdsAdapter
+        binding.rvRelatedAds.adapter = relatedSellAdsAdapter
     }
 
     private fun fetchRelatedSellAds() {
@@ -81,7 +81,7 @@ class SellAdDetailsFragment : Fragment() {
                     }
                     is SellDetailsState.FetchRelatedSellAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
-                        relatedAdsAdapter.updateList(it.relatedAds)
+                        relatedSellAdsAdapter.updateList(it.relatedAds)
                         if (it.relatedAds.isEmpty())
                             binding.tvNoRelatedAds.show()
                         else
