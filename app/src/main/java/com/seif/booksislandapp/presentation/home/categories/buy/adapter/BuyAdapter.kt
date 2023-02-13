@@ -11,12 +11,12 @@ import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.utils.formatDate
 
 class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
-    // var onImageItemClick: OnImageItemClick<Uri>? = null
+    var onAdItemClick: OnAdItemClick<SellAdvertisement>? = null
     var buyAds: List<SellAdvertisement> = emptyList()
 
     inner class MyViewHolder(private val binding: BuyDonateAdvItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(buyAdvertisement: SellAdvertisement) {
+        fun bind(buyAdvertisement: SellAdvertisement, position: Int) {
             binding.tvTitle.text = buyAdvertisement.book.title
             binding.tvDescription.text = buyAdvertisement.book.description
             binding.tvDate.text = buyAdvertisement.publishTime.formatDate()
@@ -26,8 +26,9 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
                 binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
             binding.tvLocation.text = buyAdvertisement.location
             binding.ivImage.load(buyAdvertisement.book.images.first())
-
-            // onImageItemClick?.onRemoveImageItemClick(image, position)
+            binding.cvBuyDonateAd.setOnClickListener {
+                onAdItemClick?.onAdItemClick(buyAdvertisement, position)
+            }
         }
     }
 
@@ -42,7 +43,7 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(buyAds[position])
+        holder.bind(buyAds[position], position)
     }
 
     override fun getItemCount(): Int {
