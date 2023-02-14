@@ -51,16 +51,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:ellipsize="end"
                 android:fontFamily="@font/roboto_bold"
                 android:maxLines="1"
-                android:layout_marginEnd="@dimen/_8sdp"
                 android:text="@string/book_title"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14ssp"
-                android:ellipsize="end"
                 app:layout_constraintBottom_toTopOf="@+id/cardView"
-                app:layout_constraintEnd_toStartOf="@+id/iv_favourite"
-                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,17 +93,6 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_price"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price"
                 tools:ignore="TextContrastCheck" />
-
-            <ImageView
-                android:id="@+id/iv_favourite"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:contentDescription="@string/favourite_image"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_title"
-                app:srcCompat="@drawable/ic_heart_holo" />
 
             <TextView
                 android:id="@+id/tv_location"
