@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
-import com.seif.booksislandapp.domain.usecase.usecase.auth.GetFirebaseCurrentUserUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadSellAdvertisementUseCase
 import com.seif.booksislandapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

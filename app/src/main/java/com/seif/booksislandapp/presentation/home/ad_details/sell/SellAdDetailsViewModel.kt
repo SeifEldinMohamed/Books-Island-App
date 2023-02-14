@@ -1,10 +1,10 @@
-package com.seif.booksislandapp.presentation.home.ad_details
+package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.FetchRelatedSellAdsUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetUserByIdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel

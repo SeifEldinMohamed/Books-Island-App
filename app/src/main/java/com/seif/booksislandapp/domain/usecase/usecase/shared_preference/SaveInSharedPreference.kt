@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.usecase.usecase.auth
+package com.seif.booksislandapp.domain.usecase.usecase.shared_preference
 
 import com.seif.booksislandapp.domain.repository.AuthRepository
 import javax.inject.Inject

@@ -77,7 +77,7 @@
         tools:layout="@layout/fragment_exchange" />
     <fragment
         android:id="@+id/adDetailsFragment"
-        android:name="com.seif.booksislandapp.presentation.home.ad_details.SellAdDetailsFragment"
+        android:name="com.seif.booksislandapp.presentation.home.ad_details.sell.SellAdDetailsFragment"
         android:label="fragment_ad_details"
         tools:layout="@layout/fragment_sell_ad_details" >
         <action

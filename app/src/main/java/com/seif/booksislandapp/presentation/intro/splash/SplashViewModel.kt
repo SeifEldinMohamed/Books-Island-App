@@ -1,8 +1,8 @@
 package com.seif.booksislandapp.presentation.intro.splash
 
 import androidx.lifecycle.ViewModel
-import com.seif.booksislandapp.domain.usecase.usecase.auth.GetFromSharedPreference
-import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
