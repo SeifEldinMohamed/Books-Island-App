@@ -176,9 +176,9 @@ class RegisterFragment : Fragment() {
     }
 
     private fun createUser(): User {
-        val username = binding.etUsername.text.toString()
-        val email = binding.etEmail.text.toString()
-        val password = binding.etPassword.text.toString()
+        val username = binding.etUsername.text.toString().trim()
+        val email = binding.etEmail.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
         val selectedId: Int = binding.rgGender.checkedRadioButtonId
         val radioButton: RadioButton = requireView().findViewById(selectedId)
         val rb = radioButton.text.toString()

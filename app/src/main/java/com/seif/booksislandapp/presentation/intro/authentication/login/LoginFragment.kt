@@ -75,8 +75,8 @@ class LoginFragment : Fragment() {
         }
     }
     private fun loginUser() {
-        val email = binding.etEmail.text.toString()
-        val password = binding.etPassword.text.toString()
+        val email = binding.etEmail.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
         loginViewModel.login(email, password)
     }
 
