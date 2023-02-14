@@ -22,31 +22,34 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_welcome"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/welcome_back"
                 android:textColor="@color/flat_grey_dark_1"
                 android:textSize="@dimen/_18ssp"
-                app:layout_constraintEnd_toEndOf="@+id/tv_hello"
+                app:layout_constraintEnd_toEndOf="@+id/tv_hello_username"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tv_hello"
-                app:layout_constraintTop_toBottomOf="@+id/tv_hello">
+                app:layout_constraintStart_toStartOf="@+id/tv_hello_username"
+                app:layout_constraintTop_toBottomOf="@+id/tv_hello_username">
 
             </com.google.android.material.textview.MaterialTextView>
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_hello"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_hello_username"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/hello_heba"
                 android:textColor="@color/flat_grey_dark_2"
-                android:textSize="@dimen/_25ssp"
+                android:textSize="@dimen/_24ssp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 

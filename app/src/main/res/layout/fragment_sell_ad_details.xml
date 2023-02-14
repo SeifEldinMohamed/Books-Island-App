@@ -421,7 +421,8 @@
                     android:src="@drawable/iv_point"
                     app:layout_constraintBottom_toBottomOf="@id/tv_instructions3"
                     app:layout_constraintStart_toStartOf="@id/iv_details2"
-                    app:layout_constraintTop_toTopOf="@id/tv_instructions3" />
+                    app:layout_constraintTop_toTopOf="@id/tv_instructions3"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/tv_instructions3"
