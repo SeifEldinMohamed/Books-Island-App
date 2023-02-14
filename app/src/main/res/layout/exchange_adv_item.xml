@@ -140,7 +140,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/cv_exchange" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_items"
+                        android:id="@+id/rv_related_ads"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_8sdp"

@@ -1,35 +1,33 @@
-package com.seif.booksislandapp.presentation.home.categories.buy
+package com.seif.booksislandapp.presentation.home.ad_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllSellAdvertisementUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.FetchRelatedSellAdsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import timber.log.Timber
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class BuyViewModel @Inject constructor(
-    private val getAllSellAdvertisementUseCase: GetAllSellAdvertisementUseCase,
-    private val searchSellAdvertisementUseCase: SearchSellAdvertisementUseCase,
-    private val resourceProvider: ResourceProvider
+class SellAdDetailsViewModel @Inject constructor(
+    private val resourceProvider: ResourceProvider,
+    private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val fetchRelatedSellAdsUseCase: FetchRelatedSellAdsUseCase
 ) : ViewModel() {
-    private var _buyState = MutableStateFlow<BuyState>(BuyState.Init)
-    val buyState get() = _buyState.asStateFlow()
-    private var searchJob: Job? = null
-    var firstTime = true
-    var isSearching = false
+    private var _sellDetailsState = MutableStateFlow<SellDetailsState>(SellDetailsState.Init)
+    val sellDetailsState = _sellDetailsState.asStateFlow()
 
-    fun fetchAllSellAdvertisement() {
+    fun getUserById(id: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getAllSellAdvertisementUseCase.invoke().let {
+            getUserByIdUseCase(id).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -41,22 +39,17 @@ class BuyViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _buyState.value = BuyState.FetchAllSellAdvertisementSuccessfully(it.data)
+                        _sellDetailsState.value = SellDetailsState.GetUserByIdSuccessfully(it.data)
                     }
                 }
             }
         }
     }
 
-    fun searchSellAdvertisements(searchQuery: String) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
-            withContext(Dispatchers.Main) {
-                setLoading(true)
-            }
-            Timber.d("searchSellAdvertisements: hello")
-            searchSellAdvertisementUseCase(searchQuery).let {
+    fun fetchRelatedAds(adId: String, category: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchRelatedSellAdsUseCase(adId, category).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -68,7 +61,8 @@ class BuyViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _buyState.value = BuyState.SearchSellAdvertisementSuccessfully(it.data)
+                        _sellDetailsState.value =
+                            SellDetailsState.FetchRelatedSellAdvertisementSuccessfully(it.data)
                     }
                 }
             }
@@ -78,10 +72,10 @@ class BuyViewModel @Inject constructor(
     private fun setLoading(status: Boolean) {
         when (status) {
             true -> {
-                _buyState.value = BuyState.IsLoading(true)
+                _sellDetailsState.value = SellDetailsState.IsLoading(true)
             }
             false -> {
-                _buyState.value = BuyState.IsLoading(false)
+                _sellDetailsState.value = SellDetailsState.IsLoading(false)
             }
         }
     }
@@ -89,15 +83,11 @@ class BuyViewModel @Inject constructor(
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _buyState.value = BuyState.NoInternetConnection(message)
+                _sellDetailsState.value = SellDetailsState.NoInternetConnection(message)
             }
             else -> {
-                _buyState.value = BuyState.ShowError(message)
+                _sellDetailsState.value = SellDetailsState.ShowError(message)
             }
         }
-    }
-
-    fun resetState() {
-        _buyState.value = BuyState.Init
     }
 }

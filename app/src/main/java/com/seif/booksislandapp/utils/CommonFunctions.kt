@@ -86,6 +86,10 @@ fun Date.formatDate(): String {
     val formatter = SimpleDateFormat("dd/MM", Locale.getDefault())
     return formatMonth(formatter.format(this))
 }
+fun Date.formatDateInDetails(): String {
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return formatter.format(this)
+}
 
 fun formatMonth(date: String): String {
     val day = date.substring(0, 2)
@@ -193,10 +197,10 @@ fun ConnectivityManager.checkInternetConnection(): Boolean {
 }
 
 @SuppressLint("InflateParams")
-fun Context.createAlertDialog(activity: Activity): AlertDialog {
+fun Context.createLoadingAlertDialog(activity: Activity): AlertDialog {
     val builder = AlertDialog.Builder(this)
     builder.setView(activity.layoutInflater.inflate(R.layout.custom_loading_dialog, null))
-    builder.setCancelable(true)
+    builder.setCancelable(false)
     return builder.create()
 }
 

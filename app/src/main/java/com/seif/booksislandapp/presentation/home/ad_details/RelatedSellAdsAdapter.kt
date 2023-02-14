@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.categories.buy.adapter
+package com.seif.booksislandapp.presentation.home.ad_details
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,27 +6,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.databinding.BuyDonateAdvItemBinding
+import com.seif.booksislandapp.databinding.RelatedAdsItemBinding
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.presentation.home.categories.buy.adapter.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
 
-class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
+class RelatedSellAdsAdapter : RecyclerView.Adapter<RelatedSellAdsAdapter.MyViewHolder>() {
     var onAdItemClick: OnAdItemClick<SellAdvertisement>? = null
-    var buyAds: List<SellAdvertisement> = emptyList()
+    var relatedBuyAds: List<SellAdvertisement> = emptyList()
 
-    inner class MyViewHolder(private val binding: BuyDonateAdvItemBinding) :
+    inner class MyViewHolder(private val binding: RelatedAdsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(buyAdvertisement: SellAdvertisement, position: Int) {
             binding.tvTitle.text = buyAdvertisement.book.title
-            binding.tvDescription.text = buyAdvertisement.book.description
             binding.tvDate.text = buyAdvertisement.publishTime.formatDate()
-            if (buyAdvertisement.price.toDouble() == 0.0) // donate
-                binding.tvPrice.text = itemView.context.getString(R.string.free)
-            else // price
-                binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
+            binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
             binding.tvLocation.text = buyAdvertisement.location
-            binding.ivImage.load(buyAdvertisement.book.images.first())
-            binding.cvBuyDonateAd.setOnClickListener {
+            binding.ivBook.load(buyAdvertisement.book.images.first())
+
+            binding.cvRelatedAd.setOnClickListener {
                 onAdItemClick?.onAdItemClick(buyAdvertisement, position)
             }
         }
@@ -34,7 +32,7 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            BuyDonateAdvItemBinding.inflate(
+            RelatedAdsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -43,16 +41,16 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(buyAds[position], position)
+        holder.bind(relatedBuyAds[position], position)
     }
 
     override fun getItemCount(): Int {
-        return buyAds.size
+        return relatedBuyAds.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newBuyAds: List<SellAdvertisement>) {
-        this.buyAds = newBuyAds
+        this.relatedBuyAds = newBuyAds
         notifyDataSetChanged()
     }
 }

@@ -70,7 +70,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
 
         setupConditionDropdown()
         setupEditionDropdown()
-        dialog = requireContext().createAlertDialog(requireActivity())
+        dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadSellAdvertisementViewModel.getFirebaseCurrentUser()
         observe()
