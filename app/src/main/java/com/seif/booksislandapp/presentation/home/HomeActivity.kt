@@ -15,13 +15,14 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
-    lateinit var binding: ActivityHomeBinding
+    private var _binding: ActivityHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var navController: NavController
     private val TAG = "HomeActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        _binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupNavigationComponent()
@@ -61,7 +62,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupNavigationComponent() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.mainNavHostFragment) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavigationView.background = null
         binding.bottomNavigationView.menu.getItem(2).isEnabled = false
@@ -71,5 +73,10 @@ class HomeActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() ||
             super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }
