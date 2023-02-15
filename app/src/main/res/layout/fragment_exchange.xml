@@ -22,28 +22,12 @@
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
         android:contentDescription="@string/back_image"
         android:padding="@dimen/_10sdp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_sortBy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:drawablePadding="@dimen/_6sdp"
-        android:focusable="true"
-        android:fontFamily="@font/roboto_bold"
-        android:padding="@dimen/_10sdp"
-        android:text="@string/sort_by"
-        android:textColor="@color/primary"
-        android:textSize="@dimen/_16ssp"
-        app:drawableEndCompat="@drawable/ic_sort"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_buy"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_buy"
-        tools:ignore="TextContrastCheck" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_search"
