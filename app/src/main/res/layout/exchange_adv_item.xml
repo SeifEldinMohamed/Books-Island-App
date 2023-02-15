@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_Exchange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
         app:cardCornerRadius="@dimen/_12sdp"
         android:layout_margin="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +24,7 @@
             android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+                android:id="@+id/cv_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_12sdp"
@@ -31,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/iv_book"
                     android:layout_width="@dimen/_60sdp"
                     android:layout_height="@dimen/_80sdp"
                     android:contentDescription="@string/book_image"
@@ -40,7 +43,7 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_book_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
@@ -48,23 +51,12 @@
                 android:text="@string/book_title"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toTopOf="@+id/cardView"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
-                app:layout_constraintTop_toTopOf="@+id/cardView" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:src="@drawable/ic_favorite"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.609"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/photo" />
+                app:layout_constraintBottom_toTopOf="@+id/cv_image"
+                app:layout_constraintStart_toEndOf="@+id/cv_image"
+                app:layout_constraintTop_toTopOf="@+id/cv_image" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
@@ -73,11 +65,11 @@
                 android:text="@string/_120_egp"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="@+id/tv_book_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_book_name" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/tv_discription"
                 tools:ignore="TextContrastCheck"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -91,25 +83,27 @@
                 android:textColor="@color/gray_medium"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintStart_toStartOf="@+id/tv_price"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_16sdp"
-                app:layout_constraintBottom_toTopOf="@+id/textView5"
-                app:layout_constraintEnd_toEndOf="@+id/textView3"
-                app:layout_constraintStart_toStartOf="@+id/cardView"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" >
+                app:layout_constraintBottom_toTopOf="@+id/tv_location"
+                app:layout_constraintEnd_toEndOf="@+id/tv_discription"
+                app:layout_constraintStart_toStartOf="@+id/cv_image"
+                app:layout_constraintTop_toBottomOf="@+id/tv_discription" >
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cv_exchange"
+
+                        android:id="@+id/cv_exchange_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_6sdp"
@@ -119,36 +113,38 @@
 
                         <ImageView
                             android:id="@+id/iv_exchange"
-                            android:layout_marginTop="@dimen/_6sdp"
-                            android:layout_width="@dimen/_60sdp"
-                            android:layout_height="@dimen/_60sdp"
+                            android:layout_marginTop="@dimen/_16sdp"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
                             android:contentDescription="@string/book_image"
                             android:scaleType="fitXY"
-                            app:srcCompat="@drawable/exchange_category_image" />
+                            app:srcCompat="@drawable/exchange_icon"/>
 
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/tv_one_for_one"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_6sdp"
                         android:text="@string/one_for_one"
                         android:textColor="@color/primary"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/cv_exchange"
-                        app:layout_constraintStart_toStartOf="@+id/cv_exchange"
-                        app:layout_constraintTop_toBottomOf="@+id/cv_exchange" />
+                        app:layout_constraintEnd_toEndOf="@+id/cv_exchange_icon"
+                        app:layout_constraintStart_toStartOf="@+id/cv_exchange_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/cv_exchange_icon" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_related_ads"
+                        android:id="@+id/rv_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_8sdp"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintStart_toEndOf="@+id/cv_exchange"
+                        app:layout_constraintStart_toEndOf="@+id/cv_exchange_icon"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:itemCount="2"
+                        tools:itemCount="5"
                         tools:listitem="@layout/exchange_list_item" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -156,7 +152,7 @@
 
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -170,7 +166,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_6sdp"
@@ -179,7 +175,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/textView3" />
+                app:layout_constraintEnd_toEndOf="@+id/tv_discription" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
