@@ -6,10 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
-import com.seif.booksislandapp.data.mapper.toSellAdvertisement
-import com.seif.booksislandapp.data.mapper.toSellAdvertisementDto
-import com.seif.booksislandapp.data.mapper.toUser
+import com.seif.booksislandapp.data.mapper.*
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
@@ -215,6 +212,31 @@ class AdvertisementRepositoryImp @Inject constructor(
             )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun uploadDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return when (val result = uploadMultipleImages(donateAdvertisement.book.images)) {
+            is Resource.Error -> {
+                Timber.d("uploadSellAdv: Error  ${result.message}")
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    val document =
+                        firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                    donateAdvertisement.id = document.id
+                    donateAdvertisement.book.images = result.data
+                    document.set(donateAdvertisement.toDonateAdvertisementDto()).await()
+                    Timber.d("uploaded successfully")
+                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
         }
     }
 

@@ -10,33 +10,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tv_myAds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/my_ads"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_20ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_myAds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/tab_my_ads_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_myAds"
+            app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="fill"
             app:tabInlineLabel="true"
             app:tabMode="auto"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabRippleColor="@null"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.viewpager2.widget.ViewPager2

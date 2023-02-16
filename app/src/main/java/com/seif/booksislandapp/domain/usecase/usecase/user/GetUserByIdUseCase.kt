@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell
+package com.seif.booksislandapp.domain.usecase.usecase.user
 
 import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
 import com.seif.booksislandapp.domain.model.User

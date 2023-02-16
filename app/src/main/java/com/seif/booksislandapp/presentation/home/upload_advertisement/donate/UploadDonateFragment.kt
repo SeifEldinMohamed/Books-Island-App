@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.upload_advertisement.sell
+package com.seif.booksislandapp.presentation.home.upload_advertisement.donate
 
 import android.Manifest
 import android.app.Activity
@@ -19,49 +19,47 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBinding
+import com.seif.booksislandapp.databinding.FragmentUploadDonateBinding
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
-import com.google.firebase.auth.FirebaseUser
-import com.seif.booksislandapp.domain.model.adv.AdvStatus
-import com.seif.booksislandapp.domain.model.book.Book
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
-import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.sell.UploadState
 import com.seif.booksislandapp.utils.*
-import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUMBER
+import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
-    private var _binding: FragmentUploadSellAdvertisementBinding? = null
+class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
+    private var _binding: FragmentUploadDonateBinding? = null
     private val binding get() = _binding!!
 
     private var imageUris: ArrayList<Uri> = arrayListOf()
     private lateinit var dialog: AlertDialog
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
-    private val uploadSellAdvertisementViewModel: UploadSellAdvertisementViewModel by viewModels()
+    private val uploadDonateAdvertisementViewModel: UploadDonateViewModel by viewModels()
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
+        _binding = FragmentUploadDonateBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -72,7 +70,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         setupEditionDropdown()
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
-        firebaseCurrentUser = uploadSellAdvertisementViewModel.getFirebaseCurrentUser()
+        firebaseCurrentUser = uploadDonateAdvertisementViewModel.getFirebaseCurrentUser()
         observe()
 
         binding.ivBackUpload.setOnClickListener {
@@ -80,7 +78,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.btnCategory.setOnClickListener {
-            findNavController().navigate(R.id.action_uploadAdvertisementFragment_to_categoryFragment)
+            findNavController().navigate(R.id.action_uploadDonateFragment_to_bookCategoriesFragment)
         }
 
         binding.btnUploadImages.setOnClickListener {
@@ -96,8 +94,8 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.btnSubmit.setOnClickListener {
-            val sellAdvertisement = prepareSellAdvertisement()
-            uploadSellAdvertisementViewModel.uploadSellAdvertisement(sellAdvertisement)
+            val donateAdvertisement = prepareDonateAdvertisement()
+            uploadDonateAdvertisementViewModel.uploadDonateAdvertisement(donateAdvertisement)
         }
 
         if (imageUris.size > 0) {
@@ -151,7 +149,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                                 }
                                 imageUris.add(Uri.fromFile(compressedFile))
                                 Timber.d("upload: $imageUris")
-                                //  uploadSellAdvertisementViewModel.addImagesUris(imageUris)
                                 withContext(Dispatchers.Main) {
                                     uploadedImagesAdapter.updateList(imageUris)
                                 }
@@ -163,7 +160,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                     binding.rvUploadedImages.show()
                     binding.ivUploadImage.hide()
 
-                    if (imageUris.size == MAX_UPLOADED_IMAGES_NUMBER)
+                    if (imageUris.size == Constants.MAX_UPLOADED_IMAGES_NUMBER)
                         disableUploadButton()
                 }
                 else -> {
@@ -175,7 +172,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
 
     private fun observe() {
         lifecycleScope.launch {
-            uploadSellAdvertisementViewModel.uploadState.collect {
+            uploadDonateAdvertisementViewModel.uploadState.collect {
                 when (it) {
                     UploadState.Init -> Unit
                     is UploadState.IsLoading -> handleLoadingState(it.isLoading)
@@ -203,7 +200,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         binding.root.showErrorSnackBar(message)
     }
 
-    private fun prepareSellAdvertisement(): SellAdvertisement {
+    private fun prepareDonateAdvertisement(): DonateAdvertisement {
         val isUsed: Boolean? =
             when (binding.acCondition.text.toString()) {
                 "New" -> false
@@ -219,13 +216,12 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             isUsed = isUsed,
             description = binding.etDescription.text.toString()
         )
-        return SellAdvertisement(
+        return DonateAdvertisement(
             id = "",
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
             publishTime = Date(),
-            price = binding.etPrice.text.toString(),
             location = "Cairo - Egypt"
         )
     }
@@ -236,7 +232,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         if (imageUris.size == 0) {
             binding.ivUploadImage.show()
             binding.rvUploadedImages.hide()
-        } else if (imageUris.size < MAX_UPLOADED_IMAGES_NUMBER)
+        } else if (imageUris.size < Constants.MAX_UPLOADED_IMAGES_NUMBER)
             enableUploadButton()
     }
 
@@ -287,6 +283,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
-        uploadSellAdvertisementViewModel.resetUploadStatus()
+        uploadDonateAdvertisementViewModel.resetUploadStatus()
     }
 }

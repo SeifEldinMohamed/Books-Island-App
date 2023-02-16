@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.ad_details
+package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
