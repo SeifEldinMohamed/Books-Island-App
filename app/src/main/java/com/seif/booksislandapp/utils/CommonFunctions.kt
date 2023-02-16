@@ -22,6 +22,7 @@ import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -222,6 +223,22 @@ fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
         Resource.Error("Status Can't be Empty")
     } else if (this.price.isEmpty()) {
         Resource.Error("Price Can't be Empty")
+    } else {
+        return when (val result = this.book.validateBookData()) {
+            is Resource.Error -> Resource.Error(result.message)
+            is Resource.Success -> Resource.Success(result.data)
+        }
+    }
+}
+fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, String> {
+    return if (this.ownerId.isEmpty()) {
+        Resource.Error("User is not LoggedIn !")
+    } else if (this.publishTime.toString().isEmpty()) {
+        Resource.Error("problem in Phone Time !")
+    } else if (this.location.isEmpty()) {
+        Resource.Error("Location Can't be Empty")
+    } else if (this.status.toString().isEmpty()) {
+        Resource.Error("Status Can't be Empty")
     } else {
         return when (val result = this.book.validateBookData()) {
             is Resource.Error -> Resource.Error(result.message)

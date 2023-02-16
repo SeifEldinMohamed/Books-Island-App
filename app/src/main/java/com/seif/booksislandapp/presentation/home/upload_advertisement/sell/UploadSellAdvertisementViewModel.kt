@@ -56,8 +56,8 @@ class UploadSellAdvertisementViewModel @Inject constructor(
                 is Resource.Success -> {
                     withContext(Dispatchers.Main) {
                         setLoading(false)
-                        _uploadState.value = UploadState.UploadedSuccessfully(result.data)
                     }
+                    _uploadState.value = UploadState.UploadedSuccessfully(result.data)
                 }
             }
         }

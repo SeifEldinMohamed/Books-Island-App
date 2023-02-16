@@ -241,27 +241,21 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun disableUploadButton() {
-        binding.btnUploadImages.disable()
-        binding.btnUploadImages.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.gray_medium
-            )
-        )
-        binding.btnUploadImages.setStrokeColorResource(R.color.gray_medium)
-        binding.btnUploadImages.setIconTintResource(R.color.gray_medium)
+        binding.btnUploadImages.apply {
+            disable()
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.gray_medium))
+            setStrokeColorResource(R.color.gray_medium)
+            setIconTintResource(R.color.gray_medium)
+        }
     }
 
     private fun enableUploadButton() {
-        binding.btnUploadImages.enabled()
-        binding.btnUploadImages.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.primary
-            )
-        )
-        binding.btnUploadImages.setStrokeColorResource(R.color.primary)
-        binding.btnUploadImages.setIconTintResource(R.color.primary)
+        binding.btnUploadImages.apply {
+            enabled()
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+            setStrokeColorResource(R.color.primary)
+            setIconTintResource(R.color.primary)
+        }
     }
 
     private fun setupConditionDropdown() {

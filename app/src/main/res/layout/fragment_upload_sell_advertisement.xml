@@ -32,7 +32,7 @@
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="30"
+                    app:counterMaxLength="40"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -44,7 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="30"
+                        android:maxLength="40"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
