@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_title"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="40"
+                    app:hintEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                    tools:ignore="HardcodedText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLength="40"
+                        android:textColor="@color/black"
+                        tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_star_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+                    app:layout_constraintStart_toEndOf="@+id/tv_title"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:text="@string/title"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_back_upload" />
+
+                <ImageView
+                    android:id="@+id/iv_back_upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:contentDescription="@string/back_image"
+                    android:padding="@dimen/_10sdp"
+                    android:src="@drawable/ic_back"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_donate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/donate"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_20ssp"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_back_upload"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_back_upload"
+                    app:layout_constraintTop_toTopOf="@+id/iv_back_upload" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_author"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="40"
+                    app:hintEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_author"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_author"
+                    tools:ignore="HardcodedText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLength="40"
+                        android:textColor="@color/black"
+                        tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="@string/author"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/til_title"
+                    app:layout_constraintTop_toBottomOf="@+id/til_title" />
+
+                <TextView
+                    android:id="@+id/tv_star_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_author"
+                    app:layout_constraintStart_toEndOf="@+id/tv_author"
+                    app:layout_constraintTop_toTopOf="@+id/tv_author" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/description"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+                <TextView
+                    android:id="@+id/tv_star_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_description"
+                    app:layout_constraintStart_toEndOf="@+id/tv_description"
+                    app:layout_constraintTop_toTopOf="@+id/tv_description" />
+
+                <TextView
+                    android:id="@+id/tv_condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/condition"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/til_author"
+                    app:layout_constraintTop_toBottomOf="@+id/til_author" />
+
+                <TextView
+                    android:id="@+id/tv_star_condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_condition"
+                    app:layout_constraintStart_toEndOf="@+id/tv_condition"
+                    app:layout_constraintTop_toTopOf="@+id/tv_condition" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_condition"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:hint="@string/choose"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_condition"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_condition">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/ac_condition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="none"
+                        tools:ignore="LabelFor,TextContrastCheck,DuplicateSpeakableTextCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_atleast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:text="@string/at_least_one_image"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/til_condition"
+                    app:layout_constraintTop_toBottomOf="@+id/til_condition" />
+
+                <TextView
+                    android:id="@+id/tv_star_atleast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_atleast"
+                    app:layout_constraintStart_toEndOf="@+id/tv_atleast"
+                    app:layout_constraintTop_toTopOf="@+id/tv_atleast" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout3"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_170sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:background="@drawable/dotted_border"
+                    app:layout_constraintEnd_toEndOf="@+id/til_condition"
+                    app:layout_constraintStart_toStartOf="@+id/til_condition"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_atleast">
+
+                    <ImageView
+                        android:id="@+id/iv_upload_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_26sdp"
+                        android:contentDescription="@string/upload_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.501"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_upload"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_uploaded_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toTopOf="@+id/btn_upload_images"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:listitem="@layout/uploaded_image_item" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_upload_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_6sdp"
+                        android:paddingVertical="@dimen/_5sdp"
+                        android:text="@string/upload_image"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary"
+                        app:backgroundTint="@color/white"
+                        app:cornerRadius="@dimen/_4sdp"
+                        app:icon="@drawable/ic_add"
+                        app:iconTint="@color/primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="@dimen/_1sdp"
+                        tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_description"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="200"
+                    app:hintEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_description"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_description"
+                    tools:ignore="HardcodedText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_80sdp"
+                        android:gravity="start"
+                        android:inputType="textMultiLine"
+                        android:maxLength="200"
+                        android:textColor="@color/black"
+                        tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:text="@string/category"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/til_description"
+                    app:layout_constraintTop_toBottomOf="@+id/til_description" />
+
+                <TextView
+                    android:id="@+id/tv_star_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_category"
+                    app:layout_constraintStart_toEndOf="@+id/tv_category"
+                    app:layout_constraintTop_toTopOf="@+id/tv_category" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_category"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_6sdp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:paddingVertical="@dimen/_14sdp"
+                    android:text="@string/choose_category"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="@dimen/_4sdp"
+                    app:icon="@drawable/ic_forward_arrow"
+                    app:iconGravity="end"
+                    app:iconTint="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tv_category"
+                    app:layout_constraintTop_toBottomOf="@id/tv_category"
+                    app:strokeColor="@color/gray_light"
+                    app:strokeWidth="@dimen/_1sdp"
+                    tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+                <TextView
+                    android:id="@+id/tv_edition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:text="@string/edition"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/btn_category"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_category" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_edition"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:hint="@string/choose"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_edition"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_edition">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/ac_edition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="none"
+                        tools:ignore="LabelFor,TextContrastCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginVertical="@dimen/_24sdp"
+                    android:paddingVertical="@dimen/_6sdp"
+                    android:scaleY="1.4"
+                    android:text="@string/submit_post"
+                    android:textAllCaps="false"
+                    app:cornerRadius="@dimen/_4sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/til_edition"
+                    tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
