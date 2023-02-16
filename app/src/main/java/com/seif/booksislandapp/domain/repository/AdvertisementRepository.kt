@@ -11,9 +11,11 @@ interface AdvertisementRepository {
     suspend fun uploadSellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>
     suspend fun searchSellAdv(searchQuery: String): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getUserById(id: String): Resource<User, String>
+    // donate
     suspend fun fetchRelatedSellAdvertisement(
         adId: String,
         category: String
     ): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun searchDonateAdv(searchQuery: String): Resource<ArrayList<DonateAdvertisement>, String>
+    suspend fun uploadDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String>
 }
