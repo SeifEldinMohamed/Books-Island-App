@@ -114,7 +114,7 @@
     </fragment>
     <fragment
         android:id="@+id/uploadBidFragment"
-        android:name="com.seif.booksislandapp.UploadBidFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.bid.UploadBidFragment"
         android:label="fragment_upload_bid"
         tools:layout="@layout/fragment_upload_bid" >
         <action
@@ -123,7 +123,7 @@
     </fragment>
     <fragment
         android:id="@+id/uploadExchangeFragment"
-        android:name="com.seif.booksislandapp.UploadExchangeFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.exchange.UploadExchangeFragment"
         android:label="fragment_upload_exchange"
         tools:layout="@layout/fragment_upload_exchange" >
         <action
