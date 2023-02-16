@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.ad_details
+package com.seif.booksislandapp.presentation.home.ad_details.sell.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

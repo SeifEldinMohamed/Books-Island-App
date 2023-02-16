@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.ad_details
+package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -15,6 +15,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentSellAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

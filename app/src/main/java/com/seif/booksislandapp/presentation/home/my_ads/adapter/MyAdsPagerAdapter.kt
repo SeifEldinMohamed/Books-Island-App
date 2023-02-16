@@ -13,8 +13,8 @@ class MyAdsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> MyBuyFragment()
-            1 -> MyExchangeFragment()
-            2 -> MyDonateFragment()
+            1 -> MyDonateFragment()
+            2 -> MyExchangeFragment()
             else -> MyBidFragment()
         }
     }

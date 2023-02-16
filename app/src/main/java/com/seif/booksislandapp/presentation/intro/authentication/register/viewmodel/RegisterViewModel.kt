@@ -7,7 +7,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.usecase.usecase.auth.GetDistrictsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.GetGovernoratesUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.RegisterUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.auth.SaveInSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreference
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel

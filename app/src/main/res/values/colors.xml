@@ -24,4 +24,7 @@
     <color name="political_color">#A7194B</color>
     <color name="money_business_color">#66B032</color>
     <color name="self_development_color">#FABC02</color>
+
+    <color name="nav_item_text_color">@color/black</color>
+    <color name="nav_background_color">@color/white</color>
 </resources>

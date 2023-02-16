@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class MyAdsFragment : Fragment() {
     private var _binding: FragmentMyAdsBinding? = null
     private val binding get() = _binding!!
-    private val tabTitle = arrayListOf("  Buy  ", " Exchange ", " Donate ", " Biding ")
+    private val tabTitle = arrayListOf("  Buy  ", " Donate ", " Exchange ", " Biding ")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +40,9 @@ class MyAdsFragment : Fragment() {
             tab.text = tabTitle[position]
         }.attach()
         for (i in 0..4) {
-            val textView = LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
-                as TextView
+            val textView =
+                LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
+                    as TextView
             binding.tlMyAds.getTabAt(i)?.customView = textView
         }
     }
@@ -51,9 +52,27 @@ class MyAdsFragment : Fragment() {
         binding.fabAddAdv.setOnClickListener {
             lifecycleScope.launch {
                 delay(500)
-                findNavController().navigate(R.id.action_myAdsFragment_to_uploadAdvertisementFragment2)
+                when (binding.viewPager.currentItem) {
+                    0 -> navigateToUploadSellAdFragment()
+                    1 -> navigateToUploadDonateAdFragment()
+                    2 -> navigateToUploadExchangeAdFragment()
+                    3 -> navigateToUploadBidAdFragment()
+                }
             }
         }
+    }
+
+    private fun navigateToUploadSellAdFragment() {
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadAdvertisementFragment2)
+    }
+    private fun navigateToUploadDonateAdFragment() {
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadDonateFragment)
+    }
+    private fun navigateToUploadExchangeAdFragment() {
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadExchangeFragment)
+    }
+    private fun navigateToUploadBidAdFragment() {
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadBidFragment)
     }
 
     override fun onDestroyView() {

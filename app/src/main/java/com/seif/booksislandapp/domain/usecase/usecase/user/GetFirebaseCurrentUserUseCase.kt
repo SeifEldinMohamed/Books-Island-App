@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.domain.usecase.usecase.auth
+package com.seif.booksislandapp.domain.usecase.usecase.user
 
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp

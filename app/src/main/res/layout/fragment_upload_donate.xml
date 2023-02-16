@@ -84,12 +84,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tv_sell"
+                    android:id="@+id/tv_donate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_6sdp"
                     android:fontFamily="@font/roboto_bold"
-                    android:text="@string/page_title"
+                    android:text="@string/donate"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_20ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_back_upload"
@@ -143,52 +143,6 @@
                     app:layout_constraintStart_toEndOf="@+id/tv_author"
                     app:layout_constraintTop_toTopOf="@+id/tv_author" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_price"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="8"
-                    app:hintEnabled="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/tv_author"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_price"
-                    tools:ignore="HardcodedText">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number|numberDecimal"
-                        android:maxLength="8"
-                        android:textColor="@color/black"
-                        tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/tv_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:text="@string/price"
-                    android:textColor="@color/black"
-                    app:layout_constraintStart_toStartOf="@+id/til_author"
-                    app:layout_constraintTop_toBottomOf="@+id/til_author" />
-
-                <TextView
-                    android:id="@+id/tv_star_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_2sdp"
-                    android:text="@string/mandatory_star"
-                    android:textColor="@color/red"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_price"
-                    app:layout_constraintStart_toEndOf="@+id/tv_price"
-                    app:layout_constraintTop_toTopOf="@+id/tv_price" />
-
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="wrap_content"
@@ -213,11 +167,11 @@
                     android:id="@+id/tv_condition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginTop="3dp"
                     android:text="@string/condition"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="@+id/til_author"
-                    app:layout_constraintTop_toBottomOf="@+id/til_price" />
+                    app:layout_constraintTop_toBottomOf="@+id/til_author" />
 
                 <TextView
                     android:id="@+id/tv_star_condition"
