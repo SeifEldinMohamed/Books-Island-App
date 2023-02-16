@@ -11,4 +11,11 @@
     <style name="RoundedSquare">
         <item name="cornerSize">8%</item>
     </style>
+    <style name="menu_text_style" parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Menu">
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="toolbar_style" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/_20ssp</item>
+    </style>
 </resources>
