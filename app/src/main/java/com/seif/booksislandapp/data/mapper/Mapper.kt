@@ -3,10 +3,12 @@ package com.seif.booksislandapp.data.mapper
 import android.net.Uri
 import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
+import com.seif.booksislandapp.data.remote.dto.adv.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
@@ -47,6 +49,16 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         publishTime = publishTime!!,
         location = location,
         price = price
+    )
+}
+fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
+    return DonateAdvertisement(
+        id = id,
+        ownerId = ownerId,
+        book = book!!.toBook(),
+        status = status!!,
+        publishTime = publishTime!!,
+        location = location,
     )
 }
 

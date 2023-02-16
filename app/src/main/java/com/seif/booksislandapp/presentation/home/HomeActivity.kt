@@ -53,6 +53,10 @@ class HomeActivity : AppCompatActivity() {
                     binding.bottomAppBar.hide()
                     binding.fabProfile.visibility = View.GONE
                 }
+                R.id.donationFragment -> {
+                    binding.bottomAppBar.hide()
+                    binding.fabProfile.visibility = View.GONE
+                }
                 else -> {
                     binding.fabProfile.visibility = View.VISIBLE
                     binding.bottomAppBar.show()
