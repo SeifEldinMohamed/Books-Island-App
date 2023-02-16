@@ -62,6 +62,17 @@ fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
     )
 }
 
+fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
+    return DonateAdvertisementDto(
+        id = id,
+        ownerId = ownerId,
+        book = book.toBookDto(),
+        status = status,
+        publishTime = publishTime,
+        location = location,
+    )
+}
+
 fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
     return SellAdvertisementDto(
         id = id,
