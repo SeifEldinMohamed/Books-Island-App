@@ -196,4 +196,7 @@
     <string name="post_duration">Post Duration [ Days ]</string>
 
 
+    <!-- auction(Design) -->
+    <string name="status_started">Status:STARTED</string>
+    <string name="participant_2">participant:2</string>
 </resources>
