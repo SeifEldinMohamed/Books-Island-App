@@ -1,6 +1,6 @@
 package com.seif.booksislandapp.presentation.home.categories.donation
 
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 sealed class DonateState {
     object Init : DonateState()
     data class IsLoading(val isLoading: Boolean) : DonateState()

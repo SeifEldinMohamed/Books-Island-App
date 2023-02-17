@@ -1,6 +1,6 @@
 package com.seif.booksislandapp.presentation.home.categories.buy
 
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 
 sealed class BuyState {
     object Init : BuyState()
