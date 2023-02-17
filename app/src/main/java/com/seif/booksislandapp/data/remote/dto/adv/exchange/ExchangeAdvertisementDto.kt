@@ -1,6 +1,7 @@
-package com.seif.booksislandapp.data.remote.dto.adv
+package com.seif.booksislandapp.data.remote.dto.adv.exchange
 
 import com.seif.booksislandapp.data.remote.dto.BookDto
+import com.seif.booksislandapp.data.remote.dto.adv.AdvertisementDto
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.book.Book
 import java.util.*

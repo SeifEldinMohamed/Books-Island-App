@@ -1,6 +1,8 @@
-package com.seif.booksislandapp.domain.model.adv
+package com.seif.booksislandapp.domain.model.adv.sell
 
 import android.os.Parcelable
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.adv.Advertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import kotlinx.parcelize.Parcelize
 import java.util.*
