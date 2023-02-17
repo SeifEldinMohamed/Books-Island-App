@@ -54,7 +54,7 @@
             app:destination="@id/uploadExchangeFragment" />
         <action
             android:id="@+id/action_myAdsFragment_to_uploadBidFragment"
-            app:destination="@id/uploadBidFragment" />
+            app:destination="@id/uploadAuctionFragment" />
     </fragment>
     <fragment
         android:id="@+id/buyFragment"
@@ -67,9 +67,9 @@
     </fragment>
     <fragment
         android:id="@+id/bidFragment"
-        android:name="com.seif.booksislandapp.presentation.home.categories.bid.BidFragment"
+        android:name="com.seif.booksislandapp.presentation.home.categories.auction.AuctionFragment"
         android:label="fragment_bid"
-        tools:layout="@layout/fragment_bid" />
+        tools:layout="@layout/fragment_auction" />
     <fragment
         android:id="@+id/donationFragment"
         android:name="com.seif.booksislandapp.presentation.home.categories.donation.DonationFragment"
@@ -87,7 +87,7 @@
         tools:layout="@layout/fragment_sell_ad_details" >
         <argument
             android:name="buyAdvertisement"
-            app:argType="com.seif.booksislandapp.domain.model.adv.SellAdvertisement" />
+            app:argType="com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement" />
     </fragment>
     <fragment
         android:id="@+id/uploadSellAdvertisementFragment"
@@ -113,12 +113,12 @@
             app:destination="@id/bookCategoriesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/uploadBidFragment"
-        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.bid.UploadBidFragment"
-        android:label="fragment_upload_bid"
-        tools:layout="@layout/fragment_upload_bid" >
+        android:id="@+id/uploadAuctionFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.auction.UploadAuctionFragment"
+        android:label="fragment_upload_auction"
+        tools:layout="@layout/fragment_upload_auction" >
         <action
-            android:id="@+id/action_uploadBidFragment_to_bookCategoriesFragment"
+            android:id="@+id/action_uploadAuctionFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
     </fragment>
     <fragment
