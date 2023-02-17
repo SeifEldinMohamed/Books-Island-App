@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.upload_advertisement.sell
+package com.seif.booksislandapp.presentation.home.upload_advertisement
 
 sealed class UploadState {
     object Init : UploadState()

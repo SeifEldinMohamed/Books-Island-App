@@ -8,11 +8,11 @@ import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.*
 import com.seif.booksislandapp.data.remote.dto.UserDto
-import com.seif.booksislandapp.data.remote.dto.adv.DonateAdvertisementDto
-import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION

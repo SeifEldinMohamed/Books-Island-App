@@ -1,20 +1,16 @@
-package com.seif.booksislandapp.domain.model.adv
+package com.seif.booksislandapp.domain.model.adv.exchange
 
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.adv.Advertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import java.util.*
 
-data class BidAdvertisement(
+data class ExchangeAdvertisement(
     override var id: String,
     override val ownerId: String,
     override val book: Book,
     override val status: AdvStatus,
     override val publishTime: Date,
-    val initialPrice: Double,
-    val closeDate: String,
-    val isOpen: Boolean,
-    val endPrice: Double,
-    val numOfBidders: Int,
-    val lastBidderName: String,
+    val booksToExchange: List<Book>,
     override val location: String
-
 ) : Advertisement()

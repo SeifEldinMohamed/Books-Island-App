@@ -1,13 +1,12 @@
-package com.seif.booksislandapp.presentation.home.upload_advertisement.sell
+package com.seif.booksislandapp.presentation.home.upload_advertisement.auction
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
-import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadAuctionAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadSellAdvertisementUseCase
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,21 +18,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class UploadSellAdvertisementViewModel @Inject constructor(
-    private val uploadSellAdvertisementUseCase: UploadSellAdvertisementUseCase,
+class UploadAuctionViewModel @Inject constructor(
+    private val uploadAuctionAdvertisementUseCase: UploadAuctionAdvertisementUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
     private val getFromSharedPreference: GetFromSharedPreference
 ) : ViewModel() {
 
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
     val uploadState: StateFlow<UploadState> = _uploadState
-
-    private val _imageUris = MutableStateFlow<ArrayList<Uri>>(arrayListOf())
-    val imageUris: StateFlow<ArrayList<Uri>> = _imageUris
-
-    fun addImagesUris(uris: ArrayList<Uri>) {
-        _imageUris.value = uris
-    }
 
     private fun showError(message: String) {
         _uploadState.value = UploadState.ShowError(message)
@@ -46,10 +38,10 @@ class UploadSellAdvertisementViewModel @Inject constructor(
         }
     }
 
-    fun uploadSellAdvertisement(sellAdvertisement: SellAdvertisement) {
+    fun uploadAuctionAdvertisement(auctionAdvertisement: AuctionAdvertisement) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = uploadSellAdvertisementUseCase(sellAdvertisement)) {
+            when (val result = uploadAuctionAdvertisementUseCase(auctionAdvertisement)) {
                 is Resource.Error -> {
                     withContext(Dispatchers.Main) {
                         setLoading(false)

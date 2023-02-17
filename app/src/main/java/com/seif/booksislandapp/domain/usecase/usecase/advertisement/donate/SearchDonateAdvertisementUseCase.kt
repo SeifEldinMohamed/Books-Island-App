@@ -1,7 +1,7 @@
 package com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate
 
 import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.utils.Resource
 import javax.inject.Inject
 

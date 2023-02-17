@@ -13,4 +13,5 @@ data class Book(
     val category: String,
     val isUsed: Boolean?,
     val description: String,
+    val edition: String,
 ) : Parcelable

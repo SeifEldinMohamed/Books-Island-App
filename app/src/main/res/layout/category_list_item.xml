@@ -124,7 +124,7 @@
                 android:id="@+id/tv_bid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/biding"
+                android:text="@string/auctions"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintBottom_toBottomOf="parent"

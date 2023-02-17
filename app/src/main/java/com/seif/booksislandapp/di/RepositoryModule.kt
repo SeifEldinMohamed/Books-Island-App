@@ -5,8 +5,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
+import com.seif.booksislandapp.data.repository.AuctionAdvertisementRepositoryImp
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
+import com.seif.booksislandapp.domain.repository.AuctionAdvertisementRepository
 import com.seif.booksislandapp.domain.repository.AuthRepository
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
@@ -29,7 +31,13 @@ object RepositoryModule {
         sharedPrefs: SharedPrefs,
         connectivityManager: ConnectivityManager
     ): AuthRepository {
-        return AuthRepositoryImp(firestore, auth, resourceProvider, sharedPrefs, connectivityManager)
+        return AuthRepositoryImp(
+            firestore,
+            auth,
+            resourceProvider,
+            sharedPrefs,
+            connectivityManager
+        )
     }
 
     @Provides
@@ -40,6 +48,27 @@ object RepositoryModule {
         resourceProvider: ResourceProvider,
         connectivityManager: ConnectivityManager
     ): AdvertisementRepository {
-        return AdvertisementRepositoryImp(firestore, storageReference, resourceProvider, connectivityManager)
+        return AdvertisementRepositoryImp(
+            firestore,
+            storageReference,
+            resourceProvider,
+            connectivityManager
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuctionAdvertisementRepository(
+        firestore: FirebaseFirestore,
+        storageReference: StorageReference,
+        resourceProvider: ResourceProvider,
+        connectivityManager: ConnectivityManager
+    ): AuctionAdvertisementRepository {
+        return AuctionAdvertisementRepositoryImp(
+            firestore,
+            storageReference,
+            resourceProvider,
+            connectivityManager
+        )
     }
 }
