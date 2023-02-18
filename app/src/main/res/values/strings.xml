@@ -197,6 +197,10 @@
 
 
     <!-- auction(Design) -->
-    <string name="status_started">Status:STARTED</string>
-    <string name="participant_2">participant:2</string>
+    <string name="status_started">STARTED</string>
+    <string name="bidders">Bidders: 2</string>
+    <string name="current_price_120_egp">Current Price: 120 EGP</string>
+    <!-- Auction Adapter -->
+    <string name="current_price_egypt_pound">Current Price: %1$s EGP</string>
+
 </resources>
