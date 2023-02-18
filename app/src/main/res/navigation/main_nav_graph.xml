@@ -136,7 +136,7 @@
     </fragment>
     <fragment
         android:id="@+id/auctionAdDetailsFragment"
-        android:name="com.seif.booksislandapp.AuctionAdDetailsFragment"
+        android:name="com.seif.booksislandapp.presentation.home.ad_details.auction.AuctionAdDetailsFragment"
         android:label="fragment_auction_ad_details"
         tools:layout="@layout/fragment_auction_ad_details" >
         <argument
