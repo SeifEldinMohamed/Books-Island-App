@@ -10,7 +10,7 @@ data class ExchangeAdvertisement(
     override val ownerId: String,
     override val book: Book,
     override val status: AdvStatus,
-    override val publishTime: Date,
+    override val publishDate: Date,
     val booksToExchange: List<Book>,
     override val location: String
 ) : Advertisement()
