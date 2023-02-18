@@ -40,7 +40,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             delay(500) // to show loading progress
 
             val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                .orderBy("publishTime", Query.Direction.DESCENDING)
+                .orderBy("publishDate", Query.Direction.DESCENDING)
                 .get()
                 .await()
             val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
@@ -65,7 +65,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             delay(500) // to show loading progress
 
             val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                .orderBy("publishTime", Query.Direction.DESCENDING)
+                .orderBy("publishDate", Query.Direction.DESCENDING)
                 .get()
                 .await()
             val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
@@ -116,7 +116,7 @@ class AdvertisementRepositoryImp @Inject constructor(
         return try {
             val querySnapshot =
                 firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishTime", Query.Direction.DESCENDING)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
                     .get()
                     .await()
 
@@ -168,7 +168,7 @@ class AdvertisementRepositoryImp @Inject constructor(
         return try {
             val querySnapshot =
                 firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishTime", Query.Direction.DESCENDING)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
                     .get()
                     .await()
 
@@ -195,7 +195,7 @@ class AdvertisementRepositoryImp @Inject constructor(
         return try {
             val querySnapshot =
                 firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishTime", Query.Direction.DESCENDING)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
                     .get()
                     .await()
 
