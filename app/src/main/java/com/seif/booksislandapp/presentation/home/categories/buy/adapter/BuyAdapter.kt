@@ -8,6 +8,7 @@ import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.BuyDonateAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
 
 class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
@@ -19,10 +20,12 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
         fun bind(buyAdvertisement: SellAdvertisement, position: Int) {
             binding.tvTitle.text = buyAdvertisement.book.title
             binding.tvDescription.text = buyAdvertisement.book.description
-            binding.tvDate.text = buyAdvertisement.publishTime.formatDate()
+            binding.tvPublishDate.text = buyAdvertisement.publishDate.formatDate()
             binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
             binding.tvLocation.text = buyAdvertisement.location
-            binding.ivImage.load(buyAdvertisement.book.images.first())
+            binding.ivImage.load(buyAdvertisement.book.images.first()) {
+                placeholder(R.drawable.book_placeholder)
+            }
             binding.cvBuyDonateAd.setOnClickListener {
                 onAdItemClick?.onAdItemClick(buyAdvertisement, position)
             }

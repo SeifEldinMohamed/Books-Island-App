@@ -227,7 +227,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
-            publishTime = Date(),
+            publishDate = Date(),
             price = binding.etPrice.text.toString(),
             location = getUserLocation()
         )

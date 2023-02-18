@@ -24,6 +24,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
@@ -228,13 +229,13 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
-            publishTime = Date(),
+            publishDate = Date(),
             startPrice = binding.etStartPrice.text.toString().toDouble(),
             location = getUserLocation(),
             endPrice = null,
             closeDate = null,
             postDuration = binding.acPostDuration.text.toString(),
-            isOpen = true,
+            auctionStatus = AuctionStatus.STARTED,
             bidders = emptyList()
         )
     }
