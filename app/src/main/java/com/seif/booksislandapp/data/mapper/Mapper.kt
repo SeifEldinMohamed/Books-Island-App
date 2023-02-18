@@ -50,7 +50,7 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         ownerId = ownerId,
         book = book!!.toBook(),
         status = status!!,
-        publishTime = publishTime!!,
+        publishDate = publishDate!!,
         location = location,
         price = price
     )
@@ -61,7 +61,7 @@ fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
         ownerId = ownerId,
         book = book!!.toBook(),
         status = status!!,
-        publishTime = publishTime!!,
+        publishDate = publishDate!!,
         location = location,
     )
 }
@@ -72,7 +72,7 @@ fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
         ownerId = ownerId,
         book = book.toBookDto(),
         status = status,
-        publishTime = publishTime,
+        publishDate = publishDate,
         location = location,
     )
 }
@@ -83,18 +83,44 @@ fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
         ownerId = ownerId,
         book = book.toBookDto(),
         status = status,
-        publishTime = publishTime,
+        publishDate = publishDate,
         location = location,
         startPrice = startPrice!!,
         endPrice = endPrice,
         closeDate = closeDate!!,
-        isOpen = isOpen,
+        postDuration = postDuration,
+        auctionStatus = auctionStatus,
         bidders = bidders.map { it.toBidderDto() }
+    )
+}
+
+fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
+    return AuctionAdvertisement(
+        id = id,
+        ownerId = ownerId,
+        book = book!!.toBook(),
+        status = status!!,
+        publishDate = publishDate!!,
+        location = location,
+        startPrice = startPrice,
+        endPrice = endPrice,
+        closeDate = closeDate!!,
+        postDuration = postDuration,
+        auctionStatus = auctionStatus!!,
+        bidders = bidders!!.map { it.toBidder() }
     )
 }
 
 fun Bidder.toBidderDto(): BidderDto {
     return BidderDto(
+        bidderId = bidderId,
+        bidderName = bidderName,
+        suggestedPrice = suggestedPrice
+    )
+}
+
+fun BidderDto.toBidder(): Bidder {
+    return Bidder(
         bidderId = bidderId,
         bidderName = bidderName,
         suggestedPrice = suggestedPrice
@@ -107,7 +133,7 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
         ownerId = ownerId,
         book = book.toBookDto(),
         status = status,
-        publishTime = publishTime,
+        publishDate = publishDate,
         location = location,
         price = price
     )
@@ -121,7 +147,8 @@ fun Book.toBookDto(): BookDto {
         author = author,
         category = category,
         condition = isUsed.toString(),
-        description = description
+        description = description,
+        edition = edition
     )
 }
 

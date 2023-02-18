@@ -219,7 +219,7 @@ fun ScrollView.scrollToBottom() {
 fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
-    } else if (this.publishTime.toString().isEmpty()) {
+    } else if (this.publishDate.toString().isEmpty()) {
         Resource.Error("problem in Phone Time !")
     } else if (this.location.isEmpty()) {
         Resource.Error("Location Can't be Empty")
@@ -238,7 +238,7 @@ fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
 fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
-    } else if (this.publishTime.toString().isEmpty()) {
+    } else if (this.publishDate.toString().isEmpty()) {
         Resource.Error("problem in Phone Time !")
     } else if (this.location.isEmpty()) {
         Resource.Error("Location Can't be Empty")
@@ -255,7 +255,7 @@ fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, Strin
 fun AuctionAdvertisement.checkAuctionAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
-    } else if (this.publishTime.toString().isEmpty()) {
+    } else if (this.publishDate.toString().isEmpty()) {
         Resource.Error("problem in Phone Time !")
     } else if (this.location.isEmpty()) {
         Resource.Error("Location Can't be Empty!")

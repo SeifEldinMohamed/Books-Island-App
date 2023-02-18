@@ -10,6 +10,6 @@ data class DonateAdvertisementDto(
     override val ownerId: String = "",
     override val book: BookDto? = null,
     override val status: AdvStatus? = null,
-    override val publishTime: Date? = null,
+    override val publishDate: Date? = null,
     override val location: String = "",
 ) : AdvertisementDto()

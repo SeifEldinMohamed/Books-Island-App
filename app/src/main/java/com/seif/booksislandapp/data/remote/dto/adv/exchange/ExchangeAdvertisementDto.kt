@@ -11,7 +11,7 @@ data class ExchangeAdvertisementDto(
     override val ownerId: String,
     override val book: BookDto?,
     override val status: AdvStatus,
-    override val publishTime: Date,
+    override val publishDate: Date,
     override val location: String,
     val booksToExchange: List<Book>
 ) : AdvertisementDto()

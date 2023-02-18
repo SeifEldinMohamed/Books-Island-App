@@ -222,7 +222,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
-            publishTime = Date(),
+            publishDate = Date(),
             location = getUserLocation()
         )
     }

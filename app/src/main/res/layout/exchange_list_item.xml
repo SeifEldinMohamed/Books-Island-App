@@ -5,63 +5,53 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_90sdp"
-        android:layout_height="@dimen/_100sdp"
-        app:cardCornerRadius="@dimen/_8sdp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:cardCornerRadius="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_book"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_65sdp"
+            android:contentDescription="@string/book_image"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/test_book" />
+    </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_book"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_8sdp"
-                app:cardCornerRadius="@dimen/_10sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+    <TextView
 
-                <ImageView
-                    android:id="@+id/iv_book"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_70sdp"
-                    android:contentDescription="@string/book_image"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/test_book" />
-            </androidx.cardview.widget.CardView>
+        android:id="@+id/tv_book_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="@string/book_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cv_book"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toStartOf="@+id/cv_book"
+        app:layout_constraintTop_toBottomOf="@+id/cv_book" />
 
-            <TextView
-
-                android:id="@+id/tv_book_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
-                android:layout_marginLeft="@dimen/_24sdp"
-                android:layout_gravity="center_vertical"
-                android:text="@string/book_title"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/cv_book"
-                app:layout_constraintStart_toStartOf="@+id/cv_book"
-                app:layout_constraintTop_toBottomOf="@+id/cv_book" />
-
-            <ImageView
-                android:id="@+id/line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_8sdp"
-                android:src="@drawable/ic_horizontal_line"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cv_book"
-                app:layout_constraintTop_toTopOf="@+id/cv_book"
-                android:contentDescription="@string/photo" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:contentDescription="@string/photo"
+        android:src="@drawable/ic_horizontal_line"
+        app:layout_constraintBottom_toBottomOf="@+id/cv_book"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cv_book"
+        app:layout_constraintTop_toTopOf="@+id/cv_book" />
 </androidx.constraintlayout.widget.ConstraintLayout>

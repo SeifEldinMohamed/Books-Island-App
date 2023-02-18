@@ -71,12 +71,12 @@
                 android:text="@string/user_location"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10sdp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_publish_date"
                 app:layout_constraintStart_toStartOf="@+id/tv_title"
-                app:layout_constraintTop_toTopOf="@+id/tv_date" />
+                app:layout_constraintTop_toTopOf="@+id/tv_publish_date" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_date"
+                android:id="@+id/tv_publish_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_6sdp"

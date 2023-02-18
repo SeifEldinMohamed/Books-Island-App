@@ -10,6 +10,6 @@ data class DonateAdvertisement(
     override val ownerId: String,
     override val book: Book,
     override val status: AdvStatus,
-    override val publishTime: Date,
+    override val publishDate: Date,
     override val location: String,
 ) : Advertisement()

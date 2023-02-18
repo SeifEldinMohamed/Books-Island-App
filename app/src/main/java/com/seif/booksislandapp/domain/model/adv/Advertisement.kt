@@ -8,6 +8,6 @@ abstract class Advertisement {
     abstract val ownerId: String
     abstract val book: Book
     abstract val status: AdvStatus
-    abstract val publishTime: Date
+    abstract val publishDate: Date
     abstract val location: String
 }
