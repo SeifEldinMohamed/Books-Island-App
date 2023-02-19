@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
-import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadSellAdvertisementUseCase
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class UploadSellAdvertisementViewModel @Inject constructor(
     private val uploadSellAdvertisementUseCase: UploadSellAdvertisementUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
-    private val getFromSharedPreference: GetFromSharedPreference
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
 ) : ViewModel() {
 
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
@@ -74,6 +74,6 @@ class UploadSellAdvertisementViewModel @Inject constructor(
         return getFirebaseCurrentUserUseCase()
     }
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
-        return getFromSharedPreference(key, clazz)
+        return getFromSharedPreferenceUseCase(key, clazz)
     }
 }

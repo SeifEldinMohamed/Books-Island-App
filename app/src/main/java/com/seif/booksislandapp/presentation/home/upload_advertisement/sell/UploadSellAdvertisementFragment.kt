@@ -224,7 +224,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         )
         return SellAdvertisement(
             id = "",
-            ownerId = firebaseCurrentUser?.uid ?: "",
+            ownerId = firebaseCurrentUser?.uid ?: "", // if it's null get it from shared prefernce
             book = book,
             status = AdvStatus.Opened,
             publishDate = Date(),
