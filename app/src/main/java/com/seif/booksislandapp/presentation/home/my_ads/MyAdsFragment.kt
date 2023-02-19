@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentMyAdsBinding
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class MyAdsFragment : Fragment() {
     private var _binding: FragmentMyAdsBinding? = null
     private val binding get() = _binding!!
-    private val tabTitle = arrayListOf("  Buy  ", " Donate ", " Exchange ", " Biding ")
+    private val tabTitle = arrayListOf(" Buying ", " Donation ", " Exchanges ", " Auctions ")
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +30,16 @@ class MyAdsFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentMyAdsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
         setupTabLayoutWithViewPager()
         return binding.root
     }
 
     @SuppressLint("InflateParams")
     private fun setupTabLayoutWithViewPager() {
-        binding.viewPager.adapter = MyAdsPagerAdapter(this)
-        TabLayoutMediator(binding.tlMyAds, binding.viewPager) { tab, position ->
+        viewPager = binding.viewPager
+        viewPager.adapter = MyAdsPagerAdapter(this)
+
+        TabLayoutMediator(binding.tlMyAds, viewPager) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
         for (i in 0..4) {
@@ -50,9 +53,9 @@ class MyAdsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fabAddAdv.setOnClickListener {
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 delay(500)
-                when (binding.viewPager.currentItem) {
+                when (viewPager.currentItem) {
                     0 -> navigateToUploadSellAdFragment()
                     1 -> navigateToUploadDonateAdFragment()
                     2 -> navigateToUploadExchangeAdFragment()
@@ -77,6 +80,7 @@ class MyAdsFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
+        viewPager.adapter = null
         super.onDestroyView()
     }
 }

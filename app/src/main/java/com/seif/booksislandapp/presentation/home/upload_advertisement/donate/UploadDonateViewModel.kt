@@ -3,10 +3,11 @@ package com.seif.booksislandapp.presentation.home.upload_advertisement.donate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreference
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadDonateAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
-import com.seif.booksislandapp.presentation.home.upload_advertisement.sell.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadDonateViewModel @Inject constructor(
     private val uploadDonateAdvertisementUseCase: UploadDonateAdvertisementUseCase,
-    private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase
+    private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
+    private val getFromSharedPreference: GetFromSharedPreference
 ) : ViewModel() {
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
     val uploadState: StateFlow<UploadState> = _uploadState
@@ -61,5 +63,9 @@ class UploadDonateViewModel @Inject constructor(
 
     fun getFirebaseCurrentUser(): FirebaseUser? {
         return getFirebaseCurrentUserUseCase()
+    }
+
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPreference(key, clazz)
     }
 }

@@ -23,12 +23,12 @@ import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadDonateBinding
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.presentation.home.upload_advertisement.sell.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
@@ -140,7 +140,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     data?.let {
                         it.data?.let { uri ->
                             // imageUri = uri
-                            lifecycleScope.launch(Dispatchers.IO) {
+                            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                                 compressedFile = FileUtil.from(requireContext(), uri)?.let { it1 ->
                                     Compressor.compress(
                                         requireContext(),
@@ -171,7 +171,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
     private fun observe() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             uploadDonateAdvertisementViewModel.uploadState.collect {
                 when (it) {
                     UploadState.Init -> Unit
@@ -214,16 +214,30 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             author = binding.etAuthor.text.toString(),
             category = categoryName,
             isUsed = isUsed,
-            description = binding.etDescription.text.toString()
+            description = binding.etDescription.text.toString(),
+            edition = binding.acEdition.text.toString()
         )
         return DonateAdvertisement(
             id = "",
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
-            publishTime = Date(),
-            location = "Cairo - Egypt"
+            publishDate = Date(),
+            location = getUserLocation()
         )
+    }
+    private fun getUserLocation(): String {
+        return "${
+        uploadDonateAdvertisementViewModel.getFromSP(
+            Constants.USER_GOVERNORATE_KEY,
+            String::class.java
+        )
+        } - ${
+        uploadDonateAdvertisementViewModel.getFromSP(
+            Constants.USER_DISTRICT_KEY,
+            String::class.java
+        )
+        }"
     }
 
     override fun onRemoveImageItemClick(item: Uri, position: Int) {

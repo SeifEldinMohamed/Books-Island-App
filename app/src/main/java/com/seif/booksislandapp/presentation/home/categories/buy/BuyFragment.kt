@@ -12,9 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
-import com.seif.booksislandapp.presentation.home.categories.buy.adapter.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

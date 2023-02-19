@@ -1,8 +1,8 @@
 package com.seif.booksislandapp.domain.repository
 
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.utils.Resource
 
 interface AdvertisementRepository {

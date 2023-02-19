@@ -22,8 +22,9 @@ import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat
@@ -52,9 +53,11 @@ fun Context.showToast(message: String) {
 fun View.showSuccessSnackBar(message: String) {
     Snackify.success(this, message, Snackify.LENGTH_SHORT).show()
 }
+
 fun View.showErrorSnackBar(message: String) {
     Snackify.error(this, message, Snackify.LENGTH_SHORT).show()
 }
+
 fun View.showInfoSnackBar(message: String) {
     Snackify.info(this, message, Snackify.LENGTH_SHORT).show()
 }
@@ -87,6 +90,7 @@ fun Date.formatDate(): String {
     val formatter = SimpleDateFormat("dd/MM", Locale.getDefault())
     return formatMonth(formatter.format(this))
 }
+
 fun Date.formatDateInDetails(): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(this)
@@ -215,7 +219,7 @@ fun ScrollView.scrollToBottom() {
 fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
-    } else if (this.publishTime.toString().isEmpty()) {
+    } else if (this.publishDate.toString().isEmpty()) {
         Resource.Error("problem in Phone Time !")
     } else if (this.location.isEmpty()) {
         Resource.Error("Location Can't be Empty")
@@ -230,15 +234,37 @@ fun SellAdvertisement.checkSellAdvertisementUpload(): Resource<String, String> {
         }
     }
 }
+
 fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
-    } else if (this.publishTime.toString().isEmpty()) {
+    } else if (this.publishDate.toString().isEmpty()) {
         Resource.Error("problem in Phone Time !")
     } else if (this.location.isEmpty()) {
         Resource.Error("Location Can't be Empty")
     } else if (this.status.toString().isEmpty()) {
         Resource.Error("Status Can't be Empty")
+    } else {
+        return when (val result = this.book.validateBookData()) {
+            is Resource.Error -> Resource.Error(result.message)
+            is Resource.Success -> Resource.Success(result.data)
+        }
+    }
+}
+
+fun AuctionAdvertisement.checkAuctionAdvertisementUpload(): Resource<String, String> {
+    return if (this.ownerId.isEmpty()) {
+        Resource.Error("User is not LoggedIn !")
+    } else if (this.publishDate.toString().isEmpty()) {
+        Resource.Error("problem in Phone Time !")
+    } else if (this.location.isEmpty()) {
+        Resource.Error("Location Can't be Empty!")
+    } else if (this.status.toString().isEmpty()) {
+        Resource.Error("Status Can't be Empty!")
+    } else if (this.startPrice == null) {
+        Resource.Error("Start Price Can't be Empty!")
+    } else if (this.postDuration.isEmpty()) {
+        Resource.Error("Post Duration Can't be Empty!")
     } else {
         return when (val result = this.book.validateBookData()) {
             is Resource.Error -> Resource.Error(result.message)
@@ -260,6 +286,8 @@ private fun Book.validateBookData(): Resource<String, String> {
         Resource.Error("Please add the description of the book!")
     } else if (this.images.isEmpty()) {
         Resource.Error("Please add at least one image for the book!")
+    } else if (this.edition.isEmpty()) {
+        Resource.Error("Please choose the edition of the book!")
     } else {
         Resource.Success("All Book Data is Valid")
     }
@@ -282,7 +310,8 @@ fun Fragment.handleNoInternetConnectionState(view: View) {
 
             cancelable = true // Optional
             noInternetConnectionTitle = "No Internet" // Optional
-            noInternetConnectionMessage = "Check your Internet connection and try again." // Optional
+            noInternetConnectionMessage =
+                "Check your Internet connection and try again." // Optional
             showInternetOnButtons = true // Optional
             pleaseTurnOnText = "Please turn on" // Optional
             wifiOnButtonText = "Wifi" // Optional

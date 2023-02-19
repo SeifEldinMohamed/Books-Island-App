@@ -103,6 +103,14 @@
         <item>20</item>
     </string-array>
 
+    <string-array name="post_duration">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
     <!-- uploaded image item-->
     <string name="cancel_uploaded_image">cancel uploaded image</string>
     <string name="uploaded_image">uploaded image</string>
@@ -133,7 +141,7 @@
     <string name="welcome_username">Hello %1$s,</string>
     <string name="donation">Donation</string>
     <string name="exchange">Exchange</string>
-    <string name="bid">Bid</string>
+    <string name="auctions">Auctions</string>
     <string name="logout">Logout</string>
     <string name="heba_adel">Heba Adel</string>
 
@@ -141,7 +149,6 @@
     <string name="cairo">Cairo</string>
     <string name="october">october</string>
     <string name="update">Update</string>
-    <string name="biding">Biding</string>
 
     <!--DetailsFragment-->
     <string name="Title">النموذج الرباعي للتدفقات النقدية</string>
@@ -182,4 +189,18 @@
     <string name="review_menu">Review</string>
     <string name="our_apps_menu">Our Apps</string>
     <string name="about_menu">About</string>
+
+    <!-- upload auction adv -->
+    <string name="auction">Auction</string>
+    <string name="start_price">Start Price</string>
+    <string name="post_duration">Post Duration [ Days ]</string>
+
+
+    <!-- auction(Design) -->
+    <string name="status_started">STARTED</string>
+    <string name="bidders">Bidders: 2</string>
+    <string name="current_price_120_egp">Current Price: 120 EGP</string>
+    <!-- Auction Adapter -->
+    <string name="current_price_egypt_pound">Current Price: %1$s EGP</string>
+
 </resources>

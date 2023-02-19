@@ -11,6 +11,7 @@ class Constants {
         const val DISTRICTS_FIRESTORE_COLLECTION = "districts"
         const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "sell advertisements"
         const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "donate advertisement"
+        const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
 
         // Storage
         const val FIREBASE_STORAGE_ROOT_DIRECTORY = "app"

@@ -9,6 +9,6 @@ abstract class AdvertisementDto {
     abstract val ownerId: String
     abstract val book: BookDto?
     abstract val status: AdvStatus?
-    abstract val publishTime: Date?
+    abstract val publishDate: Date?
     abstract val location: String
 }

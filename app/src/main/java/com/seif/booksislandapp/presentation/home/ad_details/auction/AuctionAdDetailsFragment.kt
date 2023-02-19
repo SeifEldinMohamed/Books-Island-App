@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.upload_advertisement.bid
+package com.seif.booksislandapp.presentation.home.ad_details.auction
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.seif.booksislandapp.R
 
-class UploadBidFragment : Fragment() {
+class AuctionAdDetailsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -15,6 +15,10 @@ class UploadBidFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload_bid, container, false)
+        return inflater.inflate(R.layout.fragment_auction_ad_details, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 }

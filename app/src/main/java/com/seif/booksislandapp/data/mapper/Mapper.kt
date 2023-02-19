@@ -3,13 +3,17 @@ package com.seif.booksislandapp.data.mapper
 import android.net.Uri
 import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
-import com.seif.booksislandapp.data.remote.dto.adv.DonateAdvertisementDto
-import com.seif.booksislandapp.data.remote.dto.adv.SellAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.auction.BidderDto
+import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.Bidder
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.model.book.Book
@@ -46,7 +50,7 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         ownerId = ownerId,
         book = book!!.toBook(),
         status = status!!,
-        publishTime = publishTime!!,
+        publishDate = publishDate!!,
         location = location,
         price = price
     )
@@ -57,7 +61,7 @@ fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
         ownerId = ownerId,
         book = book!!.toBook(),
         status = status!!,
-        publishTime = publishTime!!,
+        publishDate = publishDate!!,
         location = location,
     )
 }
@@ -68,8 +72,58 @@ fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
         ownerId = ownerId,
         book = book.toBookDto(),
         status = status,
-        publishTime = publishTime,
+        publishDate = publishDate,
         location = location,
+    )
+}
+
+fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
+    return AuctionAdvertisementDto(
+        id = id,
+        ownerId = ownerId,
+        book = book.toBookDto(),
+        status = status,
+        publishDate = publishDate,
+        location = location,
+        startPrice = startPrice!!,
+        endPrice = endPrice,
+        closeDate = closeDate!!,
+        postDuration = postDuration,
+        auctionStatus = auctionStatus,
+        bidders = bidders.map { it.toBidderDto() }
+    )
+}
+
+fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
+    return AuctionAdvertisement(
+        id = id,
+        ownerId = ownerId,
+        book = book!!.toBook(),
+        status = status!!,
+        publishDate = publishDate!!,
+        location = location,
+        startPrice = startPrice,
+        endPrice = endPrice,
+        closeDate = closeDate!!,
+        postDuration = postDuration,
+        auctionStatus = auctionStatus!!,
+        bidders = bidders!!.map { it.toBidder() }
+    )
+}
+
+fun Bidder.toBidderDto(): BidderDto {
+    return BidderDto(
+        bidderId = bidderId,
+        bidderName = bidderName,
+        suggestedPrice = suggestedPrice
+    )
+}
+
+fun BidderDto.toBidder(): Bidder {
+    return Bidder(
+        bidderId = bidderId,
+        bidderName = bidderName,
+        suggestedPrice = suggestedPrice
     )
 }
 
@@ -79,7 +133,7 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
         ownerId = ownerId,
         book = book.toBookDto(),
         status = status,
-        publishTime = publishTime,
+        publishDate = publishDate,
         location = location,
         price = price
     )
@@ -93,7 +147,8 @@ fun Book.toBookDto(): BookDto {
         author = author,
         category = category,
         condition = isUsed.toString(),
-        description = description
+        description = description,
+        edition = edition
     )
 }
 
@@ -112,7 +167,8 @@ fun BookDto.toBook(): Book {
         author = author,
         category = category,
         isUsed = isUsed,
-        description = description
+        description = description,
+        edition = edition
     )
 }
 

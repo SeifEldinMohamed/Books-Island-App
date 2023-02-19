@@ -14,7 +14,7 @@ import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentSellAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -162,7 +162,7 @@ class SellAdDetailsFragment : Fragment() {
         binding.tvPrice.text = getString(R.string.egypt_pound, buyAdvertisement.price)
         binding.ivBook.load(buyAdvertisement.book.images.first())
         binding.tvLocation.text = buyAdvertisement.location
-        binding.tvDate.text = buyAdvertisement.publishTime.formatDateInDetails()
+        binding.tvPublishDate.text = buyAdvertisement.publishDate.formatDateInDetails()
         binding.tvBookDescription.text = buyAdvertisement.book.description
         binding.tvAuthorName.text = buyAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition

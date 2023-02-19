@@ -1,6 +1,6 @@
 package com.seif.booksislandapp.domain.usecase.usecase.upload_adv
 
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.checkSellAdvertisementUpload

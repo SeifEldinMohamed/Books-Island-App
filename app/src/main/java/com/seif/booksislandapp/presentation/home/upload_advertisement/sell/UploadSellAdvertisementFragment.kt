@@ -28,10 +28,13 @@ import timber.log.Timber
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.book.Book
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUMBER
+import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +64,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
         return binding.root
     }
 
@@ -142,7 +144,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                     data?.let {
                         it.data?.let { uri ->
                             // imageUri = uri
-                            lifecycleScope.launch(Dispatchers.IO) {
+                            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                                 compressedFile = FileUtil.from(requireContext(), uri)?.let { it1 ->
                                     Compressor.compress(
                                         requireContext(),
@@ -174,7 +176,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
     private fun observe() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             uploadSellAdvertisementViewModel.uploadState.collect {
                 when (it) {
                     UploadState.Init -> Unit
@@ -217,17 +219,32 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             author = binding.etAuthor.text.toString(),
             category = categoryName,
             isUsed = isUsed,
-            description = binding.etDescription.text.toString()
+            description = binding.etDescription.text.toString(),
+            edition = binding.acEdition.text.toString()
         )
         return SellAdvertisement(
             id = "",
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
             status = AdvStatus.Opened,
-            publishTime = Date(),
+            publishDate = Date(),
             price = binding.etPrice.text.toString(),
-            location = "Cairo - Egypt"
+            location = getUserLocation()
         )
+    }
+
+    private fun getUserLocation(): String {
+        return "${
+        uploadSellAdvertisementViewModel.getFromSP(
+            USER_GOVERNORATE_KEY,
+            String::class.java
+        )
+        } - ${
+        uploadSellAdvertisementViewModel.getFromSP(
+            USER_DISTRICT_KEY,
+            String::class.java
+        )
+        }"
     }
 
     override fun onRemoveImageItemClick(item: Uri, position: Int) {

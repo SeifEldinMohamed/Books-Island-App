@@ -8,4 +8,5 @@ data class BookDto(
     val category: String = "",
     val condition: String? = null,
     val description: String = "",
+    val edition: String = ""
 )

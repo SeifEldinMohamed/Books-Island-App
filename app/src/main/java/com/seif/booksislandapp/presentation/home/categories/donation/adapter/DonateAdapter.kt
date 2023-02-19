@@ -7,21 +7,24 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.BuyDonateAdvItemBinding
-import com.seif.booksislandapp.domain.model.adv.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.utils.formatDate
 
 class DonateAdapter : RecyclerView.Adapter<DonateAdapter.MyViewHolder>() {
     var donateAds: List<DonateAdvertisement> = emptyList()
+
     inner class MyViewHolder(private val binding: BuyDonateAdvItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(donateAdvertisement: DonateAdvertisement) {
             binding.tvTitle.text = donateAdvertisement.book.title
             binding.tvDescription.text = donateAdvertisement.book.description
-            binding.tvDate.text = donateAdvertisement.publishTime.formatDate()
+            binding.tvPublishDate.text = donateAdvertisement.publishDate.formatDate()
             binding.tvPrice.text = itemView.context.getString(R.string.free)
 
             binding.tvLocation.text = donateAdvertisement.location
-            binding.ivImage.load(donateAdvertisement.book.images.first())
+            binding.ivImage.load(donateAdvertisement.book.images.first()) {
+                placeholder(R.drawable.book_placeholder)
+            }
         }
     }
 
@@ -42,6 +45,7 @@ class DonateAdapter : RecyclerView.Adapter<DonateAdapter.MyViewHolder>() {
     override fun getItemCount(): Int {
         return donateAds.size
     }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newDonateAds: List<DonateAdvertisement>) {
         this.donateAds = newDonateAds

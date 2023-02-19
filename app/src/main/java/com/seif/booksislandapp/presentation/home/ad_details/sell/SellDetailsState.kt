@@ -1,7 +1,7 @@
 package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import com.seif.booksislandapp.domain.model.User
-import com.seif.booksislandapp.domain.model.adv.SellAdvertisement
+import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 
 sealed class SellDetailsState {
     object Init : SellDetailsState()
