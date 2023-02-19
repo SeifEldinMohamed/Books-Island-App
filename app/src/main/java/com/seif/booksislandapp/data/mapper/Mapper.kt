@@ -129,7 +129,7 @@ fun Bidder.toBidderDto(): BidderDto {
     return BidderDto(
         bidderId = bidderId,
         bidderName = bidderName,
-        suggestedPrice = suggestedPrice
+        suggestedPrice = suggestedPrice.toInt()
     )
 }
 
@@ -137,7 +137,7 @@ fun BidderDto.toBidder(): Bidder {
     return Bidder(
         bidderId = bidderId,
         bidderName = bidderName,
-        suggestedPrice = suggestedPrice
+        suggestedPrice = suggestedPrice.toString()
     )
 }
 
@@ -145,7 +145,7 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
     return SellAdvertisementDto(
         id = id,
         ownerId = ownerId,
-        book = book!!.toBookDto(),
+        book = book.toBookDto(),
         status = status,
         publishDate = publishDate,
         location = location,
