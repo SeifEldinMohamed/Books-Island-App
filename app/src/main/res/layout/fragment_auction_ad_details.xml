@@ -440,14 +440,13 @@
                   android:textColor="@color/white"
                   android:textSize="@dimen/_14ssp"
                   app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="@+id/tv_current_price"
                   app:layout_constraintStart_toStartOf="@+id/tv_current_price"
-                  app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
+                  app:layout_constraintTop_toBottomOf="@+id/tv_currentPriceValue">
 
               </com.google.android.material.textview.MaterialTextView>
 
               <com.google.android.material.textview.MaterialTextView
-                  android:id="@+id/materialTextView2"
+                  android:id="@+id/tv_currentPriceValue"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="@dimen/_6sdp"

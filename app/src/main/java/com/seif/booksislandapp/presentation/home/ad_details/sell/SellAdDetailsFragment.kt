@@ -167,5 +167,6 @@ class SellAdDetailsFragment : Fragment() {
         binding.tvAuthorName.text = buyAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = buyAdvertisement.book.category
+        binding.tvEditionValue.text = buyAdvertisement.book.edition
     }
 }
