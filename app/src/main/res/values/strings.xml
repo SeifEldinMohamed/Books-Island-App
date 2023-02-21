@@ -211,5 +211,6 @@
     <string name="_100_egp">100 EGP</string>
     <string name="last_bidder_you">Last Bidder: You</string>
     <string name="participate">Participate</string>
+    <string name="current_price">Current Price:</string>
 
 </resources>
