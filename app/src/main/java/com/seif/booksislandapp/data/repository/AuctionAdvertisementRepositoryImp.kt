@@ -40,15 +40,16 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                 .orderBy("publishDate", Query.Direction.DESCENDING)
                 .get()
                 .await()
+
             val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
             for (document in querySnapshot) {
                 val auctionAdvertisementDto = document.toObject(AuctionAdvertisementDto::class.java)
                 auctionsAdvertisementsDto.add(auctionAdvertisementDto)
             }
             Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
-//            auctionsAdvertisementsDto.map {
-//                it.auctionStatus = calculateAuctionStatus(it.postDuration.toInt(), it.closeDate!!)
-//            }
+            auctionsAdvertisementsDto.map {
+                it.auctionStatus = calculateAuctionStatus(it.postDuration.toInt(), it.closeDate!!)
+            }
             Resource.Success(
                 data = auctionsAdvertisementsDto.map { auctionAdvertisementDto ->
                     auctionAdvertisementDto.toAuctionAdvertisement()
@@ -61,7 +62,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
 
     private fun calculateAuctionStatus(postDuration: Int, closeDate: Date): AuctionStatus {
         val currentDate = Date()
-        val diff: Long = closeDate.time - currentDate.time
+        val diff = (closeDate.time - currentDate.time).toDouble()
+        Timber.d("calculateAuctionStatus: diff in milliseconds$diff")
         val seconds = diff / 1000
         val minutes = seconds / 60
         val hours = minutes / 60
@@ -69,8 +71,24 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         Timber.d("calculateAuctionStatus: days remaining$daysRemaining")
         val auctionLifeTime = postDuration - daysRemaining
         Timber.d("calculateAuctionStatus: auctionLifeTime$auctionLifeTime")
-        Timber.d("calculateAuctionStatus: postDurationForEachStatus = ${postDuration / 3}")
-        return AuctionStatus.STARTED
+        val firstPeriod = postDuration / 3
+        Timber.d("calculateAuctionStatus: first period$firstPeriod")
+        val secondPeriod = firstPeriod * 2
+        Timber.d("calculateAuctionStatus: second period $secondPeriod")
+
+        return if (auctionLifeTime <= firstPeriod) {
+            // started
+            AuctionStatus.STARTED
+        } else if (auctionLifeTime > firstPeriod && auctionLifeTime <= secondPeriod) {
+            // middle
+            AuctionStatus.MIDDLE
+        } else if (auctionLifeTime > secondPeriod && auctionLifeTime < postDuration) {
+            // closing
+            AuctionStatus.CLOSING
+        } else {
+            // closed
+            AuctionStatus.CLOSED
+        }
     }
 
     override suspend fun searchAuctionsAdv(searchQuery: String): Resource<ArrayList<AuctionAdvertisement>, String> {
