@@ -77,7 +77,7 @@ class SellAdDetailsFragment : Fragment() {
                     is SellDetailsState.ShowError -> handleErrorState(it.message)
                     is SellDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.setImageResource(it.user.avatarImage.toInt())
+                        binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
                     is SellDetailsState.FetchRelatedSellAdvertisementSuccessfully -> {

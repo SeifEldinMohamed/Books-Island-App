@@ -57,6 +57,43 @@
                     app:layout_constraintStart_toEndOf="@id/tv_category"
                     app:layout_constraintTop_toTopOf="@+id/tv_category" />
 
+                <ImageView
+                    android:id="@+id/iv_point8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/photo"
+                    android:src="@drawable/iv_point"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_edition"
+                    app:layout_constraintStart_toStartOf="@id/iv_details"
+                    app:layout_constraintTop_toTopOf="@id/tv_edition"
+                    tools:ignore="ImageContrastCheck" />
+
+                <TextView
+                    android:id="@+id/tv_edition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/edition_details"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintStart_toEndOf="@id/iv_point8"
+                    app:layout_constraintTop_toBottomOf="@id/tv_category" />
+
+                <TextView
+                    android:id="@+id/tv_edition_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/_1"
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_edition"
+                    app:layout_constraintStart_toEndOf="@id/tv_edition"
+                    app:layout_constraintTop_toTopOf="@+id/tv_edition" />
+
                 <View
                     android:id="@+id/line"
                     android:layout_width="match_parent"
@@ -336,7 +373,7 @@
                     android:background="@color/gray_medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_category" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_edition" />
 
                 <View
                     android:id="@+id/line3"
@@ -553,7 +590,7 @@
                         android:layout_marginStart="@dimen/_12sdp"
                         android:layout_marginTop="@dimen/_12sdp"
                         android:layout_marginBottom="@dimen/_12sdp"
-                        android:src="@drawable/man_avatar_6"
+                        tools:src="@drawable/man_avatar_1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
