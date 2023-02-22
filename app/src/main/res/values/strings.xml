@@ -200,7 +200,16 @@
     <string name="status_started">STARTED</string>
     <string name="bidders">Bidders: 2</string>
     <string name="current_price_120_egp">Current Price: 120 EGP</string>
+
     <!-- Auction Adapter -->
     <string name="current_price_egypt_pound">Current Price: %1$s EGP</string>
+
+    <!-- Auction Details -->
+    <string name="_1">1</string>
+    <string name="edition_details">Edition:</string>
+    <string name="start_price_details">Start Price:</string>
+    <string name="_100_egp">100 EGP</string>
+    <string name="last_bidder_you">Last Bidder: You</string>
+    <string name="participate">Participate</string>
 
 </resources>
