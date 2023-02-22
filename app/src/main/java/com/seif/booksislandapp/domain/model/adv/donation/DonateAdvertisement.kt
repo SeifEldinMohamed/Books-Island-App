@@ -1,10 +1,12 @@
 package com.seif.booksislandapp.domain.model.adv.donation
 
+import android.os.Parcelable
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.Advertisement
 import com.seif.booksislandapp.domain.model.book.Book
+import kotlinx.android.parcel.Parcelize
 import java.util.*
-
+@Parcelize
 data class DonateAdvertisement(
     override var id: String,
     override val ownerId: String,
@@ -12,4 +14,4 @@ data class DonateAdvertisement(
     override val status: AdvStatus,
     override val publishDate: Date,
     override val location: String,
-) : Advertisement()
+) : Advertisement(), Parcelable

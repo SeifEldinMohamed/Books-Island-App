@@ -6,6 +6,7 @@ import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.BidderDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.exchange.ExchangeAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
@@ -13,6 +14,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
@@ -76,7 +78,6 @@ fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
         location = location,
     )
 }
-
 fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
     return AuctionAdvertisementDto(
         id = id,
@@ -90,7 +91,20 @@ fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
         closeDate = closeDate!!,
         postDuration = postDuration,
         auctionStatus = auctionStatus,
-        bidders = bidders.map { it.toBidderDto() }
+        bidders = bidders.map { it.toBidderDto() },
+    )
+}
+
+fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
+    return ExchangeAdvertisement(
+        id = id,
+        ownerId = ownerId,
+        book = book!!.toBook(),
+        status = status!!,
+        publishDate = publishDate!!,
+        location = location,
+        booksToExchange = booksToExchange
+
     )
 }
 
@@ -131,7 +145,7 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
     return SellAdvertisementDto(
         id = id,
         ownerId = ownerId,
-        book = book.toBookDto(),
+        book = book!!.toBookDto(),
         status = status,
         publishDate = publishDate,
         location = location,
