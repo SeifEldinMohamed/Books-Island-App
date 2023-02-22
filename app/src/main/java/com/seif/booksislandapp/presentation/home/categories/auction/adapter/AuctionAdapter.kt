@@ -23,14 +23,17 @@ class AuctionAdapter : RecyclerView.Adapter<AuctionAdapter.MyViewHolder>() {
             binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDate()
             binding.tvCurrentPrice.text = itemView.context.getString(
                 R.string.current_price_egypt_pound,
-                (auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice } ?: auctionAdvertisement.startPrice).toString()
+                (
+                    auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                        ?: auctionAdvertisement.startPrice
+                    ).toString()
             )
             binding.tvLocation.text = auctionAdvertisement.location
             binding.ivImage.load(auctionAdvertisement.book.images.first()) {
                 placeholder(R.drawable.book_placeholder)
             }
             binding.tvStatus.text = auctionAdvertisement.auctionStatus.name
-            binding.tvParticipant.text = auctionAdvertisement.bidders.size.toString()
+            binding.tvParticipant.text = auctionAdvertisement.bidders.distinctBy { it.bidderId }.size.toString()
             binding.cvAuctionAd.setOnClickListener {
                 onAdItemClick?.onAdItemClick(auctionAdvertisement, position)
             }
