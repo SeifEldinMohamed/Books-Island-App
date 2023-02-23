@@ -10,6 +10,7 @@ class Constants {
         const val GOVERNORATES_FIRESTORE_COLLECTION = "governorate"
         const val DISTRICTS_FIRESTORE_COLLECTION = "districts"
         const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "sell advertisements"
+        const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "exchange advertisements"
         const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "donate advertisement"
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
 
