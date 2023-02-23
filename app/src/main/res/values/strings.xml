@@ -171,7 +171,7 @@
     <string name="related_ads">Related Ads</string>
     <string name="no_related_ads_yet">No Related Ads Yet!</string>
     <string name="investment">Investment</string>
-    <string name="category_">Category:</string>
+    <string name="category_">Category :</string>
 
     <!-- Buy Adapter -->
     <string name="free">FREE</string>
@@ -203,6 +203,9 @@
 
     <!-- Auction Adapter -->
     <string name="current_price_egypt_pound">Current Price: %1$s EGP</string>
+    <string name="edition_">Edition :</string>
+    <string name="_2">2</string>
+    <string name="exchange_for">Exchange For</string>
 
     <!-- Auction Details -->
     <string name="_1">1</string>

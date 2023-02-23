@@ -1,36 +1,32 @@
-package com.seif.booksislandapp.presentation.home.categories.donation
+package com.seif.booksislandapp.presentation.home.categories.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetAllDonateAdvertisementUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.SearchDonateAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetAllExchangeAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.SearchExchangeAdvertisementUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 @HiltViewModel
-class DonateViewModel @Inject constructor(
-    private val getAllDonateAdvertisementUseCase: GetAllDonateAdvertisementUseCase,
-    private val searchDonateAdvertisementUseCase: SearchDonateAdvertisementUseCase,
-    private val resourceProvider: ResourceProvider
+class ExchangeViewModel @Inject constructor(
+    private val getAllExchangeAdvertisementUseCase: GetAllExchangeAdvertisementUseCase,
+    private val searchExchangeAdvertisementUseCase: SearchExchangeAdvertisementUseCase,
+    private val resourceProvider: ResourceProvider,
 ) : ViewModel() {
-    private var _donateState = MutableStateFlow<DonateState>(DonateState.Init)
-    val donateState = _donateState.asStateFlow()
+    private var _exchangeState = MutableStateFlow<ExchangeState>(ExchangeState.Init)
+    val exchangeState = _exchangeState.asStateFlow()
     private var searchJob: Job? = null
     var firstTime = true
     var isSearching = false
-    fun fetchAllDonateAdvertisement() {
+    fun fetchAllExchangeAds() {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getAllDonateAdvertisementUseCase.invoke().let {
+            getAllExchangeAdvertisementUseCase.invoke().let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -42,19 +38,21 @@ class DonateViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _donateState.value = DonateState.FetchAllDonateAdvertisementSuccessfully(it.data)
+                        _exchangeState.value = ExchangeState.FetchAllExchangeAdsSuccessfully(it.data)
                     }
                 }
             }
         }
     }
 
-    fun searchDonateAdvertisements(searchQuery: String) {
-        setLoading(true)
-
+    fun searchExchangeAds(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {
-            searchDonateAdvertisementUseCase(searchQuery).let {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                setLoading(true)
+            }
+            searchExchangeAdvertisementUseCase(searchQuery).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -66,7 +64,7 @@ class DonateViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _donateState.value = DonateState.SearchDonateAdvertisementSuccessfully(it.data)
+                        _exchangeState.value = ExchangeState.SearchExchangeAdsSuccessfully(it.data)
                     }
                 }
             }
@@ -76,26 +74,24 @@ class DonateViewModel @Inject constructor(
     private fun setLoading(status: Boolean) {
         when (status) {
             true -> {
-                _donateState.value = DonateState.IsLoading(true)
+                _exchangeState.value = ExchangeState.IsLoading(true)
             }
             false -> {
-                _donateState.value = DonateState.IsLoading(false)
+                _exchangeState.value = ExchangeState.IsLoading(false)
             }
         }
     }
-
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _donateState.value = DonateState.NoInternetConnection(message)
+                _exchangeState.value = ExchangeState.NoInternetConnection(message)
             }
             else -> {
-                _donateState.value = DonateState.ShowError(message)
+                _exchangeState.value = ExchangeState.ShowError(message)
             }
         }
     }
-
     fun resetState() {
-        _donateState.value = DonateState.Init
+        _exchangeState.value = ExchangeState.Init
     }
 }

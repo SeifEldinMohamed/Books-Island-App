@@ -18,4 +18,8 @@ interface AdvertisementRepository {
     ): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun searchDonateAdv(searchQuery: String): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun uploadDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String>
+    suspend fun fetchRelatedDonateAdvertisement(
+        adId: String,
+        category: String
+    ): Resource<ArrayList<DonateAdvertisement>, String>
 }
