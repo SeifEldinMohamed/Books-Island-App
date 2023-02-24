@@ -197,8 +197,9 @@
 
 
     <!-- auction(Design) -->
-    <string name="status_started">STARTED</string>
+    <string name="started">STARTED</string>
     <string name="bidders">Bidders: 2</string>
+    <string name="bidders_number">Bidders: %1$s</string>
     <string name="current_price_120_egp">Current Price: 120 EGP</string>
 
     <!-- Auction Adapter -->
@@ -215,5 +216,13 @@
     <string name="last_bidder_you">Last Bidder: You</string>
     <string name="participate">Participate</string>
     <string name="current_price">Current Price:</string>
+    <string name="no_one">No One</string>
+    <string name="your_bid">Your Bid</string>
+    <string name="bid">Bid</string>
+    <string name="last_bidder">Last Bidder</string>
+    <string name="other">Other</string>
+    <string name="status_started">Status: Started</string>
+    <string name="status_value">Status: %1$s</string>
+    <string name="last_bidder_value">Last Bidder: %1$s</string>
 
 </resources>
