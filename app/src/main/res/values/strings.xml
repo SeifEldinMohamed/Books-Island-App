@@ -224,5 +224,6 @@
     <string name="status_started">Status: Started</string>
     <string name="status_value">Status: %1$s</string>
     <string name="last_bidder_value">Last Bidder: %1$s</string>
+    <string name="add_bid_successfully">Your Bid Added Successfully</string>
 
 </resources>

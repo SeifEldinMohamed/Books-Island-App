@@ -5,6 +5,9 @@ class Constants {
         // Pagination
         const val PAGE_SIZE = 15
 
+        // Timout
+        const val TIMEOUT = 4000L // 4 seconds
+
         // FireStore
         const val USER_FIRESTORE_COLLECTION = "users"
         const val GOVERNORATES_FIRESTORE_COLLECTION = "governorate"
