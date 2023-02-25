@@ -1,22 +1,22 @@
 package com.seif.booksislandapp.presentation.intro.splash
 
 import androidx.lifecycle.ViewModel
-import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreference
-import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreferenceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val saveInSharedPreference: SaveInSharedPreference,
-    private val getFromSharedPreference: GetFromSharedPreference
+    private val saveInSharedPreferenceUseCase: SaveInSharedPreferenceUseCase,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
 ) : ViewModel() {
 
     fun <T> saveInSP(key: String, data: T) {
-        saveInSharedPreference(key, data)
+        saveInSharedPreferenceUseCase(key, data)
     }
 
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
-        return getFromSharedPreference(key, clazz)
+        return getFromSharedPreferenceUseCase(key, clazz)
     }
 }

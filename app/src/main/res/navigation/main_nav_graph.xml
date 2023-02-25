@@ -96,10 +96,13 @@
         android:id="@+id/sellAdDetailsFragment"
         android:name="com.seif.booksislandapp.presentation.home.ad_details.sell.SellAdDetailsFragment"
         android:label="fragment_sell_ad_details"
-        tools:layout="@layout/fragment_sell_ad_details" >
+        tools:layout="@layout/fragment_sell_ad_details">
         <argument
             android:name="buyAdvertisement"
             app:argType="com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement" />
+        <action
+            android:id="@+id/action_sellAdDetailsFragment_self"
+            app:destination="@id/sellAdDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/uploadSellAdvertisementFragment"
@@ -146,27 +149,36 @@
         android:id="@+id/auctionAdDetailsFragment"
         android:name="com.seif.booksislandapp.presentation.home.ad_details.auction.AuctionAdDetailsFragment"
         android:label="fragment_auction_ad_details"
-        tools:layout="@layout/fragment_auction_ad_details" >
+        tools:layout="@layout/fragment_auction_ad_details">
         <argument
             android:name="auctionAdvertisement"
             app:argType="com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement" />
+        <action
+            android:id="@+id/action_auctionAdDetailsFragment_self"
+            app:destination="@id/auctionAdDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/exchangeAdDetailsFragment"
         android:name="com.seif.booksislandapp.presentation.home.ad_details.exchange.ExchangeAdDetailsFragment"
         android:label="fragment_exchange_ad_details"
-        tools:layout="@layout/fragment_exchange_ad_details" >
+        tools:layout="@layout/fragment_exchange_ad_details">
         <argument
             android:name="exchangeAdv"
             app:argType="com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement" />
+        <action
+            android:id="@+id/action_exchangeAdDetailsFragment_self"
+            app:destination="@id/exchangeAdDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/donateAdDetailsFragment"
         android:name="com.seif.booksislandapp.presentation.home.ad_details.donate.DonateAdDetailsFragment"
         android:label="fragment_donate_ad_details"
-        tools:layout="@layout/fragment_donate_ad_details" >
+        tools:layout="@layout/fragment_donate_ad_details">
         <argument
             android:name="donateAdv"
             app:argType="com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement" />
+        <action
+            android:id="@+id/action_donateAdDetailsFragment_self"
+            app:destination="@id/donateAdDetailsFragment" />
     </fragment>
 </navigation>

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.FetchAllExchangeRelatedAdvertisementsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ExchangeDetailsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val fetchAllExchangeRelatedAdvertisementsUseCase: FetchAllExchangeRelatedAdvertisementsUseCase
 ) : ViewModel() {
     private var _exchangeDetailsState = MutableStateFlow<ExchangeDetailsState>(ExchangeDetailsState.Init)
@@ -88,5 +90,9 @@ class ExchangeDetailsViewModel @Inject constructor(
                 _exchangeDetailsState.value = ExchangeDetailsState.ShowError(message)
             }
         }
+    }
+
+    fun <T> readFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
     }
 }

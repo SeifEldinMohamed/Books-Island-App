@@ -7,7 +7,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.usecase.usecase.auth.GetDistrictsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.GetGovernoratesUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.auth.RegisterUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreference
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreferenceUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
-    private val saveInSharedPreference: SaveInSharedPreference,
+    private val saveInSharedPreferenceUseCase: SaveInSharedPreferenceUseCase,
     private val getGovernoratesUseCase: GetGovernoratesUseCase,
     private val getDistrictsUseCase: GetDistrictsUseCase,
     private val resourceProvider: ResourceProvider
@@ -122,6 +122,6 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun <T> saveInSP(key: String, data: T) {
-        saveInSharedPreference(key, data)
+        saveInSharedPreferenceUseCase(key, data)
     }
 }

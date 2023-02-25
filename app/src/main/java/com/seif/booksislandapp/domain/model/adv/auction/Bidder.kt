@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class Bidder(
     val bidderId: String,
     val bidderName: String,
-    val suggestedPrice: Int
+    val suggestedPrice: String
 ) : Parcelable
