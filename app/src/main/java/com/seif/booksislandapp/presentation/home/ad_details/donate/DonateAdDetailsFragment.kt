@@ -16,6 +16,7 @@ import com.seif.booksislandapp.databinding.FragmentDonateAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.donate.adapter.RelatedDonateAdsAdapter
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class DonateAdDetailsFragment : Fragment() {
+class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     lateinit var binding: FragmentDonateAdDetailsBinding
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -45,6 +46,7 @@ class DonateAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedDonateAdsAdapter.onRelatedAdItemClick = this
 
         fetchOwnerData()
         showAdDetails()
@@ -182,5 +184,10 @@ class DonateAdDetailsFragment : Fragment() {
         binding.tvAuthorName.text = donateAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = donateAdvertisement.book.category
+    }
+
+    override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
+        val action = DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }

@@ -16,6 +16,7 @@ import com.seif.booksislandapp.databinding.FragmentExchangeAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.exchange.adapter.RelatedExchangeAdsAdapter
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +25,7 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class ExchangeAdDetailsFragment : Fragment() {
+class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     lateinit var binding: FragmentExchangeAdDetailsBinding
     private val args: ExchangeAdDetailsFragmentArgs by navArgs()
     private val exchangeAdDetailsViewModel: ExchangeDetailsViewModel by viewModels()
@@ -47,6 +48,8 @@ class ExchangeAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedExchangeAdsAdapter.onRelatedAdItemClick = this
+
         fetchOwnerData()
         showAdDetails()
         observe()
@@ -183,5 +186,10 @@ class ExchangeAdDetailsFragment : Fragment() {
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = exchangeAdvertisement.book.category
         booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
+    }
+
+    override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
+        val action = ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }

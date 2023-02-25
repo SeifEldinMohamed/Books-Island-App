@@ -12,8 +12,8 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
 
 class RelatedAuctionAdsAdapter : RecyclerView.Adapter<RelatedAuctionAdsAdapter.MyViewHolder>() {
-    var onAdItemClick: OnAdItemClick<AuctionAdvertisement>? = null
-    var relatedAuctionAds: List<AuctionAdvertisement> = emptyList()
+    var onRelatedAdItemClick: OnAdItemClick<AuctionAdvertisement>? = null
+    private var relatedAuctionAds: List<AuctionAdvertisement> = emptyList()
 
     inner class MyViewHolder(private val binding: RelatedAuctionAdsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -22,14 +22,16 @@ class RelatedAuctionAdsAdapter : RecyclerView.Adapter<RelatedAuctionAdsAdapter.M
             binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDate()
             binding.tvCurrentPrice.text = itemView.context.getString(
                 R.string.current_price_egypt_pound,
-                (auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
-                    ?: auctionAdvertisement.startPrice).toString()
+                (
+                        auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                            ?: auctionAdvertisement.startPrice?.toInt()
+                        ).toString()
             )
             binding.tvLocation.text = auctionAdvertisement.location
             binding.ivBook.load(auctionAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
-                onAdItemClick?.onAdItemClick(auctionAdvertisement, position)
+                onRelatedAdItemClick?.onAdItemClick(auctionAdvertisement, position)
             }
         }
     }

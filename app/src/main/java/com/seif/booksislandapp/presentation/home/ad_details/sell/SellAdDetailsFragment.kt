@@ -16,6 +16,7 @@ import com.seif.booksislandapp.databinding.FragmentSellAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +25,7 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class SellAdDetailsFragment : Fragment() {
+class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     lateinit var binding: FragmentSellAdDetailsBinding
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
@@ -45,6 +46,7 @@ class SellAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedSellAdsAdapter.onRelatedAdItemClick = this
         fetchOwnerData()
         showAdDetails()
         observe()
@@ -182,5 +184,10 @@ class SellAdDetailsFragment : Fragment() {
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = buyAdvertisement.book.category
         binding.tvEditionValue.text = buyAdvertisement.book.edition
+    }
+
+    override fun onAdItemClick(item: SellAdvertisement, position: Int) {
+        val action = SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }

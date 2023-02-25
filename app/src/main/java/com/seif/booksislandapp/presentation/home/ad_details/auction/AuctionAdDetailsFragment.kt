@@ -19,6 +19,7 @@ import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.auction.adapter.RelatedAuctionAdsAdapter
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetFragment
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetViewModel
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class AuctionAdDetailsFragment : Fragment() {
+class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     lateinit var binding: FragmentAuctionAdDetailsBinding
     private val args: AuctionAdDetailsFragmentArgs by navArgs()
     private val auctionAdDetailsViewModel: AuctionAdDetailsViewModel by viewModels()
@@ -48,6 +49,7 @@ class AuctionAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedAuctionAdsAdapter.onRelatedAdItemClick = this
         fetchOwnerData()
         showAdDetails()
         observe()
@@ -185,12 +187,12 @@ class AuctionAdDetailsFragment : Fragment() {
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
-                    ?: args.auctionAdvertisement.startPrice
+                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
                 ).toString()
         )
         binding.tvStartPriceValue.text =
-            getString(R.string.egypt_pound, auctionAdvertisement.startPrice.toString())
+            getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())
         binding.ivBook.load(auctionAdvertisement.book.images.first())
         binding.tvLocation.text = auctionAdvertisement.location
         binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDateInDetails()
@@ -206,5 +208,10 @@ class AuctionAdDetailsFragment : Fragment() {
                 R.string.no_one
             )
         )
+    }
+
+    override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
+        val action = AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }

@@ -25,7 +25,7 @@ class AuctionAdapter : RecyclerView.Adapter<AuctionAdapter.MyViewHolder>() {
                 R.string.current_price_egypt_pound,
                 (
                     auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
-                        ?: auctionAdvertisement.startPrice
+                        ?: auctionAdvertisement.startPrice?.toInt()
                     ).toString()
             )
             binding.tvLocation.text = auctionAdvertisement.location
