@@ -73,11 +73,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            if (e is TimeoutCancellationException) {
-                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-            } else {
-                Resource.Error(e.message.toString())
-            }
+            Resource.Error(e.message.toString())
         }
     }
 
@@ -143,11 +139,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            if (e is TimeoutCancellationException) {
-                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-            } else {
-                Resource.Error(e.message.toString())
-            }
+            Resource.Error(e.message.toString())
         }
     }
 
@@ -177,11 +169,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                         Resource.Success("Advertisement Added Successfully with id : ${document.id}")
                     }
                 } catch (e: Exception) {
-                    if (e is TimeoutCancellationException) {
-                        Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-                    } else {
-                        Resource.Error(e.message.toString())
-                    }
+                    Resource.Error(e.message.toString())
                 }
             }
         }
@@ -214,11 +202,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             }
         } catch (e: Exception) {
             Timber.d("upload images Error: ${e.message}")
-            if (e is TimeoutCancellationException) {
-                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-            } else {
-                Resource.Error(e.message.toString())
-            }
+            Resource.Error(e.message.toString())
         }
     }
 
@@ -251,11 +235,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            if (e is TimeoutCancellationException) {
-                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-            } else {
-                Resource.Error(e.message.toString())
-            }
+            Resource.Error(e.message.toString())
         }
     }
 
@@ -285,13 +265,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                         }
                 }
             } catch (e: Exception) {
-                trySend(
-                    if (e is TimeoutCancellationException) {
-                        Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-                    } else {
-                        Resource.Error(e.message.toString())
-                    }
-                )
+                trySend(Resource.Error(e.message.toString()))
             }
 
             awaitClose { }
@@ -306,11 +280,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                 Resource.Success(resourceProvider.string(R.string.add_bid_successfully))
             }
         } catch (e: Exception) {
-            if (e is TimeoutCancellationException) {
-                Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-            } else {
-                Resource.Error(e.message.toString())
-            }
+            Resource.Error(e.message.toString())
         }
     }
 }

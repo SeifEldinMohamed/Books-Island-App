@@ -11,6 +11,7 @@ import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
@@ -24,7 +25,6 @@ import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 class AdvertisementRepositoryImp @Inject constructor(
@@ -39,21 +39,24 @@ class AdvertisementRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
             delay(500) // to show loading progress
-
-            val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                .orderBy("publishDate", Query.Direction.DESCENDING)
-                .get()
-                .await()
-            val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
-            for (document in querySnapshot) {
-                val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
-                sellAdvertisementsDto.add(sellAdvertisementDto)
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                    .orderBy("status")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                Resource.Success(
+                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                        sellAdvertisementDto.toSellAdvertisement()
+                    }.toCollection(ArrayList())
+                )
             }
-            Resource.Success(
-                data = sellAdvertisementsDto.map { sellAdvertisementDto ->
-                    sellAdvertisementDto.toSellAdvertisement()
-                }.toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -70,13 +73,15 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
             is Resource.Success -> {
                 try {
-                    val document =
-                        firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
-                    sellAdvertisement.id = document.id
-                    sellAdvertisement.book.images = result.data
-                    document.set(sellAdvertisement.toSellAdvertisementDto()).await()
-                    Timber.d("uploaded successfully")
-                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+                        val document =
+                            firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                        sellAdvertisement.id = document.id
+                        sellAdvertisement.book.images = result.data
+                        document.set(sellAdvertisement.toSellAdvertisementDto()).await()
+                        Timber.d("uploaded successfully")
+                        Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                    }
                 } catch (e: Exception) {
                     Resource.Error(e.message.toString())
                 }
@@ -89,24 +94,28 @@ class AdvertisementRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            val querySnapshot =
-                firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot =
+                    firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
 
-            val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
-            for (document in querySnapshot) {
-                val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
-                sellAdvertisementsDto.add(sellAdvertisementDto)
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+
+                Timber.d("searchSellAdv: $sellAdvertisementsDto")
+                Resource.Success(
+                    sellAdvertisementsDto.filter { it.book!!.title.contains(searchQuery, true) }
+                        .map { it.toSellAdvertisement() }
+                        .toCollection(ArrayList())
+                )
             }
-
-            Timber.d("searchSellAdv: $sellAdvertisementsDto")
-            Resource.Success(
-                sellAdvertisementsDto.filter { it.book!!.title.contains(searchQuery, true) }
-                    .map { it.toSellAdvertisement() }
-                    .toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -116,19 +125,22 @@ class AdvertisementRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
-            delay(500) // to show loading progress
-            val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION)
-                .whereEqualTo("id", id)
-                .get()
-                .await()
-            val users = arrayListOf<UserDto>()
-            for (document in querySnapshot) {
-                val user = document.toObject(UserDto::class.java)
-                users.add(user)
+            withTimeout(Constants.TIMEOUT) {
+
+                delay(500) // to show loading progress
+                val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .whereEqualTo("id", id)
+                    .get()
+                    .await()
+                val users = arrayListOf<UserDto>()
+                for (document in querySnapshot) {
+                    val user = document.toObject(UserDto::class.java)
+                    users.add(user)
+                }
+                Resource.Success(
+                    data = users.map { it.toUser() }.first()
+                )
             }
-            Resource.Success(
-                data = users.map { it.toUser() }.first()
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -141,78 +153,97 @@ class AdvertisementRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
-            val querySnapshot =
-                firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot =
+                    firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
 
-            val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
-            for (document in querySnapshot) {
-                val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
-                sellAdvertisementsDto.add(sellAdvertisementDto)
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                Resource.Success(
+                    sellAdvertisementsDto.filter { it.book!!.category == category && it.id != adId }
+                        .map { it.toSellAdvertisement() }
+                        .toCollection(ArrayList())
+                )
             }
-            Resource.Success(
-                sellAdvertisementsDto.filter { it.book!!.category == category && it.id != adId }
-                    .map { it.toSellAdvertisement() }
-                    .toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
-            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
 
-            val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                .orderBy("publishDate", Query.Direction.DESCENDING)
-                .get()
-                .await()
-            val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
-            for (document in querySnapshot) {
-                val donateAdvertisementDto = document.toObject(DonateAdvertisementDto::class.java)
-                donateAdvertisementsDto.add(donateAdvertisementDto)
+                delay(500) // to show loading progress
+
+                val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                    .orderBy("status")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                // Log.d(TAG, "getAllDonateAds: ${donateAdvertisementsDto.first()}")
+                Resource.Success(
+                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                        donateAdvertisementDto.toDonateAdvertisement()
+                    }.toCollection(ArrayList())
+                )
             }
-            // Log.d(TAG, "getAllDonateAds: ${donateAdvertisementsDto.first()}")
-            Resource.Success(
-                data = donateAdvertisementsDto.map { donateAdvertisementDto ->
-                    donateAdvertisementDto.toDonateAdvertisement()
-                }.toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun searchDonateAdv(searchQuery: String): Resource<ArrayList<DonateAdvertisement>, String> {
 
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            val querySnapshot =
-                firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+            withTimeout(Constants.TIMEOUT) {
 
-            val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
-            for (document in querySnapshot) {
-                val donateAdvertisementDto = document.toObject(DonateAdvertisementDto::class.java)
-                donateAdvertisementsDto.add(donateAdvertisementDto)
+                val querySnapshot =
+                    firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
+
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                Timber.d("searchDonateAdv: $donateAdvertisementsDto")
+                Resource.Success(
+                    donateAdvertisementsDto.filter { it.book!!.title.contains(searchQuery, true) }
+                        .map { it.toDonateAdvertisement() }
+                        .toCollection(ArrayList())
+                )
             }
-            Timber.d("searchDonateAdv: $donateAdvertisementsDto")
-            Resource.Success(
-                donateAdvertisementsDto.filter { it.book!!.title.contains(searchQuery, true) }
-                    .map { it.toDonateAdvertisement() }
-                    .toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun fetchRelatedDonateAdvertisement(
         adId: String,
         category: String
@@ -220,26 +251,33 @@ class AdvertisementRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
-            val querySnapshot =
-                firestore.collection(Constants.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+            withTimeout(Constants.TIMEOUT) {
 
-            val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
-            for (document in querySnapshot) {
-                val donateAdvertisementDto = document.toObject(DonateAdvertisementDto::class.java)
-                donateAdvertisementsDto.add(donateAdvertisementDto)
+                val querySnapshot =
+                    firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
+
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                Resource.Success(
+                    donateAdvertisementsDto.filter { it.book!!.category == category && it.id != adId }
+                        .map { it.toDonateAdvertisement() }
+                        .toCollection(ArrayList())
+                )
             }
-            Resource.Success(
-                donateAdvertisementsDto.filter { it.book!!.category == category && it.id != adId }
-                    .map { it.toDonateAdvertisement() }
-                    .toCollection(ArrayList())
-            )
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun uploadDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -251,13 +289,17 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
             is Resource.Success -> {
                 try {
-                    val document =
-                        firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
-                    donateAdvertisement.id = document.id
-                    donateAdvertisement.book.images = result.data
-                    document.set(donateAdvertisement.toDonateAdvertisementDto()).await()
-                    Timber.d("uploaded successfully")
-                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+
+                        val document =
+                            firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .document()
+                        donateAdvertisement.id = document.id
+                        donateAdvertisement.book.images = result.data
+                        document.set(donateAdvertisement.toDonateAdvertisementDto()).await()
+                        Timber.d("uploaded successfully")
+                        Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                    }
                 } catch (e: Exception) {
                     Resource.Error(e.message.toString())
                 }
@@ -267,24 +309,26 @@ class AdvertisementRepositoryImp @Inject constructor(
 
     private suspend fun uploadMultipleImages(imagesUri: List<Uri>): Resource<List<Uri>, String> {
         return try {
-            val uris: List<Uri> = withContext(Dispatchers.IO) {
-                // 1,2,3,4
-                // 4 async blocks (upload first then download it's url then upload second ....)
-                imagesUri.map { imageUri -> // we will map the whole list into the async blocks
-                    async {
-                        storageReference.child(
-                            imageUri.lastPathSegment ?: "${System.currentTimeMillis()}"
-                        )
-                            .putFile(imageUri)
-                            .await()
-                            .storage
-                            .downloadUrl
-                            .await()
-                    }
-                }.awaitAll()
+            withTimeout(Constants.TIMEOUT_UPLOAD) {
+                val uris: List<Uri> = withContext(Dispatchers.IO) {
+                    // 1,2,3,4
+                    // 4 async blocks (upload first then download it's url then upload second ....)
+                    imagesUri.map { imageUri -> // we will map the whole list into the async blocks
+                        async {
+                            storageReference.child(
+                                imageUri.lastPathSegment ?: "${System.currentTimeMillis()}"
+                            )
+                                .putFile(imageUri)
+                                .await()
+                                .storage
+                                .downloadUrl
+                                .await()
+                        }
+                    }.awaitAll()
+                }
+                Timber.d("upload images Success: $uris")
+                Resource.Success(uris)
             }
-            Timber.d("upload images Success: $uris")
-            Resource.Success(uris)
         } catch (e: Exception) {
             Timber.d("upload images Error: ${e.message}")
             Resource.Error(e.message.toString())

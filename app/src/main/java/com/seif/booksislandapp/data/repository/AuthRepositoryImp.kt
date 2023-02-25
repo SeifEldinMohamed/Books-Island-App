@@ -24,7 +24,7 @@ import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTI
 import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 class AuthRepositoryImp @Inject constructor(
@@ -40,19 +40,20 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
+            withTimeout(Constants.TIMEOUT) {
+                val authResult =
+                    auth.createUserWithEmailAndPassword(user.email, user.password).await()
+                authResult.user?.let { firebaseUser ->
+                    user.id = firebaseUser.uid
+                }
 
-            val authResult =
-                auth.createUserWithEmailAndPassword(user.email, user.password).await()
-            authResult.user?.let { firebaseUser ->
-                user.id = firebaseUser.uid
-            }
-
-            when (val result: Resource<String, String> = addUser(user)) {
-                is Resource.Error -> Resource.Error(result.message)
-                is Resource.Success -> {
-                    // save user data in shared preference
-                    saveUserData(user)
-                    Resource.Success(result.data)
+                when (val result: Resource<String, String> = addUser(user)) {
+                    is Resource.Error -> Resource.Error(result.message)
+                    is Resource.Success -> {
+                        // save user data in shared preference
+                        saveUserData(user)
+                        Resource.Success(result.data)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -70,9 +71,12 @@ class AuthRepositoryImp @Inject constructor(
 
     private suspend fun addUser(user: User): Resource<String, String> {
         return try {
-            firestore.collection(USER_FIRESTORE_COLLECTION).document(user.id).set(user.toUserDto())
-                .await()
-            Resource.Success(resourceProvider.string(R.string.user_added_successfully))
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION).document(user.id)
+                    .set(user.toUserDto())
+                    .await()
+                Resource.Success(resourceProvider.string(R.string.user_added_successfully))
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -83,8 +87,10 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            auth.signInWithEmailAndPassword(email, password).await()
-            Resource.Success(resourceProvider.string(R.string.welcome_back))
+            withTimeout(Constants.TIMEOUT) {
+                auth.signInWithEmailAndPassword(email, password).await()
+                Resource.Success(resourceProvider.string(R.string.welcome_back))
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -95,8 +101,10 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            auth.sendPasswordResetEmail(email).await()
-            Resource.Success(resourceProvider.string(R.string.send_mail_to_reset_password))
+            withTimeout(Constants.TIMEOUT) {
+                auth.sendPasswordResetEmail(email).await()
+                Resource.Success(resourceProvider.string(R.string.send_mail_to_reset_password))
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -107,8 +115,10 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            auth.signOut()
-            Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
+            withTimeout(Constants.TIMEOUT) {
+                auth.signOut()
+                Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -131,15 +141,17 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            val querySnapShot = firestore.collection(GOVERNORATES_FIRESTORE_COLLECTION)
-                .orderBy("name").get()
-                .await()
-            val governorates = arrayListOf<GovernorateDto>()
-            for (document in querySnapShot) {
-                val governorate = document.toObject(GovernorateDto::class.java)
-                governorates.add(governorate)
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapShot = firestore.collection(GOVERNORATES_FIRESTORE_COLLECTION)
+                    .orderBy("name").get()
+                    .await()
+                val governorates = arrayListOf<GovernorateDto>()
+                for (document in querySnapShot) {
+                    val governorate = document.toObject(GovernorateDto::class.java)
+                    governorates.add(governorate)
+                }
+                Resource.Success(data = governorates.map { it.toGovernorate() })
             }
-            Resource.Success(data = governorates.map { it.toGovernorate() })
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -150,16 +162,18 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            val querySnapShot = firestore.collection(DISTRICTS_FIRESTORE_COLLECTION)
-                .whereEqualTo("governorateId", governorateId)
-                .orderBy("name").get()
-                .await()
-            val districts = arrayListOf<DistrictDto>()
-            for (document in querySnapShot) {
-                val district = document.toObject(DistrictDto::class.java)
-                districts.add(district)
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapShot = firestore.collection(DISTRICTS_FIRESTORE_COLLECTION)
+                    .whereEqualTo("governorateId", governorateId)
+                    .orderBy("name").get()
+                    .await()
+                val districts = arrayListOf<DistrictDto>()
+                for (document in querySnapShot) {
+                    val district = document.toObject(DistrictDto::class.java)
+                    districts.add(district)
+                }
+                Resource.Success(data = districts.map { it.toDistricts() })
             }
-            Resource.Success(data = districts.map { it.toDistricts() })
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
