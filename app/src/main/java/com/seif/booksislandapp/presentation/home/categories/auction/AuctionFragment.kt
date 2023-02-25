@@ -58,6 +58,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
 
         binding.swipeRefresh.setOnRefreshListener {
             auctionViewModel.fetchAllAuctionsAdvertisements()
+            observe()
             binding.swipeRefresh.isRefreshing = false
         }
 

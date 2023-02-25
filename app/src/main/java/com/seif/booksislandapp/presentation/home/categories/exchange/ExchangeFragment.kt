@@ -59,6 +59,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
         binding.swipeRefresh.setOnRefreshListener {
             exchangeViewModel.fetchAllExchangeAds()
+            observe()
             binding.swipeRefresh.isRefreshing = false
         }
         binding.rvExchange.adapter = exchangeAdapter
