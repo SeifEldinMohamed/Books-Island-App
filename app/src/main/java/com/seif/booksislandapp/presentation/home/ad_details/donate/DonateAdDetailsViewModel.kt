@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.FetchAllDonateRelatedAdvertisementsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class DonateAdDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val resourceProvider: ResourceProvider,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val fetchAllDonateRelatedAdvertisementsUseCase: FetchAllDonateRelatedAdvertisementsUseCase
 
 ) : ViewModel() {
@@ -86,5 +88,9 @@ class DonateAdDetailsViewModel @Inject constructor(
                 _donateDetailsState.value = DonateAdDetailsState.IsLoading(false)
             }
         }
+    }
+
+    fun <T> readFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
     }
 }

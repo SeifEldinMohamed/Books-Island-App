@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.FetchRelatedSellAdsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class SellAdDetailsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val fetchRelatedSellAdsUseCase: FetchRelatedSellAdsUseCase
+    private val fetchRelatedSellAdsUseCase: FetchRelatedSellAdsUseCase,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
 ) : ViewModel() {
     private var _sellDetailsState = MutableStateFlow<SellDetailsState>(SellDetailsState.Init)
     val sellDetailsState = _sellDetailsState.asStateFlow()
@@ -89,5 +91,9 @@ class SellAdDetailsViewModel @Inject constructor(
                 _sellDetailsState.value = SellDetailsState.ShowError(message)
             }
         }
+    }
+
+    fun <T> readFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
     }
 }

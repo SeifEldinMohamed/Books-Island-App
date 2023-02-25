@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.FetchRelatedAuctionAdsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class AuctionAdDetailsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val fetchRelatedAuctionAdsUseCase: FetchRelatedAuctionAdsUseCase
 ) : ViewModel() {
     private var _auctionDetailsState =
@@ -91,5 +93,9 @@ class AuctionAdDetailsViewModel @Inject constructor(
                 _auctionDetailsState.value = AuctionDetailsState.ShowError(message)
             }
         }
+    }
+
+    fun <T> readFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
     }
 }

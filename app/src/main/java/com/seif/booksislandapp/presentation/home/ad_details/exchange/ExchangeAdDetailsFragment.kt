@@ -2,15 +2,16 @@ package com.seif.booksislandapp.presentation.home.ad_details.exchange
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentExchangeAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
@@ -50,12 +51,26 @@ class ExchangeAdDetailsFragment : Fragment() {
         showAdDetails()
         observe()
         fetchRelatedExchangeAds()
+        ownerAdLimitations()
+
         binding.ivBackExchangeDetails.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.rvExchangeFor.adapter = booksToExchangeAdapter
         binding.rvRelatedAds.adapter = relatedExchangeAdsAdapter
     }
+
+    private fun ownerAdLimitations() {
+        if (args.exchangeAdv.ownerId == exchangeAdDetailsViewModel.readFromSP(
+                Constants.USER_ID_KEY,
+                String::class.java
+            )
+        ) {
+            binding.ivChat.disable()
+            binding.ivChat.setColorFilter(binding.root.context.getColor(R.color.gray_light))
+        }
+    }
+
     private fun fetchRelatedExchangeAds() {
         if (relatedAds.isEmpty())
             exchangeAdDetailsViewModel.fetchRelatedAds(

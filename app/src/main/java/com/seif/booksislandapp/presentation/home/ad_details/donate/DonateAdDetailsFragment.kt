@@ -2,10 +2,10 @@ package com.seif.booksislandapp.presentation.home.ad_details.donate
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -50,10 +50,23 @@ class DonateAdDetailsFragment : Fragment() {
         showAdDetails()
         observe()
         fetchRelatedDonateAds()
+        ownerAdLimitations()
+
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.rvRelatedAds.adapter = relatedDonateAdsAdapter
+    }
+
+    private fun ownerAdLimitations() {
+        if (args.donateAdv.ownerId == donateAdDetailsViewModel.readFromSP(
+                Constants.USER_ID_KEY,
+                String::class.java
+            )
+        ) {
+            binding.ivChat.disable()
+            binding.ivChat.setColorFilter(binding.root.context.getColor(R.color.gray_light))
+        }
     }
 
     private fun fetchRelatedDonateAds() {
