@@ -166,7 +166,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             }
             is Resource.Success -> {
                 try {
-                    withTimeout(Constants.TIMEOUT) {
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
                         val document =
                             firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
                                 .document()
@@ -192,7 +192,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         imagesUri: List<Uri>
     ): Resource<List<Uri>, String> {
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_UPLOAD) {
                 val uris: List<Uri> = withContext(Dispatchers.IO) {
                     // 1,2,3,4
                     // 4 async blocks (upload first then download it's url then upload second ....)
