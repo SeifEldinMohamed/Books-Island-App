@@ -41,7 +41,6 @@
     <color name="cook_color">#89BABF</color>
 
 
-
     <color name="nav_item_text_color">@color/black</color>
     <color name="nav_background_color">@color/white</color>
 </resources>
