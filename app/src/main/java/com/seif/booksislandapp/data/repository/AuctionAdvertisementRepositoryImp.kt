@@ -27,8 +27,6 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.Exception
-import kotlin.collections.ArrayList
 
 class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -43,9 +41,12 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             delay(500) // to show loading progress
             withTimeout(Constants.TIMEOUT) {
                 val docReference = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                val querySnapshot = docReference.orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+                val querySnapshot =
+                    docReference.whereNotEqualTo("auctionStatus", AuctionStatus.CLOSED.toString())
+                        .orderBy("auctionStatus")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
 
                 val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
                 for (document in querySnapshot) {
@@ -60,7 +61,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                     updateMap["auctionStatus"] = auctionAdvertisementDto.auctionStatus.toString()
                     docReference.document(document.id).update(updateMap).await()
                     // add ad after updating its auctionStatusValue
-                    auctionsAdvertisementsDto.add(auctionAdvertisementDto)
+                    if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
+                        auctionsAdvertisementsDto.add(auctionAdvertisementDto)
                 }
                 Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
 
@@ -118,6 +120,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val querySnapshot =
                     firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("auctionStatus", AuctionStatus.CLOSED.toString())
+                        .orderBy("auctionStatus")
                         .orderBy("publishDate", Query.Direction.DESCENDING)
                         .get()
                         .await()
@@ -228,6 +232,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val querySnapshot =
                     firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("auctionStatus", AuctionStatus.CLOSED.toString())
+                        .orderBy("auctionStatus")
                         .orderBy("publishDate", Query.Direction.DESCENDING)
                         .get()
                         .await()
