@@ -4,22 +4,24 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
-import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -69,7 +71,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 Timber.d("onTextChanged: $p1 - $p2 - $p3")
-                lifecycleScope.launch() {
+                viewLifecycleOwner.lifecycleScope.launch() {
                     delay(1000)
                     text?.let {
                         if (buyViewModel.isSearching) {
@@ -118,17 +120,65 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                     is BuyState.FetchAllSellAdvertisementSuccessfully -> {
                         sellAdvertisements = it.sellAds
                         buyAdapter.updateList(it.sellAds)
+                        handleUi(it.sellAds)
                         Timber.d("observe: fetched")
                     }
                     is BuyState.SearchSellAdvertisementSuccessfully -> {
+                        // sellAdvertisements = it.searchedSellAds
                         buyAdapter.updateList(it.searchedSellAds)
+                        // handleUi(it.searchedSellAds)
                     }
                     is BuyState.IsLoading -> handleLoadingState(it.isLoading)
-                    is BuyState.NoInternetConnection -> handleNoInternetConnectionState(binding.root)
+                    is BuyState.NoInternetConnection -> handleNoInternetConnectionState()
                     is BuyState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
+    }
+
+    private fun handleUi(sellAds: ArrayList<SellAdvertisement>) {
+        if (sellAds.isEmpty()) {
+            binding.rvBuy.hide()
+            binding.noBooksAnimationBuy.show()
+        } else {
+            binding.rvBuy.show()
+            binding.noBooksAnimationBuy.hide()
+        }
+    }
+
+    private fun handleNoInternetConnectionState() {
+        NoInternetDialogPendulum.Builder(
+            requireActivity(),
+            lifecycle
+        ).apply {
+            dialogProperties.apply {
+                connectionCallback = object : ConnectionCallback { // Optional
+                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                        when (hasActiveConnection) {
+                            true -> {
+                                binding.root.showInfoSnackBar("Internet connection is back")
+                                buyViewModel.fetchAllSellAdvertisement()
+                            }
+                            false -> Unit
+                        }
+                    }
+                }
+
+                cancelable = false // Optional
+                noInternetConnectionTitle = "No Internet" // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
+                showInternetOnButtons = true // Optional
+                pleaseTurnOnText = "Please turn on" // Optional
+                wifiOnButtonText = "Wifi" // Optional
+                mobileDataOnButtonText = "Mobile data" // Optional
+                onAirplaneModeTitle = "No Internet" // Optional
+                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                pleaseTurnOffText = "Please turn off" // Optional
+                airplaneModeOffButtonText = "Airplane mode" // Optional
+                showAirplaneModeOffButtons = true // Optional
+            }
+        }.build()
     }
 
     private fun handleErrorState(message: String) {

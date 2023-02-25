@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,12 +15,12 @@ import com.seif.booksislandapp.databinding.FragmentDonationBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.handleNoInternetConnectionState
-import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -63,6 +63,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
         binding.rvDonate.adapter = donateAdapter
     }
+
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -91,6 +92,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         })
     }
+
     private fun firstTimeFetch() {
         if (donateViewModel.firstTime) {
             Timber.d("onViewCreated: fetch....")
@@ -116,17 +118,66 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                 when (it) {
                     DonateState.Init -> Unit
                     is DonateState.FetchAllDonateAdvertisementSuccessfully -> {
+                        donateAdvertisements = it.donateAds
                         donateAdapter.updateList(it.donateAds)
+                        handleUi(it.donateAds)
                     }
                     is DonateState.SearchDonateAdvertisementSuccessfully -> {
+                        // donateAdvertisements = it.searchedDonateAds
                         donateAdapter.updateList(it.searchedDonateAds)
+                        // handleUi(it.searchedDonateAds)
                     }
                     is DonateState.IsLoading -> handleLoadingState(it.isLoading)
-                    is DonateState.NoInternetConnection -> handleNoInternetConnectionState(binding.root)
+                    is DonateState.NoInternetConnection -> handleNoInternetConnectionState()
                     is DonateState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
+    }
+
+    private fun handleUi(donateAds: ArrayList<DonateAdvertisement>) {
+        if (donateAds.isEmpty()) {
+            binding.rvDonate.hide()
+            binding.noBooksAnimationDonation.show()
+        } else {
+            binding.rvDonate.show()
+            binding.noBooksAnimationDonation.hide()
+        }
+    }
+
+    private fun handleNoInternetConnectionState() {
+        NoInternetDialogPendulum.Builder(
+            requireActivity(),
+            lifecycle
+        ).apply {
+            dialogProperties.apply {
+                connectionCallback = object : ConnectionCallback { // Optional
+                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                        when (hasActiveConnection) {
+                            true -> {
+                                binding.root.showInfoSnackBar("Internet connection is back")
+                                donateViewModel.fetchAllDonateAdvertisement()
+                            }
+                            false -> Unit
+                        }
+                    }
+                }
+
+                cancelable = false // Optional
+                noInternetConnectionTitle = "No Internet" // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
+                showInternetOnButtons = true // Optional
+                pleaseTurnOnText = "Please turn on" // Optional
+                wifiOnButtonText = "Wifi" // Optional
+                mobileDataOnButtonText = "Mobile data" // Optional
+                onAirplaneModeTitle = "No Internet" // Optional
+                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                pleaseTurnOffText = "Please turn off" // Optional
+                airplaneModeOffButtonText = "Airplane mode" // Optional
+                showAirplaneModeOffButtons = true // Optional
+            }
+        }.build()
     }
 
     private fun handleErrorState(message: String) {
@@ -150,10 +201,13 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private fun dismissLoadingDialog() {
         dialog.dismiss()
     }
+
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action = DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
+        val action =
+            DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
         findNavController().navigate(action)
     }
+
     override fun onDestroyView() {
         donateViewModel.isSearching = false
         _binding = null
