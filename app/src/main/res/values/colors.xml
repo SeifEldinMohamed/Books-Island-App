@@ -24,6 +24,23 @@
     <color name="political_color">#A7194B</color>
     <color name="money_business_color">#66B032</color>
     <color name="self_development_color">#FABC02</color>
+    <color name="comics_color">#FD0437</color>
+    <color name="psychology_color">#8601AF</color>
+    <color name="biography_color">#0391CE</color>
+    <color name="philosophy_color">#1BBC9B</color>
+    <color name="language_color">#F1C40F</color>
+    <color name="law_color">#4D4D4D</color>
+    <color name="press_and_media_color">#34495E</color>
+    <color name="medicine_and_health_color">#CCB498</color>
+    <color name="technology_color">#9B58B5</color>
+    <color name="arts_color">#E78D73</color>
+    <color name="sports_color">#73A742</color>
+    <color name="travel_color">#265D62</color>
+    <color name="reference_and_research_color">#464763</color>
+    <color name="family_and_child_color">#733A27</color>
+    <color name="cook_color">#89BABF</color>
+
+
 
     <color name="nav_item_text_color">@color/black</color>
     <color name="nav_background_color">@color/white</color>

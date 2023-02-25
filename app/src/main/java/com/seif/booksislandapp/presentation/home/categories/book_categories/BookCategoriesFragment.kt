@@ -47,22 +47,21 @@ class BookCategoriesFragment : Fragment(), OnCategoryItemClick<BookCategory> {
             BookCategory(name = "Political", R.color.political_color),
             BookCategory(name = "Money and Business", R.color.money_business_color),
             BookCategory(name = "Self Development", R.color.self_development_color),
-
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color),
-            BookCategory(name = "Literature", R.color.literature_color)
+            BookCategory(name = "Comics", R.color.comics_color),
+            BookCategory(name = "Psychology", R.color.psychology_color),
+            BookCategory(name = "Biography", R.color.biography_color),
+            BookCategory(name = "Philosophy", R.color.philosophy_color),
+            BookCategory(name = "Language", R.color.language_color),
+            BookCategory(name = "Law", R.color.law_color),
+            BookCategory(name = "Press and Media", R.color.press_and_media_color),
+            BookCategory(name = "Medicine and Health", R.color.medicine_and_health_color),
+            BookCategory(name = "Technology", R.color.technology_color),
+            BookCategory(name = "Arts", R.color.arts_color),
+            BookCategory(name = "Sports", R.color.sports_color),
+            BookCategory(name = "Travel", R.color.travel_color),
+            BookCategory(name = "References and Research", R.color.reference_and_research_color),
+            BookCategory(name = "Family and Child", R.color.family_and_child_color),
+            BookCategory(name = "Cooks", R.color.cook_color)
         )
     }
 
