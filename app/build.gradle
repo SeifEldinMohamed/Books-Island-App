@@ -177,4 +177,8 @@ dependencies {
 
     // compressor to compress images
     implementation 'id.zelory:compressor:3.0.1'
+
+    // lottie animation
+    implementation 'com.airbnb.android:lottie:4.1.0'
+
 }
