@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,9 +26,9 @@ import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
@@ -38,7 +38,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
@@ -147,21 +146,20 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                                         it1
                                     )
                                 }
-                                imageUris.add(Uri.fromFile(compressedFile))
-                                Timber.d("upload: $imageUris")
                                 withContext(Dispatchers.Main) {
+                                    imageUris.add(Uri.fromFile(compressedFile))
                                     uploadedImagesAdapter.updateList(imageUris)
+
+                                    dismissLoadingDialog()
+                                    binding.rvUploadedImages.show()
+                                    binding.ivUploadImage.hide()
+
+                                    if (imageUris.size == Constants.MAX_UPLOADED_IMAGES_NUMBER)
+                                        disableUploadButton()
                                 }
                             }
                         }
                     }
-
-                    dismissLoadingDialog()
-                    binding.rvUploadedImages.show()
-                    binding.ivUploadImage.hide()
-
-                    if (imageUris.size == Constants.MAX_UPLOADED_IMAGES_NUMBER)
-                        disableUploadButton()
                 }
                 else -> {
                     dismissLoadingDialog()
@@ -226,6 +224,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             location = getUserLocation()
         )
     }
+
     private fun getUserLocation(): String {
         return "${
         uploadDonateAdvertisementViewModel.getFromSP(
