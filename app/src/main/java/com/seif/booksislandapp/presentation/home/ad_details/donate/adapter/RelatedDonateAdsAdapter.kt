@@ -12,8 +12,8 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
 
 class RelatedDonateAdsAdapter : RecyclerView.Adapter<RelatedDonateAdsAdapter.MyViewHolder>() {
-    var onAdItemClick: OnAdItemClick<DonateAdvertisement>? = null
-    var relatedDonateAds: List<DonateAdvertisement> = emptyList()
+    var onRelatedAdItemClick: OnAdItemClick<DonateAdvertisement>? = null
+    private var relatedDonateAds: List<DonateAdvertisement> = emptyList()
 
     inner class MyViewHolder(private val binding: RelatedAdsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -25,7 +25,7 @@ class RelatedDonateAdsAdapter : RecyclerView.Adapter<RelatedDonateAdsAdapter.MyV
             binding.ivBook.load(donateAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
-                onAdItemClick?.onAdItemClick(donateAdvertisement, position)
+                onRelatedAdItemClick?.onAdItemClick(donateAdvertisement, position)
             }
         }
     }

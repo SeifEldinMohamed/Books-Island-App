@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,14 +15,13 @@ import com.seif.booksislandapp.databinding.FragmentExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.handleNoInternetConnectionState
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.toast
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -73,16 +72,64 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                     is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
                         exchangeAdvertisements = it.exchangeAds
                         exchangeAdapter.updateList(it.exchangeAds)
+                        handleUi(it.exchangeAds)
                     }
                     is ExchangeState.SearchExchangeAdsSuccessfully -> {
+                        // exchangeAdvertisements = it.searchExchangeAds
                         exchangeAdapter.updateList(it.searchExchangeAds)
+                        // handleUi(it.searchExchangeAds)
                     }
                     is ExchangeState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ExchangeState.NoInternetConnection -> handleNoInternetConnectionState(binding.root)
+                    is ExchangeState.NoInternetConnection -> handleNoInternetConnectionState()
                     is ExchangeState.ShowError -> handleErrorState(it.error)
                 }
             }
         }
+    }
+
+    private fun handleUi(exchangeAds: ArrayList<ExchangeAdvertisement>) {
+        if (exchangeAds.isEmpty()) {
+            binding.rvExchange.hide()
+            binding.noBooksAnimationExchange.show()
+        } else {
+            binding.rvExchange.show()
+            binding.noBooksAnimationExchange.hide()
+        }
+    }
+
+    private fun handleNoInternetConnectionState() {
+        NoInternetDialogPendulum.Builder(
+            requireActivity(),
+            lifecycle
+        ).apply {
+            dialogProperties.apply {
+                connectionCallback = object : ConnectionCallback { // Optional
+                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                        when (hasActiveConnection) {
+                            true -> {
+                                binding.root.showInfoSnackBar("Internet connection is back")
+                                exchangeViewModel.fetchAllExchangeAds()
+                            }
+                            false -> Unit
+                        }
+                    }
+                }
+
+                cancelable = false // Optional
+                noInternetConnectionTitle = "No Internet" // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
+                showInternetOnButtons = true // Optional
+                pleaseTurnOnText = "Please turn on" // Optional
+                wifiOnButtonText = "Wifi" // Optional
+                mobileDataOnButtonText = "Mobile data" // Optional
+                onAirplaneModeTitle = "No Internet" // Optional
+                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                pleaseTurnOffText = "Please turn off" // Optional
+                airplaneModeOffButtonText = "Airplane mode" // Optional
+                showAirplaneModeOffButtons = true // Optional
+            }
+        }.build()
     }
 
     private fun handleErrorState(message: String) {

@@ -12,20 +12,21 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
 
 class RelatedSellAdsAdapter : RecyclerView.Adapter<RelatedSellAdsAdapter.MyViewHolder>() {
-    var onAdItemClick: OnAdItemClick<SellAdvertisement>? = null
-    var relatedBuyAds: List<SellAdvertisement> = emptyList()
+    var onRelatedAdItemClick: OnAdItemClick<SellAdvertisement>? = null
+    private var relatedBuyAds: List<SellAdvertisement> = emptyList()
 
     inner class MyViewHolder(private val binding: RelatedAdsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(buyAdvertisement: SellAdvertisement, position: Int) {
             binding.tvTitle.text = buyAdvertisement.book.title
             binding.tvPublishDate.text = buyAdvertisement.publishDate.formatDate()
-            binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
+            binding.tvPrice.text =
+                itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
             binding.tvLocation.text = buyAdvertisement.location
             binding.ivBook.load(buyAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
-                onAdItemClick?.onAdItemClick(buyAdvertisement, position)
+                onRelatedAdItemClick?.onAdItemClick(buyAdvertisement, position)
             }
         }
     }

@@ -2,10 +2,10 @@ package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,14 +16,16 @@ import com.seif.booksislandapp.databinding.FragmentSellAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class SellAdDetailsFragment : Fragment() {
+class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     lateinit var binding: FragmentSellAdDetailsBinding
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
@@ -44,14 +46,28 @@ class SellAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedSellAdsAdapter.onRelatedAdItemClick = this
         fetchOwnerData()
         showAdDetails()
         observe()
         fetchRelatedSellAds()
+        ownerAdLimitations()
+
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.rvRelatedAds.adapter = relatedSellAdsAdapter
+    }
+
+    private fun ownerAdLimitations() {
+        if (args.buyAdvertisement.ownerId == sellAdDetailsViewModel.readFromSP(
+                USER_ID_KEY,
+                String::class.java
+            )
+        ) {
+            binding.ivChat.disable()
+            binding.ivChat.setColorFilter(binding.root.context.getColor(R.color.gray_light))
+        }
     }
 
     private fun fetchRelatedSellAds() {
@@ -77,7 +93,7 @@ class SellAdDetailsFragment : Fragment() {
                     is SellDetailsState.ShowError -> handleErrorState(it.message)
                     is SellDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.setImageResource(it.user.avatarImage.toInt())
+                        binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
                     is SellDetailsState.FetchRelatedSellAdvertisementSuccessfully -> {
@@ -167,5 +183,11 @@ class SellAdDetailsFragment : Fragment() {
         binding.tvAuthorName.text = buyAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = buyAdvertisement.book.category
+        binding.tvEditionValue.text = buyAdvertisement.book.edition
+    }
+
+    override fun onAdItemClick(item: SellAdvertisement, position: Int) {
+        val action = SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }

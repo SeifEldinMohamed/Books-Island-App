@@ -1,9 +1,9 @@
-package com.seif.booksislandapp.presentation.home.ad_details.donate
+package com.seif.booksislandapp.presentation.home.ad_details.auction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.FetchAllDonateRelatedAdvertisementsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.FetchRelatedAuctionAdsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
@@ -15,77 +15,82 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-@HiltViewModel
-class DonateAdDetailsViewModel @Inject constructor(
-    private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val resourceProvider: ResourceProvider,
-    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val fetchAllDonateRelatedAdvertisementsUseCase: FetchAllDonateRelatedAdvertisementsUseCase
 
+@HiltViewModel
+class AuctionAdDetailsViewModel @Inject constructor(
+    private val resourceProvider: ResourceProvider,
+    private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
+    private val fetchRelatedAuctionAdsUseCase: FetchRelatedAuctionAdsUseCase
 ) : ViewModel() {
-    private var _donateDetailsState =
-        MutableStateFlow<DonateAdDetailsState>(DonateAdDetailsState.Int)
-    val donateDetailsState = _donateDetailsState.asStateFlow()
-    fun getUserByIdSuccessfully(id: String) {
-        setLoadingState(true)
+    private var _auctionDetailsState =
+        MutableStateFlow<AuctionDetailsState>(AuctionDetailsState.Init)
+    val auctionDetailsState = _auctionDetailsState.asStateFlow()
+
+    fun getUserById(id: String) {
+        setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getUserByIdUseCase.invoke(id).let {
+            getUserByIdUseCase(id).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
-                            setLoadingState(false)
+                            setLoading(false)
                             showError(it.message)
                         }
                     }
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
-                            setLoadingState(false)
+                            setLoading(false)
                         }
-                        _donateDetailsState.value =
-                            DonateAdDetailsState.GetUserByIdSuccessfully(it.data)
+                        _auctionDetailsState.value =
+                            AuctionDetailsState.GetUserByIdSuccessfully(it.data)
                     }
                 }
             }
         }
     }
 
-    fun getAllRelatedAds(adId: String, category: String) {
-        setLoadingState(true)
+    fun fetchRelatedAds(adId: String, category: String) {
+        setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            fetchAllDonateRelatedAdvertisementsUseCase(adId, category).let {
+            fetchRelatedAuctionAdsUseCase(adId, category).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
-                            setLoadingState(false)
+                            setLoading(false)
                             showError(it.message)
                         }
                     }
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
-                            setLoadingState(false)
+                            setLoading(false)
                         }
-                        _donateDetailsState.value =
-                            DonateAdDetailsState.FetchRelatedDonateAdvertisementSuccessfully(it.data)
+                        _auctionDetailsState.value =
+                            AuctionDetailsState.FetchRelatedAuctionAdvertisementSuccessfully(it.data)
                     }
                 }
+            }
+        }
+    }
+
+    private fun setLoading(status: Boolean) {
+        when (status) {
+            true -> {
+                _auctionDetailsState.value = AuctionDetailsState.IsLoading(true)
+            }
+            false -> {
+                _auctionDetailsState.value = AuctionDetailsState.IsLoading(false)
             }
         }
     }
 
     private fun showError(message: String) {
-        if (message == resourceProvider.string(R.string.no_internet_connection))
-            _donateDetailsState.value = DonateAdDetailsState.NoInternetConnection(message)
-        else
-            _donateDetailsState.value = DonateAdDetailsState.ShowError(message)
-    }
-
-    private fun setLoadingState(status: Boolean) {
-        when (status) {
-            true -> {
-                _donateDetailsState.value = DonateAdDetailsState.IsLoading(true)
+        when (message) {
+            resourceProvider.string(R.string.no_internet_connection) -> {
+                _auctionDetailsState.value = AuctionDetailsState.NoInternetConnection(message)
             }
-            false -> {
-                _donateDetailsState.value = DonateAdDetailsState.IsLoading(false)
+            else -> {
+                _auctionDetailsState.value = AuctionDetailsState.ShowError(message)
             }
         }
     }

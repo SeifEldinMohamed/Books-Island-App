@@ -2,10 +2,10 @@ package com.seif.booksislandapp.presentation.home.ad_details.donate
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +16,7 @@ import com.seif.booksislandapp.databinding.FragmentDonateAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.donate.adapter.RelatedDonateAdsAdapter
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class DonateAdDetailsFragment : Fragment() {
+class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     lateinit var binding: FragmentDonateAdDetailsBinding
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -45,15 +46,29 @@ class DonateAdDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        relatedDonateAdsAdapter.onRelatedAdItemClick = this
 
         fetchOwnerData()
         showAdDetails()
         observe()
         fetchRelatedDonateAds()
+        ownerAdLimitations()
+
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.rvRelatedAds.adapter = relatedDonateAdsAdapter
+    }
+
+    private fun ownerAdLimitations() {
+        if (args.donateAdv.ownerId == donateAdDetailsViewModel.readFromSP(
+                Constants.USER_ID_KEY,
+                String::class.java
+            )
+        ) {
+            binding.ivChat.disable()
+            binding.ivChat.setColorFilter(binding.root.context.getColor(R.color.gray_light))
+        }
     }
 
     private fun fetchRelatedDonateAds() {
@@ -169,5 +184,10 @@ class DonateAdDetailsFragment : Fragment() {
         binding.tvAuthorName.text = donateAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = donateAdvertisement.book.category
+    }
+
+    override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
+        val action = DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentSelf(item)
+        findNavController().navigate(action)
     }
 }
