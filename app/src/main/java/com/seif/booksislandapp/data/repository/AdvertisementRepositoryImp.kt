@@ -308,21 +308,23 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
         }
     }
-
+// todo
     override suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
-        if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-
-        return when (val result = uploadMultipleImages(exchangeAdvertisement.book.images)) {
-            is Resource.Error -> {
-                Resource.Error(result.message)
-            }
-            is Resource.Success -> {
-                try {
-                    val document =
-                        firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
-                    exchangeAdvertisement.id = document.id
-                    exchangeAdvertisement.book.images = result.data
+    if (!connectivityManager.checkInternetConnection())
+        return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+    val exchangeImages =
+        exchangeAdvertisement.book.images + exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
+    return when (val result = uploadMultipleImages(exchangeImages)) {
+        is Resource.Error -> {
+            Resource.Error(result.message)
+        }
+        is Resource.Success -> {
+            try {
+                val document =
+                    firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                exchangeAdvertisement.id = document.id
+                exchangeAdvertisement.book.images = result.data
+                //  exchangeAdvertisement.booksToExchange = result.data
                     document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
                     Timber.d("uploaded successfully")
                     Resource.Success("Advertisement Added Successfully with id : ${document.id}")

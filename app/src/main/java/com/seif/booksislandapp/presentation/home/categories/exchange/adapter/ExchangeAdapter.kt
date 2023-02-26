@@ -20,8 +20,10 @@ class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
             binding.tvBookName.text = exchangeAdvertisement.book.title
             binding.tvDiscription.text = exchangeAdvertisement.book.description
             binding.tvPublishDate.text = exchangeAdvertisement.publishDate.formatDate()
+
             booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
             binding.rvContent.adapter = booksToExchangeAdapter
+
             binding.tvLocation.text = exchangeAdvertisement.location
             binding.ivBook.load(exchangeAdvertisement.book.images.first()) {
                 placeholder(R.drawable.book_placeholder)

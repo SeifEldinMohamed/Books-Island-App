@@ -210,7 +210,6 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
         val action = ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
-        toast("done")
         findNavController().navigate(action)
     }
 }
