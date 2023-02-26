@@ -7,7 +7,7 @@
     android:background="@drawable/rounded"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.home.upload_advertisement.exchange.ExchangeSheet">
+    tools:context=".presentation.home.upload_advertisement.exchange.ExchangeSheetFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/materialTextView2"
@@ -119,44 +119,50 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_130sdp"
+        android:layout_height="wrap_content"
         android:background="@drawable/dotted_border"
         app:layout_constraintEnd_toEndOf="@+id/til_author"
         app:layout_constraintStart_toStartOf="@+id/til_author"
         app:layout_constraintTop_toBottomOf="@+id/til_author">
 
-        <ImageView
-            android:id="@+id/iv_upload_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:contentDescription="@string/upload_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_upload"
-            tools:ignore="ImageContrastCheck" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_uploaded_images"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/btn_upload_images"
+            android:layout_height="wrap_content"
+            android:id="@+id/cl_upload"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/uploaded_image_item" />
+            app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/iv_upload_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:contentDescription="@string/upload_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_upload"
+                tools:ignore="ImageContrastCheck" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_uploaded_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/uploaded_image_item" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_upload_images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_2sdp"
             android:paddingVertical="@dimen/_5sdp"
             android:text="@string/upload_image"
             android:textAllCaps="false"
@@ -168,10 +174,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_upload_image"
+            app:layout_constraintTop_toBottomOf="@id/cl_upload"
             app:strokeColor="@color/primary"
-            app:strokeWidth="@dimen/_1sdp"
-            tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+            app:strokeWidth="@dimen/_1sdp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton

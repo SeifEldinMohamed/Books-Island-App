@@ -7,9 +7,11 @@ import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
 import com.seif.booksislandapp.data.repository.AuctionAdvertisementRepositoryImp
 import com.seif.booksislandapp.data.repository.AuthRepositoryImp
+import com.seif.booksislandapp.data.repository.ExchangeAdvertisementRepositoryImp
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
 import com.seif.booksislandapp.domain.repository.AuctionAdvertisementRepository
 import com.seif.booksislandapp.domain.repository.AuthRepository
+import com.seif.booksislandapp.domain.repository.ExchangeAdvertisementRepository
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
 import dagger.Module
@@ -67,6 +69,19 @@ object RepositoryModule {
         return AuctionAdvertisementRepositoryImp(
             firestore,
             storageReference,
+            resourceProvider,
+            connectivityManager
+        )
+    }
+    @Provides
+    @Singleton
+    fun provideExchangeAdvertisementRepository(
+        firestore: FirebaseFirestore,
+        resourceProvider: ResourceProvider,
+        connectivityManager: ConnectivityManager
+    ): ExchangeAdvertisementRepository {
+        return ExchangeAdvertisementRepositoryImp(
+            firestore,
             resourceProvider,
             connectivityManager
         )

@@ -18,7 +18,7 @@ class UploadedImagesAdapter : RecyclerView.Adapter<UploadedImagesAdapter.MyViewH
             Timber.d("image uri $image")
             binding.ivRemoveImage.setOnClickListener {
                 Timber.d("remove clicked")
-                onImageItemClick?.onRemoveImageItemClick(image, position)
+                onImageItemClick?.onRemoveImageItemClick(image, position, "Image")
             }
         }
     }

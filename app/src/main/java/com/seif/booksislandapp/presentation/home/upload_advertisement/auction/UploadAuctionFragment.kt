@@ -251,7 +251,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         }"
     }
 
-    override fun onRemoveImageItemClick(item: Uri, position: Int) {
+    override fun onRemoveImageItemClick(item: Uri, position: Int, bookOrImage: String) {
         imageUris.removeAt(position)
         uploadedImagesAdapter.updateList(imageUris)
         if (imageUris.size == 0) {

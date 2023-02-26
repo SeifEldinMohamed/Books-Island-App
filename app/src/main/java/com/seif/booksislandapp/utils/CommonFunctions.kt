@@ -24,7 +24,9 @@ import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat
@@ -249,6 +251,35 @@ fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, Strin
             is Resource.Error -> Resource.Error(result.message)
             is Resource.Success -> Resource.Success(result.data)
         }
+    }
+}
+fun ExchangeAdvertisement.checkExchangeAdvertisementUpload(): Resource<String, String> {
+    return if (this.ownerId.isEmpty()) {
+        Resource.Error("User is not LoggedIn !")
+    } else if (this.publishDate.toString().isEmpty()) {
+        Resource.Error("problem in Phone Time !")
+    } else if (this.location.isEmpty()) {
+        Resource.Error("Location Can't be Empty")
+    } else if (this.status.toString().isEmpty()) {
+        Resource.Error("Status Can't be Empty")
+    } else if (this.booksToExchange.isEmpty()) {
+        Resource.Error("You should enter at least one book for exchange")
+    } else {
+        return when (val result = this.book.validateBookData()) {
+            is Resource.Error -> Resource.Error(result.message)
+            is Resource.Success -> Resource.Success(result.data)
+        }
+    }
+}
+fun BooksToExchange.checkIsValidExchangeFor(): Resource<BooksToExchange, String> {
+    return if (this.title.isEmpty()) {
+        Resource.Error("Book should have a title")
+    } else if (this.author.isEmpty()) {
+        Resource.Error("Book should have author")
+    } else if (this.imageUri == null) {
+        Resource.Error("Book should have image")
+    } else {
+        Resource.Success(this)
     }
 }
 
