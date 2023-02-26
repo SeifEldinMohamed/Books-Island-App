@@ -96,7 +96,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                     is ExchangeDetailsState.ShowError -> handleErrorState(it.message)
                     is ExchangeDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.setImageResource(it.user.avatarImage.toInt())
+                        binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
                     is ExchangeDetailsState.FetchRelatedExchangeAdvertisementSuccessfully -> {

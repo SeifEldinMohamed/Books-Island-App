@@ -6,6 +6,7 @@ import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.BidderDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.adv.exchange.BooksToExchangeDto
 import com.seif.booksislandapp.data.remote.dto.adv.exchange.ExchangeAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
@@ -19,6 +20,7 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.book.BooksToExchange
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -94,20 +96,6 @@ fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
         bidders = bidders.map { it.toBidderDto() },
     )
 }
-
-fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
-    return ExchangeAdvertisement(
-        id = id,
-        ownerId = ownerId,
-        book = book!!.toBook(),
-        status = status!!,
-        publishDate = publishDate!!,
-        location = location,
-        booksToExchange = booksToExchange
-
-    )
-}
-
 fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
     return AuctionAdvertisement(
         id = id,
@@ -122,6 +110,51 @@ fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
         postDuration = postDuration,
         auctionStatus = auctionStatus!!,
         bidders = bidders!!.map { it.toBidder() }
+    )
+}
+
+fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
+    return ExchangeAdvertisement(
+        id = id,
+        ownerId = ownerId,
+        book = book!!.toBook(),
+        status = status!!,
+        publishDate = publishDate!!,
+        location = location,
+        booksToExchange = booksToExchange.map {
+            it.toBooksToExchange()
+        }
+
+    )
+}
+fun ExchangeAdvertisement.toExchangeAdvertisementDto(): ExchangeAdvertisementDto {
+    return ExchangeAdvertisementDto(
+        id = id,
+        ownerId = ownerId,
+        book = book.toBookDto(),
+        status = status,
+        publishDate = publishDate,
+        location = location,
+        booksToExchange = booksToExchange.map {
+            it.toBooksToExchange()
+        }
+    )
+}
+
+fun BooksToExchangeDto.toBooksToExchange(): BooksToExchange {
+    return BooksToExchange(
+        title = title,
+        imageUri = Uri.parse(imageUri),
+        author = author
+
+    )
+}
+fun BooksToExchange.toBooksToExchange(): BooksToExchangeDto {
+    return BooksToExchangeDto(
+        title = title,
+        imageUri = imageUri.toString(),
+        author = author
+
     )
 }
 

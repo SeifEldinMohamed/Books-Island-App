@@ -144,6 +144,9 @@
         <action
             android:id="@+id/action_uploadExchangeFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
+        <argument
+            android:name="exchangeForItem"
+            app:argType="com.seif.booksislandapp.domain.model.book.BooksToExchange" />
     </fragment>
     <fragment
         android:id="@+id/auctionAdDetailsFragment"
@@ -181,4 +184,13 @@
             android:id="@+id/action_donateAdDetailsFragment_self"
             app:destination="@id/donateAdDetailsFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/exchangeSheetFragment"
+        android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.exchange.ExchangeSheetFragment"
+        android:label="fragment_exchange_sheet"
+        tools:layout="@layout/fragment_exchange_sheet" >
+        <action
+            android:id="@+id/action_exchangeSheetFragment_to_uploadExchangeFragment"
+            app:destination="@id/uploadExchangeFragment" />
+    </dialog>
 </navigation>

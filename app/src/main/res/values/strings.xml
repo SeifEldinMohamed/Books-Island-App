@@ -211,6 +211,7 @@
     <string name="your_book_images_at_least_1_image">Your Book Images(At Least 1 image)</string>
     <string name="upload_book">Upload Book</string>
     <string name="add_book">Add Book</string>
+    <string name="by">By %1$s</string>
     <string name="book_to_exchange_for_at_least_1_book">Book To Exchange For(At Least 1 Book)</string>
 
     <!-- Auction Details -->

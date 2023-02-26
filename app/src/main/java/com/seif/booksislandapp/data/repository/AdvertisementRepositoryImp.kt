@@ -13,10 +13,12 @@ import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
@@ -300,6 +302,30 @@ class AdvertisementRepositoryImp @Inject constructor(
                         Timber.d("uploaded successfully")
                         Resource.Success("Advertisement Added Successfully with id : ${document.id}")
                     }
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
+        }
+    }
+
+    override suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return when (val result = uploadMultipleImages(exchangeAdvertisement.book.images)) {
+            is Resource.Error -> {
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    val document =
+                        firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                    exchangeAdvertisement.id = document.id
+                    exchangeAdvertisement.book.images = result.data
+                    document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
+                    Timber.d("uploaded successfully")
+                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
                 } catch (e: Exception) {
                     Resource.Error(e.message.toString())
                 }
