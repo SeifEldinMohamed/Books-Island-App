@@ -36,6 +36,7 @@
         android:fontFamily="@font/roboto_regular"
         android:gravity="center"
         android:maxLines="2"
+        android:layout_marginHorizontal="@dimen/_2sdp"
         android:text="@string/book_title"
         android:textColor="@color/black"
         android:textSize="@dimen/_12ssp"

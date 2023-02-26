@@ -33,6 +33,7 @@ class Constants {
 
         // Upload
         const val MAX_UPLOADED_IMAGES_NUMBER = 5
+        const val MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER = 4
 
         // Splash
         const val HANDLER_DELAY = 2000L

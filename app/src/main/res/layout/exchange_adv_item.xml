@@ -26,6 +26,7 @@
                 android:id="@+id/rv_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -42,9 +43,11 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/one_for_one"
                 android:textColor="@color/primary"
+                android:textSize="@dimen/_8ssp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_exchange"
                 app:layout_constraintStart_toStartOf="@+id/iv_exchange"
-                app:layout_constraintTop_toBottomOf="@+id/iv_exchange" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_exchange"
+                tools:ignore="TextContrastCheck" />
 
             <ImageView
                 android:id="@+id/iv_exchange"
@@ -87,7 +90,8 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintStart_toEndOf="@+id/cv_image"
-                app:layout_constraintTop_toTopOf="@+id/cv_image" />
+                app:layout_constraintTop_toTopOf="@+id/cv_image"
+                tools:ignore="TextContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_discription"

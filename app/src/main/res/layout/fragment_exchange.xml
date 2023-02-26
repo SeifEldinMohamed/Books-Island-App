@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".presentation.home.categories.exchange.ExchangeFragment">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_sortBy2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawablePadding="@dimen/_6sdp"
+        android:focusable="true"
+        android:fontFamily="@font/roboto_bold"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/sort_by"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/_16ssp"
+        app:drawableEndCompat="@drawable/ic_sort"
+        app:layout_constraintBottom_toTopOf="@+id/til_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
+
     <TextView
         android:id="@+id/tv_exchange"
         android:layout_width="wrap_content"
