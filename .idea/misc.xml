@@ -49,8 +49,10 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_buy.xml" value="0.5923076923076923" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_chat.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_chats.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_donate_ad_details.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_donation.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_exchange.xml" value="0.6" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_exchange_ad_details.xml" value="0.4" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_forget_password.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_home.xml" value="0.536" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_intro.xml" value="0.1" />
@@ -65,7 +67,7 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_onboarding3.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_profile.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_register.xml" value="0.5" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_sell_ad_details.xml" value="0.8" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_sell_ad_details.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_splash.xml" value="0.536" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_auction.xml" value="1.0" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_bid.xml" value="0.6" />

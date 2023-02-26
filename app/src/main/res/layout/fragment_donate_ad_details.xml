@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.home.ad_details.donate.DonateAdDetailsFragment">
 
     <ScrollView
@@ -115,12 +115,12 @@
                     android:layout_height="@dimen/_135sdp"
                     android:layout_marginTop="@dimen/_35sdp"
                     android:contentDescription="@string/photo"
-                    android:src="@drawable/iv_book"
                     android:scaleType="fitXY"
-                    app:shapeAppearanceOverlay="@style/RoundedSquare"
+                    android:src="@drawable/iv_book"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/RoundedSquare" />
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -129,8 +129,8 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="@string/Title"
-                    android:textSize="@dimen/_18ssp"
                     android:textColor="@color/black"
+                    android:textSize="@dimen/_18ssp"
                     app:layout_constraintEnd_toEndOf="@+id/iv_book"
                     app:layout_constraintStart_toStartOf="@+id/iv_book"
                     app:layout_constraintTop_toBottomOf="@+id/iv_book" />
@@ -142,8 +142,8 @@
                     android:layout_marginVertical="@dimen/_6sdp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="@string/free"
-                    android:textSize="@dimen/_15ssp"
                     android:textColor="@color/black"
+                    android:textSize="@dimen/_15ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/tv_title"
                     app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -178,9 +178,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:textColor="@color/black"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:text="@string/maadi_cairo"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/iv_location"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
 
@@ -539,10 +539,10 @@
                     android:fontFamily="@font/roboto_medium"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16ssp"
-                    tools:text="@string/hazem_khaled"
                     app:layout_constraintBottom_toBottomOf="@id/iv_owner_avatar"
                     app:layout_constraintStart_toEndOf="@id/iv_owner_avatar"
-                    app:layout_constraintTop_toTopOf="@id/iv_owner_avatar" />
+                    app:layout_constraintTop_toTopOf="@id/iv_owner_avatar"
+                    tools:text="@string/hazem_khaled" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_owner_avatar"
@@ -578,10 +578,12 @@
                 android:text="@string/no_related_ads_yet"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_related" />
+
             <ImageView
                 android:id="@+id/iv_point8"
                 android:layout_width="wrap_content"
@@ -592,6 +594,7 @@
                 app:layout_constraintStart_toStartOf="@id/iv_details"
                 app:layout_constraintTop_toTopOf="@id/tv_edition"
                 tools:ignore="ImageContrastCheck" />
+
             <TextView
                 android:id="@+id/tv_edition"
                 android:layout_width="wrap_content"
