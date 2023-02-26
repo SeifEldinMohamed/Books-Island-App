@@ -23,16 +23,13 @@ import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
 import com.seif.booksislandapp.utils.*
-import com.seif.booksislandapp.utils.FileUtil
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri> {
@@ -49,11 +46,12 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
         uploadedImagesAdapter.onImageItemClick = this
         observe()
         binding.btnAddBook.setOnClickListener {
-
-            val item = BooksToExchange(imageUri = imageUri, title = binding.etTitle.text.toString(), author = binding.etAuther.text.toString())
-            saveAction(
-                item
+            val item = BooksToExchange(
+                imageUri = imageUri,
+                title = binding.etTitle.text.toString(),
+                author = binding.etAuther.text.toString()
             )
+            saveAction(item)
         }
         binding.btnUploadImages.setOnClickListener {
             pickPhoto()
@@ -70,6 +68,7 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
         binding = FragmentExchangeSheetBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             exchangeViewModel.uploadState.collect {
@@ -86,10 +85,12 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
             }
         }
     }
+
     private fun saveAction(booksToExchangeItem: BooksToExchange) {
         exchangeViewModel.addBook(booksToExchangeItem)
-        // dismiss()
+        dismiss()
     }
+
     private fun pickPhoto() {
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
@@ -157,6 +158,7 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
                 }
             }
         }
+
     private fun startLoadingDialog() {
         dialog.create()
         dialog.show()
@@ -165,6 +167,7 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
     private fun dismissLoadingDialog() {
         dialog.dismiss()
     }
+
     private fun disableUploadButton() {
         binding.btnUploadImages.apply {
             disable()
@@ -173,6 +176,7 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
             setIconTintResource(R.color.gray_medium)
         }
     }
+
     override fun onRemoveImageItemClick(item: Uri, position: Int, bookOrImage: String) {
         uris.removeAt(position)
         uploadedImagesAdapter.updateList(uris)

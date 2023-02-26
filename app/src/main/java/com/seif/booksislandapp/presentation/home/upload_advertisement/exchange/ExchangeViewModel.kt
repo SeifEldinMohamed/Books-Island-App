@@ -22,6 +22,7 @@ class ExchangeViewModel @Inject constructor(
     val liveData: LiveData<BooksToExchange> get() = mutableLiveData
     private val _uploadState = MutableStateFlow<ExchangeSheetState>(ExchangeSheetState.Init)
     val uploadState: StateFlow<ExchangeSheetState> = _uploadState
+
     fun addBook(booksToExchangeItem: BooksToExchange) {
         viewModelScope.launch(Dispatchers.IO) {
             _uploadState.value = ExchangeSheetState.IsLoading(true)
@@ -31,6 +32,7 @@ class ExchangeViewModel @Inject constructor(
                     _uploadState.value = ExchangeSheetState.ShowError(result.message)
                 }
                 is Resource.Success -> {
+
                     _uploadState.value = ExchangeSheetState.IsLoading(false)
                     mutableLiveData.postValue(booksToExchangeItem)
                 }
