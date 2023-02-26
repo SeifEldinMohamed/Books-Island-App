@@ -25,10 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
-    lateinit var binding: FragmentAuctionAdDetailsBinding
+    private var _binding: FragmentAuctionAdDetailsBinding? = null
+    private val binding get() = _binding!!
     private val args: AuctionAdDetailsFragmentArgs by navArgs()
     private val auctionAdDetailsViewModel: AuctionAdDetailsViewModel by viewModels()
     private val auctionSheetViewModel: AuctionSheetViewModel by activityViewModels()
@@ -42,7 +44,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentAuctionAdDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentAuctionAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -50,6 +52,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         relatedAuctionAdsAdapter.onRelatedAdItemClick = this
+        auctionSheetViewModel.firstEnter = true
         fetchOwnerData()
         showAdDetails()
         observe()
@@ -66,6 +69,37 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.rvRelatedAds.adapter = relatedAuctionAdsAdapter
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (!auctionSheetViewModel.firstEnter)
+            observeUpdatedAuctionAd()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        auctionSheetViewModel.firstEnter = false
+    }
+
+    private fun observeUpdatedAuctionAd() {
+        auctionSheetViewModel.updatedAuctionAdvertisement.observe(viewLifecycleOwner) { updatedAuctionAdvertisement ->
+            binding.tvCurrentPriceValue.text = getString(
+                R.string.egypt_pound,
+                (
+                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                            ?: args.auctionAdvertisement.startPrice?.toInt()
+                        ).toString()
+            )
+
+            binding.tvLastBidder.text = getString(
+                R.string.last_bidder_value,
+                updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.bidderName
+                    ?: getString(
+                        R.string.no_one
+                    )
+            )
+        }
+    }
+
     private fun ownerAdLimitations() {
         if (args.auctionAdvertisement.ownerId == auctionAdDetailsViewModel.readFromSP(
                 Constants.USER_ID_KEY,
@@ -80,6 +114,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     }
 
     private fun fetchRelatedAuctionAds() {
+        Timber.d("fetchRelatedAuctionAds: $relatedAds")
         if (relatedAds.isEmpty())
             auctionAdDetailsViewModel.fetchRelatedAds(
                 args.auctionAdvertisement.id,
@@ -213,5 +248,10 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
         val action = AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentSelf(item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

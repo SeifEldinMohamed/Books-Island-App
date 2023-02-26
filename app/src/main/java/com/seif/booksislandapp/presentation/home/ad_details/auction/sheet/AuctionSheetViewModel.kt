@@ -16,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,8 +31,12 @@ class AuctionSheetViewModel @Inject constructor(
     private val mutableAuctionAdvertisement = MutableLiveData<AuctionAdvertisement>()
     val auctionAdvertisement: LiveData<AuctionAdvertisement> get() = mutableAuctionAdvertisement
 
+    private val mutableUpdatedAuctionAdvertisement = MutableLiveData<AuctionAdvertisement>()
+    val updatedAuctionAdvertisement: LiveData<AuctionAdvertisement> get() = mutableUpdatedAuctionAdvertisement
+
     private var _auctionSheetState = MutableStateFlow<AuctionSheetState>(AuctionSheetState.Init)
     val auctionSheetState get() = _auctionSheetState.asStateFlow()
+    var firstEnter: Boolean = true
 
     fun sendAdvertisement(auctionAdvertisement: AuctionAdvertisement) {
         mutableAuctionAdvertisement.value = auctionAdvertisement
@@ -109,5 +112,9 @@ class AuctionSheetViewModel @Inject constructor(
 
     fun <T> readFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
+    }
+
+    fun sendUpdatedAdvertisement(updatedAuctionAdvertisement: AuctionAdvertisement) {
+        mutableUpdatedAuctionAdvertisement.value = updatedAuctionAdvertisement
     }
 }

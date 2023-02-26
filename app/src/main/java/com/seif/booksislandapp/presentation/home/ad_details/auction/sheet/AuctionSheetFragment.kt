@@ -13,9 +13,10 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAuctionSheetBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USERNAME_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -81,6 +82,7 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
                     is AuctionSheetState.NoInternetConnection -> handleNoInternetConnectionState()
                     is AuctionSheetState.ShowError -> handleErrorState(it.message)
                     is AuctionSheetState.FetchAuctionAdByIdSuccessfully -> {
+                        auctionSheetViewModel.sendUpdatedAdvertisement(it.auctionAd)
                         updateUi(it.auctionAd)
                     }
                     is AuctionSheetState.AddBidderSuccessfully -> {
