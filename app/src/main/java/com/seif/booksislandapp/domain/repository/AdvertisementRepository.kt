@@ -2,6 +2,7 @@ package com.seif.booksislandapp.domain.repository
 
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.utils.Resource
 
@@ -22,4 +23,5 @@ interface AdvertisementRepository {
         adId: String,
         category: String
     ): Resource<ArrayList<DonateAdvertisement>, String>
+    suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String>
 }

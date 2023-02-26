@@ -248,7 +248,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_upload"
                         tools:ignore="ImageContrastCheck" />
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_uploaded_images"
                         android:layout_width="match_parent"
@@ -420,40 +419,47 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout4"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/_170sdp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
                     android:background="@drawable/dotted_border"
                     app:layout_constraintEnd_toEndOf="@+id/btn_category"
                     app:layout_constraintStart_toStartOf="@+id/btn_category"
                     app:layout_constraintTop_toBottomOf="@+id/tv_changefor">
 
-                    <ImageView
-                        android:id="@+id/iv_upload_book"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_26sdp"
-                        android:contentDescription="@string/upload_image"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.501"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_upload"
-                        tools:ignore="ImageContrastCheck" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_uploaded_book"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="@dimen/_6sdp"
-                        android:orientation="horizontal"
-                        android:visibility="gone"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintBottom_toTopOf="@+id/btn_upload_book"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cl_upload"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:listitem="@layout/uploaded_exchange_item" />
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <ImageView
+                            android:id="@+id/iv_upload_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_26sdp"
+                            android:contentDescription="@string/upload_image"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.501"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_upload"
+                            tools:ignore="ImageContrastCheck" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_uploaded_book"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:orientation="horizontal"
+                            android:visibility="invisible"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/uploaded_exchange_item" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_upload_book"
                         android:layout_width="wrap_content"
@@ -462,6 +468,7 @@
                         android:paddingVertical="@dimen/_5sdp"
                         android:text="@string/upload_book"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:textColor="@color/primary"
                         app:backgroundTint="@color/white"
                         app:cornerRadius="@dimen/_4sdp"
@@ -471,6 +478,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:strokeColor="@color/primary"
+                        app:layout_constraintTop_toBottomOf="@id/cl_upload"
                         app:strokeWidth="@dimen/_1sdp"
                         tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

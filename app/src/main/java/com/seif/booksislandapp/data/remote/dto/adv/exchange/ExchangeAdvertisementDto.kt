@@ -3,7 +3,6 @@ package com.seif.booksislandapp.data.remote.dto.adv.exchange
 import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.adv.AdvertisementDto
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
-import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import java.util.*
 
 data class ExchangeAdvertisementDto(
@@ -13,5 +12,5 @@ data class ExchangeAdvertisementDto(
     override val status: AdvStatus? = null,
     override val publishDate: Date? = null,
     override val location: String = "",
-    val booksToExchange: List<BooksToExchange> = emptyList()
+    val booksToExchange: List<BooksToExchangeDto> = emptyList()
 ) : AdvertisementDto()
