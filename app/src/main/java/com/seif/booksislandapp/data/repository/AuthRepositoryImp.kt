@@ -40,7 +40,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 val authResult =
                     auth.createUserWithEmailAndPassword(user.email, user.password).await()
                 authResult.user?.let { firebaseUser ->
@@ -87,7 +87,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 auth.signInWithEmailAndPassword(email, password).await()
                 Resource.Success(resourceProvider.string(R.string.welcome_back))
             }
@@ -101,7 +101,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 auth.sendPasswordResetEmail(email).await()
                 Resource.Success(resourceProvider.string(R.string.send_mail_to_reset_password))
             }
@@ -115,7 +115,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 auth.signOut()
                 Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
             }
@@ -141,7 +141,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 val querySnapShot = firestore.collection(GOVERNORATES_FIRESTORE_COLLECTION)
                     .orderBy("name").get()
                     .await()
@@ -162,7 +162,7 @@ class AuthRepositoryImp @Inject constructor(
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         return try {
-            withTimeout(Constants.TIMEOUT) {
+            withTimeout(Constants.TIMEOUT_AUTH) {
                 val querySnapShot = firestore.collection(DISTRICTS_FIRESTORE_COLLECTION)
                     .whereEqualTo("governorateId", governorateId)
                     .orderBy("name").get()
