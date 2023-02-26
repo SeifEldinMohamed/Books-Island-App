@@ -62,7 +62,6 @@ class BookCategoriesFragment : Fragment(), OnCategoryItemClick<BookCategory> {
             BookCategory(name = "References and Research", R.color.reference_and_research_color),
             BookCategory(name = "Family and Child", R.color.family_and_child_color),
             BookCategory(name = "Cooks", R.color.cook_color)
-
         )
     }
 
