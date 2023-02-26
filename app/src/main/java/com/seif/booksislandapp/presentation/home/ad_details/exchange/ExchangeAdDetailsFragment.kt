@@ -26,7 +26,9 @@ import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPend
 
 @AndroidEntryPoint
 class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
-    lateinit var binding: FragmentExchangeAdDetailsBinding
+    private var _binding: FragmentExchangeAdDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private val args: ExchangeAdDetailsFragmentArgs by navArgs()
     private val exchangeAdDetailsViewModel: ExchangeDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -40,8 +42,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        // return inflater.inflate(R.layout.fragment_exchange_ad_details, container, false)
-        binding = FragmentExchangeAdDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentExchangeAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -191,5 +192,10 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
         val action = ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentSelf(item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

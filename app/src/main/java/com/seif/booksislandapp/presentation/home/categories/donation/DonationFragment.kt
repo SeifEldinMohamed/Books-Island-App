@@ -58,6 +58,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
         binding.swipeRefresh.setOnRefreshListener {
             donateViewModel.fetchAllDonateAdvertisement()
+            observe()
             binding.swipeRefresh.isRefreshing = false
         }
 

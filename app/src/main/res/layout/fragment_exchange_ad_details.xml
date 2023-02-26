@@ -638,6 +638,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/no_related_ads_yet"
                 android:textColor="@color/black"
+                android:visibility="gone"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

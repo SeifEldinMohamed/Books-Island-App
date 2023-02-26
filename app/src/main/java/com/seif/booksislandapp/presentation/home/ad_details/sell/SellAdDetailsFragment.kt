@@ -23,10 +23,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
-    lateinit var binding: FragmentSellAdDetailsBinding
+    private var _binding: FragmentSellAdDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -39,7 +42,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentSellAdDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentSellAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -65,6 +68,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                 String::class.java
             )
         ) {
+            Timber.d("ownerAdLimitations: disable ")
             binding.ivChat.disable()
             binding.ivChat.setColorFilter(binding.root.context.getColor(R.color.gray_light))
         }
@@ -84,7 +88,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sellAdDetailsViewModel.sellDetailsState.collect {
                 when (it) {
                     SellDetailsState.Init -> Unit
@@ -189,5 +193,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
         val action = SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentSelf(item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

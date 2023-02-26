@@ -365,6 +365,18 @@
                     app:layout_constraintStart_toStartOf="@+id/btn_category"
                     app:layout_constraintTop_toBottomOf="@+id/btn_category" />
 
+                <TextView
+                    android:id="@+id/tv_star_edition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="@string/mandatory_star"
+                    android:textColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_edition"
+                    app:layout_constraintStart_toEndOf="@+id/tv_edition"
+                    app:layout_constraintTop_toTopOf="@+id/tv_edition" />
+
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_edition"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"

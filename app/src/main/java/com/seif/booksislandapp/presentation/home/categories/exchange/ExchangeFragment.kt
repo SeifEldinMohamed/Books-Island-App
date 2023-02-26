@@ -59,6 +59,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
         binding.swipeRefresh.setOnRefreshListener {
             exchangeViewModel.fetchAllExchangeAds()
+            observe()
             binding.swipeRefresh.isRefreshing = false
         }
         binding.rvExchange.adapter = exchangeAdapter
@@ -209,7 +210,6 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
         val action = ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
-        toast("done")
         findNavController().navigate(action)
     }
 }

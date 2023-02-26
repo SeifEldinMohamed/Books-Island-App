@@ -2,11 +2,11 @@ package com.seif.booksislandapp.presentation.home.my_ads
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -21,7 +21,7 @@ class MyAdsFragment : Fragment() {
     private var _binding: FragmentMyAdsBinding? = null
     private val binding get() = _binding!!
     private val tabTitle = arrayListOf(" Buying ", " Donation ", " Exchanges ", " Auctions ")
-    private lateinit var viewPager: ViewPager2
+    private var viewPager: ViewPager2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +37,9 @@ class MyAdsFragment : Fragment() {
     @SuppressLint("InflateParams")
     private fun setupTabLayoutWithViewPager() {
         viewPager = binding.viewPager
-        viewPager.adapter = MyAdsPagerAdapter(this)
+        viewPager!!.adapter = MyAdsPagerAdapter(this)
 
-        TabLayoutMediator(binding.tlMyAds, viewPager) { tab, position ->
+        TabLayoutMediator(binding.tlMyAds, viewPager!!) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
         for (i in 0..4) {
@@ -55,7 +55,7 @@ class MyAdsFragment : Fragment() {
         binding.fabAddAdv.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(500)
-                when (viewPager.currentItem) {
+                when (viewPager!!.currentItem) {
                     0 -> navigateToUploadSellAdFragment()
                     1 -> navigateToUploadDonateAdFragment()
                     2 -> navigateToUploadExchangeAdFragment()
@@ -80,7 +80,8 @@ class MyAdsFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
-        viewPager.adapter = null
+        viewPager!!.adapter = null
+        viewPager = null
         super.onDestroyView()
     }
 }

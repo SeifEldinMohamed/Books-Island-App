@@ -58,6 +58,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
         binding.swipeRefresh.setOnRefreshListener {
             buyViewModel.fetchAllSellAdvertisement()
+            observe()
             binding.swipeRefresh.isRefreshing = false
         }
 
@@ -212,6 +213,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     override fun onDestroyView() {
         buyViewModel.isSearching = false
         _binding = null
+        buyAdapter.onAdItemClick = null
         super.onDestroyView()
     }
 }
