@@ -325,15 +325,15 @@ class AdvertisementRepositoryImp @Inject constructor(
                 exchangeAdvertisement.id = document.id
                 exchangeAdvertisement.book.images = result.data
                 //  exchangeAdvertisement.booksToExchange = result.data
-                    document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
-                    Timber.d("uploaded successfully")
-                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
-                } catch (e: Exception) {
-                    Resource.Error(e.message.toString())
-                }
+                document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
+                Timber.d("uploaded successfully")
+                Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+            } catch (e: Exception) {
+                Resource.Error(e.message.toString())
             }
         }
     }
+}
 
     private suspend fun uploadMultipleImages(imagesUri: List<Uri>): Resource<List<Uri>, String> {
         return try {

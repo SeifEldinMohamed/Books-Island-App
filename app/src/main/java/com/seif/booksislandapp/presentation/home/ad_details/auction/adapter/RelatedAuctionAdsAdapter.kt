@@ -23,7 +23,7 @@ class RelatedAuctionAdsAdapter : RecyclerView.Adapter<RelatedAuctionAdsAdapter.M
             binding.tvCurrentPrice.text = itemView.context.getString(
                 R.string.current_price_egypt_pound,
                 (
-                    auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                    auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
                         ?: auctionAdvertisement.startPrice?.toInt()
                     ).toString()
             )
