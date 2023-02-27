@@ -159,7 +159,7 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
                     ?: auctionAdvertisement.startPrice
                 ).toString()
         )
@@ -168,9 +168,10 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
         binding.tvBiddersNumber.text =
             getString(R.string.bidders_number, auctionAdvertisement.bidders.distinctBy { it.bidderId }.size.toString())
         binding.tvLastBidderValue.text =
-            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.bidderName ?: getString(
-                R.string.no_one
-            )
+            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
+                ?: getString(
+                    R.string.no_one
+                )
     }
 
     override fun onDestroyView() {

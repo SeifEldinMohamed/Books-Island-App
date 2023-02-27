@@ -94,7 +94,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                     is DonateAdDetailsState.ShowError -> handleErrorState(it.message)
                     is DonateAdDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.setImageResource(it.user.avatarImage.toInt())
+                        binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
                     is DonateAdDetailsState.FetchRelatedDonateAdvertisementSuccessfully -> {

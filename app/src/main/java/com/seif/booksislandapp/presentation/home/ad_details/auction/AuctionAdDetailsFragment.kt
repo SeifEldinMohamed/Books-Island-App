@@ -38,6 +38,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     private val relatedAuctionAdsAdapter: RelatedAuctionAdsAdapter by lazy { RelatedAuctionAdsAdapter() }
     private var owner: User? = null
     private var relatedAds: List<AuctionAdvertisement> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,14 +51,20 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("onViewCreated: called")
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         relatedAuctionAdsAdapter.onRelatedAdItemClick = this
-        auctionSheetViewModel.firstEnter = true
+
+        // if (!auctionSheetViewModel.firstEnter)
+        //   observeUpdatedAuctionAd()
+
         fetchOwnerData()
         showAdDetails()
         observe()
         fetchRelatedAuctionAds()
         ownerAdLimitations()
+
+        // if (!auctionSheetViewModel.firstEnter)
 
         binding.ivBackAuctionDetails.setOnClickListener {
             findNavController().navigateUp()
@@ -65,19 +72,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.btnParticipate.setOnClickListener {
             auctionSheetViewModel.sendAdvertisement(auctionAdvertisement = args.auctionAdvertisement)
             AuctionSheetFragment().show(parentFragmentManager, "AuctionSheet")
+            observeUpdatedAuctionAd()
         }
         binding.rvRelatedAds.adapter = relatedAuctionAdsAdapter
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!auctionSheetViewModel.firstEnter)
-            observeUpdatedAuctionAd()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        auctionSheetViewModel.firstEnter = false
     }
 
     private fun observeUpdatedAuctionAd() {
@@ -85,14 +82,14 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             binding.tvCurrentPriceValue.text = getString(
                 R.string.egypt_pound,
                 (
-                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
                             ?: args.auctionAdvertisement.startPrice?.toInt()
                         ).toString()
             )
 
             binding.tvLastBidder.text = getString(
                 R.string.last_bidder_value,
-                updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.bidderName
+                updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
                     ?: getString(
                         R.string.no_one
                     )
@@ -222,7 +219,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.suggestedPrice
+                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
                     ?: args.auctionAdvertisement.startPrice?.toInt()
                 ).toString()
         )
@@ -239,9 +236,10 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         // if last bidder is current user then show "You" else show "Other"
         binding.tvLastBidder.text = getString(
             R.string.last_bidder_value,
-            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice }?.bidderName ?: getString(
-                R.string.no_one
-            )
+            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
+                ?: getString(
+                    R.string.no_one
+                )
         )
     }
 
@@ -253,5 +251,6 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        auctionSheetViewModel.firstEnter = true
     }
 }
