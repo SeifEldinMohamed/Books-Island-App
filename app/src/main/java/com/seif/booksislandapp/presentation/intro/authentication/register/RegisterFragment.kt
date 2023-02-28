@@ -20,8 +20,13 @@ import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_MEN_LIST
+import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_WOMEN_LIST
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -85,7 +90,6 @@ class RegisterFragment : Fragment() {
                     is RegisterState.GetDistrictsSuccessfully -> {
                         districts = it.districts
                         binding.acDistricts.setText("")
-                        binding.tilDistricts.enabled()
                         setUpDistrictsDropDown(it.districts)
                     }
                     is RegisterState.ShowError -> {
@@ -196,22 +200,8 @@ class RegisterFragment : Fragment() {
     }
 
     private fun handleAvatarImage(gender: String): String {
-        val menAvatarList = arrayListOf(
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_1.png?alt=media&token=06750e12-87c7-480a-a32e-373be9dc8d1f",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_2.png?alt=media&token=eb2cfef6-686f-4354-9d0e-6daf8b800741",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_3.png?alt=media&token=86e32058-3172-407f-83c5-c92e7255d078https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_3.png?alt=media&token=86e32058-3172-407f-83c5-c92e7255d078v",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_4.png?alt=media&token=9cbe0cea-162f-4203-996f-d82957d693e3",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_5.png?alt=media&token=0c13a257-a9df-4ff4-aeff-b8ba0747d379",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_6.png?alt=media&token=700b4ba8-0799-4295-bbf3-6619e1f26802",
-        )
-        val womenAvatarList = arrayListOf(
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_1.png?alt=media&token=3fe755a4-9e34-4806-ad15-885d2a3e0971",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_2.png?alt=media&token=8b314aac-a237-45d8-97a5-e64f910a1297",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_3.png?alt=media&token=329d6fa9-b636-4ad2-8bde-b6914737a329",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_4.png?alt=media&token=b8eb1c6d-4ad6-41d2-8309-a1a12cc4f9fe",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_5.png?alt=media&token=7ab3ec81-a0bb-40ba-8e92-eb1d9fa6d14a",
-            "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_6.png?alt=media&token=33205a23-1c55-4a53-83e2-b05663625ca5",
-        )
+        val menAvatarList = AVATAR_MEN_LIST
+        val womenAvatarList = AVATAR_WOMEN_LIST
         return when (gender) {
             getString(R.string.male) -> menAvatarList.random().toString()
             getString(R.string.female) -> womenAvatarList.random().toString()
