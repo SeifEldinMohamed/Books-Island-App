@@ -40,11 +40,14 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     ): View {
         _binding = FragmentBuyBinding.inflate(inflater, container, false)
         buyViewModel.resetState()
+        Timber.d("onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("onViewcreated")
+
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         buyAdapter.onAdItemClick = this
 
@@ -65,24 +68,33 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = buyAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        listenForSearchEditTextClick()
+        listenForSearchEditTextChange()
+    }
+
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Timber.d("onTextChanged: $p1 - $p2 - $p3")
+                Timber.d("onTextChanged: searchQuery $text")
                 viewLifecycleOwner.lifecycleScope.launch() {
                     delay(1000)
                     text?.let {
+                        Timber.d("onTextChanged: isSearching:  ${buyViewModel.isSearching}")
                         if (buyViewModel.isSearching) {
                             if (it.toString().isEmpty()) {
-                                Timber.d("onTextChanged: text changed")
+                                Timber.d("onTextChanged: empty search query")
                                 buyAdapter.updateList(sellAdvertisements)
                             } else {
+                                Timber.d("onTextChanged: searching")
                                 buyViewModel.searchSellAdvertisements(
                                     searchQuery = it.toString()
                                 )
+                                observe() // handle issue of not working search when navigate back from details ads
                             }
                         }
                     }
@@ -126,6 +138,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                     }
                     is BuyState.SearchSellAdvertisementSuccessfully -> {
                         // sellAdvertisements = it.searchedSellAds
+                        Timber.d("observe: searched list: ${it.searchedSellAds}")
                         buyAdapter.updateList(it.searchedSellAds)
                         // handleUi(it.searchedSellAds)
                     }
@@ -211,6 +224,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onDestroyView() {
+        Timber.d("onDestroyView")
         buyViewModel.isSearching = false
         _binding = null
         buyAdapter.onAdItemClick = null

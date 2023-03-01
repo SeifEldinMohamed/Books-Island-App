@@ -180,18 +180,17 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Timber.d("onTextChanged: $p1 - $p2 - $p3")
-                lifecycleScope.launch() {
+                viewLifecycleOwner.lifecycleScope.launch() {
                     delay(1000)
                     text?.let {
                         if (exchangeViewModel.isSearching) {
                             if (it.toString().isEmpty()) {
-                                Timber.d("onTextChanged: text changed")
-                                //   exchangeAdapter.updateList(exchangeAdvertisements)
+                                exchangeAdapter.updateList(exchangeAdvertisements)
                             } else {
                                 exchangeViewModel.searchExchangeAds(
                                     searchQuery = it.toString()
                                 )
+                                observe()
                             }
                         }
                     }
