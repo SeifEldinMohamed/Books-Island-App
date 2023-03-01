@@ -18,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.donation.adapter.Don
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -115,8 +116,8 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launch {
-            donateViewModel.donateState.collect {
+        viewLifecycleOwner.lifecycleScope.launch {
+            donateViewModel.donateState.collectLatest {
                 when (it) {
                     DonateState.Init -> Unit
                     is DonateState.FetchAllDonateAdvertisementSuccessfully -> {
