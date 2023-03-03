@@ -14,6 +14,7 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/exchange_icon.xml" value="0.162" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/filter_background.xml" value="0.154" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/grass_image.xml" value="0.1" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_about.xml" value="0.212" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_chats.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_home.xml" value="0.146" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/drawable/ic_horizontal_line.xml" value="0.15" />
@@ -46,7 +47,7 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_auction_ad_details.xml" value="0.536" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_auction_sheet.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_bid.xml" value="0.4" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_buy.xml" value="0.5923076923076923" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_buy.xml" value="0.41621621621621624" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_chat.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_chats.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_donate_ad_details.xml" value="0.264" />
@@ -57,9 +58,9 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_home.xml" value="0.536" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_intro.xml" value="0.1" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_login.xml" value="0.536" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_my_ads.xml" value="0.536" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_my_ads.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_my_ads_biding.xml" value="0.48125" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_my_ads_buy.xml" value="0.48125" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_my_ads_buy.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_myads_biding.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_myads_donate.xml" value="0.48125" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_onboarding1.xml" value="0.264" />

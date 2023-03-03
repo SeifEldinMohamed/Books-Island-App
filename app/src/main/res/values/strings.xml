@@ -232,5 +232,9 @@
     <string name="last_bidder_value">Last Bidder: %1$s</string>
     <string name="add_bid_successfully">Your Bid Added Successfully</string>
     <string name="profile_updated_successfully">Updated Successfully</string>
+    <string name="password_tool_tip_image">password tool tip image</string>
+    <string name="tooltip_password">- Password must be more than 5 characters in length. \n - Password must be alphanumeric with a minimum of 1 letters, 1 digits and special character. \n- Password is Case Sensitive</string>
+    <string name="tooltip_username">- Usernae is Cas Sensitive.\n- Maximum usernaem length is 22.</string>
+    <string name="tooltip_email">"- Email is Case Sensitive. "</string>
 
 </resources>
