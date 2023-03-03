@@ -144,7 +144,6 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
     }
 
     override suspend fun uploadAuctionAdv(auctionAdvertisement: AuctionAdvertisement): Resource<String, String> {
-        // todo save ad id in list of ads in user so we can get those ads of each user in my ads
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
