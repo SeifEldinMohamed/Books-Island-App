@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,6 +36,7 @@
         android:clickable="true"
         android:drawablePadding="@dimen/_6sdp"
         android:focusable="true"
+        android:fontFamily="@font/roboto_medium"
         android:padding="@dimen/_10sdp"
         android:text="@string/logout"
         android:textColor="@color/black_60"
@@ -50,8 +50,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="@dimen/_300sdp"
-        android:layout_height="@dimen/_400sdp"
-        android:layout_marginTop="@dimen/_70sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_profile"
@@ -60,15 +60,15 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
             android:layout_width="@dimen/_255sdp"
-            android:layout_height="@dimen/_380sdp"
+            android:layout_height="wrap_content"
             android:layout_gravity="fill"
-            android:layout_margin="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_70sdp"
             app:cardCornerRadius="@dimen/_16sdp"
-            app:cardElevation="@dimen/_6sdp"
+            app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardView2"
             app:strokeColor="@color/primary"
             app:strokeWidth="@dimen/_2sdp">
 
@@ -80,16 +80,17 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/materialTextView"
+                    android:id="@+id/tv_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_50sdp"
-                    android:text="@string/heba_adel"
+                    android:layout_marginTop="@dimen/_44sdp"
+                    android:fontFamily="@font/roboto_regular"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/_25ssp"
+                    android:textSize="@dimen/_23ssp"
                     app:layout_constraintEnd_toEndOf="@+id/til_username"
                     app:layout_constraintStart_toStartOf="@+id/til_username"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/heba_adel" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_username"
@@ -100,9 +101,10 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="@dimen/_25sdp"
                     android:hint="@string/username"
+                    app:counterMaxLength="20"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/materialTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_username"
                     app:startIconDrawable="@drawable/ic_username_line"
                     app:startIconTint="@color/primary"
                     tools:ignore="HardcodedText">
@@ -112,7 +114,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="50"
+                        android:maxLength="20"
                         tools:ignore="TextContrastCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,9 +124,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_25sdp"
-                    android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:hint="@string/email"
+                    android:enabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_username"
@@ -148,7 +151,7 @@
                     android:layout_marginStart="@dimen/_25sdp"
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_25sdp"
-                    android:hint="@string/cairo"
+                    android:hint="@string/choose_governorate"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_email">
@@ -163,20 +166,20 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_qusem"
+                    android:id="@+id/til_districts"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_25sdp"
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_25sdp"
-                    android:hint="@string/october"
+                    android:hint="@string/chooseDistrict"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_governorate">
 
                     <AutoCompleteTextView
-                        android:id="@+id/ac_quesm"
+                        android:id="@+id/ac_districts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -185,42 +188,50 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn__update_profile"
                     android:layout_width="@dimen/_130sdp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
                     android:backgroundTint="@color/gray_light"
+                    android:enabled="false"
+                    android:padding="@dimen/_6sdp"
                     android:text="@string/update"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_15ssp"
-                    app:cornerRadius="@dimen/_10sdp"
-                    app:layout_constraintEnd_toEndOf="@+id/til_qusem"
-                    app:layout_constraintStart_toStartOf="@+id/til_qusem"
-                    app:layout_constraintTop_toBottomOf="@+id/til_qusem"
+                    app:cornerRadius="@dimen/_4sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/til_districts"
+                    app:layout_constraintStart_toStartOf="@+id/til_districts"
+                    app:layout_constraintTop_toBottomOf="@+id/til_districts"
                     tools:ignore="TextContrastCheck" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="@+id/materialCardView"
+            app:layout_constraintStart_toStartOf="@+id/materialCardView"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="@dimen/_110sdp"
+                android:layout_height="@dimen/_110sdp"
+                android:contentDescription="@string/photo"
+                android:padding="@dimen/_4sdp"
+                android:scaleType="fitCenter"
+                tools:ignore="MissingConstraints,ImageContrastCheck"
+                tools:layout_editor_absoluteX="124dp"
+                tools:src="@drawable/woman_avatar_2" />
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_marginTop="80dp"
-        android:contentDescription="@string/photo"
-        android:src="@drawable/woman_avatar_2"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints,ImageContrastCheck" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="247dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -67,7 +67,7 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
                     firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
                         .whereNotEqualTo("status", AdvStatus.Closed.toString())
                         .orderBy("status")
-                        .orderBy("publishTime", Query.Direction.DESCENDING)
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
                         .get()
                         .await()
 

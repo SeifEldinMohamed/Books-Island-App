@@ -8,12 +8,9 @@ import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.Searc
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,10 +47,12 @@ class DonateViewModel @Inject constructor(
     }
 
     fun searchDonateAdvertisements(searchQuery: String) {
-        setLoading(true)
-
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                setLoading(true)
+            }
             searchDonateAdvertisementUseCase(searchQuery).let {
                 when (it) {
                     is Resource.Error -> {

@@ -2,7 +2,6 @@ package com.seif.booksislandapp.data.repository
 
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toDistricts
@@ -17,6 +16,7 @@ import com.seif.booksislandapp.domain.repository.AuthRepository
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.DISTRICTS_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.GOVERNORATES_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USERNAME_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_AVATAR_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
@@ -117,15 +117,12 @@ class AuthRepositoryImp @Inject constructor(
         return try {
             withTimeout(Constants.TIMEOUT_AUTH) {
                 auth.signOut()
+                saveInSharedPreference(IS_LOGGED_IN_KEY, false)
                 Resource.Success(resourceProvider.string(R.string.logged_out_successfully))
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
-    }
-
-    override fun getFirebaseCurrentUser(): FirebaseUser? {
-        return auth.currentUser
     }
 
     override fun <T> saveInSharedPreference(key: String, data: T) {

@@ -18,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.donation.adapter.Don
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -72,7 +73,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 Timber.d("onTextChanged: $p1 - $p2 - $p3")
-                lifecycleScope.launch() {
+                viewLifecycleOwner.lifecycleScope.launch() {
                     delay(1000)
                     text?.let {
                         if (donateViewModel.isSearching) {
@@ -83,6 +84,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                                 donateViewModel.searchDonateAdvertisements(
                                     searchQuery = it.toString()
                                 )
+                                observe()
                             }
                         }
                     }
@@ -114,8 +116,8 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launch {
-            donateViewModel.donateState.collect {
+        viewLifecycleOwner.lifecycleScope.launch {
+            donateViewModel.donateState.collectLatest {
                 when (it) {
                     DonateState.Init -> Unit
                     is DonateState.FetchAllDonateAdvertisementSuccessfully -> {

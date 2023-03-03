@@ -1,13 +1,13 @@
 package com.seif.booksislandapp.domain.usecase.usecase.user
 
 import com.google.firebase.auth.FirebaseUser
-import com.seif.booksislandapp.data.repository.AuthRepositoryImp
+import com.seif.booksislandapp.domain.repository.UserRepository
 import javax.inject.Inject
 
 class GetFirebaseCurrentUserUseCase @Inject constructor(
-    private val authRepository: AuthRepositoryImp
+    private val userRepository: UserRepository
 ) {
     operator fun invoke(): FirebaseUser? {
-        return authRepository.getFirebaseCurrentUser()
+        return userRepository.getFirebaseCurrentUser()
     }
 }

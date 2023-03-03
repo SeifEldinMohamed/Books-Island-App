@@ -71,7 +71,6 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Timber.d("onTextChanged: $p1 - $p2 - $p3")
                 viewLifecycleOwner.lifecycleScope.launch() {
                     delay(1000)
                     text?.let {
@@ -83,6 +82,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                                 auctionViewModel.searchAuctionsAdvertisements(
                                     searchQuery = it.toString()
                                 )
+                                observe()
                             }
                         }
                     }

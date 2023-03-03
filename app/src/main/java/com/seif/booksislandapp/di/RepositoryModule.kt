@@ -4,14 +4,8 @@ import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
-import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
-import com.seif.booksislandapp.data.repository.AuctionAdvertisementRepositoryImp
-import com.seif.booksislandapp.data.repository.AuthRepositoryImp
-import com.seif.booksislandapp.data.repository.ExchangeAdvertisementRepositoryImp
-import com.seif.booksislandapp.domain.repository.AdvertisementRepository
-import com.seif.booksislandapp.domain.repository.AuctionAdvertisementRepository
-import com.seif.booksislandapp.domain.repository.AuthRepository
-import com.seif.booksislandapp.domain.repository.ExchangeAdvertisementRepository
+import com.seif.booksislandapp.data.repository.*
+import com.seif.booksislandapp.domain.repository.*
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
 import dagger.Module
@@ -83,6 +77,24 @@ object RepositoryModule {
         return ExchangeAdvertisementRepositoryImp(
             firestore,
             resourceProvider,
+            connectivityManager
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth,
+        resourceProvider: ResourceProvider,
+        sharedPrefs: SharedPrefs,
+        connectivityManager: ConnectivityManager
+    ): UserRepository {
+        return UserRepositoryImp(
+            firestore,
+            auth,
+            resourceProvider,
+            sharedPrefs,
             connectivityManager
         )
     }
