@@ -130,17 +130,12 @@ class AdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
 
                 delay(500) // to show loading progress
-                val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION)
-                    .whereEqualTo("id", id)
+                val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION).document(id)
                     .get()
                     .await()
-                val users = arrayListOf<UserDto>()
-                for (document in querySnapshot) {
-                    val user = document.toObject(UserDto::class.java)
-                    users.add(user)
-                }
+                val user = querySnapshot.toObject(UserDto::class.java)
                 Resource.Success(
-                    data = users.map { it.toUser() }.first()
+                    data = user!!.toUser()
                 )
             }
         } catch (e: Exception) {
