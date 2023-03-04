@@ -1,13 +1,13 @@
-package com.seif.booksislandapp.presentation.home.my_ads.fragments
+package com.seif.booksislandapp.presentation.home.my_ads.donate
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.seif.booksislandapp.R
 
-class MyDonateFragment : Fragment() {
+class MyAdsDonateFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
