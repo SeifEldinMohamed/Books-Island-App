@@ -303,32 +303,60 @@ class AdvertisementRepositoryImp @Inject constructor(
             }
         }
     }
-// todo
+
+    // todo
     override suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
-    if (!connectivityManager.checkInternetConnection())
-        return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-    val exchangeImages =
-        exchangeAdvertisement.book.images + exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
-    return when (val result = uploadMultipleImages(exchangeImages)) {
-        is Resource.Error -> {
-            Resource.Error(result.message)
-        }
-        is Resource.Success -> {
-            try {
-                val document =
-                    firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
-                exchangeAdvertisement.id = document.id
-                exchangeAdvertisement.book.images = result.data
-                //  exchangeAdvertisement.booksToExchange = result.data
-                document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
-                Timber.d("uploaded successfully")
-                Resource.Success("Advertisement Added Successfully with id : ${document.id}")
-            } catch (e: Exception) {
-                Resource.Error(e.message.toString())
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        val exchangeImages =
+            exchangeAdvertisement.book.images + exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
+        return when (val result = uploadMultipleImages(exchangeImages)) {
+            is Resource.Error -> {
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    val document =
+                        firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                    exchangeAdvertisement.id = document.id
+                    exchangeAdvertisement.book.images = result.data
+                    //  exchangeAdvertisement.booksToExchange = result.data
+                    document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
+                    Timber.d("uploaded successfully")
+                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
             }
         }
     }
-}
+
+    override suspend fun fetchMySellAds(userId: String): Resource<ArrayList<SellAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereEqualTo("ownerId", userId)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                Resource.Success(
+                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                        sellAdvertisementDto.toSellAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 
     private suspend fun uploadMultipleImages(imagesUri: List<Uri>): Resource<List<Uri>, String> {
         return try {

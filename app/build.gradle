@@ -181,4 +181,7 @@ dependencies {
     // lottie animation
     implementation 'com.airbnb.android:lottie:4.1.0'
 
+    // Balloon for Tool Tip
+    implementation "com.github.skydoves:balloon:1.5.2"
+
 }

@@ -14,6 +14,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/iv_tooltip_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/password_tool_tip_image"
+                android:src="@drawable/ic_about"
+                app:layout_constraintBottom_toBottomOf="@+id/til_email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_email"
+                app:tint="@color/primary_dark" />
+
+            <ImageView
+                android:id="@+id/iv_tooltip_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/password_tool_tip_image"
+                android:src="@drawable/ic_about"
+                app:layout_constraintBottom_toBottomOf="@+id/til_username"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_username"
+                app:tint="@color/primary_dark" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_register"
                 android:layout_width="wrap_content"
@@ -38,17 +62,19 @@
                 android:src="@drawable/ic_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_username"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/username"
                 app:counterMaxLength="20"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_register"
                 app:startIconDrawable="@drawable/ic_username_line"
@@ -67,13 +93,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/email"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/til_password"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_username"
                 app:startIconDrawable="@drawable/ic_email_line"
@@ -91,13 +118,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_governorate"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/choose_governorate"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/til_password"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_email">
 
@@ -113,13 +141,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_districts"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/chooseDistrict"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_governorate">
 
@@ -135,14 +163,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_password"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/password"
                 app:endIconTint="@color/primary"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_districts"
                 app:passwordToggleEnabled="true"
@@ -162,13 +190,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_confirm_password"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/confirm_password"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_tooltip_password"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_password"
                 app:passwordToggleEnabled="true"
@@ -253,6 +281,18 @@
                 android:textSize="@dimen/_25ssp"
                 app:layout_constraintStart_toStartOf="@+id/til_confirm_password"
                 app:layout_constraintTop_toBottomOf="@+id/til_confirm_password" />
+
+            <ImageView
+                android:id="@+id/iv_tooltip_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/password_tool_tip_image"
+                android:src="@drawable/ic_about"
+                app:layout_constraintBottom_toBottomOf="@+id/til_password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_password"
+                app:tint="@color/primary_dark" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,7 @@ import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.disable
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.skydoves.balloon.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -67,7 +68,34 @@ class RegisterFragment : Fragment() {
                 registerViewModel.getDistricts(it[i].id)
             }
         }
+        binding.ivTooltipPassword.setOnClickListener {
+            it.showAlignBottom(createToolTipBalloon(getString(R.string.tooltip_password)))
+        }
+        binding.ivTooltipUsername.setOnClickListener {
+            it.showAlignBottom(createToolTipBalloon(getString(R.string.tooltip_username)))
+        }
+        binding.ivTooltipEmail.setOnClickListener {
+            it.showAlignBottom(createToolTipBalloon(getString(R.string.tooltip_email)))
+        }
         binding.tilDistricts.disable()
+    }
+
+    private fun createToolTipBalloon(tooltipMessage: String): Balloon {
+        return Balloon.Builder(requireContext())
+            .setWidthRatio(0.7f)
+            .setHeight(BalloonSizeSpec.WRAP)
+            .setText(tooltipMessage)
+            .setTextColorResource(R.color.white)
+            .setTextSize(14f)
+            .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            .setArrowSize(10)
+            .setArrowPosition(0.5f)
+            .setPadding(12)
+            .setCornerRadius(8f)
+            .setBackgroundColorResource(R.color.primary)
+            .setBalloonAnimation(BalloonAnimation.ELASTIC)
+            .setLifecycleOwner(viewLifecycleOwner)
+            .build()
     }
 
     private fun observe() {
@@ -123,7 +151,8 @@ class RegisterFragment : Fragment() {
 
                 cancelable = true // Optional
                 noInternetConnectionTitle = "No Internet" // Optional
-                noInternetConnectionMessage = "Check your Internet connection and try again." // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
                 showInternetOnButtons = true // Optional
                 pleaseTurnOnText = "Please turn on" // Optional
                 wifiOnButtonText = "Wifi" // Optional
