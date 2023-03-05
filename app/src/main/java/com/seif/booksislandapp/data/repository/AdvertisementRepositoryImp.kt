@@ -91,6 +91,56 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun editMySellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        val imagesToUpload =
+            sellAdvertisement.book.images.filter { !it.toString().contains("https") }
+        val oldUploadedImages =
+            sellAdvertisement.book.images.filter { it.toString().contains("https") }
+        return when (val result = uploadMultipleImages(imagesToUpload)) {
+            is Resource.Error -> {
+                Timber.d("uploadSellAdv: Error  ${result.message}")
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+                        val document =
+                            firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .document(sellAdvertisement.id)
+                        sellAdvertisement.book.images = oldUploadedImages + result.data
+                        Timber.d("all images ${sellAdvertisement.book.images}")
+                        document.set(sellAdvertisement.toSellAdvertisementDto())
+                            .await()
+                        Timber.d("Updated successfully")
+                        Resource.Success("Advertisement Updated Successfully")
+                    }
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
+        }
+    }
+
+    override suspend fun deleteMySellAdv(mySellAdId: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .document(mySellAdId)
+                    .delete()
+                    .await()
+                Timber.d("Deleted successfully")
+                Resource.Success("Advertisement Deleted Successfully")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     override suspend fun searchSellAdv(searchQuery: String): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -331,6 +381,84 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun fetchMyDonateAds(userId: String): Resource<ArrayList<DonateAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereEqualTo("ownerId", userId)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                Resource.Success(
+                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                        donateAdvertisementDto.toDonateAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun editMyDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        val imagesToUpload =
+            donateAdvertisement.book.images.filter { !it.toString().contains("https") }
+        val oldUploadedImages =
+            donateAdvertisement.book.images.filter { it.toString().contains("https") }
+        return when (val result = uploadMultipleImages(imagesToUpload)) {
+            is Resource.Error -> {
+                Timber.d("uploadDonateAdv: Error  ${result.message}")
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+                        val document =
+                            firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .document(donateAdvertisement.id)
+                        donateAdvertisement.book.images = oldUploadedImages + result.data
+                        Timber.d("all images ${donateAdvertisement.book.images}")
+                        document.set(donateAdvertisement.toDonateAdvertisementDto())
+                            .await()
+                        Timber.d("Updated successfully")
+                        Resource.Success("Advertisement Updated Successfully")
+                    }
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
+        }
+    }
+
+    override suspend fun deleteMyDonateAdv(myDonateAdId: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .document(myDonateAdId)
+                    .delete()
+                    .await()
+                Timber.d("Deleted successfully")
+                Resource.Success("Advertisement Deleted Successfully")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     override suspend fun fetchMySellAds(userId: String): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -361,6 +489,7 @@ class AdvertisementRepositoryImp @Inject constructor(
     private suspend fun uploadMultipleImages(imagesUri: List<Uri>): Resource<List<Uri>, String> {
         return try {
             withTimeout(Constants.TIMEOUT_UPLOAD) {
+                Timber.d("uploadMultipleImages: $imagesUri")
                 val uris: List<Uri> = withContext(Dispatchers.IO) {
                     // 1,2,3,4
                     // 4 async blocks (upload first then download it's url then upload second ....)
