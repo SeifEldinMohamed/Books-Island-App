@@ -193,27 +193,20 @@ fun Book.toBookDto(): BookDto {
         title = title,
         author = author,
         category = category,
-        condition = isUsed.toString(),
+        condition = condition.toString(),
         description = description,
         edition = edition
     )
 }
 
 fun BookDto.toBook(): Book {
-    val isUsed: Boolean = when (condition) {
-        "Used" -> true
-        "New" -> false
-        else -> {
-            false
-        }
-    }
     return Book(
         id = id,
         images = images.map { Uri.parse(it) },
         title = title,
         author = author,
         category = category,
-        isUsed = isUsed,
+        condition = condition,
         description = description,
         edition = edition
     )

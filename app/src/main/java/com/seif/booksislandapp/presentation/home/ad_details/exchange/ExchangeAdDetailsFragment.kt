@@ -173,10 +173,10 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
 
     private fun showAdDetails() {
         val exchangeAdvertisement = args.exchangeAdv
-        val bookCondition: String = when (exchangeAdvertisement.book.isUsed) {
-            true -> "Used"
-            false -> "New"
-            null -> ""
+        val bookCondition: String = when (exchangeAdvertisement.book.condition) {
+            "Used" -> "Used"
+            "New" -> "New"
+            else -> ""
         }
         binding.tvTitle.text = exchangeAdvertisement.book.title
         binding.ivBook.load(exchangeAdvertisement.book.images.first())

@@ -3,7 +3,7 @@ package com.seif.booksislandapp.domain.model.book
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlin.String
+
 @Parcelize
 data class Book(
     val id: String = "",
@@ -11,7 +11,7 @@ data class Book(
     val title: String = "",
     val author: String = "",
     val category: String = "",
-    val isUsed: Boolean? = null,
+    val condition: String? = null,
     val description: String = "",
     val edition: String = "",
 ) : Parcelable
