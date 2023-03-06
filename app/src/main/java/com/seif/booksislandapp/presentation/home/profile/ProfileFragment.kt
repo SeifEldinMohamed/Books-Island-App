@@ -322,6 +322,7 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        dialog.setView(null)
         _binding = null
     }
 }
