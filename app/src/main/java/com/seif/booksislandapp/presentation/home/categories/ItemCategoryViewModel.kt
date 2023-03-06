@@ -1,12 +1,11 @@
 package com.seif.booksislandapp.presentation.home.categories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class ItemCategoryViewModel : ViewModel() {
-    private val mutableSelectedCategoryItem = MutableLiveData<String>()
-    val selectedCategoryItem: LiveData<String> get() = mutableSelectedCategoryItem
+    private val mutableSelectedCategoryItem = MutableStateFlow<String>("Choose Category")
+    val selectedCategoryItem get() = mutableSelectedCategoryItem
 
     fun selectItem(categoryName: String) {
         mutableSelectedCategoryItem.value = categoryName
