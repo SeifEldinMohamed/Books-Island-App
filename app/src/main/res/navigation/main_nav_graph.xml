@@ -44,7 +44,7 @@
         android:label="My Ads"
         tools:layout="@layout/fragment_my_ads" >
         <action
-            android:id="@+id/action_myAdsFragment_to_uploadAdvertisementFragment2"
+            android:id="@+id/action_myAdsFragment_to_uploadSellAdvertisementFragment"
             app:destination="@id/uploadSellAdvertisementFragment" />
         <action
             android:id="@+id/action_myAdsFragment_to_uploadDonateFragment"
@@ -108,10 +108,15 @@
         android:id="@+id/uploadSellAdvertisementFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.sell.UploadSellAdvertisementFragment"
         android:label="fragment_upload_sell_advertisement"
-        tools:layout="@layout/fragment_upload_sell_advertisement" >
+        tools:layout="@layout/fragment_upload_sell_advertisement">
         <action
             android:id="@+id/action_uploadAdvertisementFragment_to_categoryFragment"
             app:destination="@id/bookCategoriesFragment" />
+        <argument
+            android:name="mySellAdvertisement"
+            app:argType="com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/bookCategoriesFragment"
@@ -122,31 +127,46 @@
         android:id="@+id/uploadDonateFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.donate.UploadDonateFragment"
         android:label="fragment_upload_donate"
-        tools:layout="@layout/fragment_upload_donate" >
+        tools:layout="@layout/fragment_upload_donate">
         <action
             android:id="@+id/action_uploadDonateFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
+        <argument
+            android:name="myDonateAdvertisement"
+            app:argType="com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/uploadAuctionFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.auction.UploadAuctionFragment"
         android:label="fragment_upload_auction"
-        tools:layout="@layout/fragment_upload_auction" >
+        tools:layout="@layout/fragment_upload_auction">
         <action
             android:id="@+id/action_uploadAuctionFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
+        <argument
+            android:name="auctionAdvertisement"
+            app:argType="com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/uploadExchangeFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.exchange.UploadExchangeFragment"
         android:label="fragment_upload_exchange"
-        tools:layout="@layout/fragment_upload_exchange" >
+        tools:layout="@layout/fragment_upload_exchange">
         <action
             android:id="@+id/action_uploadExchangeFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
         <argument
             android:name="exchangeForItem"
             app:argType="com.seif.booksislandapp.domain.model.book.BooksToExchange" />
+        <argument
+            android:name="exchangeAdvertisement"
+            app:argType="com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/auctionAdDetailsFragment"
