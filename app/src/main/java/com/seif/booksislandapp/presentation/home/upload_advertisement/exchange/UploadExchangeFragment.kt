@@ -91,9 +91,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                 }
             }
         }
-        setupConditionDropdown()
 
-        setupEditionDropdown()
         uploadedImagesAdapter.onImageItemClick = this
         uploadedExchangeAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadExchangeAdvertisementViewModel.getFirebaseCurrentUser()
@@ -111,9 +109,9 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
-            name?.let {
-                Timber.d("onViewCreated: $it")
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                Timber.d("collector: $it")
                 categoryName = it
                 binding.btnCategory.text = categoryName
             }
@@ -134,6 +132,12 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
         binding.rvUploadedBook.adapter = uploadedExchangeAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupConditionDropdown()
+        setupEditionDropdown()
     }
 
     private fun pickPhoto() {
@@ -208,6 +212,14 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+                    is UploadState.UpdatedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
+                    is UploadState.DeletedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -227,10 +239,10 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun prepareExchangeAdvertisement(): ExchangeAdvertisement {
-        val isUsed: Boolean? =
+        val condition: String? =
             when (binding.acCondition.text.toString()) {
-                "New" -> false
-                "Used" -> true
+                "New" -> "New"
+                "Used" -> "Used"
                 else -> null
             }
         val book = Book(
@@ -239,7 +251,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             title = binding.etTitle.text.toString(),
             author = binding.etAuthor.text.toString(),
             category = categoryName,
-            isUsed = isUsed,
+            condition = condition,
             description = binding.etDescription.text.toString(),
             edition = binding.acEdition.text.toString()
 
