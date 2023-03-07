@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.domain.usecase.usecase.my_ads.sell.DeleteMySellAdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.my_ads.sell.EditMySellAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadSellAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
 import com.seif.booksislandapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,10 +23,13 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadSellAdvertisementViewModel @Inject constructor(
     private val uploadSellAdvertisementUseCase: UploadSellAdvertisementUseCase,
+    private val deleteMySellAdUseCase: DeleteMySellAdUseCase,
+    private val editMySellAdvertisementUseCase: EditMySellAdvertisementUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
 ) : ViewModel() {
 
+    var isFirstTime: Boolean = true
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
     val uploadState: StateFlow<UploadState> = _uploadState
 
@@ -73,7 +78,48 @@ class UploadSellAdvertisementViewModel @Inject constructor(
     fun getFirebaseCurrentUser(): FirebaseUser? {
         return getFirebaseCurrentUserUseCase()
     }
+
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key, clazz)
+    }
+
+    fun requestUpdateMySellAd(sellAdvertisement: SellAdvertisement) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = editMySellAdvertisementUseCase(sellAdvertisement)) {
+                is Resource.Error -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                        showError(result.message)
+                    }
+                }
+                is Resource.Success -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                    }
+                    _uploadState.value = UploadState.UpdatedSuccessfully(result.data)
+                }
+            }
+        }
+    }
+
+    fun requestDeleteMySellAd(myAdId: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = deleteMySellAdUseCase(myAdId)) {
+                is Resource.Error -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                        showError(result.message)
+                    }
+                }
+                is Resource.Success -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                    }
+                    _uploadState.value = UploadState.DeletedSuccessfully(result.data)
+                }
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBinding
@@ -56,12 +57,14 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
 
+    private val args: UploadSellAdvertisementFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
+
         _binding = FragmentUploadSellAdvertisementBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -69,11 +72,23 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupConditionDropdown()
-        setupEditionDropdown()
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadSellAdvertisementViewModel.getFirebaseCurrentUser()
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                categoryName = it
+                binding.btnCategory.text = categoryName
+            }
+        }
+
+        checkForUpdateOrPost()
+
+        binding.ivDeleteMyAd.setOnClickListener {
+            showConfirmationDialog()
+        }
+
         observe()
 
         binding.ivBackUpload.setOnClickListener {
@@ -88,17 +103,12 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
-            name?.let {
-                Timber.d("onViewCreated: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
-            }
-        }
-
         binding.btnSubmit.setOnClickListener {
             val sellAdvertisement = prepareSellAdvertisement()
-            uploadSellAdvertisementViewModel.uploadSellAdvertisement(sellAdvertisement)
+            if (args.mySellAdvertisement != null)
+                uploadSellAdvertisementViewModel.requestUpdateMySellAd(sellAdvertisement)
+            else
+                uploadSellAdvertisementViewModel.uploadSellAdvertisement(sellAdvertisement)
         }
 
         if (imageUris.size > 0) {
@@ -110,6 +120,58 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun checkForUpdateOrPost() {
+        if (args.mySellAdvertisement != null) { // edit
+            if (uploadSellAdvertisementViewModel.isFirstTime) {
+                uploadSellAdvertisementViewModel.isFirstTime = false
+                args.mySellAdvertisement?.let {
+                    imageUris = it.book.images.toCollection(ArrayList())
+                    categoryName = it.book.category
+                    showMySellAdvertisement(it)
+                    binding.btnSubmit.text = getString(R.string.update_post)
+                    binding.ivDeleteMyAd.show()
+                }
+            }
+        } else {
+            binding.btnSubmit.text = getString(R.string.submit_post)
+            binding.ivDeleteMyAd.hide()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupConditionDropdown()
+        setupEditionDropdown()
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to delete this book Advertisement?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            uploadSellAdvertisementViewModel.requestDeleteMySellAd(args.mySellAdvertisement!!.id)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showMySellAdvertisement(mySellAdvertisement: SellAdvertisement) {
+
+        uploadedImagesAdapter.updateList(mySellAdvertisement.book.images)
+
+        binding.etTitle.setText(mySellAdvertisement.book.title)
+        binding.etAuthor.setText(mySellAdvertisement.book.author)
+        binding.etPrice.setText(mySellAdvertisement.price)
+        binding.etDescription.setText(mySellAdvertisement.book.description)
+        itemCategoryViewModel.selectItem(mySellAdvertisement.book.category)
     }
 
     private fun pickPhoto() {
@@ -185,6 +247,14 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+                    is UploadState.UpdatedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
+                    is UploadState.DeletedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -204,30 +274,37 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun prepareSellAdvertisement(): SellAdvertisement {
-        val isUsed: Boolean? =
+        val condition: String? =
             when (binding.acCondition.text.toString()) {
-                "New" -> false
-                "Used" -> true
+                "New" -> "New"
+                "Used" -> "Used"
                 else -> null
             }
+        val id = if (args.mySellAdvertisement == null) "" else args.mySellAdvertisement!!.id
+        val date =
+            if (args.mySellAdvertisement == null) Date() else args.mySellAdvertisement!!.publishDate
+        val status =
+            if (args.mySellAdvertisement == null) AdvStatus.Opened else args.mySellAdvertisement!!.status
+        val userLocation =
+            if (args.mySellAdvertisement == null) getUserLocation() else args.mySellAdvertisement!!.location
         val book = Book(
             id = "",
             images = imageUris,
             title = binding.etTitle.text.toString(),
             author = binding.etAuthor.text.toString(),
             category = categoryName,
-            isUsed = isUsed,
+            condition = condition,
             description = binding.etDescription.text.toString(),
             edition = binding.acEdition.text.toString()
         )
         return SellAdvertisement(
-            id = "",
+            id = id,
             ownerId = firebaseCurrentUser?.uid ?: "", // if it's null get it from shared prefernce
             book = book,
-            status = AdvStatus.Opened,
-            publishDate = Date(),
+            status = status,
+            publishDate = date,
             price = binding.etPrice.text.toString(),
-            location = getUserLocation()
+            location = userLocation
         )
     }
 
@@ -277,6 +354,10 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.mySellAdvertisement != null) { // update scenario
+            Timber.d("setupConditionDropdown: ${args.mySellAdvertisement!!.book.condition}")
+            binding.acCondition.setText(args.mySellAdvertisement!!.book.condition)
+        }
         binding.acCondition.setAdapter(arrayAdapter)
     }
 
@@ -284,6 +365,9 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.edition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.mySellAdvertisement != null) { // update scenario
+            binding.acEdition.setText(args.mySellAdvertisement!!.book.edition)
+        }
         binding.acEdition.setAdapter(arrayAdapter)
     }
 
