@@ -114,13 +114,13 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-firestore:24.4.1'
+    implementation 'com.google.firebase:firebase-firestore:24.4.4'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4"
     // Import the Firebase BoM: your app will always use compatible versions of Firebase Android libraries.
-    implementation 'com.google.firebase:firebase-bom:31.1.0'
+    implementation 'com.google.firebase:firebase-bom:31.2.3'
 
     // Gson
     implementation 'com.google.code.gson:gson:2.9.0'

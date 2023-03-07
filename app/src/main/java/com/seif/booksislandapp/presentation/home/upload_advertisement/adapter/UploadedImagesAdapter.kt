@@ -5,6 +5,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.seif.booksislandapp.databinding.UploadedImageItemBinding
 
 import timber.log.Timber
@@ -14,7 +15,7 @@ class UploadedImagesAdapter : RecyclerView.Adapter<UploadedImagesAdapter.MyViewH
     var images: List<Uri> = emptyList()
     inner class MyViewHolder(private val binding: UploadedImageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(image: Uri, position: Int) {
-            binding.ivNoteImage.setImageURI(image)
+            binding.ivNoteImage.load(image)
             Timber.d("image uri $image")
             binding.ivRemoveImage.setOnClickListener {
                 Timber.d("remove clicked")

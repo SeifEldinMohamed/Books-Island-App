@@ -11,7 +11,10 @@ import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -20,12 +23,12 @@ import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -311,7 +314,7 @@ private fun Book.validateBookData(): Resource<String, String> {
         Resource.Error("Please add the title of the book!")
     } else if (this.category.isEmpty()) {
         Resource.Error("Please choose the category of the book!")
-    } else if (this.isUsed == null) {
+    } else if (this.condition == null) {
         Resource.Error("Please choose the condition of the book!")
     } else if (this.description.isEmpty()) {
         Resource.Error("Please add the description of the book!")

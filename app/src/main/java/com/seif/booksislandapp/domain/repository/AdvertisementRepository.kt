@@ -10,6 +10,8 @@ interface AdvertisementRepository {
     suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun uploadSellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>
+    suspend fun editMySellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>
+    suspend fun deleteMySellAdv(mySellAdId: String): Resource<String, String>
     suspend fun searchSellAdv(searchQuery: String): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getUserById(id: String): Resource<User, String>
     suspend fun fetchMySellAds(userId: String): Resource<ArrayList<SellAdvertisement>, String>
@@ -26,5 +28,9 @@ interface AdvertisementRepository {
         adId: String,
         category: String
     ): Resource<ArrayList<DonateAdvertisement>, String>
+
     suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String>
+    suspend fun fetchMyDonateAds(userId: String): Resource<ArrayList<DonateAdvertisement>, String>
+    suspend fun editMyDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String>
+    suspend fun deleteMyDonateAdv(myDonateAdId: String): Resource<String, String>
 }

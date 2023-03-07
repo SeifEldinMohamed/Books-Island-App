@@ -66,7 +66,7 @@ class MyAdsFragment : Fragment() {
     }
 
     private fun navigateToUploadSellAdFragment() {
-        findNavController().navigate(R.id.action_myAdsFragment_to_uploadAdvertisementFragment2)
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadSellAdvertisementFragment)
     }
     private fun navigateToUploadDonateAdFragment() {
         findNavController().navigate(R.id.action_myAdsFragment_to_uploadDonateFragment)

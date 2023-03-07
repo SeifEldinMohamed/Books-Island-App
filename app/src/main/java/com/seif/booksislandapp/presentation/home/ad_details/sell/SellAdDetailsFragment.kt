@@ -173,10 +173,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     private fun showAdDetails() {
         val buyAdvertisement = args.buyAdvertisement
-        val bookCondition: String = when (buyAdvertisement.book.isUsed) {
-            true -> "Used"
-            false -> "New"
-            null -> ""
+        val bookCondition: String = when (buyAdvertisement.book.condition) {
+            "Used" -> "Used"
+            "New" -> "New"
+            else -> ""
         }
         binding.tvTitle.text = buyAdvertisement.book.title
         binding.tvPrice.text = getString(R.string.egypt_pound, buyAdvertisement.price)

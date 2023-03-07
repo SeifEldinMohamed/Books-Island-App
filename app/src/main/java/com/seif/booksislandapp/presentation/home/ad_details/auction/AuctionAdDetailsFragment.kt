@@ -210,18 +210,18 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
 
     private fun showAdDetails() {
         val auctionAdvertisement = args.auctionAdvertisement
-        val bookCondition: String = when (auctionAdvertisement.book.isUsed) {
-            true -> "Used"
-            false -> "New"
-            null -> ""
+        val bookCondition: String = when (auctionAdvertisement.book.condition) {
+            "Used" -> "Used"
+            "New" -> "New"
+            else -> ""
         }
         binding.tvTitle.text = auctionAdvertisement.book.title
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
                     args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                    ?: args.auctionAdvertisement.startPrice?.toInt()
-                ).toString()
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
+                    ).toString()
         )
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())

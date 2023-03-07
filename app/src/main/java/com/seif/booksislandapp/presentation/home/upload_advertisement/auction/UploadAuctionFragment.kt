@@ -64,9 +64,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupConditionDropdown()
-        setupEditionDropdown()
-        setupPostDurationDropdown()
+
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadAuctionAdvertisementViewModel.getFirebaseCurrentUser()
@@ -84,13 +82,21 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
-            name?.let {
-                Timber.d("onViewCreated: $it")
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                Timber.d("collector: $it")
                 categoryName = it
                 binding.btnCategory.text = categoryName
             }
         }
+
+//        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
+//            name?.let {
+//                Timber.d("onViewCreated: $it")
+//                categoryName = it
+//                binding.btnCategory.text = categoryName
+//            }
+//        }
 
         binding.btnSubmit.setOnClickListener {
             val auctionAdvertisement = prepareAuctionAdvertisement()
@@ -106,6 +112,13 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupConditionDropdown()
+        setupEditionDropdown()
+        setupPostDurationDropdown()
     }
 
     private fun setupPostDurationDropdown() {
@@ -186,6 +199,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+                    is UploadState.UpdatedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
+                    is UploadState.DeletedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -205,10 +226,10 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun prepareAuctionAdvertisement(): AuctionAdvertisement {
-        val isUsed: Boolean? =
+        val condition: String? =
             when (binding.acCondition.text.toString()) {
-                "New" -> false
-                "Used" -> true
+                "New" -> "New"
+                "Used" -> "Used"
                 else -> null
             }
         val book = Book(
@@ -217,7 +238,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             title = binding.etTitle.text.toString(),
             author = binding.etAuthor.text.toString(),
             category = categoryName,
-            isUsed = isUsed,
+            condition = condition,
             description = binding.etDescription.text.toString(),
             edition = binding.acEdition.text.toString()
         )

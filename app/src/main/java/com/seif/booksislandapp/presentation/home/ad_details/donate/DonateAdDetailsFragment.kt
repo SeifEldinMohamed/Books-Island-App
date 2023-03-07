@@ -170,10 +170,10 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
     private fun showAdDetails() {
         val donateAdvertisement = args.donateAdv
-        val bookCondition: String = when (donateAdvertisement.book.isUsed) {
-            true -> "Used"
-            false -> "New"
-            null -> ""
+        val bookCondition: String = when (donateAdvertisement.book.condition) {
+            "Used" -> "Used"
+            "New" -> "New"
+            else -> ""
         }
         binding.tvTitle.text = donateAdvertisement.book.title
         binding.tvPrice.text = getString(R.string.free)

@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMySellAdsBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
+import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -58,8 +59,8 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            mySellAdsViewModel.mySellAdsState.collectLatest {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            mySellAdsViewModel.mySellAdsState.collect {
                 when (it) {
                     MySellAdsState.Init -> Unit
                     is MySellAdsState.FetchAllMySellAdsSuccessfully -> {
@@ -87,7 +88,7 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private fun handleNoInternetConnectionState() {
         NoInternetDialogPendulum.Builder(
             requireActivity(),
-            lifecycle
+            viewLifecycleOwner.lifecycle
         ).apply {
             dialogProperties.apply {
                 connectionCallback = object : ConnectionCallback { // Optional
@@ -142,11 +143,15 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        buyAdapter.onAdItemClick = null
         _binding = null
+        buyAdapter.onAdItemClick = null
+        dialog.setView(null)
+        super.onDestroyView()
     }
 
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
+        val action =
+            MyAdsFragmentDirections.actionMyAdsFragmentToUploadSellAdvertisementFragment(item)
+        findNavController().navigate(action)
     }
 }

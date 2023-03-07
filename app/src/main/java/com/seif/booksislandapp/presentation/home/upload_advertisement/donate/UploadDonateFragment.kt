@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadDonateBinding
@@ -52,6 +53,9 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
+
+    private val args: UploadDonateFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,12 +69,9 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupConditionDropdown()
-        setupEditionDropdown()
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadDonateAdvertisementViewModel.getFirebaseCurrentUser()
-        observe()
 
         binding.ivBackUpload.setOnClickListener {
             findNavController().navigateUp()
@@ -84,17 +85,27 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
-            name?.let {
-                Timber.d("onViewCreated: $it")
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                Timber.d("collector: $it")
                 categoryName = it
                 binding.btnCategory.text = categoryName
             }
         }
+        checkForUpdateOrPost()
+
+        binding.ivDeleteMyAd.setOnClickListener {
+            showConfirmationDialog()
+        }
+
+        observe()
 
         binding.btnSubmit.setOnClickListener {
             val donateAdvertisement = prepareDonateAdvertisement()
-            uploadDonateAdvertisementViewModel.uploadDonateAdvertisement(donateAdvertisement)
+            if (args.myDonateAdvertisement != null)
+                uploadDonateAdvertisementViewModel.requestUpdateMyDonateAd(donateAdvertisement)
+            else
+                uploadDonateAdvertisementViewModel.uploadDonateAdvertisement(donateAdvertisement)
         }
 
         if (imageUris.size > 0) {
@@ -106,6 +117,58 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         }
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun checkForUpdateOrPost() {
+        if (args.myDonateAdvertisement != null) { // edit
+            if (uploadDonateAdvertisementViewModel.isFirstTime) {
+                uploadDonateAdvertisementViewModel.isFirstTime = false
+                args.myDonateAdvertisement?.let {
+                    imageUris = it.book.images.toCollection(ArrayList())
+                    categoryName = it.book.category
+                    showMyDonateAdvertisement(it)
+                    binding.btnSubmit.text = getString(R.string.update_post)
+                    binding.ivDeleteMyAd.show()
+                }
+            }
+        } else {
+            binding.btnSubmit.text = getString(R.string.submit_post)
+            binding.ivDeleteMyAd.hide()
+        }
+    }
+
+    private fun showMyDonateAdvertisement(myDonateAdvertisement: DonateAdvertisement) {
+
+        uploadedImagesAdapter.updateList(myDonateAdvertisement.book.images)
+
+        binding.etTitle.setText(myDonateAdvertisement.book.title)
+        binding.etAuthor.setText(myDonateAdvertisement.book.author)
+        // binding.etPrice.setText(myDonateAdvertisement.price)
+        binding.etDescription.setText(myDonateAdvertisement.book.description)
+        itemCategoryViewModel.selectItem(myDonateAdvertisement.book.category)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupConditionDropdown()
+        setupEditionDropdown()
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to delete this book Advertisement?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            uploadDonateAdvertisementViewModel.requestDeleteMyDonateAd(args.myDonateAdvertisement!!.id)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun pickPhoto() {
@@ -180,6 +243,14 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+                    is UploadState.UpdatedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
+                    is UploadState.DeletedSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -199,29 +270,36 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun prepareDonateAdvertisement(): DonateAdvertisement {
-        val isUsed: Boolean? =
+        val condition: String? =
             when (binding.acCondition.text.toString()) {
-                "New" -> false
-                "Used" -> true
+                "New" -> "New"
+                "Used" -> "Used"
                 else -> null
             }
+        val id = if (args.myDonateAdvertisement == null) "" else args.myDonateAdvertisement!!.id
+        val date =
+            if (args.myDonateAdvertisement == null) Date() else args.myDonateAdvertisement!!.publishDate
+        val status =
+            if (args.myDonateAdvertisement == null) AdvStatus.Opened else args.myDonateAdvertisement!!.status
+        val userLocation =
+            if (args.myDonateAdvertisement == null) getUserLocation() else args.myDonateAdvertisement!!.location
         val book = Book(
             id = "",
             images = imageUris,
             title = binding.etTitle.text.toString(),
             author = binding.etAuthor.text.toString(),
             category = categoryName,
-            isUsed = isUsed,
+            condition = condition,
             description = binding.etDescription.text.toString(),
             edition = binding.acEdition.text.toString()
         )
         return DonateAdvertisement(
-            id = "",
+            id = id,
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
-            status = AdvStatus.Opened,
-            publishDate = Date(),
-            location = getUserLocation()
+            status = status,
+            publishDate = date,
+            location = userLocation
         )
     }
 
@@ -271,6 +349,10 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.myDonateAdvertisement != null) { // update scenario
+            Timber.d("setupConditionDropdown: ${args.myDonateAdvertisement!!.book.condition}")
+            binding.acCondition.setText(args.myDonateAdvertisement!!.book.condition)
+        }
         binding.acCondition.setAdapter(arrayAdapter)
     }
 
@@ -278,6 +360,9 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.edition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.myDonateAdvertisement != null) { // update scenario
+            binding.acEdition.setText(args.myDonateAdvertisement!!.book.edition)
+        }
         binding.acEdition.setAdapter(arrayAdapter)
     }
 
