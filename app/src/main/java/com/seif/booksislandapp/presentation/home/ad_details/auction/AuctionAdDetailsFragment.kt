@@ -82,9 +82,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             binding.tvCurrentPriceValue.text = getString(
                 R.string.egypt_pound,
                 (
-                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                            ?: args.auctionAdvertisement.startPrice?.toInt()
-                        ).toString()
+                    updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
+                    ).toString()
             )
 
             binding.tvLastBidder.text = getString(
@@ -219,9 +219,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                        ?: args.auctionAdvertisement.startPrice?.toInt()
-                    ).toString()
+                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                    ?: args.auctionAdvertisement.startPrice?.toInt()
+                ).toString()
         )
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())

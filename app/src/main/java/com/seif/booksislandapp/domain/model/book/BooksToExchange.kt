@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class BooksToExchange(
-    val imageUri: Uri?,
+    var imageUri: Uri?,
     val title: String,
     val author: String,
 ) : Parcelable

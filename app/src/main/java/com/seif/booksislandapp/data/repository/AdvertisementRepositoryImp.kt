@@ -358,22 +358,30 @@ class AdvertisementRepositoryImp @Inject constructor(
     override suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        val exchangeImages =
-            exchangeAdvertisement.book.images + exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
-        return when (val result = uploadMultipleImages(exchangeImages)) {
+        return when (val result = uploadMultipleImages(exchangeAdvertisement.book.images)) {
             is Resource.Error -> {
                 Resource.Error(result.message)
             }
             is Resource.Success -> {
+                // exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
                 try {
-                    val document =
-                        firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
-                    exchangeAdvertisement.id = document.id
-                    exchangeAdvertisement.book.images = result.data
-                    //  exchangeAdvertisement.booksToExchange = result.data
-                    document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
-                    Timber.d("uploaded successfully")
-                    Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                    when (val booksForExchangeResult = uploadMultipleImages(exchangeAdvertisement.booksToExchange.map { it.imageUri!! })) {
+                        is Resource.Error -> { Resource.Error(booksForExchangeResult.message) }
+                        is Resource.Success -> {
+                            val document =
+                                firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                            exchangeAdvertisement.id = document.id
+                            exchangeAdvertisement.book.images = result.data
+//                            exchangeAdvertisement.booksToExchange.map { it.imageUri= booksForExchangeResult.data}
+                            for (i in 0 until booksForExchangeResult.data.size) {
+                                exchangeAdvertisement.booksToExchange[i].imageUri =
+                                    booksForExchangeResult.data[i]
+                            }
+                            document.set(exchangeAdvertisement.toExchangeAdvertisementDto()).await()
+                            Timber.d("uploaded successfully")
+                            Resource.Success("Advertisement Added Successfully with id : ${document.id}")
+                        }
+                    }
                 } catch (e: Exception) {
                     Resource.Error(e.message.toString())
                 }

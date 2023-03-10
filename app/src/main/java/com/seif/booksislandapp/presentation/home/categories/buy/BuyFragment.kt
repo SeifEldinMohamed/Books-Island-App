@@ -131,6 +131,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                 when (it) {
                     BuyState.Init -> Unit
                     is BuyState.FetchAllSellAdvertisementSuccessfully -> {
+
                         sellAdvertisements = it.sellAds
                         buyAdapter.updateList(it.sellAds)
                         handleUi(it.sellAds)

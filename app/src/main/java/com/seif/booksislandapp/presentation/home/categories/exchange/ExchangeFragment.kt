@@ -71,14 +71,15 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                 when (it) {
                     ExchangeState.Init -> Unit
                     is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
+                        // Log.d("testTwo", it.exchangeAds[0].booksToExchange.toString())
                         exchangeAdvertisements = it.exchangeAds
                         exchangeAdapter.updateList(it.exchangeAds)
                         handleUi(it.exchangeAds)
                     }
                     is ExchangeState.SearchExchangeAdsSuccessfully -> {
-                        // exchangeAdvertisements = it.searchExchangeAds
+                        exchangeAdvertisements = it.searchExchangeAds
                         exchangeAdapter.updateList(it.searchExchangeAds)
-                        // handleUi(it.searchExchangeAds)
+                        handleUi(it.searchExchangeAds)
                     }
                     is ExchangeState.IsLoading -> handleLoadingState(it.isLoading)
                     is ExchangeState.NoInternetConnection -> handleNoInternetConnectionState()

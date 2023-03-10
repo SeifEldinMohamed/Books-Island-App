@@ -14,16 +14,15 @@ import com.seif.booksislandapp.utils.formatDate
 class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
     var exchangeAds: List<ExchangeAdvertisement> = emptyList()
     var onAdItemClick: OnAdItemClick<ExchangeAdvertisement>? = null
-    private val booksToExchangeAdapter by lazy { BooksToExchangeAdapter() }
+
     inner class MyViewHolder(private val binding: ExchangeAdvItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val booksToExchangeAdapter by lazy { BooksToExchangeAdapter() }
         fun bind(exchangeAdvertisement: ExchangeAdvertisement, position: Int) {
             binding.tvBookName.text = exchangeAdvertisement.book.title
             binding.tvDiscription.text = exchangeAdvertisement.book.description
             binding.tvPublishDate.text = exchangeAdvertisement.publishDate.formatDate()
-
-            booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
             binding.rvContent.adapter = booksToExchangeAdapter
-
+            booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
             binding.tvLocation.text = exchangeAdvertisement.location
             binding.ivBook.load(exchangeAdvertisement.book.images.first()) {
                 placeholder(R.drawable.book_placeholder)

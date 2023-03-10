@@ -33,7 +33,9 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     private val exchangeAdDetailsViewModel: ExchangeDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val relatedExchangeAdsAdapter: RelatedExchangeAdsAdapter by lazy { RelatedExchangeAdsAdapter() }
-    private val booksToExchangeAdapter: BooksToExchangeAdapter by lazy { BooksToExchangeAdapter() }
+    private val booksToExchangeAdapter: BooksToExchangeAdapter by lazy {
+        BooksToExchangeAdapter()
+    }
     private var owner: User? = null
     private var relatedAds: List<ExchangeAdvertisement> = emptyList()
     override fun onCreateView(
@@ -185,6 +187,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         binding.tvBookDescription.text = exchangeAdvertisement.book.description
         binding.tvAuthorName.text = exchangeAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
+        binding.tvEditionStatus.text = exchangeAdvertisement.book.edition
         binding.tvCategoryStatus.text = exchangeAdvertisement.book.category
         booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
     }
