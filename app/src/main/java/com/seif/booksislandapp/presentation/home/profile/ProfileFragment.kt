@@ -236,10 +236,10 @@ class ProfileFragment : Fragment() {
         Timber.d("enableUpdateProfileButton: $district ---- user cureent district: ${user.district}")
         binding.btnUpdateProfile.isEnabled =
             !(
-                    username == user.username && email == user.email &&
-                            governorate == user.governorate && district == user.district &&
-                            avatarImage == user.avatarImage
-                    )
+                username == user.username && email == user.email &&
+                    governorate == user.governorate && district == user.district &&
+                    avatarImage == user.avatarImage
+                )
     }
 
     private fun listenForUserInput() {
