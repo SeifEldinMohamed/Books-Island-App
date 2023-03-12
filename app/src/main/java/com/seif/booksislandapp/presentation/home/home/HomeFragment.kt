@@ -1,10 +1,10 @@
 package com.seif.booksislandapp.presentation.home.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_exchangeFragment)
         }
         binding.cvBid.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_bidFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_auctionFragment)
         }
         binding.tvHelloUsername.text =
             getString(
