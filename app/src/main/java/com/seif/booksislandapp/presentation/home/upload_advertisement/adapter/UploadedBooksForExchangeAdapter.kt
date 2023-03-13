@@ -47,9 +47,10 @@ class UploadedBooksForExchangeAdapter : RecyclerView.Adapter<UploadedBooksForExc
     override fun getItemCount(): Int {
         return booksToExchangeList.size
     }
+
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(newBook: List<BooksToExchange>) {
-        this.booksToExchangeList = newBook
+    fun updateList(newBooks: List<BooksToExchange>) {
+        this.booksToExchangeList = newBooks
         notifyDataSetChanged()
     }
 }
