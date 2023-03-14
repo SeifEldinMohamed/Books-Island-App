@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadAuctionBinding
@@ -53,6 +54,8 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
+
+    private val args: UploadAuctionFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,18 +92,18 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                 binding.btnCategory.text = categoryName
             }
         }
+        checkForUpdateOrPost()
 
-//        itemCategoryViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { name ->
-//            name?.let {
-//                Timber.d("onViewCreated: $it")
-//                categoryName = it
-//                binding.btnCategory.text = categoryName
-//            }
-//        }
+        binding.ivDeleteMyAuctionAd.setOnClickListener {
+            showConfirmationDialog()
+        }
 
         binding.btnSubmit.setOnClickListener {
             val auctionAdvertisement = prepareAuctionAdvertisement()
-            uploadAuctionAdvertisementViewModel.uploadAuctionAdvertisement(auctionAdvertisement)
+            if (args.auctionAdvertisement != null)
+                uploadAuctionAdvertisementViewModel.requestUpdateMyAuctionAd(auctionAdvertisement)
+            else
+                uploadAuctionAdvertisementViewModel.uploadAuctionAdvertisement(auctionAdvertisement)
         }
 
         if (imageUris.size > 0) {
@@ -114,6 +117,54 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
     }
 
+    private fun checkForUpdateOrPost() {
+        if (args.auctionAdvertisement != null) { // edit
+            if (uploadAuctionAdvertisementViewModel.isFirstTime) {
+                uploadAuctionAdvertisementViewModel.isFirstTime = false
+                args.auctionAdvertisement?.let {
+                    imageUris = it.book.images.toCollection(ArrayList())
+                    categoryName = it.book.category
+                    showMyAuctionAdvertisement(it)
+                    binding.btnSubmit.text = getString(R.string.update_post)
+                    binding.ivDeleteMyAuctionAd.show()
+                }
+            }
+        } else {
+            binding.btnSubmit.text = getString(R.string.submit_post)
+            binding.ivDeleteMyAuctionAd.hide()
+        }
+    }
+
+    private fun showMyAuctionAdvertisement(myAuctionAdvertisement: AuctionAdvertisement) {
+
+        uploadedImagesAdapter.updateList(myAuctionAdvertisement.book.images)
+
+        binding.etTitle.setText(myAuctionAdvertisement.book.title)
+        binding.etAuthor.setText(myAuctionAdvertisement.book.author)
+        binding.etStartPrice.setText(myAuctionAdvertisement.startPrice.toString())
+        binding.tilStartPrice.disable()
+        binding.etStartPrice.disable()
+        binding.etDescription.setText(myAuctionAdvertisement.book.description)
+        itemCategoryViewModel.selectItem(myAuctionAdvertisement.book.category)
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to delete this book Advertisement?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            uploadAuctionAdvertisementViewModel.requestDeleteMyAuctionAd(args.auctionAdvertisement!!.id)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     override fun onResume() {
         super.onResume()
         setupConditionDropdown()
@@ -125,6 +176,9 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.post_duration)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.auctionAdvertisement != null) { // update scenario
+            binding.acPostDuration.setText(args.auctionAdvertisement!!.postDuration)
+        }
         binding.acPostDuration.setAdapter(arrayAdapter)
     }
 
@@ -225,13 +279,32 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         binding.root.showErrorSnackBar(message)
     }
 
-    private fun prepareAuctionAdvertisement(): AuctionAdvertisement {
+    private fun prepareAuctionAdvertisement(): AuctionAdvertisement { // need to ber refactor and enhance
         val condition: String? =
             when (binding.acCondition.text.toString()) {
                 "New" -> "New"
                 "Used" -> "Used"
                 else -> null
             }
+        val id = if (args.auctionAdvertisement == null) "" else args.auctionAdvertisement!!.id
+
+        val date =
+            if (args.auctionAdvertisement == null) Date() else args.auctionAdvertisement!!.publishDate
+        val status =
+            if (args.auctionAdvertisement == null) AdvStatus.Opened else args.auctionAdvertisement!!.status
+        val auctionStatus =
+            if (args.auctionAdvertisement == null) AuctionStatus.STARTED else args.auctionAdvertisement!!.auctionStatus
+        val userLocation =
+            if (args.auctionAdvertisement == null) getUserLocation() else args.auctionAdvertisement!!.location
+        val bidders =
+            if (args.auctionAdvertisement == null) emptyList() else args.auctionAdvertisement!!.bidders
+        val closeDate =
+            if (args.auctionAdvertisement == null) null else args.auctionAdvertisement!!.closeDate
+        val endPrice =
+            if (args.auctionAdvertisement == null) null else args.auctionAdvertisement!!.endPrice
+        val startPrice =
+            if (args.auctionAdvertisement == null) binding.etStartPrice.text.toString()
+                .toDouble() else args.auctionAdvertisement!!.startPrice
         val book = Book(
             id = "",
             images = imageUris,
@@ -243,18 +316,18 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             edition = binding.acEdition.text.toString()
         )
         return AuctionAdvertisement(
-            id = "",
+            id = id,
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
-            status = AdvStatus.Opened,
-            publishDate = Date(),
-            startPrice = binding.etStartPrice.text.toString().toDouble(),
-            location = getUserLocation(),
-            endPrice = null,
-            closeDate = null,
+            status = status,
+            publishDate = date,
+            startPrice = startPrice,
+            location = userLocation,
+            endPrice = endPrice,
+            closeDate = closeDate,
             postDuration = binding.acPostDuration.text.toString(),
-            auctionStatus = AuctionStatus.STARTED,
-            bidders = emptyList()
+            auctionStatus = auctionStatus,
+            bidders = bidders
         )
     }
 
@@ -304,6 +377,10 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.auctionAdvertisement != null) { // update scenario
+            Timber.d("setupConditionDropdown: ${args.auctionAdvertisement!!.book.condition}")
+            binding.acCondition.setText(args.auctionAdvertisement!!.book.condition)
+        }
         binding.acCondition.setAdapter(arrayAdapter)
     }
 
@@ -311,6 +388,9 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.edition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.auctionAdvertisement != null) { // update scenario
+            binding.acEdition.setText(args.auctionAdvertisement!!.book.edition)
+        }
         binding.acEdition.setAdapter(arrayAdapter)
     }
 

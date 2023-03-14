@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.usecase.usecase.my_ads.auction.DeleteMyAuctionAdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.my_ads.auction.EditMyAuctionAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadAuctionAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
@@ -20,12 +22,15 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadAuctionViewModel @Inject constructor(
     private val uploadAuctionAdvertisementUseCase: UploadAuctionAdvertisementUseCase,
+    private val deleteMyAuctionAdUseCase: DeleteMyAuctionAdUseCase,
+    private val editMyAuctionAdvertisementUseCase: EditMyAuctionAdvertisementUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
 ) : ViewModel() {
 
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
     val uploadState: StateFlow<UploadState> = _uploadState
+    var isFirstTime: Boolean = true
 
     private fun showError(message: String) {
         _uploadState.value = UploadState.ShowError(message)
@@ -65,7 +70,48 @@ class UploadAuctionViewModel @Inject constructor(
     fun getFirebaseCurrentUser(): FirebaseUser? {
         return getFirebaseCurrentUserUseCase()
     }
+
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key, clazz)
+    }
+
+    fun requestUpdateMyAuctionAd(auctionAdvertisement: AuctionAdvertisement) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = editMyAuctionAdvertisementUseCase(auctionAdvertisement)) {
+                is Resource.Error -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                        showError(result.message)
+                    }
+                }
+                is Resource.Success -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                    }
+                    _uploadState.value = UploadState.UpdatedSuccessfully(result.data)
+                }
+            }
+        }
+    }
+
+    fun requestDeleteMyAuctionAd(myAdId: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = deleteMyAuctionAdUseCase(myAdId)) {
+                is Resource.Error -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                        showError(result.message)
+                    }
+                }
+                is Resource.Success -> {
+                    withContext(Dispatchers.Main) {
+                        setLoading(false)
+                    }
+                    _uploadState.value = UploadState.DeletedSuccessfully(result.data)
+                }
+            }
+        }
     }
 }
