@@ -12,17 +12,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.musfickjamil.snackify.Snackify
-import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentExchangeSheetBinding
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -33,13 +34,24 @@ import java.io.File
 
 @AndroidEntryPoint
 class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri> {
+    private var _binding: FragmentExchangeSheetBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var binding: FragmentExchangeSheetBinding
     private val exchangeViewModel: ExchangeViewModel by activityViewModels()
     private lateinit var dialog: AlertDialog
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private var imageUri: Uri? = null
     private val uris: ArrayList<Uri> = arrayListOf()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentExchangeSheetBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
@@ -60,15 +72,6 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentExchangeSheetBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             exchangeViewModel.uploadState.collect {
@@ -76,6 +79,9 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
                     ExchangeSheetState.Init -> Unit
                     is ExchangeSheetState.IsLoading -> {
                         handleLoadingState(it.isLoading)
+                    }
+                    is ExchangeSheetState.ValidBookToExchangeData -> {
+                        dismiss()
                     }
                     is ExchangeSheetState.ShowError -> {
                         Snackify.error(binding.root, it.message, Snackify.LENGTH_SHORT)
@@ -88,7 +94,7 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
 
     private fun saveAction(booksToExchangeItem: BooksToExchange) {
         exchangeViewModel.addBook(booksToExchangeItem)
-        dismiss()
+        // dismiss()
     }
 
     private fun pickPhoto() {
@@ -168,15 +174,6 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
         dialog.dismiss()
     }
 
-    private fun disableUploadButton() {
-        binding.btnUploadImages.apply {
-            disable()
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.gray_medium))
-            setStrokeColorResource(R.color.gray_medium)
-            setIconTintResource(R.color.gray_medium)
-        }
-    }
-
     override fun onRemoveImageItemClick(item: Uri, position: Int, bookOrImage: String) {
         uris.removeAt(position)
         uploadedImagesAdapter.updateList(uris)
@@ -199,5 +196,13 @@ class ExchangeSheetFragment : BottomSheetDialogFragment(), OnImageItemClick<Uri>
             }
             false -> dismissLoadingDialog()
         }
+    }
+
+    override fun onDestroyView() {
+        exchangeViewModel.resetBottomSheetState()
+        dialog.setView(null)
+        binding.rvUploadedImages.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
 }
