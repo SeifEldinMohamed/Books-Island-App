@@ -144,6 +144,7 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onDestroyView() {
         buyAdapter.onAdItemClick = null
+        dialog.dismiss()
         dialog.setView(null)
         binding.rvSellMyAds.adapter = null
         _binding = null
