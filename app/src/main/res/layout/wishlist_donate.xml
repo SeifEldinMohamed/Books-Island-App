@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_donate_my_ads"
+        android:id="@+id/rv_donate_wish_list"
         tools:itemCount="10"
         tools:listitem="@layout/buy_donate_adv_item"
         android:layout_width="match_parent"
