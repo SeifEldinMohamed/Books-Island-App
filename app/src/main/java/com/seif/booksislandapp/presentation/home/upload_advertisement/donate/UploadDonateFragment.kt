@@ -377,10 +377,11 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         dialog.setView(null)
+        binding.rvUploadedImages.adapter = null
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         uploadDonateAdvertisementViewModel.resetUploadStatus()
+        _binding = null
     }
 }
