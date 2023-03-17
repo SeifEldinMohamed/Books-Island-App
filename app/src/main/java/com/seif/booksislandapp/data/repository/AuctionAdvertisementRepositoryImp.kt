@@ -282,4 +282,85 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
+    override suspend fun fetchMyAuctionAds(userId: String): Resource<ArrayList<AuctionAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereEqualTo("ownerId", userId)
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val auctionAdvertisementDto =
+                        document.toObject(AuctionAdvertisementDto::class.java)
+                    auctionAdvertisementsDto.add(auctionAdvertisementDto)
+                }
+                Resource.Success(
+                    data = auctionAdvertisementsDto.map { auctionAdvertisementDto ->
+                        auctionAdvertisementDto.toAuctionAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun editMyAuctionAdv(auctionAdvertisement: AuctionAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        val imagesToUpload =
+            auctionAdvertisement.book.images.filter { !it.toString().contains("https") }
+        val oldUploadedImages =
+            auctionAdvertisement.book.images.filter { it.toString().contains("https") }
+        return when (
+            val result =
+                uploadMultipleImages(auctionAdvertisement.ownerId, imagesToUpload)
+        ) {
+            is Resource.Error -> {
+                Timber.d("uploadAuctionAdv: Error  ${result.message}")
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+                        val document =
+                            firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .document(auctionAdvertisement.id)
+                        auctionAdvertisement.book.images = oldUploadedImages + result.data
+                        Timber.d("all images ${auctionAdvertisement.book.images}")
+                        document.set(auctionAdvertisement.toAuctionAdvertisementDto())
+                            .await()
+                        Timber.d("Updated successfully")
+                        Resource.Success("Advertisement Updated Successfully")
+                    }
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
+        }
+    }
+
+    override suspend fun deleteMyAuctionAdv(myAuctionAdId: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .document(myAuctionAdId)
+                    .delete()
+                    .await()
+                Timber.d("Deleted successfully")
+                Resource.Success("Advertisement Deleted Successfully")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 }

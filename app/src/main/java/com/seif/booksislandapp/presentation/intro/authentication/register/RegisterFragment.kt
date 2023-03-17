@@ -20,13 +20,10 @@ import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_MEN_LIST
 import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_WOMEN_LIST
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.disable
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
 import com.skydoves.balloon.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -99,7 +96,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun observe() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             registerViewModel.registerState.collect {
                 when (it) {
                     RegisterState.Init -> Unit
@@ -118,6 +115,7 @@ class RegisterFragment : Fragment() {
                     is RegisterState.GetDistrictsSuccessfully -> {
                         districts = it.districts
                         binding.acDistricts.setText("")
+                        binding.tilDistricts.enabled()
                         setUpDistrictsDropDown(it.districts)
                     }
                     is RegisterState.ShowError -> {

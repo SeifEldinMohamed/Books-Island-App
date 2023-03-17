@@ -16,4 +16,8 @@ interface AuctionAdvertisementRepository {
 
     suspend fun fetchAuctionAdByIdQuerySnapShot(adId: String): Flow<Resource<AuctionAdvertisement, String>>
     suspend fun addBidder(adId: String, bidder: Bidder): Resource<String, String>
+
+    suspend fun fetchMyAuctionAds(userId: String): Resource<java.util.ArrayList<AuctionAdvertisement>, String>
+    suspend fun editMyAuctionAdv(auctionAdvertisement: AuctionAdvertisement): Resource<String, String>
+    suspend fun deleteMyAuctionAdv(myAuctionAdId: String): Resource<String, String>
 }

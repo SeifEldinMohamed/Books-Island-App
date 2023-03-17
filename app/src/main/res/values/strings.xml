@@ -209,10 +209,10 @@
     <!--upload exchange-->
     <string name="exchange_for">Exchange For</string>
     <string name="your_book_images_at_least_1_image">Your Book Images(At Least 1 image)</string>
-    <string name="upload_book">Upload Book</string>
+    <string name="upload_book">Upload A Book</string>
     <string name="add_book">Add Book</string>
     <string name="by">By %1$s</string>
-    <string name="book_to_exchange_for_at_least_1_book">Book To Exchange For(At Least 1 Book)</string>
+    <string name="book_to_exchange_for_at_least_1_book">Books To Exchange For (At Least 1 Book)</string>
 
     <!-- Auction Details -->
     <string name="_1">1</string>
@@ -238,5 +238,6 @@
     <string name="tooltip_email">"- Email is Case Sensitive. "</string>
     <string name="update_post">Update Post</string>
     <string name="delete_ad_icon">delete ad icon</string>
+    <string name="by_robert_kiyosaki">by Robert Kiyosaki</string>
 
 </resources>

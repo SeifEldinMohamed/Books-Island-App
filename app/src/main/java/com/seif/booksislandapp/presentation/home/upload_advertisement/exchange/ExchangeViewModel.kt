@@ -12,14 +12,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
 @HiltViewModel
 class ExchangeViewModel @Inject constructor(
     private val uploadBookForExchangeUseCase: UploadBookForExchangeUseCase
-) :
-    ViewModel() {
-    private val mutableLiveData = MutableLiveData<BooksToExchange>()
-    val liveData: LiveData<BooksToExchange> get() = mutableLiveData
+) : ViewModel() {
+    private val mutableLiveData = MutableLiveData<BooksToExchange?>()
+    val liveData: LiveData<BooksToExchange?> get() = mutableLiveData
+
     private val _uploadState = MutableStateFlow<ExchangeSheetState>(ExchangeSheetState.Init)
     val uploadState: StateFlow<ExchangeSheetState> = _uploadState
 
@@ -28,15 +30,27 @@ class ExchangeViewModel @Inject constructor(
             _uploadState.value = ExchangeSheetState.IsLoading(true)
             when (val result = uploadBookForExchangeUseCase.invoke(booksToExchangeItem)) {
                 is Resource.Error -> {
-                    _uploadState.value = ExchangeSheetState.IsLoading(false)
-                    _uploadState.value = ExchangeSheetState.ShowError(result.message)
+                    withContext(Dispatchers.Main) {
+                        _uploadState.value = ExchangeSheetState.IsLoading(false)
+                        _uploadState.value = ExchangeSheetState.ShowError(result.message)
+                    }
                 }
                 is Resource.Success -> {
-
-                    _uploadState.value = ExchangeSheetState.IsLoading(false)
-                    mutableLiveData.postValue(booksToExchangeItem)
+                    withContext(Dispatchers.Main) {
+                        _uploadState.value = ExchangeSheetState.IsLoading(false)
+                        _uploadState.value = ExchangeSheetState.ValidBookToExchangeData(result.data)
+                        mutableLiveData.value = result.data
+                    }
                 }
             }
         }
+    }
+
+    fun resetBottomSheetState() {
+        _uploadState.value = ExchangeSheetState.Init
+    }
+
+    fun resetBooksToExchangeLiveData() {
+        mutableLiveData.value = null
     }
 }

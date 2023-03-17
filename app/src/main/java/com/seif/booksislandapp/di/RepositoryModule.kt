@@ -72,11 +72,13 @@ object RepositoryModule {
     fun provideExchangeAdvertisementRepository(
         firestore: FirebaseFirestore,
         resourceProvider: ResourceProvider,
+        storageReference: StorageReference,
         connectivityManager: ConnectivityManager
     ): ExchangeAdvertisementRepository {
         return ExchangeAdvertisementRepositoryImp(
             firestore,
             resourceProvider,
+            storageReference,
             connectivityManager
         )
     }

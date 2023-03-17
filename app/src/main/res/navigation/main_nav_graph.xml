@@ -14,7 +14,7 @@
             android:id="@+id/action_homeFragment_to_buyFragment"
             app:destination="@id/buyFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_bidFragment"
+            android:id="@+id/action_homeFragment_to_auctionFragment"
             app:destination="@id/auctionFragment" />
         <action
             android:id="@+id/action_homeFragment_to_donationFragment"
@@ -53,7 +53,7 @@
             android:id="@+id/action_myAdsFragment_to_uploadExchangeFragment"
             app:destination="@id/uploadExchangeFragment" />
         <action
-            android:id="@+id/action_myAdsFragment_to_uploadBidFragment"
+            android:id="@+id/action_myAdsFragment_to_uploadAuctionFragment"
             app:destination="@id/uploadAuctionFragment" />
     </fragment>
     <fragment
@@ -161,7 +161,9 @@
             app:destination="@id/bookCategoriesFragment" />
         <argument
             android:name="exchangeForItem"
-            app:argType="com.seif.booksislandapp.domain.model.book.BooksToExchange" />
+            app:argType="com.seif.booksislandapp.domain.model.book.BooksToExchange"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="exchangeAdvertisement"
             app:argType="com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement"

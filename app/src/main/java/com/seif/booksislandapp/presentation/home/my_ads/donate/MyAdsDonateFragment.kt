@@ -49,12 +49,12 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             observe()
             binding.swipeRefresh.isRefreshing = false
         }
-        fetchMySellAds()
+        fetchMyDonationAds()
 
         binding.rvDonateMyAds.adapter = donateAdapter
     }
 
-    private fun fetchMySellAds() {
+    private fun fetchMyDonationAds() {
         myDonateAdsViewModel.fetchAllDonateAdvertisement(userId)
         observe()
     }
@@ -76,8 +76,8 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
     }
 
-    private fun handleUi(sellAds: ArrayList<DonateAdvertisement>) {
-        if (sellAds.isEmpty()) {
+    private fun handleUi(donationAds: ArrayList<DonateAdvertisement>) {
+        if (donationAds.isEmpty()) {
             binding.rvDonateMyAds.hide()
             binding.noBooksAnimationDonationMy.show()
         } else {
@@ -97,7 +97,7 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                         when (hasActiveConnection) {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
-                                fetchMySellAds()
+                                fetchMyDonationAds()
                             }
                             false -> Unit
                         }
@@ -150,9 +150,10 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         donateAdapter.onAdItemClick = null
         dialog.setView(null)
+        binding.rvDonateMyAds.adapter = null
         _binding = null
+        super.onDestroyView()
     }
 }

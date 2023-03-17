@@ -40,22 +40,22 @@
         app:layout_constraintTop_toBottomOf="@+id/cv_book" />
 
     <TextView
-
         android:id="@+id/tv_book_auther"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginBottom="@dimen/_6sdp"
         android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="2"
-        android:layout_marginTop="@dimen/_4sdp"
         android:fontFamily="@font/roboto_bold"
-        android:text="@string/hazem_khaled"
+        android:gravity="center"
+        android:maxLength="40"
+        android:maxLines="2"
+        android:text="@string/by_robert_kiyosaki"
         android:textColor="@color/black"
         android:textSize="@dimen/_8ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cv_book"
+        app:layout_constraintEnd_toStartOf="@+id/line"
         app:layout_constraintStart_toStartOf="@+id/cv_book"
         app:layout_constraintTop_toBottomOf="@+id/tv_book_name" />
 

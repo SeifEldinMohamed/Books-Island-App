@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadExchangeBinding
@@ -46,56 +47,48 @@ import java.util.*
 class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     private var _binding: FragmentUploadExchangeBinding? = null
     private val binding get() = _binding!!
-    private val taskViewModel: ExchangeViewModel by activityViewModels()
+
     private var imageUris: ArrayList<Uri> = arrayListOf()
     private lateinit var dialog: AlertDialog
+
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private val uploadedExchangeAdapter by lazy { UploadedBooksForExchangeAdapter() }
+
+    private val taskViewModel: ExchangeViewModel by activityViewModels()
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
     private val uploadExchangeAdvertisementViewModel: UploadExchangeViewModel by viewModels()
+
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
     private var exchangeFor: ArrayList<BooksToExchange> = ArrayList()
+
+    private val args: UploadExchangeFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
 
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentUploadExchangeBinding.inflate(layoutInflater)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
-        binding.btnUploadBook.setOnClickListener {
-            ExchangeSheetFragment().show(parentFragmentManager, " ")
-        }
-
-        taskViewModel.liveData.observe(viewLifecycleOwner) {
-            it?.let {
-                exchangeFor.add(it)
-                uploadedExchangeAdapter.updateList(exchangeFor)
-
-                if (exchangeFor.size in 1 until MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER) {
-                    binding.rvUploadedBook.show()
-                    binding.ivUploadBook.invisible()
-                } else if (exchangeFor.size == MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER) {
-                    binding.btnUploadBook.disable()
-                } else {
-                    binding.rvUploadedBook.invisible()
-                    binding.ivUploadBook.show()
-                }
-            }
-        }
-
         uploadedImagesAdapter.onImageItemClick = this
         uploadedExchangeAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadExchangeAdvertisementViewModel.getFirebaseCurrentUser()
+
         observe()
+        observeBooksToExchange()
+        observeSelectedCategoryItem()
+        checkForUpdateOrPost()
+
+        binding.ivDeleteMyExchangeAd.setOnClickListener {
+            showConfirmationDialog()
+        }
 
         binding.ivBackUpload.setOnClickListener {
             findNavController().navigateUp()
@@ -109,6 +102,74 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
+        binding.btnUploadBook.setOnClickListener {
+            ExchangeSheetFragment().show(parentFragmentManager, " ")
+        }
+
+        binding.btnUpload.setOnClickListener {
+            val exchangeAdvertisement = prepareExchangeAdvertisement()
+            if (args.exchangeAdvertisement != null)
+                uploadExchangeAdvertisementViewModel.requestUpdateMyExchangeAd(exchangeAdvertisement)
+            else
+                uploadExchangeAdvertisementViewModel.uploadExchangeAdvertisement(
+                    exchangeAdvertisement
+                )
+        }
+
+        handleUploadImagesViews()
+        handleUploadBooksViews()
+
+        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+        binding.rvUploadedBook.adapter = uploadedExchangeAdapter
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to delete this book Advertisement?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            uploadExchangeAdvertisementViewModel.requestDeleteMyExchangeAd(args.exchangeAdvertisement!!.id)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun checkForUpdateOrPost() {
+        if (args.exchangeAdvertisement != null) { // edit
+            if (uploadExchangeAdvertisementViewModel.isFirstTime) {
+                uploadExchangeAdvertisementViewModel.isFirstTime = false
+                args.exchangeAdvertisement?.let {
+                    imageUris = it.book.images.toCollection(ArrayList())
+                    exchangeFor = it.booksToExchange.toCollection(ArrayList())
+                    categoryName = it.book.category
+                    showMyDonateAdvertisement(it)
+                    binding.btnUpload.text = getString(R.string.update_post)
+                    binding.ivDeleteMyExchangeAd.show()
+                }
+            }
+        } else {
+            binding.btnUpload.text = getString(R.string.submit_post)
+            binding.ivDeleteMyExchangeAd.hide()
+        }
+    }
+
+    private fun showMyDonateAdvertisement(myExchangeAdvertisement: ExchangeAdvertisement) {
+
+        uploadedImagesAdapter.updateList(myExchangeAdvertisement.book.images)
+        uploadedExchangeAdapter.updateList(myExchangeAdvertisement.booksToExchange)
+        binding.etTitle.setText(myExchangeAdvertisement.book.title)
+        binding.etAuthor.setText(myExchangeAdvertisement.book.author)
+        binding.etDescription.setText(myExchangeAdvertisement.book.description)
+        itemCategoryViewModel.selectItem(myExchangeAdvertisement.book.category)
+    }
+
+    private fun observeSelectedCategoryItem() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             itemCategoryViewModel.selectedCategoryItem.collect {
                 Timber.d("collector: $it")
@@ -116,22 +177,45 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                 binding.btnCategory.text = categoryName
             }
         }
+    }
 
-        binding.btnUpload.setOnClickListener {
-            val exchangeAdvertisement = prepareExchangeAdvertisement()
-            uploadExchangeAdvertisementViewModel.uploadExchangeAdvertisement(exchangeAdvertisement)
+    private fun observeBooksToExchange() {
+        taskViewModel.liveData.observe(viewLifecycleOwner) {
+            it?.let {
+                exchangeFor.add(it)
+                uploadedExchangeAdapter.updateList(exchangeFor)
+
+                if (exchangeFor.size in 1 until MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER) {
+                    binding.rvUploadedBook.show()
+                    binding.ivUploadBook.invisible()
+                } else if (exchangeFor.size == MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER) {
+                    binding.btnUploadBook.disable()
+                } else { // never enter this condition
+                    binding.rvUploadedBook.invisible()
+                    binding.ivUploadBook.show()
+                }
+            }
         }
+    }
 
-        if (imageUris.size > 0) {
-            binding.rvUploadedImages.show()
-            binding.ivUploadImage.hide()
+    private fun handleUploadBooksViews() {
+        if (exchangeFor.isEmpty()) {
+            binding.rvUploadedBook.hide()
+            binding.ivUploadBook.show()
         } else {
+            binding.rvUploadedBook.show()
+            binding.ivUploadBook.hide()
+        }
+    }
+
+    private fun handleUploadImagesViews() {
+        if (imageUris.isEmpty()) {
             binding.rvUploadedImages.hide()
             binding.ivUploadImage.show()
+        } else {
+            binding.rvUploadedImages.show()
+            binding.ivUploadImage.hide()
         }
-
-        binding.rvUploadedImages.adapter = uploadedImagesAdapter
-        binding.rvUploadedBook.adapter = uploadedExchangeAdapter
     }
 
     override fun onResume() {
@@ -245,6 +329,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                 "Used" -> "Used"
                 else -> null
             }
+        val id = if (args.exchangeAdvertisement == null) "" else args.exchangeAdvertisement!!.id
+        val date =
+            if (args.exchangeAdvertisement == null) Date() else args.exchangeAdvertisement!!.publishDate
+        val status =
+            if (args.exchangeAdvertisement == null) AdvStatus.Opened else args.exchangeAdvertisement!!.status
+        val userLocation =
+            if (args.exchangeAdvertisement == null) getUserLocation() else args.exchangeAdvertisement!!.location
         val book = Book(
             id = "",
             images = imageUris,
@@ -257,12 +348,12 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
 
         )
         return ExchangeAdvertisement(
-            id = "",
+            id = id,
             ownerId = firebaseCurrentUser?.uid ?: "",
             book = book,
-            status = AdvStatus.Opened,
-            publishDate = Date(),
-            location = getUserLocation(),
+            status = status,
+            publishDate = date,
+            location = userLocation,
             booksToExchange = exchangeFor
 
         )
@@ -283,6 +374,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     override fun onRemoveImageItemClick(item: Uri, position: Int, bookOrImage: String) {
+        Timber.d("onRemoveImageItemClick: clicked $bookOrImage")
         if (bookOrImage == "Image") {
             imageUris.removeAt(position)
             uploadedImagesAdapter.updateList(imageUris)
@@ -324,6 +416,9 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.condition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.exchangeAdvertisement != null) { // update scenario
+            binding.acCondition.setText(args.exchangeAdvertisement!!.book.condition)
+        }
         binding.acCondition.setAdapter(arrayAdapter)
     }
 
@@ -331,6 +426,9 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         val conditions = resources.getStringArray(R.array.edition)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, R.id.tv_text, conditions)
+        if (args.exchangeAdvertisement != null) { // update scenario
+            binding.acEdition.setText(args.exchangeAdvertisement!!.book.edition)
+        }
         binding.acEdition.setAdapter(arrayAdapter)
     }
 
@@ -345,11 +443,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         dialog.setView(null)
-        exchangeFor.clear()
+        taskViewModel.resetBooksToExchangeLiveData()
+        binding.rvUploadedBook.adapter = null
+        binding.rvUploadedImages.adapter = null
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         uploadExchangeAdvertisementViewModel.resetUploadStatus()
+        _binding = null
     }
 }

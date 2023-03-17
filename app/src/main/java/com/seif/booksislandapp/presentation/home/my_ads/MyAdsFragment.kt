@@ -75,13 +75,13 @@ class MyAdsFragment : Fragment() {
         findNavController().navigate(R.id.action_myAdsFragment_to_uploadExchangeFragment)
     }
     private fun navigateToUploadBidAdFragment() {
-        findNavController().navigate(R.id.action_myAdsFragment_to_uploadBidFragment)
+        findNavController().navigate(R.id.action_myAdsFragment_to_uploadAuctionFragment)
     }
 
     override fun onDestroyView() {
-        _binding = null
         viewPager!!.adapter = null
         viewPager = null
+        _binding = null
         super.onDestroyView()
     }
 }

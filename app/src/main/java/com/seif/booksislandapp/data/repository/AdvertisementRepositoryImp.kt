@@ -68,7 +68,10 @@ class AdvertisementRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
-        return when (val result = uploadMultipleImages(sellAdvertisement.book.images)) {
+        return when (
+            val result =
+                uploadMultipleImages(sellAdvertisement.ownerId, sellAdvertisement.book.images)
+        ) {
             is Resource.Error -> {
                 Timber.d("uploadSellAdv: Error  ${result.message}")
                 Resource.Error(result.message)
@@ -99,7 +102,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             sellAdvertisement.book.images.filter { !it.toString().contains("https") }
         val oldUploadedImages =
             sellAdvertisement.book.images.filter { it.toString().contains("https") }
-        return when (val result = uploadMultipleImages(imagesToUpload)) {
+        return when (val result = uploadMultipleImages(sellAdvertisement.ownerId, imagesToUpload)) {
             is Resource.Error -> {
                 Timber.d("uploadSellAdv: Error  ${result.message}")
                 Resource.Error(result.message)
@@ -329,7 +332,10 @@ class AdvertisementRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
-        return when (val result = uploadMultipleImages(donateAdvertisement.book.images)) {
+        return when (
+            val result =
+                uploadMultipleImages(donateAdvertisement.ownerId, donateAdvertisement.book.images)
+        ) {
             is Resource.Error -> {
                 Timber.d("uploadSellAdv: Error  ${result.message}")
                 Resource.Error(result.message)
@@ -354,22 +360,34 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    // todo
     override suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        return when (val result = uploadMultipleImages(exchangeAdvertisement.book.images)) {
+        return when (
+            val result = uploadMultipleImages(
+                exchangeAdvertisement.ownerId,
+                exchangeAdvertisement.book.images
+            )
+        ) {
             is Resource.Error -> {
                 Resource.Error(result.message)
             }
             is Resource.Success -> {
                 // exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
                 try {
-                    when (val booksForExchangeResult = uploadMultipleImages(exchangeAdvertisement.booksToExchange.map { it.imageUri!! })) {
-                        is Resource.Error -> { Resource.Error(booksForExchangeResult.message) }
+                    when (
+                        val booksForExchangeResult = uploadMultipleImages(
+                            exchangeAdvertisement.ownerId,
+                            exchangeAdvertisement.booksToExchange.map { it.imageUri!! }
+                        )
+                    ) {
+                        is Resource.Error -> {
+                            Resource.Error(booksForExchangeResult.message)
+                        }
                         is Resource.Success -> {
                             val document =
-                                firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION).document()
+                                firestore.collection(EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                    .document()
                             exchangeAdvertisement.id = document.id
                             exchangeAdvertisement.book.images = result.data
 //                            exchangeAdvertisement.booksToExchange.map { it.imageUri= booksForExchangeResult.data}
@@ -381,6 +399,42 @@ class AdvertisementRepositoryImp @Inject constructor(
                             Timber.d("uploaded successfully")
                             Resource.Success("Advertisement Added Successfully with id : ${document.id}")
                         }
+                    }
+                } catch (e: Exception) {
+                    Resource.Error(e.message.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun editMyExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        val imagesToUpload =
+            exchangeAdvertisement.book.images.filter { !it.toString().contains("https") }
+        val oldUploadedImages =
+            exchangeAdvertisement.book.images.filter { it.toString().contains("https") }
+        return when (
+            val result =
+                uploadMultipleImages(exchangeAdvertisement.ownerId, imagesToUpload)
+        ) {
+            is Resource.Error -> {
+                Timber.d("uploadAuctionAdv: Error  ${result.message}")
+                Resource.Error(result.message)
+            }
+            is Resource.Success -> {
+                try {
+                    withTimeout(Constants.TIMEOUT_UPLOAD) {
+                        val document =
+                            firestore.collection(Constants.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .document(exchangeAdvertisement.id)
+                        exchangeAdvertisement.book.images = oldUploadedImages + result.data
+                        Timber.d("all images ${exchangeAdvertisement.book.images}")
+                        document.set(exchangeAdvertisement.toExchangeAdvertisementDto())
+                            .await()
+                        Timber.d("Updated successfully")
+                        Resource.Success("Advertisement Updated Successfully")
                     }
                 } catch (e: Exception) {
                     Resource.Error(e.message.toString())
@@ -425,7 +479,10 @@ class AdvertisementRepositoryImp @Inject constructor(
             donateAdvertisement.book.images.filter { !it.toString().contains("https") }
         val oldUploadedImages =
             donateAdvertisement.book.images.filter { it.toString().contains("https") }
-        return when (val result = uploadMultipleImages(imagesToUpload)) {
+        return when (
+            val result =
+                uploadMultipleImages(donateAdvertisement.ownerId, imagesToUpload)
+        ) {
             is Resource.Error -> {
                 Timber.d("uploadDonateAdv: Error  ${result.message}")
                 Resource.Error(result.message)
@@ -494,7 +551,10 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    private suspend fun uploadMultipleImages(imagesUri: List<Uri>): Resource<List<Uri>, String> {
+    private suspend fun uploadMultipleImages(
+        ownerId: String,
+        imagesUri: List<Uri>
+    ): Resource<List<Uri>, String> {
         return try {
             withTimeout(Constants.TIMEOUT_UPLOAD) {
                 Timber.d("uploadMultipleImages: $imagesUri")
@@ -504,7 +564,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                     imagesUri.map { imageUri -> // we will map the whole list into the async blocks
                         async {
                             storageReference.child(
-                                imageUri.lastPathSegment ?: "${System.currentTimeMillis()}"
+                                "$ownerId/${imageUri.lastPathSegment ?: System.currentTimeMillis()}"
                             )
                                 .putFile(imageUri)
                                 .await()

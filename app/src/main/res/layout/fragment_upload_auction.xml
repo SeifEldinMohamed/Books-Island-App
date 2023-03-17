@@ -24,6 +24,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ImageView
+                    android:id="@+id/iv_delete_my_auction_ad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/delete_ad_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_sell"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_sell"
+                    app:srcCompat="@drawable/ic_delete" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_title"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -58,7 +70,8 @@
                     android:textColor="@color/red"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_title"
                     app:layout_constraintStart_toEndOf="@+id/tv_title"
-                    app:layout_constraintTop_toTopOf="@+id/tv_title" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_title"
+                    tools:ignore="TextContrastCheck" />
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -88,12 +101,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="@string/auction"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_20ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_back_upload"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_delete_my_auction_ad"
                     app:layout_constraintStart_toEndOf="@+id/iv_back_upload"
                     app:layout_constraintTop_toTopOf="@+id/iv_back_upload" />
 
