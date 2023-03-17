@@ -75,13 +75,13 @@
             android:id="@+id/fab_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:contentDescription="@string/profile_floating_action_button"
             android:src="@drawable/ic_profile"
             app:backgroundTint="@color/gray_medium"
             app:layout_anchor="@id/bottomAppBar"
             app:tint="@color/white"
-            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck,RedundantDescriptionCheck" />
+            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck,RedundantDescriptionCheck,TouchTargetSizeCheck" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
