@@ -36,6 +36,7 @@ class BuyWishListViewModel @Inject constructor(
                             showError(it.message)
                         }
                     }
+
                     is Resource.Success -> {
                         getAllBuyWishListUseCase.invoke(it.data.wishListBuy).let {
                             when (it) {
