@@ -106,7 +106,8 @@ class ProfileFragment : Fragment() {
             password = user.password,
             governorate = binding.acGovernorate.text.toString(),
             district = binding.acDistricts.text.toString(),
-            gender = user.gender
+            gender = user.gender,
+            wishListBuy = emptyList()
         )
     }
 

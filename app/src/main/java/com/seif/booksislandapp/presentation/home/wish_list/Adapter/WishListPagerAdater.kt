@@ -5,7 +5,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.seif.booksislandapp.presentation.home.wish_list.fragments.AuctionWishList
 import com.seif.booksislandapp.presentation.home.wish_list.fragments.DonateWishList
 import com.seif.booksislandapp.presentation.home.wish_list.fragments.ExchangeWishList
-import com.seif.booksislandapp.presentation.home.wish_list.fragments.SellWishList
+import com.seif.booksislandapp.presentation.home.wish_list.fragments.buy.SellWishList
 
 class WishListPagerAdater(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 4

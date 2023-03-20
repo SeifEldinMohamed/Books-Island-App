@@ -31,7 +31,8 @@ fun User.toUserDto(): UserDto {
         password = this.password,
         governorate = this.governorate,
         district = this.district,
-        gender = this.gender
+        gender = this.gender,
+        wishListBuy = this.wishListBuy
     )
 }
 
@@ -44,7 +45,8 @@ fun UserDto.toUser(): User {
         password = password,
         governorate = governorate,
         district = district,
-        gender = gender
+        gender = gender,
+        wishListBuy = wishListBuy
     )
 }
 

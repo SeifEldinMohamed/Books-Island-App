@@ -10,5 +10,6 @@ data class User(
     val password: String,
     val governorate: String,
     val district: String,
-    val gender: String
+    val gender: String,
+    var wishListBuy: List<String>
 )
