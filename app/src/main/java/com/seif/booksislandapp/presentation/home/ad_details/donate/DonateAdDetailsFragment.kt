@@ -25,21 +25,22 @@ import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPend
 
 @AndroidEntryPoint
 class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
-    lateinit var binding: FragmentDonateAdDetailsBinding
+    private var _binding: FragmentDonateAdDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val args: DonateAdDetailsFragmentArgs by navArgs()
     private val relatedDonateAdsAdapter: RelatedDonateAdsAdapter by lazy { RelatedDonateAdsAdapter() }
     private var owner: User? = null
-    private var relatedAds: List<DonateAdvertisement> = emptyList()
+    private var relatedAds: List<DonateAdvertisement>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        //  return inflater.inflate(R.layout.fragment_donate_ad_details, container, false)
-        binding = FragmentDonateAdDetailsBinding.inflate(inflater, container, false)
+        donateAdDetailsViewModel.resetState()
+        _binding = FragmentDonateAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -54,10 +55,75 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         fetchRelatedDonateAds()
         ownerAdLimitations()
 
+        binding.ivChat.setOnClickListener {
+            navigateToChatRoomFragment()
+        }
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.rvRelatedAds.adapter = relatedDonateAdsAdapter
+    }
+
+    private fun fetchOwnerData() {
+        if (owner == null)
+            donateAdDetailsViewModel.getUserByIdSuccessfully(args.donateAdv.ownerId)
+        else {
+            owner?.let {
+                showOwnerData(it)
+            }
+        }
+    }
+
+    private fun showAdDetails() {
+        val donateAdvertisement = args.donateAdv
+        val bookCondition: String = when (donateAdvertisement.book.condition) {
+            "Used" -> "Used"
+            "New" -> "New"
+            else -> ""
+        }
+        binding.tvTitle.text = donateAdvertisement.book.title
+        binding.tvPrice.text = getString(R.string.free)
+        binding.ivBook.load(donateAdvertisement.book.images.first())
+        binding.tvLocation.text = donateAdvertisement.location
+        binding.tvPublishDate.text = donateAdvertisement.publishDate.formatDateInDetails()
+        binding.tvBookDescription.text = donateAdvertisement.book.description
+        binding.tvAuthorName.text = donateAdvertisement.book.author
+        binding.tvConditionStatus.text = bookCondition
+        binding.tvCategoryStatus.text = donateAdvertisement.book.category
+    }
+
+    private fun observe() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            donateAdDetailsViewModel.donateDetailsState.collect {
+                when (it) {
+                    DonateAdDetailsState.Int -> Unit
+                    is DonateAdDetailsState.IsLoading -> handleLoadingState(it.isLoading)
+                    is DonateAdDetailsState.NoInternetConnection -> handleNoInternetConnectionState()
+                    is DonateAdDetailsState.ShowError -> handleErrorState(it.message)
+                    is DonateAdDetailsState.GetUserByIdSuccessfully -> {
+                        owner = it.user
+                        showOwnerData(it.user)
+                    }
+                    is DonateAdDetailsState.FetchRelatedDonateAdvertisementSuccessfully -> {
+                        relatedAds = it.relatedAds
+                        handleShowRelatedAds(it.relatedAds)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchRelatedDonateAds() {
+        if (relatedAds == null) {
+            donateAdDetailsViewModel.getAllRelatedAds(
+                args.donateAdv.id,
+                args.donateAdv.book.category
+            )
+        } else {
+            relatedAds?.let {
+                handleShowRelatedAds(it)
+            }
+        }
     }
 
     private fun ownerAdLimitations() {
@@ -71,43 +137,28 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
     }
 
-    private fun fetchRelatedDonateAds() {
-        if (relatedAds.isEmpty())
-            donateAdDetailsViewModel.getAllRelatedAds(
-                args.donateAdv.id,
-                args.donateAdv.book.category
-            )
-    }
-
-    private fun fetchOwnerData() {
-        if (owner == null)
-            donateAdDetailsViewModel.getUserByIdSuccessfully(args.donateAdv.ownerId)
-    }
-
-    private fun observe() {
-        lifecycleScope.launch {
-            donateAdDetailsViewModel.donateDetailsState.collect {
-                when (it) {
-                    DonateAdDetailsState.Int -> Unit
-                    is DonateAdDetailsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is DonateAdDetailsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is DonateAdDetailsState.ShowError -> handleErrorState(it.message)
-                    is DonateAdDetailsState.GetUserByIdSuccessfully -> {
-                        owner = it.user
-                        binding.ivOwnerAvatar.load(it.user.avatarImage)
-                        binding.tvOwnerName.text = it.user.username
-                    }
-                    is DonateAdDetailsState.FetchRelatedDonateAdvertisementSuccessfully -> {
-                        relatedAds = it.relatedAds
-                        relatedDonateAdsAdapter.updateList(it.relatedAds)
-                        if (it.relatedAds.isEmpty())
-                            binding.tvNoRelatedAds.show()
-                        else
-                            binding.tvNoRelatedAds.hide()
-                    }
-                }
-            }
+    private fun navigateToChatRoomFragment() {
+        owner?.let { owner ->
+            val action =
+                DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentToChatRoomFragment(
+                    owner = owner
+                )
+            findNavController().navigate(action)
         }
+    }
+
+    private fun handleShowRelatedAds(relatedAds: List<DonateAdvertisement>) {
+        if (relatedAds.isEmpty())
+            binding.tvNoRelatedAds.show()
+        else {
+            binding.tvNoRelatedAds.hide()
+            relatedDonateAdsAdapter.updateList(relatedAds)
+        }
+    }
+
+    private fun showOwnerData(owner: User) {
+        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.tvOwnerName.text = owner.username
     }
 
     private fun handleNoInternetConnectionState() {
@@ -168,26 +219,15 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         binding.root.showErrorSnackBar(message)
     }
 
-    private fun showAdDetails() {
-        val donateAdvertisement = args.donateAdv
-        val bookCondition: String = when (donateAdvertisement.book.condition) {
-            "Used" -> "Used"
-            "New" -> "New"
-            else -> ""
-        }
-        binding.tvTitle.text = donateAdvertisement.book.title
-        binding.tvPrice.text = getString(R.string.free)
-        binding.ivBook.load(donateAdvertisement.book.images.first())
-        binding.tvLocation.text = donateAdvertisement.location
-        binding.tvPublishDate.text = donateAdvertisement.publishDate.formatDateInDetails()
-        binding.tvBookDescription.text = donateAdvertisement.book.description
-        binding.tvAuthorName.text = donateAdvertisement.book.author
-        binding.tvConditionStatus.text = bookCondition
-        binding.tvCategoryStatus.text = donateAdvertisement.book.category
-    }
-
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
         val action = DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentSelf(item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        binding.rvRelatedAds.adapter = null
+        dialog.setView(null)
+        _binding = null
+        super.onDestroyView()
     }
 }
