@@ -65,6 +65,14 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             binding.swipeRefresh.isRefreshing = false
         }
 
+        binding.tvSortBy.setOnClickListener {
+            // open sort bottom sheet
+        }
+
+        binding.btnFilter.setOnClickListener {
+            // open filter bottom sheet
+        }
+
         binding.rvBuy.adapter = buyAdapter
     }
 

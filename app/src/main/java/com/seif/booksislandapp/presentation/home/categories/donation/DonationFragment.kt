@@ -37,8 +37,6 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        // return inflater.inflate(R.layout.fragment_donation, container, false)
         _binding = FragmentDonationBinding.inflate(inflater, container, false)
         donateViewModel.resetState()
         return binding.root
@@ -213,6 +211,8 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
     override fun onDestroyView() {
         donateViewModel.isSearching = false
+        binding.rvDonate.adapter = null
+        dialog.setView(null)
         _binding = null
         super.onDestroyView()
     }
