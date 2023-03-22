@@ -582,4 +582,31 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+    override suspend fun fetchBuyWishListAds(buyIdList: List<String>): Resource<ArrayList<SellAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (item in buyIdList) {
+                    val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .document(item)
+                        .get()
+                        .await()
+                    val sellAdvertisementDto =
+                        querySnapshot.toObject(SellAdvertisementDto::class.java)
+                    if (sellAdvertisementDto!!.status.toString() == "Opened")
+                        sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                Resource.Success(
+                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                        sellAdvertisementDto.toSellAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 }

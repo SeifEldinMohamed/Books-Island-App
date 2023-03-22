@@ -8,5 +8,6 @@ data class UserDto(
     val password: String = "",
     val governorate: String = "",
     val district: String = "",
-    val gender: String = ""
+    val gender: String = "",
+    var wishListBuy: List<String> = emptyList()
 )
