@@ -34,10 +34,10 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/chatsFragment"
-        android:name="com.seif.booksislandapp.presentation.home.user_chats.UserChatsFragment"
+        android:id="@+id/myChatsFragment"
+        android:name="com.seif.booksislandapp.presentation.home.my_chats.MyChatsFragment"
         android:label="Chats"
-        tools:layout="@layout/fragment_user_chats" />
+        tools:layout="@layout/fragment_my_chats" />
     <fragment
         android:id="@+id/myAdsFragment"
         android:name="com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragment"
@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_sellAdDetailsFragment_self"
             app:destination="@id/sellAdDetailsFragment" />
+        <action
+            android:id="@+id/action_sellAdDetailsFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/uploadSellAdvertisementFragment"
@@ -181,6 +184,9 @@
         <action
             android:id="@+id/action_auctionAdDetailsFragment_self"
             app:destination="@id/auctionAdDetailsFragment" />
+        <action
+            android:id="@+id/action_auctionAdDetailsFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/exchangeAdDetailsFragment"
@@ -193,6 +199,9 @@
         <action
             android:id="@+id/action_exchangeAdDetailsFragment_self"
             app:destination="@id/exchangeAdDetailsFragment" />
+        <action
+            android:id="@+id/action_exchangeAdDetailsFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/donateAdDetailsFragment"
@@ -205,14 +214,25 @@
         <action
             android:id="@+id/action_donateAdDetailsFragment_self"
             app:destination="@id/donateAdDetailsFragment" />
+        <action
+            android:id="@+id/action_donateAdDetailsFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
     </fragment>
     <dialog
         android:id="@+id/exchangeSheetFragment"
         android:name="com.seif.booksislandapp.presentation.home.upload_advertisement.exchange.ExchangeSheetFragment"
         android:label="fragment_exchange_sheet"
-        tools:layout="@layout/fragment_exchange_sheet" >
+        tools:layout="@layout/fragment_exchange_sheet">
         <action
             android:id="@+id/action_exchangeSheetFragment_to_uploadExchangeFragment"
             app:destination="@id/uploadExchangeFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.seif.booksislandapp.presentation.home.chat_room.ChatRoomFragment"
+        android:label="ChatRoomFragment">
+        <argument
+            android:name="owner"
+            app:argType="com.seif.booksislandapp.domain.model.User" />
+    </fragment>
 </navigation>
