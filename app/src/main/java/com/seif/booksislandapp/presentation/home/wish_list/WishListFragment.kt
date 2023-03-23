@@ -46,6 +46,7 @@ class WishListFragment : Fragment() {
         viewPager!!.adapter = null
         viewPager = null
         _binding = null
+
         super.onDestroyView()
     }
 }

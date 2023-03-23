@@ -59,25 +59,9 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         fetchRelatedSellAds()
         ownerAdLimitations()
         binding.ivHeart.setOnClickListener {
-            isFavorite = !isFavorite!!
-            if ((!isFavorite!!) && !currUser!!.wishListBuy.contains(args.buyAdvertisement.id)) {
-                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
-                currUser!!.wishListBuy.add(args.buyAdvertisement.id)
-            } else if (!isFavorite!! && currUser!!.wishListBuy.contains(args.buyAdvertisement.id)) {
-                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
-                currUser!!.wishListBuy.remove(args.buyAdvertisement.id)
-            }
-
-            sellAdDetailsViewModel.updateUserWishList(currUser!!)
+            handleIsFavorite()
         }
         binding.ivBackSellDetails.setOnClickListener {
-            // this code have weakness points
-           /* if (isFavorite && !currUser!!.wishListBuy.contains(args.buyAdvertisement.id))
-                currUser!!.wishListBuy.add(args.buyAdvertisement.id)
-            else if (!isFavorite && currUser!!.wishListBuy.contains(args.buyAdvertisement.id))
-                currUser!!.wishListBuy.remove(args.buyAdvertisement.id)
-
-            sellAdDetailsViewModel.updateUserWishList(currUser!!)*/
             findNavController().navigateUp()
         }
         binding.rvRelatedAds.adapter = relatedSellAdsAdapter
@@ -234,11 +218,28 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         owner = null
         currUser = null
         relatedAds = emptyList()
         dialog.setView(null)
         isFavorite = null
+        _binding = null
+
+    }
+    private fun handleIsFavorite() {
+
+        isFavorite?.let { isFav ->
+            isFavorite = !isFav
+            currUser?.wishListBuy?.let { wishList ->
+                if ((!isFav) && !wishList.contains(args.buyAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                    wishList.add(args.buyAdvertisement.id)
+                } else if (!isFav && wishList.contains(args.buyAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
+                    wishList.remove(args.buyAdvertisement.id)
+                } else { }
+            }
+        }
+        sellAdDetailsViewModel.updateUserWishList(currUser!!)
     }
 }
