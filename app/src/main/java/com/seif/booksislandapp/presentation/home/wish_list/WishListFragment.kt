@@ -7,28 +7,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentWishListBinding
 import com.seif.booksislandapp.presentation.home.wish_list.Adapter.WishListPagerAdater
 
 class WishListFragment : Fragment() {
-
-    private lateinit var binding: FragmentWishListBinding
+    private var _binding: FragmentWishListBinding? = null
+    private val binding get() = _binding!!
     private val tabTitle = arrayListOf(" Buying ", " Donation ", " Exchanges ", " Auctions ")
+    private var viewPager: ViewPager2? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentWishListBinding.inflate(layoutInflater)
+        _binding = FragmentWishListBinding.inflate(inflater, container, false)
         setupTabLayoutWithViewPager()
         return binding.root
     }
 
     @SuppressLint("InflateParams")
     private fun setupTabLayoutWithViewPager() {
-        binding.WishViewPager.adapter = WishListPagerAdater(this)
+        viewPager = binding.WishViewPager
+        viewPager!!.adapter = WishListPagerAdater(this)
         TabLayoutMediator(binding.tlWishlist, binding.WishViewPager) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
@@ -38,5 +41,12 @@ class WishListFragment : Fragment() {
                     as TextView
             binding.tlWishlist.getTabAt(i)?.customView = textView
         }
+    }
+    override fun onDestroyView() {
+        viewPager!!.adapter = null
+        viewPager = null
+        _binding = null
+
+        super.onDestroyView()
     }
 }

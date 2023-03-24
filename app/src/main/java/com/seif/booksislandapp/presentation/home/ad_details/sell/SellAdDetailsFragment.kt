@@ -20,7 +20,9 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -29,12 +31,13 @@ import timber.log.Timber
 class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var _binding: FragmentSellAdDetailsBinding? = null
     private val binding get() = _binding!!
-
+    private var isFavorite: Boolean? = false
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val relatedSellAdsAdapter: RelatedSellAdsAdapter by lazy { RelatedSellAdsAdapter() }
     private var owner: User? = null
+    private var currUser: User? = null
     private var relatedAds: List<SellAdvertisement> = emptyList()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +58,9 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         observe()
         fetchRelatedSellAds()
         ownerAdLimitations()
-
+        binding.ivHeart.setOnClickListener {
+            handleIsFavorite()
+        }
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -83,10 +88,15 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun fetchOwnerData() {
-        if (owner == null)
-            sellAdDetailsViewModel.getUserById(args.buyAdvertisement.ownerId)
+        if (owner == null || currUser == null)
+            sellAdDetailsViewModel.getUserById(
+                args.buyAdvertisement.ownerId,
+                sellAdDetailsViewModel.readFromSP(
+                    USER_ID_KEY,
+                    String::class.java
+                )
+            )
     }
-
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             sellAdDetailsViewModel.sellDetailsState.collect {
@@ -100,6 +110,15 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                         binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
+                    is SellDetailsState.GetCurrentUserByIdSuccessfully -> {
+                        currUser = it.user
+                        withContext(Dispatchers.Main) {
+                            if (currUser!!.wishListBuy.contains(args.buyAdvertisement.id)) {
+                                isFavorite = true
+                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                            }
+                        }
+                    }
                     is SellDetailsState.FetchRelatedSellAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
                         relatedSellAdsAdapter.updateList(it.relatedAds)
@@ -107,6 +126,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                             binding.tvNoRelatedAds.show()
                         else
                             binding.tvNoRelatedAds.hide()
+                    }
+                    is SellDetailsState.AddedToFavorite -> {
                     }
                 }
             }
@@ -197,6 +218,28 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        owner = null
+        currUser = null
+        relatedAds = emptyList()
+        dialog.setView(null)
+        isFavorite = null
         _binding = null
+
+    }
+    private fun handleIsFavorite() {
+
+        isFavorite?.let { isFav ->
+            isFavorite = !isFav
+            currUser?.wishListBuy?.let { wishList ->
+                if ((!isFav) && !wishList.contains(args.buyAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                    wishList.add(args.buyAdvertisement.id)
+                } else if (!isFav && wishList.contains(args.buyAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
+                    wishList.remove(args.buyAdvertisement.id)
+                } else { }
+            }
+        }
+        sellAdDetailsViewModel.updateUserWishList(currUser!!)
     }
 }
