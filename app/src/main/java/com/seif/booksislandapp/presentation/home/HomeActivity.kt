@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment,
                 R.id.myAdsFragment,
-                R.id.chatsFragment,
+                R.id.myChatsFragment,
                 R.id.wishListFragment
             )
         ).setOpenableLayout(binding.drawerLayout)
@@ -58,7 +58,7 @@ class HomeActivity : AppCompatActivity() {
                     showBottomBar()
                     showToolBar()
                 }
-                R.id.chatsFragment -> {
+                R.id.myChatsFragment -> {
                     showBottomBar()
                     showToolBar()
                 }
