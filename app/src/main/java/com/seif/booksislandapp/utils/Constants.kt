@@ -2,6 +2,7 @@ package com.seif.booksislandapp.utils
 
 class Constants {
     companion object {
+
         // Pagination
         const val PAGE_SIZE = 15
 
@@ -18,6 +19,9 @@ class Constants {
         const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "exchange advertisements"
         const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "donate advertisement"
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
+
+        const val CHATS_FIIRESTORE_COLLECTION: String = "Chats"
+        const val MESSAGES_FIIRESTORE_COLLECTION: String = "Messages"
 
         // Storage
         const val FIREBASE_STORAGE_ROOT_DIRECTORY = "app"

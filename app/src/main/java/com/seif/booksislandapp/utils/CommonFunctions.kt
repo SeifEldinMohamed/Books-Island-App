@@ -30,6 +30,7 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
+import com.seif.booksislandapp.domain.model.chat.Message
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat
@@ -357,4 +358,10 @@ fun Fragment.handleNoInternetConnectionState(view: View) {
             showAirplaneModeOffButtons = true // Optional
         }
     }.build()
+}
+
+fun Message.isValidMessage(): Boolean {
+    return if (this.text != null && this.text.isEmpty()) {
+        false
+    } else !(this.imageUrl != null && this.imageUrl.isEmpty())
 }
