@@ -11,6 +11,7 @@ import com.seif.booksislandapp.data.remote.dto.adv.exchange.ExchangeAdvertisemen
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
+import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
@@ -21,6 +22,7 @@ import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
+import com.seif.booksislandapp.domain.model.chat.Message
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -233,5 +235,27 @@ fun DistrictDto.toDistricts(): District {
         id = id,
         name = name,
         governorateId = governorateId
+    )
+}
+
+fun MessageDto.toMessage(): Message {
+    return Message(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        text = text,
+        imageUrl = imageUrl,
+        date = date!!
+    )
+}
+
+fun Message.toMessageDto(): MessageDto {
+    return MessageDto(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        text = text,
+        imageUrl = imageUrl,
+        date = date
     )
 }
