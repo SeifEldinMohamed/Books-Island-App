@@ -1,7 +1,9 @@
 package com.seif.booksislandapp.domain.model
 
-import kotlin.String
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class User(
     var id: String,
     val avatarImage: String,
@@ -12,4 +14,4 @@ data class User(
     val district: String,
     val gender: String,
     var wishListBuy: List<String>
-)
+) : Parcelable
