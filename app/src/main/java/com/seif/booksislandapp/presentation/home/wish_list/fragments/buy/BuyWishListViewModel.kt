@@ -49,8 +49,8 @@ class BuyWishListViewModel @Inject constructor(
                                 is Resource.Success -> {
                                     withContext(Dispatchers.Main) {
                                         setLoading(false)
+                                        _buyWishListState.value = BuyWishListState.FetchAllWishBuyItemsSuccessfully(it.data)
                                     }
-                                    _buyWishListState.value = BuyWishListState.FetchAllWishBuyItemsSuccessfully(it.data)
                                 }
                             }
                         }
@@ -80,10 +80,6 @@ class BuyWishListViewModel @Inject constructor(
                 _buyWishListState.value = BuyWishListState.ShowError(message)
             }
         }
-    }
-
-    fun resetState() {
-        _buyWishListState.value = BuyWishListState.Init
     }
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key, clazz)

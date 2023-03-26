@@ -27,7 +27,11 @@
         android:id="@+id/wishListFragment"
         android:name="com.seif.booksislandapp.presentation.home.wish_list.WishListFragment"
         android:label="WishList"
-        tools:layout="@layout/fragment_wish_list" />
+        tools:layout="@layout/fragment_wish_list" >
+        <action
+            android:id="@+id/action_wishListFragment_to_sellAdDetailsFragment"
+            app:destination="@id/sellAdDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.seif.booksislandapp.presentation.home.profile.ProfileFragment"
