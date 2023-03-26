@@ -31,13 +31,13 @@ import timber.log.Timber
 class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var _binding: FragmentSellAdDetailsBinding? = null
     private val binding get() = _binding!!
-    private var isFavorite: Boolean? = false
     private val args: SellAdDetailsFragmentArgs by navArgs()
     private val sellAdDetailsViewModel: SellAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val relatedSellAdsAdapter: RelatedSellAdsAdapter by lazy { RelatedSellAdsAdapter() }
     private var owner: User? = null
     private var currUser: User? = null
+    private var isFavorite: Boolean? = false
     private var relatedAds: List<SellAdvertisement> = emptyList()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -110,15 +110,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                         binding.ivOwnerAvatar.load(it.user.avatarImage)
                         binding.tvOwnerName.text = it.user.username
                     }
-                    is SellDetailsState.GetCurrentUserByIdSuccessfully -> {
-                        currUser = it.user
-                        withContext(Dispatchers.Main) {
-                            if (currUser!!.wishListBuy.contains(args.buyAdvertisement.id)) {
-                                isFavorite = true
-                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
-                            }
-                        }
-                    }
+
                     is SellDetailsState.FetchRelatedSellAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
                         relatedSellAdsAdapter.updateList(it.relatedAds)
@@ -128,6 +120,15 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                             binding.tvNoRelatedAds.hide()
                     }
                     is SellDetailsState.AddedToFavorite -> {
+                    }
+                    is SellDetailsState.GetCurrentUserByIdSuccessfully -> {
+                        currUser = it.user
+                        withContext(Dispatchers.Main) {
+                            if (currUser!!.wishListBuy.contains(args.buyAdvertisement.id)) {
+                                isFavorite = true
+                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                            }
+                        }
                     }
                 }
             }
@@ -224,7 +225,6 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         dialog.setView(null)
         isFavorite = null
         _binding = null
-
     }
     private fun handleIsFavorite() {
 

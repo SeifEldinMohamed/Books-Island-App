@@ -19,18 +19,23 @@ import com.seif.booksislandapp.presentation.home.ad_details.donate.adapter.Relat
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
 class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
-    lateinit var binding: FragmentDonateAdDetailsBinding
+    private var _binding: FragmentDonateAdDetailsBinding? = null
+    private val binding get() = _binding!!
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val args: DonateAdDetailsFragmentArgs by navArgs()
     private val relatedDonateAdsAdapter: RelatedDonateAdsAdapter by lazy { RelatedDonateAdsAdapter() }
     private var owner: User? = null
+    private var currUser: User? = null
+    private var isFavorite: Boolean? = false
     private var relatedAds: List<DonateAdvertisement> = emptyList()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +44,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     ): View {
         // Inflate the layout for this fragment
         //  return inflater.inflate(R.layout.fragment_donate_ad_details, container, false)
-        binding = FragmentDonateAdDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentDonateAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,7 +58,9 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         observe()
         fetchRelatedDonateAds()
         ownerAdLimitations()
-
+        binding.ivHeart.setOnClickListener {
+            handleIsFavorite()
+        }
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -81,7 +88,13 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
     private fun fetchOwnerData() {
         if (owner == null)
-            donateAdDetailsViewModel.getUserByIdSuccessfully(args.donateAdv.ownerId)
+            donateAdDetailsViewModel.getUserById(
+                args.donateAdv.ownerId,
+                donateAdDetailsViewModel.readFromSP(
+                    Constants.USER_ID_KEY,
+                    String::class.java
+                )
+            )
     }
 
     private fun observe() {
@@ -104,6 +117,17 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                             binding.tvNoRelatedAds.show()
                         else
                             binding.tvNoRelatedAds.hide()
+                    }
+                    is DonateAdDetailsState.AddedToFavorite -> {
+                    }
+                    is DonateAdDetailsState.GetCurrentUserByIdSuccessfully -> {
+                        currUser = it.user
+                        withContext(Dispatchers.Main) {
+                            if (currUser!!.wishListDonate.contains(args.donateAdv.id)) {
+                                isFavorite = true
+                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                            }
+                        }
                     }
                 }
             }
@@ -189,5 +213,31 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
         val action = DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentSelf(item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        owner = null
+        currUser = null
+        relatedAds = emptyList()
+        dialog.setView(null)
+        isFavorite = null
+        _binding = null
+    }
+    private fun handleIsFavorite() {
+
+        isFavorite?.let { isFav ->
+            isFavorite = !isFav
+            currUser?.wishListDonate?.let { wishList ->
+                if ((!isFav) && !wishList.contains(args.donateAdv.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                    wishList.add(args.donateAdv.id)
+                } else if (!isFav && wishList.contains(args.donateAdv.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
+                    wishList.remove(args.donateAdv.id)
+                } else { }
+            }
+        }
+        donateAdDetailsViewModel.updateUserWishList(currUser!!)
     }
 }

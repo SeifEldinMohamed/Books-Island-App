@@ -11,5 +11,8 @@ data class User(
     val governorate: String,
     val district: String,
     val gender: String,
-    var wishListBuy: ArrayList<String> = arrayListOf()
+    var wishListBuy: ArrayList<String> = arrayListOf(),
+    var wishListDonate: ArrayList<String> = arrayListOf(),
+    var wishListExchange: ArrayList<String> = arrayListOf(),
+    var wishListAuction: ArrayList<String> = arrayListOf()
 )

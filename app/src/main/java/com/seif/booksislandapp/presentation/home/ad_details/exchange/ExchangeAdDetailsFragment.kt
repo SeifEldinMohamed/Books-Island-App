@@ -20,7 +20,9 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -37,6 +39,8 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         BooksToExchangeAdapter()
     }
     private var owner: User? = null
+    private var currUser: User? = null
+    private var isFavorite: Boolean? = false
     private var relatedAds: List<ExchangeAdvertisement> = emptyList()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +62,9 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         observe()
         fetchRelatedExchangeAds()
         ownerAdLimitations()
-
+        binding.ivHeart.setOnClickListener {
+            handleIsFavorite()
+        }
         binding.ivBackExchangeDetails.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -87,7 +93,13 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
 
     private fun fetchOwnerData() {
         if (owner == null)
-            exchangeAdDetailsViewModel.getUserById(args.exchangeAdv.ownerId)
+            exchangeAdDetailsViewModel.getUserById(
+                args.exchangeAdv.ownerId,
+                exchangeAdDetailsViewModel.readFromSP(
+                    Constants.USER_ID_KEY,
+                    String::class.java
+                )
+            )
     }
     private fun observe() {
         lifecycleScope.launch {
@@ -109,6 +121,17 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                             binding.tvNoRelatedAds.show()
                         else
                             binding.tvNoRelatedAds.hide()
+                    }
+                    is ExchangeDetailsState.AddedToFavorite -> {
+                    }
+                    is ExchangeDetailsState.GetCurrentUserByIdSuccessfully -> {
+                        currUser = it.user
+                        withContext(Dispatchers.Main) {
+                            if (currUser!!.wishListExchange.contains(args.exchangeAdv.id)) {
+                                isFavorite = true
+                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                            }
+                        }
                     }
                 }
             }
@@ -199,6 +222,27 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
 
     override fun onDestroyView() {
         super.onDestroyView()
+        owner = null
+        currUser = null
+        relatedAds = emptyList()
+        dialog.setView(null)
+        isFavorite = null
         _binding = null
+    }
+    private fun handleIsFavorite() {
+
+        isFavorite?.let { isFav ->
+            isFavorite = !isFav
+            currUser?.wishListExchange?.let { wishList ->
+                if ((!isFav) && !wishList.contains(args.exchangeAdv.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                    wishList.add(args.exchangeAdv.id)
+                } else if (!isFav && wishList.contains(args.exchangeAdv.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
+                    wishList.remove(args.exchangeAdv.id)
+                } else { }
+            }
+        }
+        exchangeAdDetailsViewModel.updateUserWishList(currUser!!)
     }
 }
