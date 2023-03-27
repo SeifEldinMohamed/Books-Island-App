@@ -50,7 +50,11 @@
         android:id="@+id/myChatsFragment"
         android:name="com.seif.booksislandapp.presentation.home.my_chats.MyChatsFragment"
         android:label="Chats"
-        tools:layout="@layout/fragment_my_chats" />
+        tools:layout="@layout/fragment_my_chats">
+        <action
+            android:id="@+id/action_myChatsFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myAdsFragment"
         android:name="com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragment"
