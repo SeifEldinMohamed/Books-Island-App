@@ -226,7 +226,9 @@ class RegisterFragment : Fragment() {
             wishListBuy = arrayListOf(),
             wishListDonate = arrayListOf(),
             wishListExchange = arrayListOf(),
-            wishListAuction = arrayListOf()
+            wishListAuction = arrayListOf(),
+            myBuyingChats = arrayListOf(),
+            mySellingChats = arrayListOf()
         )
     }
 

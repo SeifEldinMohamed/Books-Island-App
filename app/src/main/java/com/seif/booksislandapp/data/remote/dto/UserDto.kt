@@ -12,5 +12,7 @@ data class UserDto(
     var wishListBuy: List<String> = emptyList(),
     var wishListDonate: List<String> = emptyList(),
     var wishListExchange: List<String> = emptyList(),
-    var wishListAuction: List<String> = emptyList()
+    var wishListAuction: List<String> = emptyList(),
+    var myBuyingChats: List<String> = emptyList(),
+    var mySellingChats: List<String> = emptyList(),
 )
