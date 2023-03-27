@@ -7,9 +7,11 @@ sealed class AuctionDetailsState {
     object Init : AuctionDetailsState()
     data class IsLoading(val isLoading: Boolean) : AuctionDetailsState()
     data class ShowError(val message: String) : AuctionDetailsState()
+    data class GetCurrentUserByIdSuccessfully(val user: User) : AuctionDetailsState()
     data class GetUserByIdSuccessfully(val user: User) : AuctionDetailsState()
     data class FetchRelatedAuctionAdvertisementSuccessfully(
         val relatedAds: List<AuctionAdvertisement>
     ) : AuctionDetailsState()
     data class NoInternetConnection(val message: String) : AuctionDetailsState()
+    data class AddedToFavorite(val message: String) : AuctionDetailsState()
 }

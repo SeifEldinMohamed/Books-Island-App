@@ -2,9 +2,9 @@ package com.seif.booksislandapp.presentation.home.wish_list.Adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.seif.booksislandapp.presentation.home.wish_list.fragments.AuctionWishList
-import com.seif.booksislandapp.presentation.home.wish_list.fragments.DonateWishList
-import com.seif.booksislandapp.presentation.home.wish_list.fragments.ExchangeWishList
+import com.seif.booksislandapp.presentation.home.wish_list.fragments.auction.AuctionWishList
+import com.seif.booksislandapp.presentation.home.wish_list.fragments.donate.DonateWishList
+import com.seif.booksislandapp.presentation.home.wish_list.fragments.exchange.ExchangeWishList
 import com.seif.booksislandapp.presentation.home.wish_list.fragments.buy.SellWishList
 
 class WishListPagerAdater(fragment: Fragment) : FragmentStateAdapter(fragment) {
