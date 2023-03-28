@@ -239,5 +239,11 @@
     <string name="update_post">Update Post</string>
     <string name="delete_ad_icon">delete ad icon</string>
     <string name="by_robert_kiyosaki">by Robert Kiyosaki</string>
+    <!--users_chat-->
+    <string name="habiba_tarek">Habiba Tarek</string>
+    <string name="please_provide_me_with_extra_details_about_this_book">please provide me with extra details about this book</string>
+    <string name="_16_32">16:32</string>
+    <string name="buying">Buying</string>
+    <string name="selling">selling</string>
 
 </resources>

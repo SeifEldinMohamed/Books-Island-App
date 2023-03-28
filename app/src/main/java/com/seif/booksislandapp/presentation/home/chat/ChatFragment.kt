@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import com.seif.booksislandapp.R
 
 class ChatFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+        return inflater.inflate(R.layout.fragment_user_chats, container, false)
     }
 }
