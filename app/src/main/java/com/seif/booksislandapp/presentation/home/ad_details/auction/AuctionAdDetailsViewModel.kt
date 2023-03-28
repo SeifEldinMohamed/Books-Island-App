@@ -3,9 +3,11 @@ package com.seif.booksislandapp.presentation.home.ad_details.auction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.FetchRelatedAuctionAdsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.UpdateUserProfileUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,16 +23,17 @@ class AuctionAdDetailsViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val fetchRelatedAuctionAdsUseCase: FetchRelatedAuctionAdsUseCase
+    private val fetchRelatedAuctionAdsUseCase: FetchRelatedAuctionAdsUseCase,
+    private val updateUserProfileUseCase: UpdateUserProfileUseCase
 ) : ViewModel() {
     private var _auctionDetailsState =
         MutableStateFlow<AuctionDetailsState>(AuctionDetailsState.Init)
     val auctionDetailsState = _auctionDetailsState.asStateFlow()
 
-    fun getUserById(id: String) {
+    fun getUserById(ownerId: String, currUserId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getUserByIdUseCase(id).let {
+            getUserByIdUseCase(currUserId).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -42,8 +45,31 @@ class AuctionAdDetailsViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
+                        _auctionDetailsState.value = AuctionDetailsState.GetCurrentUserByIdSuccessfully(it.data)
+                        getUserByIdUseCase(ownerId).let { result ->
+                            when (result) {
+                                is Resource.Error -> {
+                                    showError(result.message)
+                                }
+                                is Resource.Success -> {
+                                    _auctionDetailsState.value = AuctionDetailsState.GetUserByIdSuccessfully(result.data)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateUserWishList(user: User) {
+        viewModelScope.launch {
+            updateUserProfileUseCase.invoke(user).let {
+                when (it) {
+                    is Resource.Error -> showError(it.message)
+                    is Resource.Success -> {
                         _auctionDetailsState.value =
-                            AuctionDetailsState.GetUserByIdSuccessfully(it.data)
+                            AuctionDetailsState.AddedToFavorite("Added Successfully")
                     }
                 }
             }

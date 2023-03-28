@@ -20,4 +20,5 @@ interface AuctionAdvertisementRepository {
     suspend fun fetchMyAuctionAds(userId: String): Resource<java.util.ArrayList<AuctionAdvertisement>, String>
     suspend fun editMyAuctionAdv(auctionAdvertisement: AuctionAdvertisement): Resource<String, String>
     suspend fun deleteMyAuctionAdv(myAuctionAdId: String): Resource<String, String>
+    suspend fun fetchAuctionWishListAds(auctionIdList: List<String>): Resource<java.util.ArrayList<AuctionAdvertisement>, String>
 }

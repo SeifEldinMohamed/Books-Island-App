@@ -363,4 +363,32 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
+    override suspend fun fetchAuctionWishListAds(auctionIdList: List<String>): Resource<ArrayList<AuctionAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
+                for (item in auctionIdList) {
+                    val querySnapshot = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .document(item)
+                        .get()
+                        .await()
+                    val auctionAdvertisementDto =
+                        querySnapshot.toObject(AuctionAdvertisementDto::class.java)
+                    if (auctionAdvertisementDto!!.status.toString() == "Opened")
+                        auctionAdvertisementsDto.add(auctionAdvertisementDto)
+                }
+                Resource.Success(
+                    data = auctionAdvertisementsDto.map { auctionAdvertisementDto ->
+                        auctionAdvertisementDto.toAuctionAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 }

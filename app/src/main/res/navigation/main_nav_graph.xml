@@ -31,6 +31,15 @@
         <action
             android:id="@+id/action_wishListFragment_to_sellAdDetailsFragment"
             app:destination="@id/sellAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_exchangeAdDetailsFragment"
+            app:destination="@id/exchangeAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_donateAdDetailsFragment"
+            app:destination="@id/donateAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_auctionAdDetailsFragment"
+            app:destination="@id/auctionAdDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

@@ -262,4 +262,31 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+    override suspend fun fetchExchangeWishListAds(exchangeIdList: List<String>): Resource<ArrayList<ExchangeAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
+                for (item in exchangeIdList) {
+                    val querySnapshot = firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .document(item)
+                        .get()
+                        .await()
+                    val exchangeAdvertisementDto =
+                        querySnapshot.toObject(ExchangeAdvertisementDto::class.java)
+                    if (exchangeAdvertisementDto!!.status.toString() == "Opened")
+                        exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                }
+                Resource.Success(
+                    data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
+                        exchangeAdvertisementDto.toExchangeAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 }

@@ -3,9 +3,11 @@ package com.seif.booksislandapp.presentation.home.ad_details.donate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.FetchAllDonateRelatedAdvertisementsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.UpdateUserProfileUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,16 +22,17 @@ class DonateAdDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val resourceProvider: ResourceProvider,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val fetchAllDonateRelatedAdvertisementsUseCase: FetchAllDonateRelatedAdvertisementsUseCase
+    private val fetchAllDonateRelatedAdvertisementsUseCase: FetchAllDonateRelatedAdvertisementsUseCase,
+    private val updateUserProfileUseCase: UpdateUserProfileUseCase
 
 ) : ViewModel() {
     private var _donateDetailsState =
         MutableStateFlow<DonateAdDetailsState>(DonateAdDetailsState.Int)
     val donateDetailsState = _donateDetailsState.asStateFlow()
-    fun getUserByIdSuccessfully(id: String) {
+    fun getUserById(ownerId: String, currUserId: String) {
         setLoadingState(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getUserByIdUseCase.invoke(id).let {
+            getUserByIdUseCase(currUserId).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -41,8 +44,31 @@ class DonateAdDetailsViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoadingState(false)
                         }
+                        _donateDetailsState.value = DonateAdDetailsState.GetCurrentUserByIdSuccessfully(it.data)
+                        getUserByIdUseCase(ownerId).let { result ->
+                            when (result) {
+                                is Resource.Error -> {
+                                    showError(result.message)
+                                }
+                                is Resource.Success -> {
+                                    _donateDetailsState.value = DonateAdDetailsState.GetUserByIdSuccessfully(result.data)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateUserWishList(user: User) {
+        viewModelScope.launch {
+            updateUserProfileUseCase.invoke(user).let {
+                when (it) {
+                    is Resource.Error -> showError(it.message)
+                    is Resource.Success -> {
                         _donateDetailsState.value =
-                            DonateAdDetailsState.GetUserByIdSuccessfully(it.data)
+                            DonateAdDetailsState.AddedToFavorite("Added Successfully")
                     }
                 }
             }

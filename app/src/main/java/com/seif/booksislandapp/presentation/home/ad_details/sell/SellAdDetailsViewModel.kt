@@ -45,13 +45,13 @@ class SellAdDetailsViewModel @Inject constructor(
                             setLoading(false)
                         }
                         _sellDetailsState.value = SellDetailsState.GetCurrentUserByIdSuccessfully(it.data)
-                        getUserByIdUseCase(ownerId).let {
-                            when (it) {
+                        getUserByIdUseCase(ownerId).let { result ->
+                            when (result) {
                                 is Resource.Error -> {
-                                    showError(it.message)
+                                    showError(result.message)
                                 }
                                 is Resource.Success -> {
-                                    _sellDetailsState.value = SellDetailsState.GetUserByIdSuccessfully(it.data)
+                                    _sellDetailsState.value = SellDetailsState.GetUserByIdSuccessfully(result.data)
                                 }
                             }
                         }
