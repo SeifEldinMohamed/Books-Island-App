@@ -34,4 +34,5 @@ interface AdvertisementRepository {
     suspend fun editMyDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String>
     suspend fun deleteMyDonateAdv(myDonateAdId: String): Resource<String, String>
     suspend fun fetchBuyWishListAds(buyIdList: List<String>): Resource<ArrayList<SellAdvertisement>, String>
+    suspend fun fetchDonateWishListAds(donateIdList: List<String>): Resource<ArrayList<DonateAdvertisement>, String>
 }

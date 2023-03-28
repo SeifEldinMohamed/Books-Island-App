@@ -27,7 +27,20 @@
         android:id="@+id/wishListFragment"
         android:name="com.seif.booksislandapp.presentation.home.wish_list.WishListFragment"
         android:label="WishList"
-        tools:layout="@layout/fragment_wish_list" />
+        tools:layout="@layout/fragment_wish_list" >
+        <action
+            android:id="@+id/action_wishListFragment_to_sellAdDetailsFragment"
+            app:destination="@id/sellAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_exchangeAdDetailsFragment"
+            app:destination="@id/exchangeAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_donateAdDetailsFragment"
+            app:destination="@id/donateAdDetailsFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_auctionAdDetailsFragment"
+            app:destination="@id/auctionAdDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.seif.booksislandapp.presentation.home.profile.ProfileFragment"

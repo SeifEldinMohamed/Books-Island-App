@@ -190,11 +190,11 @@
 
                     <ImageView
                         android:id="@+id/iv_heart"
-                        android:layout_width="@dimen/_25sdp"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_width="@dimen/_27sdp"
+                        android:layout_height="@dimen/_27sdp"
                         android:layout_marginEnd="@dimen/_15sdp"
                         android:contentDescription="@string/photo"
-                        android:src="@drawable/ic_heart_holo"
+                        android:src="@drawable/baseline_favorite_border_24"
                         app:layout_constraintBottom_toTopOf="@+id/iv_chat"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/iv_book" />

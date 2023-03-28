@@ -9,5 +9,8 @@ data class UserDto(
     val governorate: String = "",
     val district: String = "",
     val gender: String = "",
-    var wishListBuy: List<String> = emptyList()
+    var wishListBuy: List<String> = emptyList(),
+    var wishListDonate: List<String> = emptyList(),
+    var wishListExchange: List<String> = emptyList(),
+    var wishListAuction: List<String> = emptyList()
 )

@@ -1,11 +1,11 @@
-package com.seif.booksislandapp.presentation.home.wish_list.fragments.buy
+package com.seif.booksislandapp.presentation.home.wish_list.fragments.donate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.wish_list.GetAllBuyWishListUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.wish_list.GetAllDonateWishListUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,16 +16,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 @HiltViewModel
-class BuyWishListViewModel @Inject constructor(
+class DonateWishListViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val resourceProvider: ResourceProvider,
-    private val getAllBuyWishListUseCase: GetAllBuyWishListUseCase,
+    private val getAllDonateWishListUseCase: GetAllDonateWishListUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
 
 ) : ViewModel() {
-    private var _buyWishListState = MutableStateFlow<BuyWishListState>(BuyWishListState.Init)
-    val buyWishListState get() = _buyWishListState.asStateFlow()
-    fun fetchAllBuyWishListAdvertisement(id: String) {
+    private var _donateWishListState = MutableStateFlow<DonateWishListState>(DonateWishListState.Init)
+    val donateWishListState get() = _donateWishListState.asStateFlow()
+    fun fetchAllDonateWishListAdvertisement(id: String) {
 
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,18 +38,18 @@ class BuyWishListViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        getAllBuyWishListUseCase.invoke(it.data.wishListBuy).let {
-                            when (it) {
+                        getAllDonateWishListUseCase.invoke(it.data.wishListDonate).let { result ->
+                            when (result) {
                                 is Resource.Error -> {
                                     withContext(Dispatchers.Main) {
                                         setLoading(false)
-                                        showError(it.message)
+                                        showError(result.message)
                                     }
                                 }
                                 is Resource.Success -> {
                                     withContext(Dispatchers.Main) {
                                         setLoading(false)
-                                        _buyWishListState.value = BuyWishListState.FetchAllWishBuyItemsSuccessfully(it.data)
+                                        _donateWishListState.value = DonateWishListState.FetchAllWishDonateItemsSuccessfully(result.data)
                                     }
                                 }
                             }
@@ -63,10 +63,10 @@ class BuyWishListViewModel @Inject constructor(
     private fun setLoading(status: Boolean) {
         when (status) {
             true -> {
-                _buyWishListState.value = BuyWishListState.IsLoading(true)
+                _donateWishListState.value = DonateWishListState.IsLoading(true)
             }
             false -> {
-                _buyWishListState.value = BuyWishListState.IsLoading(false)
+                _donateWishListState.value = DonateWishListState.IsLoading(false)
             }
         }
     }
@@ -74,10 +74,10 @@ class BuyWishListViewModel @Inject constructor(
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _buyWishListState.value = BuyWishListState.NoInternetConnection(message)
+                _donateWishListState.value = DonateWishListState.NoInternetConnection(message)
             }
             else -> {
-                _buyWishListState.value = BuyWishListState.ShowError(message)
+                _donateWishListState.value = DonateWishListState.ShowError(message)
             }
         }
     }

@@ -34,7 +34,10 @@ fun User.toUserDto(): UserDto {
         governorate = this.governorate,
         district = this.district,
         gender = this.gender,
-        wishListBuy = this.wishListBuy
+        wishListBuy = this.wishListBuy as List<String>,
+        wishListDonate = this.wishListDonate as List<String>,
+        wishListExchange = this.wishListExchange as List<String>,
+        wishListAuction = this.wishListAuction as List<String>,
     )
 }
 
@@ -48,7 +51,10 @@ fun UserDto.toUser(): User {
         governorate = governorate,
         district = district,
         gender = gender,
-        wishListBuy = wishListBuy
+        wishListBuy = wishListBuy as ArrayList<String>,
+        wishListDonate = wishListDonate as ArrayList<String>,
+        wishListExchange = wishListExchange as ArrayList<String>,
+        wishListAuction = wishListAuction as ArrayList<String>,
     )
 }
 

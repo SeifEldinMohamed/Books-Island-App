@@ -609,4 +609,31 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+    override suspend fun fetchDonateWishListAds(donateIdList: List<String>): Resource<ArrayList<DonateAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (item in donateIdList) {
+                    val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .document(item)
+                        .get()
+                        .await()
+                    val donateAdvertisementDto =
+                        querySnapshot.toObject(DonateAdvertisementDto::class.java)
+                    if (donateAdvertisementDto!!.status.toString() == "Opened")
+                        donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                Resource.Success(
+                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                        donateAdvertisementDto.toDonateAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 }

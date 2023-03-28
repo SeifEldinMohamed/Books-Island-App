@@ -22,7 +22,9 @@ import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.Auctio
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -37,6 +39,8 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     private lateinit var dialog: AlertDialog
     private val relatedAuctionAdsAdapter: RelatedAuctionAdsAdapter by lazy { RelatedAuctionAdsAdapter() }
     private var owner: User? = null
+    private var currUser: User? = null
+    private var isFavorite: Boolean? = false
     private var relatedAds: List<AuctionAdvertisement> = emptyList()
 
     override fun onCreateView(
@@ -65,7 +69,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         ownerAdLimitations()
 
         // if (!auctionSheetViewModel.firstEnter)
-
+        binding.ivHeart.setOnClickListener {
+            handleIsFavorite()
+        }
         binding.ivBackAuctionDetails.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -121,7 +127,13 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
 
     private fun fetchOwnerData() {
         if (owner == null)
-            auctionAdDetailsViewModel.getUserById(args.auctionAdvertisement.ownerId)
+            auctionAdDetailsViewModel.getUserById(
+                args.auctionAdvertisement.ownerId,
+                auctionAdDetailsViewModel.readFromSP(
+                    Constants.USER_ID_KEY,
+                    String::class.java
+                )
+            )
     }
 
     private fun observe() {
@@ -144,6 +156,17 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                             binding.tvNoRelatedAds.show()
                         else
                             binding.tvNoRelatedAds.hide()
+                    }
+                    is AuctionDetailsState.AddedToFavorite -> {
+                    }
+                    is AuctionDetailsState.GetCurrentUserByIdSuccessfully -> {
+                        currUser = it.user
+                        withContext(Dispatchers.Main) {
+                            if (currUser!!.wishListAuction.contains(args.auctionAdvertisement.id)) {
+                                isFavorite = true
+                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                            }
+                        }
                     }
                 }
             }
@@ -250,7 +273,28 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        owner = null
+        currUser = null
+        relatedAds = emptyList()
+        dialog.setView(null)
+        isFavorite = null
         auctionSheetViewModel.firstEnter = true
+        _binding = null
+    }
+    private fun handleIsFavorite() {
+
+        isFavorite?.let { isFav ->
+            isFavorite = !isFav
+            currUser?.wishListAuction?.let { wishList ->
+                if ((!isFav) && !wishList.contains(args.auctionAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+                    wishList.add(args.auctionAdvertisement.id)
+                } else if (!isFav && wishList.contains(args.auctionAdvertisement.id)) {
+                    binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
+                    wishList.remove(args.auctionAdvertisement.id)
+                } else { }
+            }
+        }
+        auctionAdDetailsViewModel.updateUserWishList(currUser!!)
     }
 }

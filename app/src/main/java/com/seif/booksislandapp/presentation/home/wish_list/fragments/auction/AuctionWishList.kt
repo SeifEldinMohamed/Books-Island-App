@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.wish_list.fragments.buy
+package com.seif.booksislandapp.presentation.home.wish_list.fragments.auction
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -9,74 +9,73 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.seif.booksislandapp.databinding.WishlistSellBinding
-import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.databinding.WishlistAuctionBinding
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
+import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
-
 @AndroidEntryPoint
-class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
-    private var _binding: WishlistSellBinding? = null
+class AuctionWishList : Fragment(), OnAdItemClick<AuctionAdvertisement> {
+    private var _binding: WishlistAuctionBinding? = null
     private val binding get() = _binding!!
     private lateinit var dialog: AlertDialog
-    private val buyAdapter by lazy { BuyAdapter() }
-    private val buyWishListViewModel: BuyWishListViewModel by viewModels()
+    private val auctionAdapter by lazy { AuctionAdapter() }
+    private val auctionWishListViewModel: AuctionWishListViewModel by viewModels()
     private lateinit var userId: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = WishlistSellBinding.inflate(inflater, container, false)
+        _binding = WishlistAuctionBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
-        buyAdapter.onAdItemClick = this
-        userId = buyWishListViewModel.getFromSP(Constants.USER_ID_KEY, String::class.java)
+        auctionAdapter.onAdItemClick = this
+        userId = auctionWishListViewModel.getFromSP(Constants.USER_ID_KEY, String::class.java)
 
         binding.swipeRefresh.setOnRefreshListener {
-            buyWishListViewModel.fetchAllBuyWishListAdvertisement(userId)
+            auctionWishListViewModel.fetchAllAuctionWishListAdvertisement(userId)
             observe()
             binding.swipeRefresh.isRefreshing = false
         }
-        fetchBuyWishList()
+        fetchAuctionWishList()
 
-        binding.rvBuyList.adapter = buyAdapter
+        binding.rvAuctionWishList.adapter = auctionAdapter
     }
-    private fun fetchBuyWishList() {
-        buyWishListViewModel.fetchAllBuyWishListAdvertisement(userId)
+    private fun fetchAuctionWishList() {
+        auctionWishListViewModel.fetchAllAuctionWishListAdvertisement(userId)
         observe()
     }
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            buyWishListViewModel.buyWishListState.collect {
+            auctionWishListViewModel.auctionWishListState.collect {
                 when (it) {
-                    BuyWishListState.Init -> Unit
-                    is BuyWishListState.FetchAllWishBuyItemsSuccessfully -> {
-                        buyAdapter.updateList(it.sellAds)
-                        handleUi(it.sellAds)
+                    AuctionWishListState.Init -> Unit
+                    is AuctionWishListState.FetchAllWishAuctionItemsSuccessfully -> {
+                        auctionAdapter.updateList(it.auctionAds)
+                        handleUi(it.auctionAds)
                     }
-                    is BuyWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                    is BuyWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is BuyWishListState.ShowError -> handleErrorState(it.message)
+                    is AuctionWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                    is AuctionWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                    is AuctionWishListState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
     }
-    private fun handleUi(sellAds: ArrayList<SellAdvertisement>) {
-        if (sellAds.isEmpty()) {
-            binding.rvBuyList.hide()
+    private fun handleUi(auctionAds: ArrayList<AuctionAdvertisement>) {
+        if (auctionAds.isEmpty()) {
+            binding.rvAuctionWishList.hide()
             binding.noBooksAnimationSellMy.show()
         } else {
-            binding.rvBuyList.show()
+            binding.rvAuctionWishList.show()
             binding.noBooksAnimationSellMy.hide()
         }
     }
@@ -92,7 +91,7 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
                         when (hasActiveConnection) {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
-                                fetchBuyWishList()
+                                fetchAuctionWishList()
                             }
                             false -> Unit
                         }
@@ -139,15 +138,15 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onDestroyView() {
-        buyAdapter.onAdItemClick = null
+        auctionAdapter.onAdItemClick = null
         dialog.dismiss()
         dialog.setView(null)
-        binding.rvBuyList.adapter = null
+        binding.rvAuctionWishList.adapter = null
         _binding = null
         super.onDestroyView()
     }
-    override fun onAdItemClick(item: SellAdvertisement, position: Int) {
-        val action = WishListFragmentDirections.actionWishListFragmentToSellAdDetailsFragment(item)
+    override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
+        val action = WishListFragmentDirections.actionWishListFragmentToAuctionAdDetailsFragment(item)
         findNavController().navigate(action)
     }
 }

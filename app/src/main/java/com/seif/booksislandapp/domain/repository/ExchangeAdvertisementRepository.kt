@@ -13,4 +13,6 @@ interface ExchangeAdvertisementRepository {
     suspend fun fetchMyExchangeAds(userId: String): Resource<ArrayList<ExchangeAdvertisement>, String>
     suspend fun deleteMyExchangeAdv(myExchangeAdId: String): Resource<String, String>
     suspend fun editMyExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String>
+
+    suspend fun fetchExchangeWishListAds(exchangeIdList: List<String>): Resource<ArrayList<ExchangeAdvertisement>, String>
 }

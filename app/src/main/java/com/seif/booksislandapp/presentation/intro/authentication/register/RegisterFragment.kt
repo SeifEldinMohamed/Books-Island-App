@@ -223,7 +223,10 @@ class RegisterFragment : Fragment() {
             governorate = binding.acGovernorates.text.toString(),
             district = binding.acDistricts.text.toString(),
             gender = rb,
-            wishListBuy = emptyList()
+            wishListBuy = arrayListOf(),
+            wishListDonate = arrayListOf(),
+            wishListExchange = arrayListOf(),
+            wishListAuction = arrayListOf()
         )
     }
 
