@@ -1,12 +1,19 @@
 package com.seif.booksislandapp.presentation.home.chat_room
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,9 +25,16 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentChatRoomBinding
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapter
+import com.seif.booksislandapp.utils.FileUtil
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.io.File
 import java.util.*
 
 @AndroidEntryPoint
@@ -34,6 +48,7 @@ class ChatRoomFragment : Fragment() {
     private lateinit var dialog: AlertDialog
     private var messages: ArrayList<Message> = arrayListOf()
     lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
+    lateinit var imageUris: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +76,9 @@ class ChatRoomFragment : Fragment() {
             val message = prepareMessage()
             chatRoomViewModel.requestSendMessage(message)
         }
+        binding.ivUploadImage.setOnClickListener {
+            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
         binding.ivBackChatRoom.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -79,7 +97,7 @@ class ChatRoomFragment : Fragment() {
             val keypadHeight = screenHeight - r.bottom
             if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                 // Keyboard is shown
-                val lastItem = (chatRoomAdapter.itemCount) - 1
+                val lastItem = (binding.rvChatRoom.adapter!!.itemCount) - 1
                 if (lastItem >= 0) {
                     binding.rvChatRoom.scrollToPosition(lastItem)
                 }
@@ -137,6 +155,67 @@ class ChatRoomFragment : Fragment() {
             binding.rvChatRoom.scrollToPosition(messages.size - 1)
         }
     }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // PERMISSION GRANTED
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startForProfileImageResult.launch(galleryIntent)
+        } else {
+            // PERMISSION NOT GRANTED
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                1
+            )
+        }
+    }
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            val resultCode: Int = activityResult.resultCode
+            val data: Intent? = activityResult.data
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    var compressedFile: File?
+                    data?.let {
+                        it.data?.let { uri ->
+                            // imageUri = uri
+                            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                compressedFile = FileUtil.from(requireContext(), uri)?.let { it1 ->
+                                    Compressor.compress(
+                                        requireContext(),
+                                        it1
+                                    )
+                                }
+                                //  uploadSellAdvertisementViewModel.addImagesUris(imageUris)
+                                withContext(Dispatchers.Main) {
+                                    imageUris = Uri.fromFile(compressedFile)
+                                    // uploadedImagesAdapter.updateList(imageUris)
+                                    chatRoomViewModel.requestSendMessage(
+                                        Message(
+                                            id = "",
+                                            senderId = firebaseCurrentUser!!.uid,
+                                            receiverId = args.owner.id,
+                                            text = null,
+                                            imageUrl = imageUris,
+                                            date = Date()
+                                        )
+                                    )
+                                    dismissLoadingDialog()
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    dismissLoadingDialog()
+                    Timber.d("Task Cancelled")
+                }
+            }
+        }
 
     private fun handleLoadingState(isLoading: Boolean) {
         when (isLoading) {

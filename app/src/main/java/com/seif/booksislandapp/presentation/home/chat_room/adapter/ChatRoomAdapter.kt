@@ -21,10 +21,13 @@ class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.ChatBubbleViewHolde
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
 
         fun bind(message: Message) {
+            Timber.d("bind: ${message.imageUrl}")
             if (message.imageUrl != null) {
+                messageTextView.visibility = View.GONE
                 imageView.visibility = View.VISIBLE
                 imageView.load(message.imageUrl)
             } else {
+                messageTextView.visibility = View.VISIBLE
                 imageView.visibility = View.GONE
                 messageTextView.text = message.text
             }
