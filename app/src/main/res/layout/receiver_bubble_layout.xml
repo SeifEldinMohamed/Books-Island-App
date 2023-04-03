@@ -27,12 +27,13 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/_160sdp"
-        android:layout_height="@dimen/_160sdp"
+        android:layout_width="@dimen/_140sdp"
+        android:layout_height="@dimen/_155sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_6sdp"
         android:contentDescription="@string/sender_image"
         android:visibility="gone"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
