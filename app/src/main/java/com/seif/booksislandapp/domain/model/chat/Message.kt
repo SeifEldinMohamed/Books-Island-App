@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.domain.model.chat
 
+import android.net.Uri
 import java.util.*
 
 data class Message(
@@ -7,6 +8,6 @@ data class Message(
     val senderId: String,
     val receiverId: String,
     val text: String? = null,
-    val imageUrl: String? = null,
+    var imageUrl: Uri? = null,
     val date: Date
 )
