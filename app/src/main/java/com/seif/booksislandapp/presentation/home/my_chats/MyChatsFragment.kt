@@ -1,19 +1,19 @@
-package com.seif.booksislandapp.presentation.home.chat
+package com.seif.booksislandapp.presentation.home.my_chats
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.seif.booksislandapp.R
 
-class ChatFragment : Fragment() {
+class MyChatsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_chats, container, false)
+        return inflater.inflate(R.layout.fragment_my_chats, container, false)
     }
 }

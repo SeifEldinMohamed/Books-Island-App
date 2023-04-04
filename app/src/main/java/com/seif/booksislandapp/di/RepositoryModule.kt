@@ -100,4 +100,18 @@ object RepositoryModule {
             connectivityManager
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideChatRepository(
+        firestore: FirebaseFirestore,
+        resourceProvider: ResourceProvider,
+        connectivityManager: ConnectivityManager
+    ): ChatRepository {
+        return ChatRepositoryImp(
+            firestore,
+            resourceProvider,
+            connectivityManager
+        )
+    }
 }

@@ -13,7 +13,7 @@
         android:title=""
         />
     <item
-        android:id="@+id/chatsFragment"
+        android:id="@+id/myChatsFragment"
         android:title="@string/chats"
         android:icon="@drawable/ic_chats" />
     <item

@@ -9,7 +9,6 @@
    <color name="blue">#3A4EFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="chat_background">#EAECF2</color>
     <color name="facebook_button">#367FC0</color>
     <color name="google_button">#DD4B39</color>
 
@@ -31,17 +30,24 @@
     <color name="language_color">#F1C40F</color>
     <color name="law_color">#4D4D4D</color>
     <color name="press_and_media_color">#34495E</color>
-    <color name="medicine_and_health_color">#CCB498</color>
-    <color name="technology_color">#9B58B5</color>
-    <color name="arts_color">#E78D73</color>
-    <color name="sports_color">#73A742</color>
-    <color name="travel_color">#265D62</color>
-    <color name="reference_and_research_color">#464763</color>
-    <color name="family_and_child_color">#733A27</color>
-    <color name="cook_color">#89BABF</color>
+ <color name="medicine_and_health_color">#CCB498</color>
+ <color name="technology_color">#9B58B5</color>
+ <color name="arts_color">#E78D73</color>
+ <color name="sports_color">#73A742</color>
+ <color name="travel_color">#265D62</color>
+ <color name="reference_and_research_color">#464763</color>
+ <color name="family_and_child_color">#733A27</color>
+ <color name="cook_color">#89BABF</color>
 
 
+ <color name="chat_gray_background">#F7F8FB</color>
+ <color name="chat_dark_gray_background">#63697B</color>
+ <color name="chat_green_background">#16A860</color>
 
-    <color name="nav_item_text_color">@color/black</color>
-    <color name="nav_background_color">@color/white</color>
+ <color name="sender_bubble_background_color">@color/primary_dark</color>
+ <color name="receiver_bubble_background_color">@color/chat_dark_gray_background</color>
+
+
+ <color name="nav_item_text_color">@color/black</color>
+ <color name="nav_background_color">@color/white</color>
 </resources>

@@ -239,6 +239,14 @@
     <string name="update_post">Update Post</string>
     <string name="delete_ad_icon">delete ad icon</string>
     <string name="by_robert_kiyosaki">by Robert Kiyosaki</string>
+
+    <string name="message_send_successfully">Message Send Successfully</string>
+    <string name="message_cannot_be_empty">Not a valid message</string>
+    <string name="write_a_message">ًWrite a message</string>
+    <string name="send_image">send image</string>
+    <string name="upload_images_image">upload images image</string>
+    <string name="chat_text_example">Hi, How are you?</string>
+    <string name="sender_image">sender image</string>
     <!--users_chat-->
     <string name="habiba_tarek">Habiba Tarek</string>
     <string name="please_provide_me_with_extra_details_about_this_book">please provide me with extra details about this book</string>

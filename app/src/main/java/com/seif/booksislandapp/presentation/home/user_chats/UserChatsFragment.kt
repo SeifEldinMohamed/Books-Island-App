@@ -1,4 +1,3 @@
-package com.seif.booksislandapp.presentation.home.user_chats
 
 import android.annotation.SuppressLint
 import android.os.Bundle
