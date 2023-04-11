@@ -27,8 +27,8 @@ class ChatRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storageReference: StorageReference,
     private val resourceProvider: ResourceProvider,
-    private val userRepositoryImp: UserRepositoryImp,
-    private val advertisementRepositoryImp: AdvertisementRepositoryImp,
+    // private val userRepositoryImp: UserRepositoryImp,
+    //  private val advertisementRepositoryImp: AdvertisementRepositoryImp,
     private val connectivityManager: ConnectivityManager
 ) : ChatRepository {
     override suspend fun sendMessage(message: Message): Resource<Message, String> {
@@ -51,7 +51,7 @@ class ChatRepositoryImp @Inject constructor(
                             message.id = doc.id
                             doc.set(message.toMessageDto())
                                 .await()
-                            advertisementRepositoryImp.getUserById(message.senderId)//////////
+                            // advertisementRepositoryImp.getUserById(message.senderId) // ////////
                             // userRepositoryImp.updateUserProfile()
                             Resource.Success(message)
                         }
