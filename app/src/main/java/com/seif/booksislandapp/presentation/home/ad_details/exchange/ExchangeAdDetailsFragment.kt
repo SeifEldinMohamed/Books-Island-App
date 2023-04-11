@@ -20,9 +20,7 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -41,13 +39,12 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     private var owner: User? = null
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
-    private var relatedAds: List<ExchangeAdvertisement> = emptyList()
+    private var relatedAds: List<ExchangeAdvertisement>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentExchangeAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,6 +59,11 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         observe()
         fetchRelatedExchangeAds()
         ownerAdLimitations()
+        isFavouriteAd()
+
+        binding.ivChat.setOnClickListener {
+            navigateToChatRoomFragment()
+        }
         binding.ivHeart.setOnClickListener {
             handleIsFavorite()
         }
@@ -70,6 +72,15 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         }
         binding.rvExchangeFor.adapter = booksToExchangeAdapter
         binding.rvRelatedAds.adapter = relatedExchangeAdsAdapter
+    }
+
+    private fun isFavouriteAd() {
+        currUser?.let {
+            if (it.wishListExchange.contains(args.exchangeAdv.id)) {
+                isFavorite = true
+                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+            }
+        }
     }
 
     private fun ownerAdLimitations() {
@@ -84,15 +95,39 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     }
 
     private fun fetchRelatedExchangeAds() {
-        if (relatedAds.isEmpty())
+        if (relatedAds == null) {
             exchangeAdDetailsViewModel.fetchRelatedAds(
                 args.exchangeAdv.id,
                 args.exchangeAdv.book.category
             )
+        } else {
+            relatedAds?.let {
+                handleShowRelatedAds(it)
+            }
+        }
+    }
+
+    private fun handleShowRelatedAds(relatedAds: List<ExchangeAdvertisement>) {
+        if (relatedAds.isEmpty())
+            binding.tvNoRelatedAds.show()
+        else {
+            binding.tvNoRelatedAds.hide()
+            relatedExchangeAdsAdapter.updateList(relatedAds)
+        }
+    }
+
+    private fun navigateToChatRoomFragment() {
+        owner?.let { owner ->
+            val action =
+                ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentToChatRoomFragment(
+                    owner = owner
+                )
+            findNavController().navigate(action)
+        }
     }
 
     private fun fetchOwnerData() {
-        if (owner == null)
+        if (owner == null) {
             exchangeAdDetailsViewModel.getUserById(
                 args.exchangeAdv.ownerId,
                 exchangeAdDetailsViewModel.readFromSP(
@@ -100,7 +135,18 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                     String::class.java
                 )
             )
+        } else {
+            owner?.let {
+                showOwnerData(it)
+            }
+        }
     }
+
+    private fun showOwnerData(owner: User) {
+        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.tvOwnerName.text = owner.username
+    }
+
     private fun observe() {
         lifecycleScope.launch {
             exchangeAdDetailsViewModel.exchangeDetailsState.collect {
@@ -111,8 +157,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                     is ExchangeDetailsState.ShowError -> handleErrorState(it.message)
                     is ExchangeDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.load(it.user.avatarImage)
-                        binding.tvOwnerName.text = it.user.username
+                        showOwnerData(it.user)
                     }
                     is ExchangeDetailsState.FetchRelatedExchangeAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
@@ -126,12 +171,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                     }
                     is ExchangeDetailsState.GetCurrentUserByIdSuccessfully -> {
                         currUser = it.user
-                        withContext(Dispatchers.Main) {
-                            if (currUser!!.wishListExchange.contains(args.exchangeAdv.id)) {
-                                isFavorite = true
-                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
-                            }
-                        }
+                        isFavouriteAd()
                     }
                 }
             }
@@ -220,17 +260,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         findNavController().navigate(action)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        owner = null
-        currUser = null
-        relatedAds = emptyList()
-        dialog.setView(null)
-        isFavorite = null
-        _binding = null
-    }
     private fun handleIsFavorite() {
-
         isFavorite?.let { isFav ->
             isFavorite = !isFav
             currUser?.wishListExchange?.let { wishList ->
@@ -240,9 +270,19 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
                 } else if (!isFav && wishList.contains(args.exchangeAdv.id)) {
                     binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
                     wishList.remove(args.exchangeAdv.id)
-                } else { }
+                } else {
+                }
             }
         }
-        exchangeAdDetailsViewModel.updateUserWishList(currUser!!)
+        currUser?.let {
+            exchangeAdDetailsViewModel.updateUserWishList(it)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rvRelatedAds.adapter = null
+        dialog.setView(null)
+        _binding = null
     }
 }

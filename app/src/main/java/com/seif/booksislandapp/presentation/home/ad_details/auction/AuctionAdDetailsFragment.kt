@@ -22,12 +22,9 @@ import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.Auctio
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
-import timber.log.Timber
 
 @AndroidEntryPoint
 class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
@@ -41,34 +38,32 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     private var owner: User? = null
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
-    private var relatedAds: List<AuctionAdvertisement> = emptyList()
+    private var relatedAds: List<AuctionAdvertisement>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentAuctionAdDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.d("onViewCreated: called")
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         relatedAuctionAdsAdapter.onRelatedAdItemClick = this
-
-        // if (!auctionSheetViewModel.firstEnter)
-        //   observeUpdatedAuctionAd()
 
         fetchOwnerData()
         showAdDetails()
         observe()
         fetchRelatedAuctionAds()
         ownerAdLimitations()
+        isFavouriteAd()
 
-        // if (!auctionSheetViewModel.firstEnter)
+        binding.ivChat.setOnClickListener {
+            navigateToChatRoomFragment()
+        }
         binding.ivHeart.setOnClickListener {
             handleIsFavorite()
         }
@@ -83,14 +78,33 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.rvRelatedAds.adapter = relatedAuctionAdsAdapter
     }
 
+    private fun navigateToChatRoomFragment() {
+        owner?.let { owner ->
+            val action =
+                AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentToChatRoomFragment(
+                    owner = owner
+                )
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun isFavouriteAd() {
+        currUser?.let {
+            if (it.wishListAuction.contains(args.auctionAdvertisement.id)) {
+                isFavorite = true
+                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
+            }
+        }
+    }
+
     private fun observeUpdatedAuctionAd() {
         auctionSheetViewModel.updatedAuctionAdvertisement.observe(viewLifecycleOwner) { updatedAuctionAdvertisement ->
             binding.tvCurrentPriceValue.text = getString(
                 R.string.egypt_pound,
                 (
-                    updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                        ?: args.auctionAdvertisement.startPrice?.toInt()
-                    ).toString()
+                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                            ?: args.auctionAdvertisement.startPrice?.toInt()
+                        ).toString()
             )
 
             binding.tvLastBidder.text = getString(
@@ -117,16 +131,29 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     }
 
     private fun fetchRelatedAuctionAds() {
-        Timber.d("fetchRelatedAuctionAds: $relatedAds")
-        if (relatedAds.isEmpty())
+        if (relatedAds == null) {
             auctionAdDetailsViewModel.fetchRelatedAds(
                 args.auctionAdvertisement.id,
                 args.auctionAdvertisement.book.category
             )
+        } else {
+            relatedAds?.let {
+                handleShowRelatedAds(it)
+            }
+        }
+    }
+
+    private fun handleShowRelatedAds(relatedAds: List<AuctionAdvertisement>) {
+        if (relatedAds.isEmpty())
+            binding.tvNoRelatedAds.show()
+        else {
+            binding.tvNoRelatedAds.hide()
+            relatedAuctionAdsAdapter.updateList(relatedAds)
+        }
     }
 
     private fun fetchOwnerData() {
-        if (owner == null)
+        if (owner == null) {
             auctionAdDetailsViewModel.getUserById(
                 args.auctionAdvertisement.ownerId,
                 auctionAdDetailsViewModel.readFromSP(
@@ -134,6 +161,16 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                     String::class.java
                 )
             )
+        } else {
+            owner?.let {
+                showOwnerData(it)
+            }
+        }
+    }
+
+    private fun showOwnerData(owner: User) {
+        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.tvOwnerName.text = owner.username
     }
 
     private fun observe() {
@@ -146,8 +183,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                     is AuctionDetailsState.ShowError -> handleErrorState(it.message)
                     is AuctionDetailsState.GetUserByIdSuccessfully -> {
                         owner = it.user
-                        binding.ivOwnerAvatar.load(it.user.avatarImage)
-                        binding.tvOwnerName.text = it.user.username
+                        showOwnerData(it.user)
                     }
                     is AuctionDetailsState.FetchRelatedAuctionAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
@@ -161,12 +197,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                     }
                     is AuctionDetailsState.GetCurrentUserByIdSuccessfully -> {
                         currUser = it.user
-                        withContext(Dispatchers.Main) {
-                            if (currUser!!.wishListAuction.contains(args.auctionAdvertisement.id)) {
-                                isFavorite = true
-                                binding.ivHeart.setImageResource(R.drawable.baseline_favorite_24)
-                            }
-                        }
+                        isFavouriteAd()
                     }
                 }
             }
@@ -271,16 +302,6 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         findNavController().navigate(action)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        owner = null
-        currUser = null
-        relatedAds = emptyList()
-        dialog.setView(null)
-        isFavorite = null
-        auctionSheetViewModel.firstEnter = true
-        _binding = null
-    }
     private fun handleIsFavorite() {
 
         isFavorite?.let { isFav ->
@@ -292,9 +313,19 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                 } else if (!isFav && wishList.contains(args.auctionAdvertisement.id)) {
                     binding.ivHeart.setImageResource(R.drawable.baseline_favorite_border_24)
                     wishList.remove(args.auctionAdvertisement.id)
-                } else { }
+                } else {
+                }
             }
         }
-        auctionAdDetailsViewModel.updateUserWishList(currUser!!)
+        currUser?.let {
+            auctionAdDetailsViewModel.updateUserWishList(it)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rvRelatedAds.adapter = null
+        dialog.setView(null)
+        _binding = null
     }
 }
