@@ -1,6 +1,11 @@
 # Books Island App
 <img src = "screenshots/app_icon.png" width = "100">
 
+![AGPL License](https://img.shields.io/badge/AndroidStudio-blue.svg) 
+![AGPL License](https://img.shields.io/badge/Kotlin-blue.svg) 
+[![GPLv3 License](https://img.shields.io/badge/minSdk-26-green.svg)](https://opensource.org/licenses/)
+[![GPLv3 License](https://img.shields.io/badge/targetSdk-32-yellow.svg)](https://opensource.org/licenses/)
+
 # Description
 Books Island is an Android application that offers the users four types of advertisements: buying, donations, exchanges, or auctions. 
 The app's main goal is to make use of used or new books that would otherwise be thrown away by allowing 
