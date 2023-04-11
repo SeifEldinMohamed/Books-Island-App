@@ -34,7 +34,7 @@ and the importance of access to reading material.
 • <br />
 
 # Screen Shots
-<img src = "screenshots/screen_1.png" width = "300">
+<img src = "screenshots/screen_1.png" width = "700">
 <img src = "screenshots/screen_2.png" width = "300">
 <img src = "screenshots/screen_3.png" width = "300">
 <img src = "screenshots/screen_4.png" width = "300">
