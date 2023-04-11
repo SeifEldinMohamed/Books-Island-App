@@ -36,7 +36,6 @@ class AuctionSheetViewModel @Inject constructor(
 
     private var _auctionSheetState = MutableStateFlow<AuctionSheetState>(AuctionSheetState.Init)
     val auctionSheetState get() = _auctionSheetState.asStateFlow()
-    var firstEnter: Boolean = true
 
     fun sendAdvertisement(auctionAdvertisement: AuctionAdvertisement) {
         mutableAuctionAdvertisement.value = auctionAdvertisement

@@ -119,8 +119,4 @@ class DonateAdDetailsViewModel @Inject constructor(
     fun <T> readFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key = key, clazz = clazz)
     }
-
-    fun resetState() {
-        _donateDetailsState.value = DonateAdDetailsState.Int
-    }
 }
