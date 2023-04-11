@@ -36,12 +36,12 @@ and the importance of access to reading material.
 # Screen Shots
 <img src = "screenshots/screen_1.png" width = "1000">
 <img src = "screenshots/screen_2.png" width = "1000">
-<img src = "screenshots/screen_3.png" width = "1000">
+<img src = "screenshots/screen_3.png" width = "600">
 <img src = "screenshots/screen_4.png" width = "1000">
 <img src = "screenshots/screen_5.png" width = "1000">
 <img src = "screenshots/screen_6.png" width = "1000">
 <img src = "screenshots/screen_7.png" width = "1000">
 <img src = "screenshots/screen_8.png" width = "1000">
-<img src = "screenshots/screen_9.png" width = "1000">
-<img src = "screenshots/screen_10.png" width = "1000">
+<img src = "screenshots/screen_9.png" width = "600">
+<img src = "screenshots/screen_10.png" width = "600">
 
