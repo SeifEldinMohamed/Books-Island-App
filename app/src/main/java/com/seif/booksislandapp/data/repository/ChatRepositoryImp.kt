@@ -1,7 +1,9 @@
 package com.seif.booksislandapp.data.repository
 
 import android.net.ConnectivityManager
+import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toMessage
 import com.seif.booksislandapp.data.mapper.toMessageDto
@@ -12,16 +14,21 @@ import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 class ChatRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
+    private val storageReference: StorageReference,
     private val resourceProvider: ResourceProvider,
+    // private val userRepositoryImp: UserRepositoryImp,
+    //  private val advertisementRepositoryImp: AdvertisementRepositoryImp,
     private val connectivityManager: ConnectivityManager
 ) : ChatRepository {
     override suspend fun sendMessage(message: Message): Resource<Message, String> {
@@ -36,10 +43,25 @@ class ChatRepositoryImp @Inject constructor(
                     .document(message.receiverId)
                     .collection(Constants.MESSAGES_FIIRESTORE_COLLECTION)
                     .document()
-                message.id = doc.id
-                doc.set(message.toMessageDto())
-                    .await()
-                Resource.Success(message)
+                if (message.imageUrl != null) {
+                    when (val result = uploadMessageImaage(message.senderId, message.imageUrl!!)) {
+                        is Resource.Error -> Resource.Error(result.message)
+                        is Resource.Success -> {
+                            message.imageUrl = result.data
+                            message.id = doc.id
+                            doc.set(message.toMessageDto())
+                                .await()
+                            // advertisementRepositoryImp.getUserById(message.senderId) // ////////
+                            // userRepositoryImp.updateUserProfile()
+                            Resource.Success(message)
+                        }
+                    }
+                } else {
+                    message.id = doc.id
+                    doc.set(message.toMessageDto())
+                        .await()
+                    Resource.Success(message)
+                }
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
@@ -98,6 +120,29 @@ class ChatRepositoryImp @Inject constructor(
         awaitClose {
             senderListener.remove()
             receiverListener.remove()
+        }
+    }
+
+    private suspend fun uploadMessageImaage(
+        ownerId: String,
+        imageUri: Uri
+    ): Resource<Uri, String> {
+        return try {
+            withTimeout(Constants.TIMEOUT_UPLOAD) {
+                val uri: Uri = withContext(Dispatchers.IO) {
+                    storageReference.child(
+                        "$ownerId/${imageUri.lastPathSegment ?: System.currentTimeMillis()}"
+                    )
+                        .putFile(imageUri)
+                        .await()
+                        .storage
+                        .downloadUrl
+                        .await()
+                }
+                Resource.Success(uri)
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
         }
     }
 }

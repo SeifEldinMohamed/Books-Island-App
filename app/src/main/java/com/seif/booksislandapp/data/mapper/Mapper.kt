@@ -38,6 +38,8 @@ fun User.toUserDto(): UserDto {
         wishListDonate = this.wishListDonate as List<String>,
         wishListExchange = this.wishListExchange as List<String>,
         wishListAuction = this.wishListAuction as List<String>,
+        myBuyingChats = myBuyingChats as List<String>,
+        mySellingChats = mySellingChats as List<String>
     )
 }
 
@@ -245,23 +247,25 @@ fun DistrictDto.toDistricts(): District {
 }
 
 fun MessageDto.toMessage(): Message {
+    val image = if (imageUrl == null) imageUrl else Uri.parse(imageUrl)
     return Message(
         id = id,
         senderId = senderId,
         receiverId = receiverId,
         text = text,
-        imageUrl = imageUrl,
+        imageUrl = image,
         date = date!!
     )
 }
 
 fun Message.toMessageDto(): MessageDto {
+    val image = if (imageUrl == null) null else imageUrl.toString()
     return MessageDto(
         id = id,
         senderId = senderId,
         receiverId = receiverId,
         text = text,
-        imageUrl = imageUrl,
+        imageUrl = image,
         date = date
     )
 }
