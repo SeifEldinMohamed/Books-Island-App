@@ -37,10 +37,8 @@ class ChatRepositoryImp @Inject constructor(
 
         return try {
             withTimeout(Constants.TIMEOUT_UPLOAD) {
-                val doc = firestore.collection(Constants.USER_FIRESTORE_COLLECTION)
+                val doc = firestore.collection(Constants.CHATS_FIIRESTORE_COLLECTION)
                     .document(message.senderId)
-                    .collection(Constants.CHATS_FIIRESTORE_COLLECTION)
-                    .document(message.receiverId)
                     .collection(Constants.MESSAGES_FIIRESTORE_COLLECTION)
                     .document()
                 if (message.imageUrl != null) {
@@ -75,17 +73,13 @@ class ChatRepositoryImp @Inject constructor(
         val senderMessages = mutableListOf<MessageDto>()
         val receiverMessages = mutableListOf<MessageDto>()
 
-        val senderRef = firestore.collection(Constants.USER_FIRESTORE_COLLECTION)
+        val senderRef = firestore.collection(Constants.CHATS_FIIRESTORE_COLLECTION)
             .document(senderId)
-            .collection(Constants.CHATS_FIIRESTORE_COLLECTION)
-            .document(receiverId)
             .collection(Constants.MESSAGES_FIIRESTORE_COLLECTION)
             .orderBy("date")
 
-        val receiverRef = firestore.collection(Constants.USER_FIRESTORE_COLLECTION)
+        val receiverRef = firestore.collection(Constants.CHATS_FIIRESTORE_COLLECTION)
             .document(receiverId)
-            .collection(Constants.CHATS_FIIRESTORE_COLLECTION)
-            .document(senderId)
             .collection(Constants.MESSAGES_FIIRESTORE_COLLECTION)
             .orderBy("date")
 
@@ -97,7 +91,9 @@ class ChatRepositoryImp @Inject constructor(
 
             if (snapshot != null) {
                 senderMessages.clear()
-                senderMessages.addAll(snapshot.documents.mapNotNull { it.toObject(MessageDto::class.java) })
+                // get messages i (seif) sent to the reciver ( hazem)
+                senderMessages.addAll(snapshot.documents.mapNotNull { it.toObject(MessageDto::class.java) }
+                    .filter { it.receiverId == receiverId })
                 val allMessages = (senderMessages + receiverMessages).sortedBy { it.date }
                 trySend(Resource.Success(allMessages.map { it.toMessage() }))
             }
@@ -111,7 +107,9 @@ class ChatRepositoryImp @Inject constructor(
 
             if (snapshot != null) {
                 receiverMessages.clear()
-                receiverMessages.addAll(snapshot.documents.mapNotNull { it.toObject(MessageDto::class.java) })
+                // get messages reciever (hazem) sent to me ( seif )
+                receiverMessages.addAll(snapshot.documents.mapNotNull { it.toObject(MessageDto::class.java) }
+                    .filter { it.receiverId == senderId })
                 val allMessages = (senderMessages + receiverMessages).sortedBy { it.date }
                 trySend(Resource.Success(allMessages.map { it.toMessage() }))
             }
