@@ -46,6 +46,7 @@ class MyChatsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.chatViewPager.adapter = null
         _binding = null
         super.onDestroyView()
     }
