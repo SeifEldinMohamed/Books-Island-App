@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <color name="primary">#5ABD8C</color>
-   <color name="primary_dark">#369E6A</color>
-   <color name="gray_light">#B6B7B7</color>
-   <color name="gray_medium">#9D9D9D</color>
-   <color name="light_background">#F2F2F2</color>
-   <color name="red">#D30101</color>
-   <color name="blue">#3A4EFF</color>
+    <color name="primary">#5ABD8C</color>
+    <color name="primary_dark">#369E6A</color>
+    <color name="gray_light">#B6B7B7</color>
+    <color name="gray_medium">#9D9D9D</color>
+    <color name="light_background">#F2F2F2</color>
+    <color name="red">#D30101</color>
+    <color name="light_orange">#fdead8</color>
+    <color name="light_green">#d6fae8</color>
+    <color name="light_red">#fad6d6</color>
+
+    <color name="accepted_green">#06E173</color>
+    <color name="pending_orange">#F17A12</color>
+    <color name="rejected_red">#E10606</color>
+
+    <color name="blue">#3A4EFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="facebook_button">#367FC0</color>

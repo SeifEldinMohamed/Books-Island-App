@@ -5,9 +5,9 @@
     android:id="@android:id/text1"
     android:fontFamily="@font/roboto_medium"
     android:paddingVertical="@dimen/_6sdp"
-    android:paddingHorizontal="@dimen/_6sdp"
+    android:paddingHorizontal="@dimen/_8sdp"
     android:background="@drawable/my_ads_tab_background_selector"
     android:textColor="@color/myads_tab_text_selector"
-    android:textSize="@dimen/_12ssp"
+    android:textSize="@dimen/_13ssp"
     android:text="@string/titles"
     />

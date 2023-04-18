@@ -271,6 +271,23 @@
     <string name="choose_the_user_who_received_the_book_to_send_confirmation_request">Choose the user who received the book to send confirmation request</string>
     <string name="requests_icon">requests icon</string>
     <string name="requests">Requests</string>
+    <string name="title_column">Title:</string>
+    <string name="type">Type:</string>
+    <string name="references_and_research">References and Research</string>
+    <string name="_10">10</string>
+    <string name="sent_this_confirmation_message_to_habiba_tarek">Sent this confirmation message to Habiba Tarek.</string>
+    <string name="pending">Pending</string>
+    <string name="cancel">Cancel</string>
+    <string name="request_date">12 June 2023</string>
+    <string name="details_icon">details icon</string>
+    <string name="status_">Status:</string>
+    <string name="message_sent">"Sent this confirmation message to %1$s."</string>
+    <string name="message_received">"Do you received this book from %1$s?"</string>
+    <string name="accept">Accept</string>
+    <string name="do_you_received_this_book_from_seif_mohamed">Do you received this book from Seif Mohamed ?</string>
+    <string name="reject">Reject</string>
+    <string name="no_requests_yet">No Requests Yet</string>
+    <string name="no_request_yet_image_description">no request yet image description</string>
 
 
 </resources>
