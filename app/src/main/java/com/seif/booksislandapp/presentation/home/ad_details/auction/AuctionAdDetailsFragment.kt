@@ -75,6 +75,15 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             AuctionSheetFragment().show(parentFragmentManager, "AuctionSheet")
             observeUpdatedAuctionAd()
         }
+        binding.clProfile.setOnClickListener {
+            owner?.id?.let {
+                val action =
+                    AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentToAdProviderProfile(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
+        }
         binding.rvRelatedAds.adapter = relatedAuctionAdsAdapter
     }
 

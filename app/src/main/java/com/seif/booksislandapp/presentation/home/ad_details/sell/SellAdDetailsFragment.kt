@@ -66,6 +66,15 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.clProfile.setOnClickListener {
+            owner?.id?.let {
+                val action =
+                    SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentToAdProviderProfile(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
+        }
         binding.rvRelatedAds.adapter = relatedSellAdsAdapter
     }
 
