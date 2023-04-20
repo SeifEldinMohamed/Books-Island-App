@@ -1,22 +1,34 @@
 package com.seif.booksislandapp.presentation.home.my_chats
 
-import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.tabs.TabLayoutMediator
-import com.seif.booksislandapp.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyChatsBinding
-import com.seif.booksislandapp.presentation.home.my_chats.adapter.UserChatPagerAdapter
+import com.seif.booksislandapp.domain.model.chat.MyChat
+import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsState
+import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsViewModel
+import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.adapter.MyChatsAdapter
+import com.seif.booksislandapp.utils.*
+import dagger.hilt.android.AndroidEntryPoint
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
-class MyChatsFragment : Fragment() {
+@AndroidEntryPoint
+class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     private var _binding: FragmentMyChatsBinding? = null
     private val binding get() = _binding!!
-    private val tabTitle = arrayListOf(" Buying ", " Selling ")
-
+    private lateinit var dialog: AlertDialog
+    private val myChatsAdapter by lazy { MyChatsAdapter() }
+    private val myChatsViewModel: MyChatsViewModel by viewModels()
+    private lateinit var userId: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,26 +40,123 @@ class MyChatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTabLayoutWithViewPager()
+        dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        myChatsAdapter.onAdItemClick = this
+        userId = myChatsViewModel.getFromSP(Constants.USER_ID_KEY, String::class.java)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            myChatsViewModel.getMyBuyingChats(userId)
+            observe()
+            binding.swipeRefresh.isRefreshing = false
+        }
+        fetchMyBuyingChats()
+
+        binding.rvBuyingUsersChat.adapter = myChatsAdapter
     }
 
-    @SuppressLint("InflateParams")
-    private fun setupTabLayoutWithViewPager() {
-        binding.chatViewPager.adapter = UserChatPagerAdapter(this)
-        TabLayoutMediator(binding.tlChat, binding.chatViewPager) { tab, position ->
-            tab.text = tabTitle[position]
-        }.attach()
-        for (i in 0..1) {
-            val textView =
-                LayoutInflater.from(requireContext())
-                    .inflate(R.layout.my_ads_tab_title, null) as TextView
-            binding.tlChat.getTabAt(i)?.customView = textView
+    private fun fetchMyBuyingChats() {
+        //  if (myChats == null) {
+        myChatsViewModel.getMyBuyingChats(userId)
+        observe()
+        //  }
+    }
+
+    private fun observe() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            myChatsViewModel.buyingChatsState.collect {
+                when (it) {
+                    MyChatsState.Init -> Unit
+                    is MyChatsState.FetchMyChatsSuccessfully -> {
+                        // myChats = it.myBuyingChat
+                        Timber.d("observe: ${it.myBuyingChat}")
+                        myChatsAdapter.updateList(it.myBuyingChat)
+                        handleUi(it.myBuyingChat)
+                    }
+                    is MyChatsState.IsLoading -> handleLoadingState(it.isLoading)
+                    is MyChatsState.NoInternetConnection -> handleNoInternetConnectionState()
+                    is MyChatsState.ShowError -> handleErrorState(it.errorMessage)
+                }
+            }
         }
     }
 
+    private fun handleUi(myBuyingChats: List<MyChat>) {
+        if (myBuyingChats.isEmpty()) {
+            binding.rvBuyingUsersChat.hide()
+            binding.noBooksAnimationMyBuyingChats.show()
+        } else {
+            binding.rvBuyingUsersChat.show()
+            binding.noBooksAnimationMyBuyingChats.hide()
+        }
+    }
+
+    private fun handleNoInternetConnectionState() {
+        NoInternetDialogPendulum.Builder(
+            requireActivity(),
+            viewLifecycleOwner.lifecycle
+        ).apply {
+            dialogProperties.apply {
+                connectionCallback = object : ConnectionCallback { // Optional
+                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                        when (hasActiveConnection) {
+                            true -> {
+                                binding.root.showInfoSnackBar("Internet connection is back")
+                                fetchMyBuyingChats()
+                            }
+                            false -> Unit
+                        }
+                    }
+                }
+
+                cancelable = false // Optional
+                noInternetConnectionTitle = "No Internet" // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
+                showInternetOnButtons = true // Optional
+                pleaseTurnOnText = "Please turn on" // Optional
+                wifiOnButtonText = "Wifi" // Optional
+                mobileDataOnButtonText = "Mobile data" // Optional
+                onAirplaneModeTitle = "No Internet" // Optional
+                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                pleaseTurnOffText = "Please turn off" // Optional
+                airplaneModeOffButtonText = "Airplane mode" // Optional
+                showAirplaneModeOffButtons = true // Optional
+            }
+        }.build()
+    }
+
+    private fun handleErrorState(message: String) {
+        binding.root.showErrorSnackBar(message)
+    }
+
+    private fun handleLoadingState(isLoading: Boolean) {
+        when (isLoading) {
+            true -> {
+                startLoadingDialog()
+            }
+            false -> dismissLoadingDialog()
+        }
+    }
+
+    private fun startLoadingDialog() {
+        dialog.create()
+        dialog.show()
+    }
+
+    private fun dismissLoadingDialog() {
+        dialog.dismiss()
+    }
+
+    override fun onAdItemClick(item: MyChat, position: Int) {
+        val action =
+            MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith)
+        findNavController().navigate(action)
+    }
+
     override fun onDestroyView() {
-        binding.chatViewPager.adapter = null
-        _binding = null
         super.onDestroyView()
+        binding.rvBuyingUsersChat.adapter = null
+        dialog.setView(null)
+        _binding = null
     }
 }

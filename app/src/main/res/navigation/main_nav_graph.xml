@@ -123,6 +123,9 @@
         <action
             android:id="@+id/action_sellAdDetailsFragment_to_chatRoomFragment"
             app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_sellAdDetailsFragment_to_adProviderProfile"
+            app:destination="@id/adProviderProfile" />
     </fragment>
     <fragment
         android:id="@+id/uploadSellAdvertisementFragment"
@@ -204,6 +207,9 @@
         <action
             android:id="@+id/action_auctionAdDetailsFragment_to_chatRoomFragment"
             app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_auctionAdDetailsFragment_to_adProviderProfile"
+            app:destination="@id/adProviderProfile" />
     </fragment>
     <fragment
         android:id="@+id/exchangeAdDetailsFragment"
@@ -219,6 +225,9 @@
         <action
             android:id="@+id/action_exchangeAdDetailsFragment_to_chatRoomFragment"
             app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_exchangeAdDetailsFragment_to_adProviderProfile"
+            app:destination="@id/adProviderProfile" />
     </fragment>
     <fragment
         android:id="@+id/donateAdDetailsFragment"
@@ -234,6 +243,9 @@
         <action
             android:id="@+id/action_donateAdDetailsFragment_to_chatRoomFragment"
             app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_donateAdDetailsFragment_to_adProviderProfile"
+            app:destination="@id/adProviderProfile" />
     </fragment>
     <dialog
         android:id="@+id/exchangeSheetFragment"
@@ -251,5 +263,13 @@
         <argument
             android:name="owner"
             app:argType="com.seif.booksislandapp.domain.model.User" />
+        <action
+            android:id="@+id/action_chatRoomFragment_to_adProviderProfile"
+            app:destination="@id/adProviderProfile" />
     </fragment>
+    <fragment
+        android:id="@+id/adProviderProfile"
+        android:name="com.seif.booksislandapp.AdProviderProfile"
+        android:label="fragment_ad_provider_profile"
+        tools:layout="@layout/fragment_ad_provider_profile" />
 </navigation>
