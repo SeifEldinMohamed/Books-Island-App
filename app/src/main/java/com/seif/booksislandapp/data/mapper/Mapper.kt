@@ -2,6 +2,7 @@ package com.seif.booksislandapp.data.mapper
 
 import android.net.Uri
 import com.seif.booksislandapp.data.remote.dto.BookDto
+import com.seif.booksislandapp.data.remote.dto.MyChatDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.BidderDto
@@ -23,6 +24,7 @@ import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.domain.model.chat.Message
+import com.seif.booksislandapp.domain.model.chat.MyChat
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -71,6 +73,7 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         price = price
     )
 }
+
 fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
     return DonateAdvertisement(
         id = id,
@@ -92,6 +95,7 @@ fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
         location = location,
     )
 }
+
 fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
     return AuctionAdvertisementDto(
         id = id,
@@ -108,6 +112,7 @@ fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
         bidders = bidders.map { it.toBidderDto() },
     )
 }
+
 fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
     return AuctionAdvertisement(
         id = id,
@@ -139,6 +144,7 @@ fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
 
     )
 }
+
 fun ExchangeAdvertisement.toExchangeAdvertisementDto(): ExchangeAdvertisementDto {
     return ExchangeAdvertisementDto(
         id = id,
@@ -161,6 +167,7 @@ fun BooksToExchangeDto.toBooksToExchange(): BooksToExchange {
 
     )
 }
+
 fun BooksToExchange.toBooksToExchange(): BooksToExchangeDto {
     return BooksToExchangeDto(
         title = title,
@@ -266,6 +273,19 @@ fun Message.toMessageDto(): MessageDto {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        date = date
+        date = date,
+        chatUsers = arrayListOf(
+            senderId,
+            receiverId
+        )
+    )
+}
+
+fun MyChatDto.toMyChat(): MyChat {
+    return MyChat(
+        senderId = senderId,
+        userIChatWith = userIChatWith!!.toUser(),
+        lastMessage = lastMessage,
+        lastMessageDate = lastMessageDate!!
     )
 }
