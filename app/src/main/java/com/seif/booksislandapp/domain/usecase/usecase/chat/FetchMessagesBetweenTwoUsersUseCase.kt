@@ -9,7 +9,7 @@ import javax.inject.Inject
 class FetchMessagesBetweenTwoUsersUseCase @Inject constructor(
     private val chatRepositoryImp: ChatRepositoryImp
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         senderId: String,
         recipientId: String
     ): Flow<Resource<List<Message>, String>> {
