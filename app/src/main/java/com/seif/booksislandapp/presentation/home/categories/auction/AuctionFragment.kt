@@ -9,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -29,6 +32,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private var _binding: FragmentAuctionBinding? = null
     private val binding get() = _binding!!
     private val auctionViewModel: AuctionViewModel by viewModels()
+    private lateinit var filterViewModel: FilterViewModel
     private lateinit var dialog: AlertDialog
     private val auctionAdapter by lazy { AuctionAdapter() }
     private var auctionsAdvertisements: List<AuctionAdvertisement> = emptyList()
@@ -47,6 +51,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         auctionAdapter.onAdItemClick = this
+        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
         firstTimeFetch()
         listenForSearchEditTextClick()
@@ -54,6 +59,10 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
 
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+
+        binding.btnFilter.setOnClickListener {
+            FilterSheetFragment().show(parentFragmentManager, "")
         }
 
         binding.swipeRefresh.setOnRefreshListener {
