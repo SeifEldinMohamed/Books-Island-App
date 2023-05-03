@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.home.categories.buy.FilterSheetFragment">
+
+    <TextView
+
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="@string/filter"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_25ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingVertical="@dimen/_14sdp"
+        android:text="@string/category"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/black_70"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="@dimen/_4sdp"
+        app:icon="@drawable/ic_forward_arrow"
+        app:iconGravity="end"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:strokeColor="@color/gray_light"
+        app:strokeWidth="@dimen/_1sdp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_governorate"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/black_70"
+        android:hint="@string/governorate"
+        app:layout_constraintEnd_toEndOf="@+id/btn_category"
+        app:layout_constraintStart_toStartOf="@+id/btn_category"
+        app:layout_constraintTop_toBottomOf="@+id/btn_category">
+
+        <AutoCompleteTextView
+            android:id="@+id/ac_governorates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_12sdp"
+            android:layout_weight="1"
+            android:inputType="none"
+            tools:ignore="LabelFor,TextContrastCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_district"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/black_70"
+        android:hint="@string/district"
+        app:layout_constraintEnd_toEndOf="@+id/til_governorate"
+        app:layout_constraintStart_toStartOf="@+id/til_governorate"
+        app:layout_constraintTop_toBottomOf="@+id/til_governorate">
+
+        <AutoCompleteTextView
+            android:id="@+id/ac_distrect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium"
+            android:inputType="none"
+            android:textSize="@dimen/_12sdp"
+            tools:ignore="LabelFor,TextContrastCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/condition"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintStart_toStartOf="@+id/til_district"
+        app:layout_constraintTop_toBottomOf="@+id/til_district" />
+
+    <RadioGroup
+        android:id="@+id/rg_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@+id/tv_condition"
+        app:layout_constraintTop_toBottomOf="@+id/tv_condition">
+
+        <RadioButton
+            android:id="@+id/rb_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/primary_dark"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingStart="@dimen/_35sdp"
+            android:shadowColor="@color/primary"
+            android:text="@string/newing"
+            android:textSize="@dimen/_18ssp"
+            tools:ignore="RtlSymmetry" />
+
+        <RadioButton
+            android:id="@+id/rb_used"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/primary_dark"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingStart="@dimen/_30sdp"
+            android:shadowColor="@color/primary"
+            android:text="@string/used"
+            android:textSize="@dimen/_18ssp"
+            tools:ignore="RtlSymmetry"/>
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_Apply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_25sdp"
+        android:background="@drawable/custom_button"
+        android:paddingVertical="@dimen/_5sdp"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/primary"
+        android:text="@string/apply"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_condition"
+        tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
