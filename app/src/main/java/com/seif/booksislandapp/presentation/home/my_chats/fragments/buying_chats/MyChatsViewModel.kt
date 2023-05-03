@@ -14,22 +14,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class BuyingChatsViewModel @Inject constructor(
+class MyChatsViewModel @Inject constructor(
     private val getMyBuyingChatsUseCase: GetMyBuyingChatsUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
-    private var _buyingChatsState = MutableStateFlow<MyBuyingChatsState>(MyBuyingChatsState.Init)
+    private var _buyingChatsState = MutableStateFlow<MyChatsState>(MyChatsState.Init)
     val buyingChatsState get() = _buyingChatsState.asStateFlow()
 
     fun getMyBuyingChats(myId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getMyBuyingChatsUseCase.invoke(myId).let {
+            getMyBuyingChatsUseCase.invoke(myId).collect() {
+                Timber.d("getMyBuyingChats: $it")
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -41,8 +43,9 @@ class BuyingChatsViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
+                        Timber.d("getMyBuyingChats: FetchMyBuyingChatsSuccessfully")
                         _buyingChatsState.value =
-                            MyBuyingChatsState.FetchMyBuyingChatsSuccessfully(it.data)
+                            MyChatsState.FetchMyChatsSuccessfully(it.data)
                     }
                 }
             }
@@ -52,10 +55,10 @@ class BuyingChatsViewModel @Inject constructor(
     private fun setLoading(status: Boolean) {
         when (status) {
             true -> {
-                _buyingChatsState.value = MyBuyingChatsState.IsLoading(true)
+                _buyingChatsState.value = MyChatsState.IsLoading(true)
             }
             false -> {
-                _buyingChatsState.value = MyBuyingChatsState.IsLoading(false)
+                _buyingChatsState.value = MyChatsState.IsLoading(false)
             }
         }
     }
@@ -63,10 +66,10 @@ class BuyingChatsViewModel @Inject constructor(
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _buyingChatsState.value = MyBuyingChatsState.NoInternetConnection(message)
+                _buyingChatsState.value = MyChatsState.NoInternetConnection(message)
             }
             else -> {
-                _buyingChatsState.value = MyBuyingChatsState.ShowError(message)
+                _buyingChatsState.value = MyChatsState.ShowError(message)
             }
         }
     }

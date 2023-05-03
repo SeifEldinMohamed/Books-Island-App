@@ -28,11 +28,14 @@ import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapt
 import com.seif.booksislandapp.utils.FileUtil
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -49,7 +52,7 @@ class ChatRoomFragment : Fragment() {
     private var messages: ArrayList<Message> = arrayListOf()
     lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
     lateinit var imageUris: Uri
-
+    lateinit var receiverId: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,13 +68,10 @@ class ChatRoomFragment : Fragment() {
         firebaseCurrentUser = chatRoomViewModel.getFirebaseCurrentUser()
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
 
-        val receiverId = args.owner.id
-        firebaseCurrentUser?.uid?.let { currentId ->
-            chatRoomViewModel.requestFetchMessagesBetweenTwoUsers(
-                senderId = currentId,
-                receiverId = receiverId
-            )
-        }
+        receiverId = args.owner.id
+
+        fetchMessagesBetweenTwoUsers()
+
         binding.btnSendMessage.setOnClickListener {
             val message = prepareMessage()
             chatRoomViewModel.requestSendMessage(message)
@@ -87,6 +87,15 @@ class ChatRoomFragment : Fragment() {
         handleKeyboard()
 
         binding.rvChatRoom.adapter = chatRoomAdapter
+    }
+
+    private fun fetchMessagesBetweenTwoUsers() {
+        firebaseCurrentUser?.uid?.let { currentId ->
+            chatRoomViewModel.requestFetchMessagesBetweenTwoUsers(
+                senderId = currentId,
+                receiverId = receiverId
+            )
+        }
     }
 
     private fun handleKeyboard() {
@@ -140,10 +149,45 @@ class ChatRoomFragment : Fragment() {
                         showMessages(messages)
                     }
                     is ChatRoomState.ShowError -> handleErrorState(it.message)
-                    is ChatRoomState.NoInternetConnection -> TODO()
+                    is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
                 }
             }
         }
+    }
+
+    private fun handleNoInternetConnectionState() {
+        NoInternetDialogPendulum.Builder(
+            requireActivity(),
+            viewLifecycleOwner.lifecycle
+        ).apply {
+            dialogProperties.apply {
+                connectionCallback = object : ConnectionCallback { // Optional
+                    override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                        when (hasActiveConnection) {
+                            true -> {
+                                binding.root.showInfoSnackBar("Internet connection is back")
+                                fetchMessagesBetweenTwoUsers()
+                            }
+                            false -> Unit
+                        }
+                    }
+                }
+
+                cancelable = false // Optional
+                noInternetConnectionTitle = "No Internet" // Optional
+                noInternetConnectionMessage =
+                    "Check your Internet connection and try again." // Optional
+                showInternetOnButtons = true // Optional
+                pleaseTurnOnText = "Please turn on" // Optional
+                wifiOnButtonText = "Wifi" // Optional
+                mobileDataOnButtonText = "Mobile data" // Optional
+                onAirplaneModeTitle = "No Internet" // Optional
+                onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                pleaseTurnOffText = "Please turn off" // Optional
+                airplaneModeOffButtonText = "Airplane mode" // Optional
+                showAirplaneModeOffButtons = true // Optional
+            }
+        }.build()
     }
 
     private fun showMessages(messages: ArrayList<Message>) {

@@ -20,7 +20,7 @@ class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
             binding.ivAvatarImage.load(myChat.userIChatWith.avatarImage)
             binding.tvUsername.text = myChat.userIChatWith.username
             binding.tvLastMessage.text = myChat.lastMessage
-            binding.tvTime.text = myChat.lastMessageDate?.formatDate()
+            binding.tvTime.text = myChat.lastMessageDate.formatDate()
             binding.cvMyChat.setOnClickListener {
                 onAdItemClick?.onAdItemClick(myChat, position)
             }

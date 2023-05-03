@@ -1,19 +1,20 @@
-package com.seif.booksislandapp.presentation.home.my_chats.fragments
+package com.seif.booksislandapp
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.seif.booksislandapp.R
 
-class SellingChat : Fragment() {
+class AdProviderProfile : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.selling_chat, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_ad_provider_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

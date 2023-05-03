@@ -21,6 +21,7 @@ class Constants {
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
 
         const val CHATS_FIIRESTORE_COLLECTION: String = "Chats"
+        const val MY_CHATS_FIIRESTORE_COLLECTION: String = "my_chats"
         const val MESSAGES_FIIRESTORE_COLLECTION: String = "Messages"
 
         // Storage

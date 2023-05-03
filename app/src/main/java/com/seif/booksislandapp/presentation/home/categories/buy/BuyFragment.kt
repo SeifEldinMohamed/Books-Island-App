@@ -235,8 +235,10 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     override fun onDestroyView() {
         Timber.d("onDestroyView")
         buyViewModel.isSearching = false
-        _binding = null
         buyAdapter.onAdItemClick = null
+        binding.rvBuy.adapter = null
+        dialog.setView(null)
+        _binding = null
         super.onDestroyView()
     }
 }
