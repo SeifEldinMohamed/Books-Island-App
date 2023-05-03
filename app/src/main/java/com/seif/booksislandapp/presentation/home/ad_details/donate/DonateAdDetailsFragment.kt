@@ -67,6 +67,15 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         binding.ivBackSellDetails.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.clProfile.setOnClickListener {
+            owner?.id?.let {
+                val action =
+                    DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentToAdProviderProfile(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
+        }
         binding.rvRelatedAds.adapter = relatedDonateAdsAdapter
     }
 

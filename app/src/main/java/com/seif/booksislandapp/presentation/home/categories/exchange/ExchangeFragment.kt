@@ -9,11 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +32,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private var _binding: FragmentExchangeBinding? = null
     private val binding get() = _binding!!
     private val exchangeViewModel: ExchangeViewModel by viewModels()
+    private lateinit var filterViewModel: FilterViewModel
     private lateinit var dialog: AlertDialog
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private var exchangeAdvertisements: List<ExchangeAdvertisement> = emptyList()
@@ -51,10 +55,15 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
         exchangeAdapter.onAdItemClick = this
+        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
 
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+
+        binding.btnFilter.setOnClickListener {
+            FilterSheetFragment().show(parentFragmentManager, "")
         }
 
         binding.swipeRefresh.setOnRefreshListener {

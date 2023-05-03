@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
@@ -27,6 +28,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var _binding: FragmentBuyBinding? = null
+    private lateinit var filterViewModel: FilterViewModel
     private val binding get() = _binding!!
     private val buyViewModel: BuyViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -50,6 +52,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         buyAdapter.onAdItemClick = this
+        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
         firstTimeFetch()
         listenForSearchEditTextClick()
@@ -70,7 +73,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.btnFilter.setOnClickListener {
-            // open filter bottom sheet
+            FilterSheetFragment().show(parentFragmentManager, "")
         }
 
         binding.rvBuy.adapter = buyAdapter

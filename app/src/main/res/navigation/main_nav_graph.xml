@@ -269,7 +269,11 @@
     </fragment>
     <fragment
         android:id="@+id/adProviderProfile"
-        android:name="com.seif.booksislandapp.AdProviderProfile"
+        android:name="com.seif.booksislandapp.AdProviderProfileFragment"
         android:label="fragment_ad_provider_profile"
-        tools:layout="@layout/fragment_ad_provider_profile" />
+        tools:layout="@layout/fragment_ad_provider_profile">
+        <argument
+            android:name="providerId"
+            app:argType="string" />
+    </fragment>
 </navigation>

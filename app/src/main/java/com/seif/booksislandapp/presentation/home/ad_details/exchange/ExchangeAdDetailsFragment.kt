@@ -70,6 +70,15 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         binding.ivBackExchangeDetails.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.clProfile.setOnClickListener {
+            owner?.id?.let {
+                val action =
+                    ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentToAdProviderProfile(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
+        }
         binding.rvExchangeFor.adapter = booksToExchangeAdapter
         binding.rvRelatedAds.adapter = relatedExchangeAdsAdapter
     }
