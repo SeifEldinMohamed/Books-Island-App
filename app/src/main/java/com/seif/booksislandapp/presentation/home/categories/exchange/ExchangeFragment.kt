@@ -17,6 +17,7 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.buy.SortSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +65,10 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
         binding.btnFilter.setOnClickListener {
             FilterSheetFragment().show(parentFragmentManager, "")
+        }
+        binding.tvSortBy2.setOnClickListener {
+            val bottomSheet = SortSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.swipeRefresh.setOnRefreshListener {

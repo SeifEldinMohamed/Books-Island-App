@@ -260,6 +260,11 @@
     <string name="newing">New</string>
     <string name="apply">Apply</string>
     <string name="governorate">Governorate</string>
+    <string name="near_by_me">Near By Me</string>
+    <string name="highest_price">Highest Price</string>
+    <string name="lowest_price">Lowest Price</string>
+    <string name="added_recently">Added Recently</string>
+    <string name="sort_by2">Sort By</string>
 
 
 </resources>

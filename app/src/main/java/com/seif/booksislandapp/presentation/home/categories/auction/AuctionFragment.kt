@@ -18,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.buy.SortSheetFragment
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -69,6 +70,10 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             auctionViewModel.fetchAllAuctionsAdvertisements()
             observe()
             binding.swipeRefresh.isRefreshing = false
+        }
+        binding.tvSortBy.setOnClickListener {
+            val bottomSheet = SortSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.rvAuctions.adapter = auctionAdapter

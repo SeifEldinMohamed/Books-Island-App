@@ -17,6 +17,7 @@ import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.buy.SortSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,6 +59,11 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+
+        binding.tvSortBy.setOnClickListener {
+            val bottomSheet = SortSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.btnFilter.setOnClickListener {
