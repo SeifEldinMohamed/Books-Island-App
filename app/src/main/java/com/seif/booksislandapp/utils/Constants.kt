@@ -23,6 +23,12 @@ class Constants {
         const val CHATS_FIIRESTORE_COLLECTION: String = "Chats"
         const val MY_CHATS_FIIRESTORE_COLLECTION: String = "my_chats"
         const val MESSAGES_FIIRESTORE_COLLECTION: String = "Messages"
+        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "Chat List"
+        const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
+        const val FCM_API_KEY: String =
+            "AAAA92L23Rs:APA91bEe5qTrNsAsrLti3mPkXCcyF3bemZwh4vSjAypuEZhSbPihuYI6c3gCAtuaRSyTfSiBrPeeTeTuOEoImvV3YCfMB2c1cIAEkFzmh4kkxHI49gjwFhw5B2uucpPFXEj03iRqQy3v"
+        const val FCM_BASE_URL: String = "https://fcm.googleapis.com/"
+        const val NOTIFICATION_CHANNEL_ID: String = "channel_id"
 
         // Storage
         const val FIREBASE_STORAGE_ROOT_DIRECTORY = "app"
@@ -35,6 +41,7 @@ class Constants {
         const val USER_AVATAR_KEY = "user_avatar"
         const val IS_FIRST_TIME_KEY = "is_first_time"
         const val IS_LOGGED_IN_KEY = "is_logged_in"
+        const val FCM_TOKEN = "fcm_token"
 
         // Upload
         const val MAX_UPLOADED_IMAGES_NUMBER = 5

@@ -266,6 +266,7 @@
     <string name="lowest_price">Lowest Price</string>
     <string name="added_recently">Added Recently</string>
     <string name="sort_by2">Sort By</string>
+    <string name="sent_you_image">sent you an image.</string>
 
 
 </resources>
