@@ -238,13 +238,6 @@ fun GovernorateDto.toGovernorate(): Governorate {
     )
 }
 
-fun Governorate.toGovernorateDto(): GovernorateDto {
-    return GovernorateDto(
-        id = id,
-        name = name
-    )
-}
-
 fun DistrictDto.toDistricts(): District {
     return District(
         id = id,
@@ -261,7 +254,7 @@ fun MessageDto.toMessage(): Message {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        date = date!!
+        date = date
     )
 }
 
@@ -273,8 +266,7 @@ fun Message.toMessageDto(): MessageDto {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        date = date,
-        chatUsers = arrayListOf(
+        chatUsers = arrayListOf( // remove this attribute (no need for it) but we will need to delete all messages on firestore
             senderId,
             receiverId
         )
@@ -286,6 +278,6 @@ fun MyChatDto.toMyChat(): MyChat {
         senderId = senderId,
         userIChatWith = userIChatWith!!.toUser(),
         lastMessage = lastMessage,
-        lastMessageDate = lastMessageDate!!
+        lastMessageDate = lastMessageDate
     )
 }
