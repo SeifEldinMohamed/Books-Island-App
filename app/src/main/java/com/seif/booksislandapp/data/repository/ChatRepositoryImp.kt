@@ -179,12 +179,12 @@ class ChatRepositoryImp @Inject constructor(
                                 ).await()
                             Timber.d(
                                 "updateMyChats: ${
-                                    MyChatDto(
-                                        senderId = message.senderId,
-                                        userIChatWith = receiverUser.toUserDto(),
-                                        lastMessage = message.text.toString(),
-                                        lastMessageDate = message.date
-                                    )
+                                MyChatDto(
+                                    senderId = message.senderId,
+                                    userIChatWith = receiverUser.toUserDto(),
+                                    lastMessage = message.text.toString(),
+                                    lastMessageDate = message.date
+                                )
                                 }"
                             )
                         }
