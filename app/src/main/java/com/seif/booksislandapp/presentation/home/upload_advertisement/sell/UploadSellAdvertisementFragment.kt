@@ -166,7 +166,6 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     private fun showMySellAdvertisement(mySellAdvertisement: SellAdvertisement) {
 
         uploadedImagesAdapter.updateList(mySellAdvertisement.book.images)
-
         binding.etTitle.setText(mySellAdvertisement.book.title)
         binding.etAuthor.setText(mySellAdvertisement.book.author)
         binding.etPrice.setText(mySellAdvertisement.price)

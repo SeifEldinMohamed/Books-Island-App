@@ -64,6 +64,44 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun getSellAdsByFilter(
+        category: String?,
+        governorate: String?,
+        district: String?,
+        condition: String?
+    ): Resource<ArrayList<SellAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                    .orderBy("status")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                Resource.Success(
+                    sellAdvertisementsDto.filter { ad ->
+                        (category == null || ad.book?.category == category) &&
+                            (governorate == null || ad.location.startsWith("$governorate")) &&
+                            (district == null || ad.location == "$governorate - $district") &&
+                            (condition == null || ad.book?.condition == condition)
+                    }
+                        .map { it.toSellAdvertisement() }
+                        .toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     override suspend fun uploadSellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
