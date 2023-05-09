@@ -16,14 +16,12 @@ import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
-import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
-import com.seif.booksislandapp.utils.Resource
-import com.seif.booksislandapp.utils.ResourceProvider
-import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -65,10 +63,7 @@ class AdvertisementRepositoryImp @Inject constructor(
     }
 
     override suspend fun getSellAdsByFilter(
-        category: String?,
-        governorate: String?,
-        district: String?,
-        condition: String?
+        filterBy: FilterBy
     ): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -88,10 +83,10 @@ class AdvertisementRepositoryImp @Inject constructor(
                 }
                 Resource.Success(
                     sellAdvertisementsDto.filter { ad ->
-                        (category == null || ad.book?.category == category) &&
-                            (governorate == null || ad.location.startsWith("$governorate")) &&
-                            (district == null || ad.location == "$governorate - $district") &&
-                            (condition == null || ad.book?.condition == condition)
+                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
                     }
                         .map { it.toSellAdvertisement() }
                         .toCollection(ArrayList())

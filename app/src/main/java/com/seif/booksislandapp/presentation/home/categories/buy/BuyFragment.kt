@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
@@ -32,7 +32,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private val binding get() = _binding!!
     private val buyViewModel: BuyViewModel by viewModels()
     private lateinit var dialog: AlertDialog
-    private val args: BuyFragmentArgs by navArgs()
+    private val filterViewModel: FilterViewModel by activityViewModels()
     private val buyAdapter by lazy { BuyAdapter() }
     private var sellAdvertisements: List<SellAdvertisement> = emptyList()
 
@@ -48,13 +48,13 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         buyAdapter.onAdItemClick = this
-        if (findNavController().previousBackStackEntry?.destination?.id == R.id.filterFragment) {
-            fetchByFilter()
-        } else
-            firstTimeFetch()
+        filterViewModel.liveData.observe(viewLifecycleOwner) {
+            fetchByFilter(it)
+        }
+
+        firstTimeFetch()
 
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
@@ -81,18 +81,11 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = buyAdapter
     }
 
-    private fun fetchByFilter() {
+    private fun fetchByFilter(filterBy: FilterBy) {
         buyViewModel.fetchSellAdvertisementByFilter(
-            isNull(args.category), isNull(args.governorate), isNull(args.district), isNull(args.condition)
+            filterBy
         )
         observe()
-    }
-
-    private fun isNull(str: String?): String? {
-        return if (str != "null") {
-            str
-        } else
-            null
     }
 
     override fun onResume() {
@@ -108,7 +101,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 Timber.d("onTextChanged: searchQuery $text")
-                viewLifecycleOwner.lifecycleScope.launch() {
+                viewLifecycleOwner.lifecycleScope.launch {
                     delay(1000)
                     text?.let {
                         Timber.d("onTextChanged: isSearching:  ${buyViewModel.isSearching}")
@@ -224,7 +217,8 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun handleErrorState(message: String) {
-        binding.root.showErrorSnackBar(message)
+        if (message != getString(R.string.filter_error))
+            binding.root.showErrorSnackBar(message)
     }
 
     private fun handleLoadingState(isLoading: Boolean) {
@@ -258,6 +252,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = null
         dialog.setView(null)
         _binding = null
+        filterViewModel.reset()
         super.onDestroyView()
     }
 }
