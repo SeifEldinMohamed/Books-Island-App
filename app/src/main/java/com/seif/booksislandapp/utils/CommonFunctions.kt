@@ -31,6 +31,7 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.domain.model.chat.Message
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat
@@ -262,6 +263,7 @@ fun DonateAdvertisement.checkDonateAdvertisementUpload(): Resource<String, Strin
         }
     }
 }
+
 fun ExchangeAdvertisement.checkExchangeAdvertisementUpload(): Resource<String, String> {
     return if (this.ownerId.isEmpty()) {
         Resource.Error("User is not LoggedIn !")
@@ -280,6 +282,7 @@ fun ExchangeAdvertisement.checkExchangeAdvertisementUpload(): Resource<String, S
         }
     }
 }
+
 fun BooksToExchange.checkIsValidExchangeFor(): Resource<BooksToExchange, String> {
     return if (this.title.isEmpty()) {
         Resource.Error("Book should have a title")
@@ -331,6 +334,13 @@ private fun Book.validateBookData(): Resource<String, String> {
     } else {
         Resource.Success("All Book Data is Valid")
     }
+}
+
+fun FilterBy.validateFilter(): Resource<String, String> {
+    return if (this.category == null && this.governorate == null && this.district == null && this.condition == null)
+        Resource.Error("Enter at least one filter")
+    else
+        Resource.Success("")
 }
 
 fun Fragment.handleNoInternetConnectionState(view: View) {

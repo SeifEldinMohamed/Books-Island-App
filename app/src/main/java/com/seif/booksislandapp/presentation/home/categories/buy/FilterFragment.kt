@@ -2,13 +2,14 @@ package com.seif.booksislandapp.presentation.home.categories.buy
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
@@ -19,10 +20,11 @@ import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewMode
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
 import com.seif.booksislandapp.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
-
+@AndroidEntryPoint
 class FilterFragment : Fragment() {
 
     private lateinit var binding: FragmentFilterBinding
@@ -30,7 +32,8 @@ class FilterFragment : Fragment() {
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
 
     private var districts: List<District>? = null
-    private val registerViewModel: RegisterViewModel by activityViewModels()
+    private val registerViewModel: RegisterViewModel by viewModels()
+    private val filterViewModel: FilterViewModel by activityViewModels()
     private var governorateId: String? = null
     private var governorateName: String? = null
     private var districtName: String? = null
@@ -50,7 +53,6 @@ class FilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         observe()
-
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -63,6 +65,7 @@ class FilterFragment : Fragment() {
                 binding.btnCategory.text = categoryName
             }
         }
+
         binding.btnCategory.setOnClickListener {
             findNavController().navigate(R.id.action_filterFragment_to_bookCategoriesFragment)
         }
@@ -79,20 +82,23 @@ class FilterFragment : Fragment() {
                 districtName = it[i].name
             }
         }
+        binding.tilDistrict.disable()
     }
 
     private fun filter() {
         val radioButton: RadioButton = binding.root.findViewById(binding.rgCondition.checkedRadioButtonId)
         if (categoryName == "Choose Category")
-            categoryName = "null"
+            categoryName = null
 
-        val action = FilterFragmentDirections.actionFilterFragmentToBuyFragment(
-            categoryName,
-            governorateName,
-            districtName,
-            radioButton.text.toString()
+        filterViewModel.filter(
+            FilterBy(
+                categoryName,
+                governorateName,
+                districtName,
+                radioButton.text.toString()
+            )
         )
-        findNavController().navigate(action)
+        findNavController().popBackStack()
     }
 
     private fun observe() {
@@ -202,5 +208,10 @@ class FilterFragment : Fragment() {
 
     private fun dismissLoadingDialog() {
         dialog.dismiss()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        itemCategoryViewModel.reset()
     }
 }

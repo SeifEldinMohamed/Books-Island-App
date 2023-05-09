@@ -2,18 +2,21 @@ package com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell
 
 import com.seif.booksislandapp.data.repository.AdvertisementRepositoryImp
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
 import com.seif.booksislandapp.utils.Resource
+import com.seif.booksislandapp.utils.validateFilter
 import javax.inject.Inject
 
 class GetSellAdsByFilterUseCase @Inject constructor(
     private val advertisementRepositoryImp: AdvertisementRepositoryImp
 ) {
     suspend operator fun invoke(
-        category: String?,
-        governorate: String?,
-        district: String?,
-        condition: String?
+        filterBy: FilterBy
     ): Resource<ArrayList<SellAdvertisement>, String> {
-        return advertisementRepositoryImp.getSellAdsByFilter(category, governorate, district, condition)
+
+        return when (val result = filterBy.validateFilter()) {
+            is Resource.Error -> Resource.Error(result.message)
+            is Resource.Success -> advertisementRepositoryImp.getSellAdsByFilter(filterBy)
+        }
     }
 }

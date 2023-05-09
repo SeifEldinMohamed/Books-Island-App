@@ -316,8 +316,5 @@
         <action
             android:id="@+id/action_filterFragment_to_bookCategoriesFragment"
             app:destination="@id/bookCategoriesFragment" />
-        <action
-            android:id="@+id/action_filterFragment_to_buyFragment"
-            app:destination="@id/buyFragment" />
     </fragment>
 </navigation>

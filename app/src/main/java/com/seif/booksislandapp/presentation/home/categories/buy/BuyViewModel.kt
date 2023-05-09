@@ -50,14 +50,15 @@ class BuyViewModel @Inject constructor(
     }
 
     fun fetchSellAdvertisementByFilter(
-        category: String?,
+       /* category: String?,
         governorate: String?,
         district: String?,
-        condition: String?
+        condition: String?*/
+        filterBy: FilterBy
     ) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getSellAdsByFilterUseCase.invoke(category, governorate, district, condition).let {
+            getSellAdsByFilterUseCase.invoke(filterBy).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
