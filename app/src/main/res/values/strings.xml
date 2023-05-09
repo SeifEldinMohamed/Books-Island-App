@@ -62,6 +62,7 @@
     <string name="book_title">Qudrant Flow of Money</string>
     <string name="user_location">Maadi, Cairo</string>
     <string name="adv_publish_date">11 NOV</string>
+    <string name="filter_error">Enter at least one filter</string>
     <string name="filter_image_button">filter image button</string>
 
     <!-- MyAds Fragment -->

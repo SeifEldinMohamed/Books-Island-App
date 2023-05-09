@@ -4,6 +4,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
 import com.seif.booksislandapp.utils.Resource
 
 interface AdvertisementRepository {
@@ -36,9 +37,6 @@ interface AdvertisementRepository {
     suspend fun fetchBuyWishListAds(buyIdList: List<String>): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun fetchDonateWishListAds(donateIdList: List<String>): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun getSellAdsByFilter(
-        category: String?,
-        governorate: String?,
-        district: String?,
-        condition: String?
+        filterBy: FilterBy
     ): Resource<ArrayList<SellAdvertisement>, String>
 }
