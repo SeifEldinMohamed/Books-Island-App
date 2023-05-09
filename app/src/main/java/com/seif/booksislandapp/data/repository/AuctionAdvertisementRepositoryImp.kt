@@ -15,6 +15,7 @@ import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.domain.repository.AuctionAdvertisementRepository
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
@@ -27,6 +28,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -385,6 +387,39 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                     data = auctionAdvertisementsDto.map { auctionAdvertisementDto ->
                         auctionAdvertisementDto.toAuctionAdvertisement()
                     }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getAuctionAdsByFilter(filterBy: FilterBy): Resource<ArrayList<AuctionAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("auctionStatus", AuctionStatus.CLOSED.toString())
+                    .orderBy("auctionStatus")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val auctionAdvertisementDto = document.toObject(AuctionAdvertisementDto::class.java)
+                    auctionAdvertisementsDto.add(auctionAdvertisementDto)
+                }
+                Resource.Success(
+                    auctionAdvertisementsDto.filter { ad ->
+                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+                    }
+                        .map { it.toAuctionAdvertisement() }
+                        .toCollection(ArrayList())
                 )
             }
         } catch (e: Exception) {

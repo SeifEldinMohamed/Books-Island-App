@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.categories.buy
+package com.seif.booksislandapp.presentation.home.categories.filter
 
 data class FilterBy(
     val category: String? = null,

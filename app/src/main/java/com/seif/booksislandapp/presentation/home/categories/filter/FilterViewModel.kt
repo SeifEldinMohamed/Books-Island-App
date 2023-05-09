@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.categories.buy
+package com.seif.booksislandapp.presentation.home.categories.filter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

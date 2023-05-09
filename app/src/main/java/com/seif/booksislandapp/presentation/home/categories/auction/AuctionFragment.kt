@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,8 @@ import com.seif.booksislandapp.databinding.FragmentAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -31,6 +34,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private val binding get() = _binding!!
     private val auctionViewModel: AuctionViewModel by viewModels()
     private lateinit var dialog: AlertDialog
+    private val filterViewModel: FilterViewModel by activityViewModels()
     private val auctionAdapter by lazy { AuctionAdapter() }
     private var auctionsAdvertisements: List<AuctionAdvertisement> = emptyList()
     override fun onCreateView(
@@ -56,7 +60,9 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
+        filterViewModel.liveData.observe(viewLifecycleOwner) {
+            fetchByFilter(it)
+        }
         binding.btnFilter.setOnClickListener {
             findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
         }
@@ -139,7 +145,10 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                     }
                     is AuctionState.IsLoading -> handleLoadingState(it.isLoading)
                     is AuctionState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is AuctionState.ShowError -> handleErrorState(it.message)
+                    is AuctionState.ShowError -> {
+
+                        handleErrorState(it.message)
+                    }
                 }
             }
         }
@@ -191,7 +200,8 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     private fun handleErrorState(message: String) {
-        binding.root.showErrorSnackBar(message)
+        if (message != getString(R.string.filter_error))
+            binding.root.showErrorSnackBar(message)
     }
 
     private fun handleLoadingState(isLoading: Boolean) {
@@ -218,9 +228,16 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         findNavController().navigate(action)
     }
 
+    private fun fetchByFilter(filterBy: FilterBy) {
+        auctionViewModel.fetchAuctionAdvertisementByFilter(
+            filterBy
+        )
+        observe()
+    }
     override fun onDestroyView() {
         auctionViewModel.isSearching = false
         _binding = null
+        filterViewModel.reset()
         super.onDestroyView()
     }
 }

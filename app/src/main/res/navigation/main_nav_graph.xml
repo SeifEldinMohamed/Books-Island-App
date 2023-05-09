@@ -310,7 +310,7 @@
     </fragment>
     <fragment
         android:id="@+id/filterFragment"
-        android:name="com.seif.booksislandapp.presentation.home.categories.buy.FilterFragment"
+        android:name="com.seif.booksislandapp.presentation.home.categories.filter.FilterFragment"
         android:label="fragment_filter"
         tools:layout="@layout/fragment_filter" >
         <action

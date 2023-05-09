@@ -31,7 +31,7 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.domain.model.chat.Message
-import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import java.text.SimpleDateFormat

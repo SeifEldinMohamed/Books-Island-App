@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.categories.buy
+package com.seif.booksislandapp.presentation.home.categories.filter
 
 import android.app.AlertDialog
 import android.os.Bundle

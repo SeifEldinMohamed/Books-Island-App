@@ -6,6 +6,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllSellAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetSellAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,10 +51,6 @@ class BuyViewModel @Inject constructor(
     }
 
     fun fetchSellAdvertisementByFilter(
-       /* category: String?,
-        governorate: String?,
-        district: String?,
-        condition: String?*/
         filterBy: FilterBy
     ) {
         setLoading(true)
