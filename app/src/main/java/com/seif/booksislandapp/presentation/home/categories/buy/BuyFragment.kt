@@ -9,9 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
@@ -28,10 +29,10 @@ import timber.log.Timber
 @AndroidEntryPoint
 class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var _binding: FragmentBuyBinding? = null
-    private lateinit var filterViewModel: FilterViewModel
     private val binding get() = _binding!!
     private val buyViewModel: BuyViewModel by viewModels()
     private lateinit var dialog: AlertDialog
+    private val args: BuyFragmentArgs by navArgs()
     private val buyAdapter by lazy { BuyAdapter() }
     private var sellAdvertisements: List<SellAdvertisement> = emptyList()
 
@@ -42,19 +43,19 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     ): View {
         _binding = FragmentBuyBinding.inflate(inflater, container, false)
         buyViewModel.resetState()
-        Timber.d("onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.d("onViewcreated")
 
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         buyAdapter.onAdItemClick = this
-        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
+        if (findNavController().previousBackStackEntry?.destination?.id == R.id.filterFragment) {
+            fetchByFilter()
+        } else
+            firstTimeFetch()
 
-        firstTimeFetch()
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
 
@@ -74,10 +75,24 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.btnFilter.setOnClickListener {
-            FilterSheetFragment().show(parentFragmentManager, "")
+            findNavController().navigate(R.id.action_buyFragment_to_filterFragment)
         }
 
         binding.rvBuy.adapter = buyAdapter
+    }
+
+    private fun fetchByFilter() {
+        buyViewModel.fetchSellAdvertisementByFilter(
+            isNull(args.category), isNull(args.governorate), isNull(args.district), isNull(args.condition)
+        )
+        observe()
+    }
+
+    private fun isNull(str: String?): String? {
+        return if (str != "null") {
+            str
+        } else
+            null
     }
 
     override fun onResume() {

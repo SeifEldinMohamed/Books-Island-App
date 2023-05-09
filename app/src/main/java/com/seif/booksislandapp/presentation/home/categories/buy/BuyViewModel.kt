@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllSellAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetSellAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BuyViewModel @Inject constructor(
     private val getAllSellAdvertisementUseCase: GetAllSellAdvertisementUseCase,
+    private val getSellAdsByFilterUseCase: GetSellAdsByFilterUseCase,
     private val searchSellAdvertisementUseCase: SearchSellAdvertisementUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
@@ -29,6 +31,33 @@ class BuyViewModel @Inject constructor(
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             getAllSellAdvertisementUseCase.invoke().let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _buyState.value = BuyState.FetchAllSellAdvertisementSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchSellAdvertisementByFilter(
+        category: String?,
+        governorate: String?,
+        district: String?,
+        condition: String?
+    ) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getSellAdsByFilterUseCase.invoke(category, governorate, district, condition).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

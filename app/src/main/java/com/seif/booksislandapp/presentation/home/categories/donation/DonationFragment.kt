@@ -9,15 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentDonationBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.presentation.home.categories.buy.FilterSheetFragment
-import com.seif.booksislandapp.presentation.home.categories.buy.FilterViewModel
-import com.seif.booksislandapp.presentation.home.categories.buy.SortSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +28,6 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: FragmentDonationBinding? = null
-    private lateinit var filterViewModel: FilterViewModel
     private val binding get() = _binding!!
     private val donateViewModel: DonateViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -43,7 +39,6 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDonationBinding.inflate(inflater, container, false)
-        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
         donateViewModel.resetState()
         return binding.root
     }
@@ -61,13 +56,8 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             findNavController().navigateUp()
         }
 
-        binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
-        }
-
         binding.btnFilter.setOnClickListener {
-            FilterSheetFragment().show(parentFragmentManager, "")
+            findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
         }
 
         binding.swipeRefresh.setOnRefreshListener {
