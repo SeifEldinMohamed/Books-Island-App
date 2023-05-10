@@ -54,6 +54,7 @@ class FilterFragment : Fragment() {
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         observe()
         binding.ivBack.setOnClickListener {
+            filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.btnApply.setOnClickListener {
@@ -90,7 +91,7 @@ class FilterFragment : Fragment() {
         if (categoryName == "Choose Category")
             categoryName = null
 
-        filterViewModel.filter(
+        observeOnFilterState(
             FilterBy(
                 categoryName,
                 governorateName,
@@ -99,6 +100,12 @@ class FilterFragment : Fragment() {
             )
         )
         findNavController().popBackStack()
+    }
+    private fun observeOnFilterState(filterBy: FilterBy) {
+        when (filterViewModel.isValidFilter(filterBy)) {
+            is Resource.Error -> filterViewModel.filter(null)
+            is Resource.Success -> filterViewModel.filter(filterBy)
+        }
     }
 
     private fun observe() {

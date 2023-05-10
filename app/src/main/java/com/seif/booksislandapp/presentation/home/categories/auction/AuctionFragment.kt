@@ -61,7 +61,10 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             findNavController().navigateUp()
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
-            fetchByFilter(it)
+            if (it != null) {
+
+                fetchByFilter(it)
+            }
         }
         binding.btnFilter.setOnClickListener {
             findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
@@ -237,7 +240,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     override fun onDestroyView() {
         auctionViewModel.isSearching = false
         _binding = null
-        filterViewModel.reset()
+        // filterViewModel.reset()
         super.onDestroyView()
     }
 }
