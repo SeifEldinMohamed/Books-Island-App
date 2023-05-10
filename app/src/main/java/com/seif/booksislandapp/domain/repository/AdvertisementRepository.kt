@@ -4,7 +4,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
-import com.seif.booksislandapp.presentation.home.categories.buy.FilterBy
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 
 interface AdvertisementRepository {
