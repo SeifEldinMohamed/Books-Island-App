@@ -114,60 +114,44 @@
         app:layout_constraintStart_toStartOf="@+id/til_district"
         app:layout_constraintTop_toBottomOf="@+id/til_district" />
 
-    <RadioGroup
-        android:id="@+id/rg_condition"
+    <CheckBox
+        android:id="@+id/cbOnion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/tv_condition"
-        app:layout_constraintTop_toBottomOf="@+id/tv_condition">
+        android:text="@string/used"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/tv_condition"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbSalad" />
 
-        <RadioButton
-            android:id="@+id/rb_new"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/primary_dark"
-            android:checked="true"
-            android:layoutDirection="rtl"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:paddingStart="@dimen/_35sdp"
-            android:shadowColor="@color/primary"
-            android:text="@string/newing"
-            android:textSize="@dimen/_18ssp"
-            tools:ignore="RtlSymmetry" />
-
-        <RadioButton
-            android:id="@+id/rb_used"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/primary_dark"
-            android:checked="true"
-            android:layoutDirection="rtl"
-            android:paddingStart="@dimen/_30sdp"
-            android:shadowColor="@color/primary"
-            android:text="@string/used"
-            android:textSize="@dimen/_18ssp"
-            tools:ignore="RtlSymmetry"/>
-    </RadioGroup>
+    <CheckBox
+        android:id="@+id/cbSalad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/newing"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/tv_condition"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_condition" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_Apply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_25sdp"
-        android:layout_marginTop="@dimen/_65sdp"
         android:layout_marginEnd="@dimen/_25sdp"
         android:background="@drawable/custom_button"
         android:paddingVertical="@dimen/_5sdp"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/primary"
         android:text="@string/apply"
         android:textAllCaps="false"
+        android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        app:backgroundTint="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_condition"
+        app:layout_constraintTop_toBottomOf="@+id/cbOnion"
         tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
