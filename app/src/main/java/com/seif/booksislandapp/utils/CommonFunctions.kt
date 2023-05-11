@@ -104,8 +104,8 @@ fun Date.formatDateInDetails(): String {
 }
 
 fun Date.formatDateToTime(): String {
-    val formatter = SimpleDateFormat("hh/mm", Locale.getDefault())
-    return formatMonth(formatter.format(this))
+    val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return formatter.format(this)
 }
 
 fun formatMonth(date: String): String {
@@ -376,7 +376,7 @@ fun Fragment.handleNoInternetConnectionState(view: View) {
 }
 
 fun Message.isValidMessage(): Boolean {
-    return if (this.text != null && this.text.isEmpty()) {
+    return if (this.text.isEmpty()) {
         false
     } else !(this.imageUrl != null && this.imageUrl.toString().isEmpty())
 }

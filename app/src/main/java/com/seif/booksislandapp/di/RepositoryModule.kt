@@ -3,7 +3,9 @@ package com.seif.booksislandapp.di
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.StorageReference
+import com.seif.booksislandapp.data.remote.FCMApiService
 import com.seif.booksislandapp.data.repository.*
 import com.seif.booksislandapp.domain.repository.*
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -25,14 +27,16 @@ object RepositoryModule {
         auth: FirebaseAuth,
         resourceProvider: ResourceProvider,
         sharedPrefs: SharedPrefs,
-        connectivityManager: ConnectivityManager
+        connectivityManager: ConnectivityManager,
+        fcm: FirebaseMessaging
     ): AuthRepository {
         return AuthRepositoryImp(
             firestore,
             auth,
             resourceProvider,
             sharedPrefs,
-            connectivityManager
+            connectivityManager,
+            fcm
         )
     }
 
@@ -107,27 +111,27 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         storageReference: StorageReference,
         resourceProvider: ResourceProvider,
-        connectivityManager: ConnectivityManager
+        connectivityManager: ConnectivityManager,
+        firebaseMessaging: FirebaseMessaging,
+        fcmApiService: FCMApiService
     ): ChatRepository {
         return ChatRepositoryImp(
             firestore,
             storageReference,
             resourceProvider,
-            connectivityManager
+            connectivityManager,
+            firebaseMessaging,
+            fcmApiService
         )
     }
 
     @Provides
     @Singleton
     fun provideMyChatsRepository(
-        firestore: FirebaseFirestore,
-        resourceProvider: ResourceProvider,
-        connectivityManager: ConnectivityManager
+        firestore: FirebaseFirestore
     ): MyChatsRepository {
         return MyChatsRepositoryImpl(
-            firestore,
-            resourceProvider,
-            connectivityManager
+            firestore
         )
     }
 }
