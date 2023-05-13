@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.GetAllAuctionAdsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.GetAuctionAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.SearchAuctionsAdsUseCase
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class AuctionViewModel @Inject constructor(
     private val getAllAuctionAdsUseCase: GetAllAuctionAdsUseCase,
     private val searchAuctionsAdsUseCase: SearchAuctionsAdsUseCase,
+    private val getAuctionAdsByFilterUseCase: GetAuctionAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _auctionState = MutableStateFlow<AuctionState>(AuctionState.Init)
@@ -69,6 +72,30 @@ class AuctionViewModel @Inject constructor(
                             setLoading(false)
                         }
                         _auctionState.value = AuctionState.SearchAuctionsAdsSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchAuctionAdvertisementByFilter(
+        filterBy: FilterBy
+    ) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getAuctionAdsByFilterUseCase.invoke(filterBy).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _auctionState.value = AuctionState.FetchAllAuctionsAdsSuccessfully(it.data)
                     }
                 }
             }

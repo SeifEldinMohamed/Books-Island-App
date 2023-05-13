@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.seif.booksislandapp.databinding.FragmentBuyBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -51,7 +54,10 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         buyAdapter.onAdItemClick = this
         filterViewModel.liveData.observe(viewLifecycleOwner) {
-            fetchByFilter(it)
+            if (it != null) {
+                Log.d("hhh", "hazem")
+                fetchByFilter(it)
+            }
         }
 
         firstTimeFetch()
@@ -252,7 +258,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = null
         dialog.setView(null)
         _binding = null
-        filterViewModel.reset()
+        //   filterViewModel.reset()
         super.onDestroyView()
     }
 }
