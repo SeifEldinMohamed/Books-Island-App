@@ -19,9 +19,6 @@ class FilterViewModel @Inject constructor(
         mutableLiveData.value = filterBy
     }
 
-    fun reset() {
-        mutableLiveData.value = FilterBy()
-    }
     fun isValidFilter(filterBy: FilterBy): Resource<String, String> {
         return filterUseCase(filterBy)
     }

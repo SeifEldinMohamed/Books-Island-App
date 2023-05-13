@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
 class FilterFragment : Fragment() {
 
@@ -87,7 +87,6 @@ class FilterFragment : Fragment() {
     }
 
     private fun filter() {
-        val radioButton: RadioButton = binding.root.findViewById(binding.rgCondition.checkedRadioButtonId)
         if (categoryName == "Choose Category")
             categoryName = null
 
@@ -96,11 +95,24 @@ class FilterFragment : Fragment() {
                 categoryName,
                 governorateName,
                 districtName,
-                radioButton.text.toString()
+                getConditionStatus()
             )
         )
         findNavController().popBackStack()
     }
+
+    private fun getConditionStatus(): String? {
+        return if (binding.cbNew.isChecked) {
+            "New"
+        } else if (binding.cbUsed.isChecked) {
+            "Used"
+        } else if (binding.cbNew.isChecked && binding.cbUsed.isChecked) {
+            null
+        } else {
+            null
+        }
+    }
+
     private fun observeOnFilterState(filterBy: FilterBy) {
         when (filterViewModel.isValidFilter(filterBy)) {
             is Resource.Error -> filterViewModel.filter(null)
