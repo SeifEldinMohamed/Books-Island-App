@@ -112,7 +112,6 @@ object RepositoryModule {
         storageReference: StorageReference,
         resourceProvider: ResourceProvider,
         connectivityManager: ConnectivityManager,
-        firebaseMessaging: FirebaseMessaging,
         fcmApiService: FCMApiService
     ): ChatRepository {
         return ChatRepositoryImp(
@@ -120,7 +119,6 @@ object RepositoryModule {
             storageReference,
             resourceProvider,
             connectivityManager,
-            firebaseMessaging,
             fcmApiService
         )
     }
