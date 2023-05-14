@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetAllDonateAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetDonateAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.SearchDonateAdvertisementUseCase
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class DonateViewModel @Inject constructor(
     private val getAllDonateAdvertisementUseCase: GetAllDonateAdvertisementUseCase,
     private val searchDonateAdvertisementUseCase: SearchDonateAdvertisementUseCase,
+    private val getDonateAdsByFilterUseCase: GetDonateAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private var _donateState = MutableStateFlow<DonateState>(DonateState.Init)
@@ -66,6 +69,29 @@ class DonateViewModel @Inject constructor(
                             setLoading(false)
                         }
                         _donateState.value = DonateState.SearchDonateAdvertisementSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+    fun fetchDonateAdvertisementByFilter(
+        filterBy: FilterBy
+    ) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getDonateAdsByFilterUseCase.invoke(filterBy).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _donateState.value = DonateState.FetchAllDonateAdvertisementSuccessfully(it.data)
                     }
                 }
             }

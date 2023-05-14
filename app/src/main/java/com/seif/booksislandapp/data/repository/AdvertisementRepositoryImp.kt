@@ -361,6 +361,41 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun getDonateAdsByFilter(
+        filterBy: FilterBy
+    ): Resource<ArrayList<DonateAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                    .orderBy("status")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto = document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                Resource.Success(
+                    donateAdvertisementsDto.filter { ad ->
+                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+                    }
+                        .map { it.toDonateAdvertisement() }
+                        .toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     override suspend fun uploadDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))

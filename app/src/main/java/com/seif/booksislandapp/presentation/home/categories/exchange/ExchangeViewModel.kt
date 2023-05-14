@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetAllExchangeAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetExchangeAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.SearchExchangeAdvertisementUseCase
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class ExchangeViewModel @Inject constructor(
     private val getAllExchangeAdvertisementUseCase: GetAllExchangeAdvertisementUseCase,
     private val searchExchangeAdvertisementUseCase: SearchExchangeAdvertisementUseCase,
+    private val getExchangeAdsByFilterUseCase: GetExchangeAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider,
 ) : ViewModel() {
     private var _exchangeState = MutableStateFlow<ExchangeState>(ExchangeState.Init)
@@ -65,6 +68,30 @@ class ExchangeViewModel @Inject constructor(
                             setLoading(false)
                         }
                         _exchangeState.value = ExchangeState.SearchExchangeAdsSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchExchangeAdvertisementByFilter(
+        filterBy: FilterBy
+    ) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getExchangeAdsByFilterUseCase.invoke(filterBy).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _exchangeState.value = ExchangeState.FetchAllExchangeAdsSuccessfully(it.data)
                     }
                 }
             }
