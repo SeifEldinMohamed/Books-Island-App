@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,8 @@ import com.seif.booksislandapp.databinding.FragmentDonationBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -30,6 +33,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: FragmentDonationBinding? = null
     private val binding get() = _binding!!
     private val donateViewModel: DonateViewModel by viewModels()
+    private val filterViewModel: FilterViewModel by activityViewModels()
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
     private var donateAdvertisements: List<DonateAdvertisement> = emptyList()
@@ -59,6 +63,12 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         binding.btnFilter.setOnClickListener {
             findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
         }
+        filterViewModel.liveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+
+                fetchByFilter(it)
+            }
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             donateViewModel.fetchAllDonateAdvertisement()
@@ -76,7 +86,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 Timber.d("onTextChanged: $p1 - $p2 - $p3")
-                viewLifecycleOwner.lifecycleScope.launch() {
+                viewLifecycleOwner.lifecycleScope.launch {
                     delay(1000)
                     text?.let {
                         if (donateViewModel.isSearching) {
@@ -212,6 +222,13 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         val action =
             DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
         findNavController().navigate(action)
+    }
+
+    private fun fetchByFilter(filterBy: FilterBy) {
+        donateViewModel.fetchDonateAdvertisementByFilter(
+            filterBy
+        )
+        observe()
     }
 
     override fun onDestroyView() {

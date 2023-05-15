@@ -12,6 +12,7 @@ import com.seif.booksislandapp.data.remote.dto.adv.exchange.ExchangeAdvertisemen
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.repository.ExchangeAdvertisementRepository
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -283,6 +284,38 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
                     data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
                         exchangeAdvertisementDto.toExchangeAdvertisement()
                     }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+    override suspend fun getExchangeAdsByFilter(filterBy: FilterBy): Resource<ArrayList<ExchangeAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot = firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                    .orderBy("status")
+                    .orderBy("publishDate", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val exchangeAdvertisementDto = document.toObject(ExchangeAdvertisementDto::class.java)
+                    exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                }
+                Resource.Success(
+                    exchangeAdvertisementsDto.filter { ad ->
+                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+                    }
+                        .map { it.toExchangeAdvertisement() }
+                        .toCollection(ArrayList())
                 )
             }
         } catch (e: Exception) {

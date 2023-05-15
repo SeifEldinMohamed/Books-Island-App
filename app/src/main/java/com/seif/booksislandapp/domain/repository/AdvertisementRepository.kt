@@ -39,4 +39,7 @@ interface AdvertisementRepository {
     suspend fun getSellAdsByFilter(
         filterBy: FilterBy
     ): Resource<ArrayList<SellAdvertisement>, String>
+    suspend fun getDonateAdsByFilter(
+        filterBy: FilterBy
+    ): Resource<ArrayList<DonateAdvertisement>, String>
 }

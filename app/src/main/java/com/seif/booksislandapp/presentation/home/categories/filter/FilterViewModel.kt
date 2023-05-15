@@ -10,8 +10,10 @@ import javax.inject.Inject
 @HiltViewModel
 class FilterViewModel @Inject constructor(
     private val filterUseCase: FilterUseCase
+
 ) :
     ViewModel() {
+    var filter = false
     private val mutableLiveData = MutableLiveData<FilterBy?>()
     val liveData: LiveData<FilterBy?> get() = mutableLiveData
 

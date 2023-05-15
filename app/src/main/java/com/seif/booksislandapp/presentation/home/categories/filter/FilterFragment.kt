@@ -2,6 +2,7 @@ package com.seif.booksislandapp.presentation.home.categories.filter
 
 import android.app.AlertDialog
 import android.os.Bundle
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,7 @@ class FilterFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.btnApply.setOnClickListener {
+            filterViewModel.filter = true
             filter()
         }
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -102,13 +104,17 @@ class FilterFragment : Fragment() {
     }
 
     private fun getConditionStatus(): String? {
-        return if (binding.cbNew.isChecked) {
-            "New"
-        } else if (binding.cbUsed.isChecked) {
-            "Used"
-        } else if (binding.cbNew.isChecked && binding.cbUsed.isChecked) {
+        return if (binding.cbNew.isChecked && binding.cbUsed.isChecked) {
+
             null
+        } else if (binding.cbUsed.isChecked) {
+
+            "Used"
+        } else if (binding.cbNew.isChecked) {
+
+            "New"
         } else {
+
             null
         }
     }

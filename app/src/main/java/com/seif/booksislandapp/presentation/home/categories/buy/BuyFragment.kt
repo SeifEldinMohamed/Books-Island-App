@@ -74,7 +74,8 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.tvSortBy.setOnClickListener {
-            // open sort bottom sheet
+            val bottomSheet = SortSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.btnFilter.setOnClickListener {
