@@ -14,30 +14,28 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
-// Edit logic for getting mychats but still we have isssue in getting last message in realtime
 class MyChatsRepositoryImpl(
     private val firestore: FirebaseFirestore
 ) : MyChatsRepository {
 
     override suspend fun getMyChats(userId: String) = callbackFlow {
         var messages: ArrayList<MessageDto>
-        val lastMessages = arrayListOf<MyChatDto>()
+        val myChats = arrayListOf<MyChatDto>()
 
+        // listen for changes in ChatList Collection (to update myChats when I chat with new User in realtime)
         firestore.collectionGroup(CHAT_LIST_FIIRESTORE_COLLECTION)
             .addSnapshotListener { snapShots, _ ->
                 if (snapShots != null) {
                     var chatList = arrayListOf<String>()
                     for (snapShot in snapShots) {
                         val myChatList = snapShot.get("ids") // id of the user i chat with
-                        Timber.d("getMyChats: snapshot id = ${snapShot.id}")
                         if (snapShot.id == userId) {
-                            // chatList.addAll(myChatList.values)
-                            Timber.d("getMyChats: $myChatList")
                             chatList = myChatList as ArrayList<String>
                             break
                         }
                     }
                     Timber.d("getMyChats: $chatList")
+                    // listen for changes in Users Collection (to update myChats when user I chat with update his data (change his username or avatar image) so i get the new changes in realtime)
                     firestore.collection(USER_FIRESTORE_COLLECTION)
                         .addSnapshotListener { snapShots2, _ ->
                             if (snapShots2 != null) {
@@ -50,17 +48,19 @@ class MyChatsRepositoryImpl(
                                     }
                                 }
                                 Timber.d("getMyChats: usersIChatWith = $usersIChatWith")
-                                // last messsages
+
+                                // algorithm for getting last messages
                                 usersIChatWith.forEach { user ->
+                                    // listen for changes in Chats Collection to update myChats when new message added to get lastMessage in realtime
                                     firestore.collection(CHATS_FIIRESTORE_COLLECTION)
                                         .addSnapshotListener { snapShots3, _ ->
-                                            messages = arrayListOf<MessageDto>()
+                                            messages = arrayListOf()
 
-                                            Timber.d("getMyChats: detect change in chats")
                                             if (snapShots3 != null) {
                                                 for (snapShot in snapShots3) {
                                                     val message =
                                                         snapShot.toObject(MessageDto::class.java)
+                                                    // condition for getting the messages of that specific user
                                                     if (message.senderId == user.id && message.receiverId == userId ||
                                                         message.senderId == userId && message.receiverId == user.id
                                                     ) {
@@ -70,24 +70,22 @@ class MyChatsRepositoryImpl(
 
                                                 val lastMessage =
                                                     messages.sortedBy { it.date }.last()
-                                                Timber.d(
-                                                    "getMyChats: lastMessage = $lastMessage"
-                                                )
+                                                Timber.d("getMyChats: lastMessage = $lastMessage")
+
                                                 var flag = true
-                                                for (i in 0 until lastMessages.size) {
-                                                    if (lastMessages[i].userIChatWith!!.id == user.id) {
-                                                        // update values
-                                                        lastMessages[i].lastMessage =
-                                                            lastMessage.text
-                                                        lastMessages[i].lastMessageDate =
+                                                for (i in 0 until myChats.size) {
+                                                    if (myChats[i].userIChatWith!!.id == user.id) { // this user exists in myChats so update his values
+
+                                                        myChats[i].lastMessage = lastMessage.text
+                                                        myChats[i].lastMessageDate =
                                                             lastMessage.date
-                                                        lastMessages[i].userIChatWith = user
+                                                        myChats[i].userIChatWith = user
                                                         flag = false
                                                         break
                                                     }
                                                 }
-                                                if (flag) {
-                                                    lastMessages.add(
+                                                if (flag) { // not exits in myChats list so add him for first time
+                                                    myChats.add(
                                                         MyChatDto(
                                                             userIChatWith = user,
                                                             lastMessage = lastMessage.text,
@@ -95,12 +93,12 @@ class MyChatsRepositoryImpl(
                                                         )
                                                     )
                                                 }
-
+                                                // send myChats when we reach the last user in usersIChatWith
                                                 if (usersIChatWith.last() == user) {
                                                     trySend(
                                                         Resource.Success(
-                                                            lastMessages.map { it.toMyChat() }
-                                                                .sortedByDescending { it.lastMessageDate } //  sort myChats according to the newest user i chated with
+                                                            myChats.map { it.toMyChat() }
+                                                                .sortedByDescending { it.lastMessageDate } //  sort myChats according to the newest user I Chat with ( to make him in the top)
                                                         )
                                                     )
                                                 }
@@ -114,43 +112,4 @@ class MyChatsRepositoryImpl(
 
         awaitClose { }
     }
-
-//    override suspend fun getMyChats(userId: String) = callbackFlow {
-//        firestore.collectionGroup(MY_CHATS_FIIRESTORE_COLLECTION)
-//            .orderBy("lastMessageDate", Query.Direction.DESCENDING)
-//            .addSnapshotListener { snapShots, error ->
-//                if (error != null) {
-//                    Timber.d("getMyChats: ${error.message}")
-//                    trySend(Resource.Error(error.message.toString()))
-//                    return@addSnapshotListener
-//                }
-//                if (snapShots != null) {
-//                    val myChats = arrayListOf<MyChatDto>()
-//                    for (snapShot in snapShots) {
-//                        val myChatDto = snapShot.toObject(MyChatDto::class.java)
-//                        myChats.add(myChatDto)
-//                    }
-//                    // Timber.d("mychats: ${myChats.filter { it.senderId == userId }}")
-//                    //  Timber.d("mychats: ${myChats.filter { it.userIChatWith!!.id == userId }}")
-//                    // Timber.d("mychats: ${myChats.filter { it.senderId == userId && it.userIChatWith!!.id == userId }}")
-// //                        val newMyChats = arrayListOf<MyChatDto>()
-// //                        for (i in 0 until myChats.size - 1) {
-// //                            if (myChats[i].senderId == myChats[i + 1].userIChatWith!!.id && myChats[i].userIChatWith!!.id == myChats[i + 1].senderId) {
-// //                                if (myChats[i].lastMessageDate!! > myChats[i + 1].lastMessageDate!!)
-// //                                    newMyChats.add(myChats[i])
-// //                            }
-// //                        }
-//                    Timber.d("getMyChats: $myChats")
-//
-//                    trySend(
-//                        Resource.Success(
-//                            myChats.filter { it.userIChatWith!!.id != userId }
-//                                .filter { it.senderId == userId }
-//                                .map { it.toMyChat() }
-//                        )
-//                    )
-//                }
-//            }
-//        awaitClose { }
-//    }
 }
