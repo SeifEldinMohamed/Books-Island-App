@@ -13,7 +13,6 @@ class FilterViewModel @Inject constructor(
 
 ) :
     ViewModel() {
-    var filter = false
     private val mutableLiveData = MutableLiveData<FilterBy?>()
     val liveData: LiveData<FilterBy?> get() = mutableLiveData
 
