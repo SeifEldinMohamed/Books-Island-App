@@ -38,7 +38,6 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 import java.io.File
-import java.util.*
 
 @AndroidEntryPoint
 class ChatRoomFragment : Fragment() {
@@ -128,8 +127,7 @@ class ChatRoomFragment : Fragment() {
             senderId = firebaseCurrentUser!!.uid,
             receiverId = args.owner.id,
             text = binding.etMessage.text.toString().trim(),
-            imageUrl = null,
-            date = Date()
+            imageUrl = null
         )
     }
 
@@ -243,9 +241,8 @@ class ChatRoomFragment : Fragment() {
                                             id = "",
                                             senderId = firebaseCurrentUser!!.uid,
                                             receiverId = args.owner.id,
-                                            text = null,
-                                            imageUrl = imageUris,
-                                            date = Date()
+                                            text = getString(R.string.sent_you_image),
+                                            imageUrl = imageUris
                                         )
                                     )
                                     dismissLoadingDialog()
