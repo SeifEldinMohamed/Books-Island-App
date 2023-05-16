@@ -29,6 +29,7 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     private val myChatsAdapter by lazy { MyChatsAdapter() }
     private val myChatsViewModel: MyChatsViewModel by viewModels()
     private lateinit var userId: String
+    private var myChats: List<MyChat>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,19 +56,19 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     }
 
     private fun fetchMyBuyingChats() {
-        //  if (myChats == null) {
-        myChatsViewModel.getMyBuyingChats(userId)
-        observe()
-        //  }
+        if (myChats == null) {
+            myChatsViewModel.getMyBuyingChats(userId)
+            observe()
+        }
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenCreated {
             myChatsViewModel.buyingChatsState.collect {
                 when (it) {
                     MyChatsState.Init -> Unit
                     is MyChatsState.FetchMyChatsSuccessfully -> {
-                        // myChats = it.myBuyingChat
+                        myChats = it.myBuyingChat
                         Timber.d("observe: ${it.myBuyingChat}")
                         myChatsAdapter.updateList(it.myBuyingChat)
                         handleUi(it.myBuyingChat)
@@ -155,8 +156,9 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // we don't reset those variables to null bec we need to keep listen for changes so if the user send message and then return back to myChats can see the last message updates in realtime
         binding.rvBuyingUsersChat.adapter = null
+        //  _binding = null
         dialog.setView(null)
-        _binding = null
     }
 }
