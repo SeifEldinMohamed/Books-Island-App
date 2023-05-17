@@ -82,12 +82,14 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     }
 
     private fun handleUi(myBuyingChats: List<MyChat>) {
-        if (myBuyingChats.isEmpty()) {
-            binding.rvBuyingUsersChat.hide()
-            binding.noBooksAnimationMyBuyingChats.show()
-        } else {
-            binding.rvBuyingUsersChat.show()
-            binding.noBooksAnimationMyBuyingChats.hide()
+        if (_binding != null) {
+            if (myBuyingChats.isEmpty()) {
+                binding.rvBuyingUsersChat.hide()
+                binding.noBooksAnimationMyBuyingChats.show()
+            } else {
+                binding.rvBuyingUsersChat.show()
+                binding.noBooksAnimationMyBuyingChats.hide()
+            }
         }
     }
 
@@ -158,7 +160,9 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         super.onDestroyView()
         // we don't reset those variables to null bec we need to keep listen for changes so if the user send message and then return back to myChats can see the last message updates in realtime
         binding.rvBuyingUsersChat.adapter = null
-        //  _binding = null
         dialog.setView(null)
+        // if (findNavController().currentDestination!!.id != R.id.chatRoomFragment) {
+        _binding = null
+        // }
     }
 }
