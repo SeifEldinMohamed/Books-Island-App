@@ -1,5 +1,7 @@
 package com.seif.booksislandapp.data.repository
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.net.Uri
 import com.google.firebase.firestore.DocumentReference
@@ -30,6 +32,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
+import java.net.URL
 import javax.inject.Inject
 
 class ChatRepositoryImp @Inject constructor(
@@ -43,7 +46,6 @@ class ChatRepositoryImp @Inject constructor(
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
-        //  return try {
         return withTimeout(Constants.TIMEOUT_UPLOAD) {
             try {
                 uploadMessage(message)
@@ -134,7 +136,7 @@ class ChatRepositoryImp @Inject constructor(
             val userDto = senderUserDocumentSnapshot.toObject(UserDto::class.java)
             Timber.d("uploadMessage: user exits $userDto")
             // send notification
-            sendNotification(userDto!!.username, userDto.avatarImage, message)
+            sendNotification(userDto!!.username, message)
         }
 
         return Resource.Success(message)
@@ -164,7 +166,7 @@ class ChatRepositoryImp @Inject constructor(
                     val user = senderUserDocumentSnapshot.toObject(UserDto::class.java)
                     Timber.d("uploadMessage: user exits $user")
                     // send notification
-                    sendNotification(user!!.username, user.avatarImage, message)
+                    sendNotification(user!!.username, message)
                 }
 
                 Resource.Success(message)
@@ -172,7 +174,7 @@ class ChatRepositoryImp @Inject constructor(
         }
     }
 
-    private suspend fun sendNotification(username: String, userAvatar: String, message: Message) {
+    private suspend fun sendNotification(username: String, message: Message) {
         val receiverTokenDocumentSnapshot =
             firestore.collection(Constants.TOKENS_FIIRESTORE_COLLECTION)
                 .document(message.receiverId)
@@ -185,7 +187,6 @@ class ChatRepositoryImp @Inject constructor(
             val fcmMessageDto = FCMMessageDto(
                 title = "New Message",
                 body = "$username: ${message.text}",
-                userAvatar = userAvatar,
                 senderId = message.senderId,
                 receiverId = message.receiverId,
                 image = message.imageUrl.toString()
@@ -197,6 +198,11 @@ class ChatRepositoryImp @Inject constructor(
             Timber.d("sendNotification: notificationDto= $notificationDto")
             fcmApiService.sendNotification(notificationDto = notificationDto)
         }
+    }
+
+    private fun convertImageUrlToBitmap(image: String): Bitmap {
+        val url = URL(image)
+        return BitmapFactory.decodeStream(url.openConnection().getInputStream())
     }
 
     override fun getMessages(
