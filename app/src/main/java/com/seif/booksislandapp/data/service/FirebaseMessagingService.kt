@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.app.NotificationCompat
@@ -16,7 +15,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.utils.Constants.Companion.NOTIFICATION_CHANNEL_ID
 import timber.log.Timber
-import java.util.concurrent.CompletableFuture
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 open class FirebaseMessagingService : FirebaseMessagingService() {
@@ -34,24 +32,20 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
 
         val body = bundle["gcm.notification.body"] as String
         val image = bundle["gcm.notification.image"] as String
-        val userAvatar = bundle["gcm.notification.userAvatar"] as String
         val title: String = bundle["gcm.notification.title"] as String
 
-        Timber.d("FCM Data = body = $body , title = $title , userAvatar= $userAvatar , sentImage= $image")
-        sendNotification(title, body, image, userAvatar)
+        Timber.d("FCM Data = body = $body , title = $title , sentImage= $image")
+        sendNotification(title, body, image)
         super.handleIntent(intent)
     }
 
-    private fun sendNotification(title: String, body: String, image: String, userAvatar: String) {
+    private fun sendNotification(title: String, body: String, image: String) {
         // Display notification
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        val largeIconBitmapFuture: CompletableFuture<Bitmap> =
-            setLargeIconFromBitmap(notificationBuilder, userAvatar)
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
@@ -66,28 +60,22 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         )
 
         if (image != "null") {
-            largeIconBitmapFuture.thenAccept { avatarBitmapImage ->
-                setBigPictureFromBitmap(
-                    notificationBuilder,
-                    image,
-                    avatarBitmapImage,
-                    notificationManager,
-                    channel
-                )
-            }
+            setBigPictureFromBitmap(
+                notificationBuilder,
+                image,
+                notificationManager,
+                channel
+            )
         } else {
             // we use the CompletableFuture  instance to wait until we add the large icon then we sent the notification
-            largeIconBitmapFuture.thenAccept {
-                notificationManager.createNotificationChannel(channel)
-                notificationManager.notify(0, notificationBuilder.build())
-            }
+            notificationManager.createNotificationChannel(channel)
+            notificationManager.notify(0, notificationBuilder.build())
         }
     }
 
     private fun setBigPictureFromBitmap(
         notificationBuilder: NotificationCompat.Builder,
         image: String,
-        avatarBitmapImage: Bitmap,
         notificationManager: NotificationManager,
         channel: NotificationChannel
     ) {
@@ -99,7 +87,7 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
                     // Set the loaded bitmap as the big picture
                     val bigPictureStyle = NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
-                        .bigLargeIcon(avatarBitmapImage)
+                        .bigLargeIcon(null)
 
                     notificationBuilder.setStyle(bigPictureStyle)
 
@@ -112,25 +100,6 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
             }).build()
         // Start the image request
         ImageLoader(this).enqueue(request)
-    }
-
-    private fun setLargeIconFromBitmap(
-        notificationBuilder: NotificationCompat.Builder,
-        userAvatar: String
-    ): CompletableFuture<Bitmap> {
-        val completableFuture = CompletableFuture<Bitmap>()
-        val request = ImageRequest.Builder(this)
-            .data(userAvatar)
-            .target(object : Target {
-                override fun onSuccess(result: Drawable) {
-                    val bitmap = (result as BitmapDrawable).bitmap
-                    notificationBuilder.setLargeIcon(bitmap)
-                    completableFuture.complete(bitmap)
-                }
-            }).build()
-        // Start the image request
-        ImageLoader(this).enqueue(request)
-        return completableFuture
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -278,3 +247,24 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
 //        notificationManager.notify(0, builder.build())
 //    }
 }
+
+/**
+private fun setLargeIconFromBitmap(
+notificationBuilder: NotificationCompat.Builder,
+userAvatar: String
+): CompletableFuture<Bitmap> {
+val completableFuture = CompletableFuture<Bitmap>()
+val request = ImageRequest.Builder(this)
+.data(userAvatar)
+.target(object : Target {
+override fun onSuccess(result: Drawable) {
+val bitmap = (result as BitmapDrawable).bitmap
+notificationBuilder.setLargeIcon(bitmap)
+completableFuture.complete(bitmap)
+}
+}).build()
+// Start the image request
+ImageLoader(this).enqueue(request)
+return completableFuture
+}
+ **/
