@@ -139,12 +139,13 @@ class ChatRoomFragment : Fragment() {
                     is ChatRoomState.IsLoading -> handleLoadingState(it.isLoading)
                     is ChatRoomState.FetchMessagesSuccessfullySuccessfully -> {
                         messages = it.messages.toCollection(ArrayList())
+                        if (messages.last().senderId == firebaseCurrentUser!!.uid)
+                            binding.etMessage.setText("")
+
                         showMessages(messages)
                     }
                     is ChatRoomState.SendMessageSuccessfully -> {
-                        binding.etMessage.text?.clear()
-                        // messages.add(it.message)
-                        showMessages(messages)
+                        dismissLoadingDialog() // in case of upload image
                     }
                     is ChatRoomState.ShowError -> handleErrorState(it.message)
                     is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
@@ -217,6 +218,8 @@ class ChatRoomFragment : Fragment() {
 
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            startLoadingDialog()
+
             val resultCode: Int = activityResult.resultCode
             val data: Intent? = activityResult.data
             when (resultCode) {
@@ -245,7 +248,6 @@ class ChatRoomFragment : Fragment() {
                                             imageUrl = imageUris
                                         )
                                     )
-                                    dismissLoadingDialog()
                                 }
                             }
                         }
