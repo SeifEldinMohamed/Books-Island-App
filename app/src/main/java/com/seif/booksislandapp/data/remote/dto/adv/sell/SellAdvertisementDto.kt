@@ -12,5 +12,6 @@ data class SellAdvertisementDto(
     override val status: AdvStatus? = null,
     override val publishDate: Date? = null,
     override val location: String = "",
+    override val confirmationMessageSent: Boolean? = null,
     val price: String = ""
 ) : AdvertisementDto()
