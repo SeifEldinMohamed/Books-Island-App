@@ -28,7 +28,8 @@ import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPend
 @AndroidEntryPoint
 class FilterFragment : Fragment() {
 
-    private lateinit var binding: FragmentFilterBinding
+    private var _binding: FragmentFilterBinding? = null
+    private val binding get() = _binding!!
     private var governorates: List<Governorate>? = null
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
 
@@ -46,7 +47,7 @@ class FilterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentFilterBinding.inflate(inflater, container, false)
+        _binding = FragmentFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -59,7 +60,7 @@ class FilterFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.btnApply.setOnClickListener {
-            filterViewModel.filter = true
+
             filter()
         }
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -100,13 +101,12 @@ class FilterFragment : Fragment() {
                 getConditionStatus()
             )
         )
-        findNavController().popBackStack()
     }
 
     private fun getConditionStatus(): String? {
         return if (binding.cbNew.isChecked && binding.cbUsed.isChecked) {
 
-            null
+            "All"
         } else if (binding.cbUsed.isChecked) {
 
             "Used"
@@ -120,9 +120,25 @@ class FilterFragment : Fragment() {
     }
 
     private fun observeOnFilterState(filterBy: FilterBy) {
-        when (filterViewModel.isValidFilter(filterBy)) {
-            is Resource.Error -> filterViewModel.filter(null)
-            is Resource.Success -> filterViewModel.filter(filterBy)
+        when (val result = filterViewModel.isValidFilter(filterBy)) {
+            is Resource.Error -> {
+                binding.root.showErrorSnackBar(result.message)
+            }
+            is Resource.Success -> {
+                if (filterBy.condition == "All")
+                    filterViewModel.filter(
+                        FilterBy(
+                            filterBy.category,
+                            filterBy.governorate,
+                            filterBy.district,
+                            null
+                        )
+                    )
+                else
+                    filterViewModel.filter(filterBy)
+
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -238,5 +254,12 @@ class FilterFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         itemCategoryViewModel.reset()
+        governorateId = null
+        governorateName = null
+        districtName = null
+        categoryName = null
+        districts = null
+        governorates = null
+        _binding = null
     }
 }
