@@ -67,8 +67,6 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
             if (it != null) {
-
-                // filterViewModel.filter = false
                 fetchByFilter(it)
             }
         }
