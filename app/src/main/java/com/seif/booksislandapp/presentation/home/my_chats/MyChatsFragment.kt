@@ -152,7 +152,7 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
 
     override fun onAdItemClick(item: MyChat, position: Int) {
         val action =
-            MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith)
+            MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith.id)
         findNavController().navigate(action)
     }
 

@@ -182,7 +182,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         owner?.let { owner ->
             val action =
                 DonateAdDetailsFragmentDirections.actionDonateAdDetailsFragmentToChatRoomFragment(
-                    owner = owner
+                    ownerId = owner.id
                 )
             findNavController().navigate(action)
         }

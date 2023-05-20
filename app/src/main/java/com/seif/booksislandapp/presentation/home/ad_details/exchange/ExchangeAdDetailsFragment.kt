@@ -129,7 +129,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         owner?.let { owner ->
             val action =
                 ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentToChatRoomFragment(
-                    owner = owner
+                    ownerId = owner.id
                 )
             findNavController().navigate(action)
         }
