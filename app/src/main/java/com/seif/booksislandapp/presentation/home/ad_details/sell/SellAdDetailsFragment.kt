@@ -82,7 +82,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         owner?.let { owner ->
             val action =
                 SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentToChatRoomFragment(
-                    owner = owner
+                    ownerId = owner.id
                 )
             findNavController().navigate(action)
         }

@@ -63,6 +63,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.test:core-ktx:1.5.0'
 
     // Unit Testing
     testImplementation 'junit:junit:4.13.2'
@@ -118,8 +119,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4"
-    // Import the Firebase BoM: your app will always use compatible versions of Firebase Android libraries.
+    // Import the Firebase BoM: your app  will always use compatible versions of Firebase Android libraries.
     implementation 'com.google.firebase:firebase-bom:31.2.3'
 
     // Gson
@@ -184,4 +186,9 @@ dependencies {
     // Balloon for Tool Tip
     implementation "com.github.skydoves:balloon:1.5.2"
 
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    
+    // gson converter library
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 }

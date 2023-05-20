@@ -91,7 +91,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         owner?.let { owner ->
             val action =
                 AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentToChatRoomFragment(
-                    owner = owner
+                    ownerId = owner.id
                 )
             findNavController().navigate(action)
         }

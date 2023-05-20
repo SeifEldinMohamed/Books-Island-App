@@ -18,11 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import coil.load
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentChatRoomBinding
+import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapter
 import com.seif.booksislandapp.utils.FileUtil
@@ -38,7 +38,6 @@ import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
 import java.io.File
-import java.util.*
 
 @AndroidEntryPoint
 class ChatRoomFragment : Fragment() {
@@ -47,12 +46,13 @@ class ChatRoomFragment : Fragment() {
     private val chatRoomViewModel: ChatRoomViewModel by viewModels()
     private val chatRoomAdapter: ChatRoomAdapter by lazy { ChatRoomAdapter() }
     private var firebaseCurrentUser: FirebaseUser? = null
-    private val args: ChatRoomFragmentArgs by navArgs()
+
+    // private val args: ChatRoomFragmentArgs by navArgs()
     private lateinit var dialog: AlertDialog
     private var messages: ArrayList<Message> = arrayListOf()
     lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
     lateinit var imageUris: Uri
-    lateinit var receiverId: String
+    private var receiverUserId: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,9 +68,16 @@ class ChatRoomFragment : Fragment() {
         firebaseCurrentUser = chatRoomViewModel.getFirebaseCurrentUser()
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
 
-        receiverId = args.owner.id
-
-        fetchMessagesBetweenTwoUsers()
+        receiverUserId = arguments?.getString("ownerId")
+        if (receiverUserId == null) {
+            arguments?.let {
+                receiverUserId = it.getString("userId", "")
+            }
+        }
+        receiverUserId?.let {
+            chatRoomViewModel.fetchUserById(it)
+            fetchMessagesBetweenTwoUsers(it)
+        }
 
         binding.btnSendMessage.setOnClickListener {
             val message = prepareMessage()
@@ -82,18 +89,17 @@ class ChatRoomFragment : Fragment() {
         binding.ivBackChatRoom.setOnClickListener {
             findNavController().navigateUp()
         }
-        showReceiverData()
         observe()
         handleKeyboard()
 
         binding.rvChatRoom.adapter = chatRoomAdapter
     }
 
-    private fun fetchMessagesBetweenTwoUsers() {
+    private fun fetchMessagesBetweenTwoUsers(receiverUserId: String) {
         firebaseCurrentUser?.uid?.let { currentId ->
             chatRoomViewModel.requestFetchMessagesBetweenTwoUsers(
                 senderId = currentId,
-                receiverId = receiverId
+                receiverId = receiverUserId
             )
         }
     }
@@ -116,9 +122,9 @@ class ChatRoomFragment : Fragment() {
         binding.clChatMessages.viewTreeObserver.addOnGlobalLayoutListener(listener)
     }
 
-    private fun showReceiverData() {
-        binding.ivAvatar.load(args.owner.avatarImage)
-        binding.tvUsername.text = args.owner.username
+    private fun showReceiverData(receiverUser: User) {
+        binding.ivAvatar.load(receiverUser.avatarImage)
+        binding.tvUsername.text = receiverUser.username
     }
 
     private fun prepareMessage(): Message {
@@ -126,10 +132,9 @@ class ChatRoomFragment : Fragment() {
         return Message(
             id = "",
             senderId = firebaseCurrentUser!!.uid,
-            receiverId = args.owner.id,
+            receiverId = receiverUserId!!,
             text = binding.etMessage.text.toString().trim(),
-            imageUrl = null,
-            date = Date()
+            imageUrl = null
         )
     }
 
@@ -139,14 +144,21 @@ class ChatRoomFragment : Fragment() {
                 when (it) {
                     ChatRoomState.Init -> Unit
                     is ChatRoomState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ChatRoomState.FetchMessagesSuccessfullySuccessfully -> {
+                    is ChatRoomState.FetchMessagesSuccessfully -> {
                         messages = it.messages.toCollection(ArrayList())
+                        if (messages.isNotEmpty()) {
+                            if (messages.last().senderId == firebaseCurrentUser!!.uid)
+                                binding.etMessage.setText("")
+                        }
                         showMessages(messages)
                     }
+                    is ChatRoomState.FetchUserSuccessfully -> {
+                        receiverUserId = it.user.id
+                        // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
+                        showReceiverData(receiverUser = it.user)
+                    }
                     is ChatRoomState.SendMessageSuccessfully -> {
-                        binding.etMessage.text?.clear()
-                        // messages.add(it.message)
-                        showMessages(messages)
+                        dismissLoadingDialog() // in case of upload image
                     }
                     is ChatRoomState.ShowError -> handleErrorState(it.message)
                     is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
@@ -166,7 +178,8 @@ class ChatRoomFragment : Fragment() {
                         when (hasActiveConnection) {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
-                                fetchMessagesBetweenTwoUsers()
+                                // fetchMessagesBetweenTwoUsers(receiverUserId)
+                                chatRoomViewModel.fetchUserById(receiverUserId!!)
                             }
                             false -> Unit
                         }
@@ -219,6 +232,8 @@ class ChatRoomFragment : Fragment() {
 
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            startLoadingDialog()
+
             val resultCode: Int = activityResult.resultCode
             val data: Intent? = activityResult.data
             when (resultCode) {
@@ -242,13 +257,11 @@ class ChatRoomFragment : Fragment() {
                                         Message(
                                             id = "",
                                             senderId = firebaseCurrentUser!!.uid,
-                                            receiverId = args.owner.id,
-                                            text = null,
-                                            imageUrl = imageUris,
-                                            date = Date()
+                                            receiverId = receiverUserId!!,
+                                            text = getString(R.string.sent_you_image),
+                                            imageUrl = imageUris
                                         )
                                     )
-                                    dismissLoadingDialog()
                                 }
                             }
                         }

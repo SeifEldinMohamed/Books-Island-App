@@ -3,10 +3,13 @@ package com.seif.booksislandapp.data.repository
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toDistricts
 import com.seif.booksislandapp.data.mapper.toGovernorate
+import com.seif.booksislandapp.data.mapper.toUser
 import com.seif.booksislandapp.data.mapper.toUserDto
+import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
@@ -23,8 +26,10 @@ import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImp @Inject constructor(
@@ -32,7 +37,8 @@ class AuthRepositoryImp @Inject constructor(
     private val auth: FirebaseAuth,
     private val resourceProvider: ResourceProvider,
     private val sharedPrefs: SharedPrefs,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val fcm: FirebaseMessaging
 ) : AuthRepository {
     private val TAG = "AuthRepositoryImp"
     override suspend fun register(user: User): Resource<String, String> {
@@ -46,12 +52,18 @@ class AuthRepositoryImp @Inject constructor(
                 authResult.user?.let { firebaseUser ->
                     user.id = firebaseUser.uid
                 }
-
+                // create user with email and password
                 when (val result: Resource<String, String> = addUser(user)) {
                     is Resource.Error -> Resource.Error(result.message)
                     is Resource.Success -> {
                         // save user data in shared preference
+                        Timber.d("register: upload user data to firestore")
                         saveUserData(user)
+                        Timber.d("register: saved user data in shared preference")
+                        // update token
+                        val token = fcm.token.await()
+                        updateToken(user.id, token)
+                        Timber.d("register: update token")
                         Resource.Success(result.data)
                     }
                 }
@@ -59,6 +71,11 @@ class AuthRepositoryImp @Inject constructor(
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
+    }
+
+    private fun updateToken(userId: String, token: String) {
+        firestore.collection(Constants.TOKENS_FIIRESTORE_COLLECTION).document(userId)
+            .set(hashMapOf("token" to token))
     }
 
     private fun saveUserData(user: User) {
@@ -89,7 +106,38 @@ class AuthRepositoryImp @Inject constructor(
         return try {
             withTimeout(Constants.TIMEOUT_AUTH) {
                 auth.signInWithEmailAndPassword(email, password).await()
-                Resource.Success(resourceProvider.string(R.string.welcome_back))
+                when (val result = getUserById(auth.currentUser!!.uid)) {
+                    is Resource.Error -> Resource.Error(result.message)
+                    is Resource.Success -> {
+                        // save user data
+                        saveUserData(result.data)
+                        // update token
+                        val token = fcm.token.await()
+                        updateToken(auth.currentUser!!.uid, token)
+
+                        Resource.Success(resourceProvider.string(R.string.welcome_back))
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    private suspend fun getUserById(id: String): Resource<User, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+
+                delay(500) // to show loading progress
+                val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION).document(id)
+                    .get()
+                    .await()
+                val user = querySnapshot.toObject(UserDto::class.java)
+                Resource.Success(
+                    data = user!!.toUser()
+                )
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())

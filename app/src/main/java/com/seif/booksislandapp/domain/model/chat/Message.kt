@@ -7,7 +7,7 @@ data class Message(
     var id: String,
     val senderId: String,
     val receiverId: String,
-    val text: String? = null,
+    val text: String = "",
     var imageUrl: Uri? = null,
-    val date: Date
+    var date: Date? = null
 )

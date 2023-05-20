@@ -1,7 +1,8 @@
-package com.seif.practiceteamwork.di
+package com.seif.booksislandapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.utils.Constants.Companion.FIREBASE_STORAGE_ROOT_DIRECTORY
@@ -31,5 +32,11 @@ object FirebaseModule {
     @Provides
     fun provideFirebaseStorageInstance(): StorageReference {
         return FirebaseStorage.getInstance().getReference(FIREBASE_STORAGE_ROOT_DIRECTORY)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseCloudMessagingInstance(): FirebaseMessaging {
+        return FirebaseMessaging.getInstance()
     }
 }

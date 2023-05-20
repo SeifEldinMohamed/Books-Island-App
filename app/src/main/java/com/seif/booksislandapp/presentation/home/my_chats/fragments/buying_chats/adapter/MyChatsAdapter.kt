@@ -8,7 +8,8 @@ import coil.load
 import com.seif.booksislandapp.databinding.MyChatItemBinding
 import com.seif.booksislandapp.domain.model.chat.MyChat
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.utils.formatDate
+import com.seif.booksislandapp.utils.formatDateToTime
+import timber.log.Timber
 
 class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
     var onAdItemClick: OnAdItemClick<MyChat>? = null
@@ -20,7 +21,7 @@ class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
             binding.ivAvatarImage.load(myChat.userIChatWith.avatarImage)
             binding.tvUsername.text = myChat.userIChatWith.username
             binding.tvLastMessage.text = myChat.lastMessage
-            binding.tvTime.text = myChat.lastMessageDate.formatDate()
+            binding.tvTime.text = myChat.lastMessageDate!!.formatDateToTime()
             binding.cvMyChat.setOnClickListener {
                 onAdItemClick?.onAdItemClick(myChat, position)
             }
@@ -47,6 +48,7 @@ class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newMyChats: List<MyChat>) {
+        Timber.d("updateList: myChats in Adapter = $newMyChats")
         this.myChats = newMyChats
         notifyDataSetChanged()
     }

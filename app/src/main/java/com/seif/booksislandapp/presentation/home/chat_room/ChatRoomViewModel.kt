@@ -8,6 +8,7 @@ import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.domain.usecase.usecase.chat.FetchMessagesBetweenTwoUsersUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.chat.SendMessageUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,8 @@ class ChatRoomViewModel @Inject constructor(
     private val fetchMessagesBetweenTwoUsersUseCase: FetchMessagesBetweenTwoUsersUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val getUserByIdUseCase: GetUserByIdUseCase
 ) : ViewModel() {
     private var _chatRoomState = MutableStateFlow<ChatRoomState>(ChatRoomState.Init)
     val chatRoomState = _chatRoomState.asStateFlow()
@@ -36,6 +38,20 @@ class ChatRoomViewModel @Inject constructor(
                     is Resource.Success -> {
                         _chatRoomState.value =
                             ChatRoomState.SendMessageSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchUserById(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getUserByIdUseCase(id).let {
+                when (it) {
+                    is Resource.Error -> showError(it.message)
+                    is Resource.Success -> {
+                        _chatRoomState.value =
+                            ChatRoomState.FetchUserSuccessfully(it.data)
                     }
                 }
             }
@@ -60,7 +76,7 @@ class ChatRoomViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                             _chatRoomState.value =
-                                ChatRoomState.FetchMessagesSuccessfullySuccessfully(it.data)
+                                ChatRoomState.FetchMessagesSuccessfully(it.data)
                         }
                     }
                 }

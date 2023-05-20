@@ -7,8 +7,9 @@
 
     <TextView
         android:id="@+id/message_text_view"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="@dimen/_250sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:background="@drawable/sender_bubble_background"
         android:lineSpacingExtra="2dp"
