@@ -293,11 +293,13 @@
         android:name="com.seif.booksislandapp.presentation.home.chat_room.ChatRoomFragment"
         android:label="ChatRoomFragment">
         <argument
-            android:name="owner"
-            app:argType="com.seif.booksislandapp.domain.model.User" />
+            android:name="ownerId"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_chatRoomFragment_to_adProviderProfile"
             app:destination="@id/adProviderProfile" />
+
     </fragment>
     <fragment
         android:id="@+id/adProviderProfile"
