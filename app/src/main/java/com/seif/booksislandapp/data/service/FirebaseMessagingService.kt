@@ -6,15 +6,20 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.media.RingtoneManager
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
+import androidx.navigation.NavDeepLinkBuilder
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.target.Target
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.utils.Constants.Companion.NOTIFICATION_CHANNEL_ID
 import timber.log.Timber
+import kotlin.random.Random
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 open class FirebaseMessagingService : FirebaseMessagingService() {
@@ -33,18 +38,36 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         val body = bundle["gcm.notification.body"] as String
         val image = bundle["gcm.notification.image"] as String
         val title: String = bundle["gcm.notification.title"] as String
-
+        val senderId: String = bundle["gcm.notification.senderId"] as String
+        Timber.d("handleIntent: receiverId = $senderId")
         Timber.d("FCM Data = body = $body , title = $title , sentImage= $image")
-        sendNotification(title, body, image)
+        Timber.d("handleIntent: 2) received and show Notifcation .............")
+        sendNotification(title, body, image, senderId)
         super.handleIntent(intent)
     }
 
-    private fun sendNotification(title: String, body: String, image: String) {
+    private fun sendNotification(title: String, body: String, image: String, senderId: String) {
+
+        val pendingIntent = NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.main_nav_graph)
+            .setComponentName(HomeActivity::class.java)
+            .setDestination(R.id.chatRoomFragment)
+            .setArguments(Bundle().apply {
+                putString(
+                    "userId",
+                    senderId
+                )
+            }) // replace with deep links to maintain back stack
+            .createPendingIntent()
         // Display notification
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(body)
+            .setSound(defaultSoundUri)
+            .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -69,7 +92,7 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         } else {
             // we use the CompletableFuture  instance to wait until we add the large icon then we sent the notification
             notificationManager.createNotificationChannel(channel)
-            notificationManager.notify(0, notificationBuilder.build())
+            notificationManager.notify(Random.nextInt(), notificationBuilder.build())
         }
     }
 

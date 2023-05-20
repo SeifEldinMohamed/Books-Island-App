@@ -1,7 +1,5 @@
 package com.seif.booksislandapp.data.repository
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.net.Uri
 import com.google.firebase.firestore.DocumentReference
@@ -32,7 +30,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
-import java.net.URL
 import javax.inject.Inject
 
 class ChatRepositoryImp @Inject constructor(
@@ -195,15 +192,15 @@ class ChatRepositoryImp @Inject constructor(
                 fcmMessageDto = fcmMessageDto,
                 token = token
             )
-            Timber.d("sendNotification: notificationDto= $notificationDto")
+            Timber.d("sendNotification: 1) message sent notificationDto= $notificationDto")
             fcmApiService.sendNotification(notificationDto = notificationDto)
         }
     }
 
-    private fun convertImageUrlToBitmap(image: String): Bitmap {
-        val url = URL(image)
-        return BitmapFactory.decodeStream(url.openConnection().getInputStream())
-    }
+//    private fun convertImageUrlToBitmap(image: String): Bitmap {
+//        val url = URL(image)
+//        return BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//    }
 
     override fun getMessages(
         senderId: String,
