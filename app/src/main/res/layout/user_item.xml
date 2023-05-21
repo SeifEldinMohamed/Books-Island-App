@@ -30,6 +30,7 @@
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
                 android:contentDescription="@string/book_image"
                 android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -42,52 +43,18 @@
                 android:id="@+id/tv_username"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_6sdp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_regular"
                 android:maxLines="1"
                 android:text="@string/habiba_tarek"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_avatar_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_avatar_image"
                 app:layout_constraintTop_toTopOf="@+id/iv_avatar_image" />
-
-            <TextView
-                android:id="@+id/tv_last_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_4sdp"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_6sdp"
-                android:ellipsize="end"
-                android:fontFamily="@font/roboto_regular"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="@string/please_provide_me_with_extra_details_about_this_book"
-                android:textColor="@color/gray_medium"
-                android:textSize="@dimen/_10ssp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tv_username"
-                app:layout_constraintTop_toBottomOf="@+id/tv_username"
-                tools:ignore="TextContrastCheck" />
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginEnd="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_6sdp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="@string/_16_32"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_last_message"
-                app:layout_constraintTop_toBottomOf="@+id/tv_last_message"
-                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
