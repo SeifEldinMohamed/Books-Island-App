@@ -83,13 +83,15 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_profile.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_register.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_sell_ad_details.xml" value="0.152" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_sort_sheet.xml" value="0.18229166666666666" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_splash.xml" value="0.536" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_auction.xml" value="0.264" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_auction.xml" value="0.536" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_bid.xml" value="0.6" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_donate.xml" value="0.264" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_donate.xml" value="0.4" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_exchange.xml" value="0.264" />
-        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_sell_advertisement.xml" value="0.72" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_upload_sell_advertisement.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_user_chats.xml" value="0.4" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_users_bottom_sheet.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_view_pager.xml" value="0.264" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/fragment_wish_list.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/header_nav.xml" value="0.6" />
@@ -105,6 +107,7 @@
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/sender_bubble_layout.xml" value="0.2" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/uploaded_exchange_item.xml" value="0.6" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/uploaded_image_item.xml" value="0.4" />
+        <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/user_item.xml" value="0.4" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/layout/users_chat.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/96654/BooksIslandApp/app/src/main/res/menu/home_bottom_nav_menu.xml" value="0.20052083333333334" />
