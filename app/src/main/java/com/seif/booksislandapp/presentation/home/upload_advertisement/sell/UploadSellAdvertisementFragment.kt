@@ -26,6 +26,7 @@ import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBindin
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.request.MyRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
@@ -83,6 +84,13 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         checkForUpdateOrPost()
         observe()
         observeSelectedUserToRequestConfirmation()
+        args.mySellAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
 
         binding.ivRequestConfirmation.setOnClickListener {
             // open bottom sheet to get users that he chat with
@@ -119,12 +127,49 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
     }
 
+    private fun enableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            enabled()
+            isClickable = true
+            isFocusable = true
+        }
+    }
+
+    private fun disableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            disable()
+            isClickable = false
+            isFocusable = false
+        }
+        binding.ivRequestConfirmation.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_medium
+            )
+        )
+    }
+
     private fun observeSelectedUserToRequestConfirmation() {
-        Timber.d("observeSelectedUserToRequestConfirmation: Called..................")
-        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) {
-            Timber.d("observeSelectedUserToRequestConfirmation: user Selectecd: $it")
-            toast("$it")
-            // send confirmation request
+        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                // send confirmation request
+                uploadSellAdvertisementViewModel.sendRequest(
+                    MyRequest(
+                        id = "",
+                        senderId = firebaseCurrentUser!!.uid,
+                        receiverId = it.id,
+                        advertisementId = args.mySellAdvertisement!!.id,
+                        username = it.username,
+                        avatarImage = it.avatarImage,
+                        bookTitle = args.mySellAdvertisement!!.book.title,
+                        condition = args.mySellAdvertisement!!.book.condition.toString(),
+                        category = args.mySellAdvertisement!!.book.category,
+                        adType = "Buying",
+                        edition = args.mySellAdvertisement!!.book.edition,
+                        status = "Pending"
+                    )
+                )
+            }
         }
     }
 
@@ -281,6 +326,11 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        // edit isConfirmationMessageSent to true
+                        disableSentConfirmationMessageButton()
+                    }
                 }
             }
         }
@@ -330,7 +380,8 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             status = status,
             publishDate = date,
             price = binding.etPrice.text.toString(),
-            location = userLocation
+            location = userLocation,
+            confirmationMessageSent = false
         )
     }
 
@@ -412,6 +463,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
+        itemUserViewModel.selectedUser(null)
         uploadSellAdvertisementViewModel.resetUploadStatus()
     }
 }
