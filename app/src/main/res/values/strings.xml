@@ -269,6 +269,8 @@
     <string name="sent_you_image">sent you an image.</string>
     <string name="request_confirmation_icon">request confirmation icon</string>
     <string name="choose_the_user_who_received_the_book_to_send_confirmation_request">Choose the user who received the book to send confirmation request</string>
+    <string name="requests_icon">requests icon</string>
+    <string name="requests">Requests</string>
 
 
 </resources>
