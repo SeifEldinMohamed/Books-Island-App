@@ -24,8 +24,8 @@ class ItemUserViewModel @Inject constructor(
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
-    private val _selectedUserItem = MutableLiveData<User>()
-    val selectedCategoryItem: LiveData<User> get() = _selectedUserItem
+    private val _selectedUserItem = MutableLiveData<User?>()
+    val selectedCategoryItem: LiveData<User?> get() = _selectedUserItem
 
     private val _usersIChatWithList =
         MutableStateFlow<UsersBottomSheetState>(UsersBottomSheetState.Init)
@@ -80,7 +80,7 @@ class ItemUserViewModel @Inject constructor(
         }
     }
 
-    fun selectedUser(selectedUser: User) {
+    fun selectedUser(selectedUser: User?) {
         _selectedUserItem.value = selectedUser
     }
 }
