@@ -261,6 +261,9 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                    }
                 }
             }
         }
@@ -327,7 +330,8 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             closeDate = closeDate,
             postDuration = binding.acPostDuration.text.toString(),
             auctionStatus = auctionStatus,
-            bidders = bidders
+            bidders = bidders,
+            confirmationMessageSent = false
         )
     }
 

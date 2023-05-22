@@ -251,6 +251,10 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        Timber.d("observe: send successfully ->> ${it.message}")
+                        binding.root.showSuccessSnackBar(it.message)
+                    }
                 }
             }
         }
@@ -299,7 +303,8 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             book = book,
             status = status,
             publishDate = date,
-            location = userLocation
+            location = userLocation,
+            confirmationMessageSent = false
         )
     }
 

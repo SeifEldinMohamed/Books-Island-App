@@ -304,6 +304,9 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                    }
                 }
             }
         }
@@ -354,7 +357,8 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             status = status,
             publishDate = date,
             location = userLocation,
-            booksToExchange = exchangeFor
+            booksToExchange = exchangeFor,
+            confirmationMessageSent = false
 
         )
     }
