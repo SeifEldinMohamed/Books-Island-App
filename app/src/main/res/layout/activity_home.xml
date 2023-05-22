@@ -18,22 +18,24 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        tools:title="Books Island"
-        app:titleTextAppearance="@style/toolbar_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextAppearance="@style/toolbar_style"
+        tools:title="Books Island" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainNavHostFragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolBar"
@@ -43,6 +45,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -52,9 +55,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:fabCradleMargin="20dp"
-            app:fabCradleRoundedCornerRadius="20dp"
-            app:fabCradleVerticalOffset="10dp"
+            app:fabCradleMargin="@dimen/_16sdp"
+            app:fabCradleRoundedCornerRadius="@dimen/_14sdp"
+            app:fabCradleVerticalOffset="@dimen/_8sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -63,8 +66,7 @@
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/transparent"
+                android:layout_marginEnd="@dimen/_12sdp"
                 app:labelVisibilityMode="labeled"
                 app:menu="@menu/home_bottom_nav_menu">
 
@@ -85,6 +87,17 @@
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <ImageView
+        android:id="@+id/iv_requests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_18sdp"
+        android:contentDescription="@string/requests_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/toolBar"
+        app:layout_constraintEnd_toEndOf="@+id/toolBar"
+        app:layout_constraintTop_toTopOf="@+id/toolBar"
+        app:srcCompat="@drawable/ic_requests" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
