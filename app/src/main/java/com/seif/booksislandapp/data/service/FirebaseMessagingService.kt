@@ -52,12 +52,14 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
             .setGraph(R.navigation.main_nav_graph)
             .setComponentName(HomeActivity::class.java)
             .setDestination(R.id.chatRoomFragment)
-            .setArguments(Bundle().apply {
-                putString(
-                    "userId",
-                    senderId
-                )
-            }) // replace with deep links to maintain back stack
+            .setArguments(
+                Bundle().apply {
+                    putString(
+                        "userId",
+                        senderId
+                    )
+                }
+            ) // replace with deep links to maintain back stack
             .createPendingIntent()
         // Display notification
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
