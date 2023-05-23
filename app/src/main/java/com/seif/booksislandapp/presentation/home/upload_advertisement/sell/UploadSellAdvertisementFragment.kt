@@ -80,17 +80,11 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadSellAdvertisementViewModel.getFirebaseCurrentUser()
 
-        observeCategorySelected()
-        checkForUpdateOrPost()
         observe()
+        observeCategorySelected()
         observeSelectedUserToRequestConfirmation()
-        args.mySellAdvertisement?.confirmationMessageSent?.let {
-            Timber.d("onViewCreated:............. $it")
-            if (it)
-                disableSentConfirmationMessageButton()
-            else
-                enableSentConfirmationMessageButton()
-        }
+        checkForUpdateOrPost()
+        checkIsConfirmationMessageSent()
 
         binding.ivRequestConfirmation.setOnClickListener {
             // open bottom sheet to get users that he chat with
@@ -125,6 +119,16 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         handleUi()
 
         binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun checkIsConfirmationMessageSent() {
+        args.mySellAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
     }
 
     private fun enableSentConfirmationMessageButton() {

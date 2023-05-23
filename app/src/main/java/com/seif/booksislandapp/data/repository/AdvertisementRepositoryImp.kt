@@ -513,7 +513,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                     }
             }
         } catch (e: Exception) {
-            Resource.Error(e.message.toString())
+            trySend(Resource.Error(e.message.toString()))
         }
         awaitClose { }
     }
@@ -600,7 +600,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                Resource.Error(e.message.toString())
+                trySend(Resource.Error(e.message.toString()))
             }
         }
         awaitClose { }
