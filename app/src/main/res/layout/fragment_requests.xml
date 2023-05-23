@@ -7,7 +7,7 @@
     tools:context=".presentation.home.requests.RequestsFragment">
 
     <ImageView
-        android:id="@+id/iv_back2"
+        android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_6sdp"
@@ -25,12 +25,12 @@
         android:text="@string/requests"
         android:textColor="@color/black"
         android:textSize="@dimen/_20ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_back2"
-        app:layout_constraintStart_toEndOf="@+id/iv_back2"
-        app:layout_constraintTop_toTopOf="@+id/iv_back2" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_back"
+        app:layout_constraintStart_toEndOf="@+id/iv_back"
+        app:layout_constraintTop_toTopOf="@+id/iv_back" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tl_chat"
+        android:id="@+id/tl_requests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
@@ -38,7 +38,7 @@
         android:background="@drawable/tab_my_ads_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_back2"
+        app:layout_constraintTop_toBottomOf="@+id/iv_back"
         app:tabGravity="fill"
         app:tabInlineLabel="true"
         app:tabMode="auto"
@@ -47,12 +47,12 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/chatViewPager"
+        android:id="@+id/requestsViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_chat" />
+        app:layout_constraintTop_toBottomOf="@+id/tl_requests" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -140,7 +140,7 @@
     <!--homepage-->
     <string name="hello_heba">Hello Heba,</string>
     <string name="welcome_username">Hello %1$s,</string>
-    <string name="donation">Donation</string>
+    <string name="donations">Donations</string>
     <string name="exchange">Exchanges</string>
     <string name="auctions">Auctions</string>
     <string name="logout">Logout</string>
