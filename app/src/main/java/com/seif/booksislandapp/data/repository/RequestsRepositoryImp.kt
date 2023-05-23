@@ -123,10 +123,8 @@ class RequestsRepositoryImp @Inject constructor(
             .delete()
             .await()
 
-        firestore.collection(getCollectionNameBaseOnAdType(adType))
-            .document(advertisementId)
-            .update("confirmationMessageSent", false)
-            .await()
+        updateIsConfirmationRequestSent(adType, advertisementId, false)
+
         return Resource.Success("Request Cancelled")
     }
 
@@ -214,13 +212,25 @@ class RequestsRepositoryImp @Inject constructor(
             .update("status", rejectStatus)
             .await()
 
-        // change confirmationMessageSent of that ad to false so seller have opportunity to send another request
-        firestore.collection(getCollectionNameBaseOnAdType(adType))
-            .document(advertisementId)
-            .update("confirmationMessageSent", false)
-            .await()
+        // update confirmationMessageSent field of that ad to false so seller have opportunity to send another request
+        updateIsConfirmationRequestSent(adType, advertisementId, false)
 
         return Resource.Success("Confirmation Rejected")
+    }
+
+    private suspend fun updateIsConfirmationRequestSent(
+        adType: String,
+        advertisementId: String,
+        isConfirmationSent: Boolean
+    ) {
+        val advertisementDocumentReference =
+            firestore.collection(getCollectionNameBaseOnAdType(adType))
+                .document(advertisementId)
+        val doc = advertisementDocumentReference.get().await()
+        if (doc.exists()) { // check if ad is still exists because the seller may delete ad after sending the confirmation request
+            advertisementDocumentReference.update("confirmationMessageSent", isConfirmationSent)
+                .await()
+        }
     }
 
     private fun getCollectionNameBaseOnAdType(adType: String): String {
