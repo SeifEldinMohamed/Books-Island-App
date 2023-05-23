@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
-import com.seif.booksislandapp.domain.model.request.MyRequest
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.domain.usecase.usecase.my_ads.sell.DeleteMySellAdUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.my_ads.sell.EditMySellAdvertisementUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.request.SendRequestUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.request.sent.SendRequestUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadSellAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
@@ -126,10 +126,10 @@ class UploadSellAdvertisementViewModel @Inject constructor(
         }
     }
 
-    fun sendRequest(myRequest: MyRequest) {
+    fun sendRequest(mySentRequest: MySentRequest) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            sendRequestUseCase(myRequest).let {
+            sendRequestUseCase(mySentRequest).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

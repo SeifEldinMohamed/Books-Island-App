@@ -2,7 +2,7 @@ package com.seif.booksislandapp.domain.model.request
 
 import java.util.*
 
-data class MyRequest(
+data class MyReceivedRequest(
     var id: String,
     val senderId: String,
     val receiverId: String,
@@ -15,5 +15,4 @@ data class MyRequest(
     val adType: String,
     val edition: String,
     val date: Date? = null,
-    val status: String
 )

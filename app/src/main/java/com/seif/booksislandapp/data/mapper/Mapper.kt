@@ -26,7 +26,8 @@ import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.domain.model.chat.MyChat
-import com.seif.booksislandapp.domain.model.request.MyRequest
+import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -298,8 +299,8 @@ fun MyChatDto.toMyChat(): MyChat {
     )
 }
 
-fun RequestDto.toMyRequest(user: UserDto): MyRequest {
-    return MyRequest(
+fun RequestDto.toMyRequest(user: UserDto): MySentRequest {
+    return MySentRequest(
         id = id,
         senderId = senderId,
         receiverId = receiverId,
@@ -311,12 +312,29 @@ fun RequestDto.toMyRequest(user: UserDto): MyRequest {
         category = category,
         adType = adType,
         edition = edition,
-        date = date!!,
+        date = date,
         status = status
     )
 }
 
-fun MyRequest.toRequestDto(): RequestDto {
+fun RequestDto.toMyReceivedRequest(user: UserDto): MyReceivedRequest {
+    return MyReceivedRequest(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        username = user.username,
+        advertisementId = advertisementId,
+        avatarImage = user.avatarImage,
+        bookTitle = bookTitle,
+        condition = condition,
+        category = category,
+        adType = adType,
+        edition = edition,
+        date = date
+    )
+}
+
+fun MySentRequest.toRequestDto(): RequestDto {
     return RequestDto(
         id = id,
         senderId = senderId,

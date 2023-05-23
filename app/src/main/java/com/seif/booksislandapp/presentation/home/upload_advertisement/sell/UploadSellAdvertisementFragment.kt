@@ -26,7 +26,7 @@ import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBindin
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
-import com.seif.booksislandapp.domain.model.request.MyRequest
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
@@ -154,7 +154,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             user?.let {
                 // send confirmation request
                 uploadSellAdvertisementViewModel.sendRequest(
-                    MyRequest(
+                    MySentRequest(
                         id = "",
                         senderId = firebaseCurrentUser!!.uid,
                         receiverId = it.id,
