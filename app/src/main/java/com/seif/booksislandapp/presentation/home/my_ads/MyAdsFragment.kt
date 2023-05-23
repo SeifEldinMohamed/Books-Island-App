@@ -82,10 +82,10 @@ class MyAdsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mediator?.detach()
-        mediator = null
         viewPager!!.adapter = null
         viewPager = null
+        mediator?.detach()
+        mediator = null
         _binding = null
         super.onDestroyView()
     }

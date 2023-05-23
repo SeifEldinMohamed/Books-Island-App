@@ -28,6 +28,8 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private val auctionAdapter by lazy { AuctionAdapter() }
     private val myAuctionAdsViewModel: MyAuctionAdsViewModel by viewModels()
     private lateinit var userId: String
+    private var myAuctionAds: List<AuctionAdvertisement>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,16 +57,19 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     private fun fetchMyAuctionAds() {
-        myAuctionAdsViewModel.fetchAllAuctionAdvertisement(userId)
-        observe()
+        if (myAuctionAds == null) {
+            myAuctionAdsViewModel.fetchAllAuctionAdvertisement(userId)
+            observe()
+        }
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenCreated {
             myAuctionAdsViewModel.myAuctionAdsState.collect {
                 when (it) {
                     MyAuctionAdsState.Init -> Unit
                     is MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully -> {
+                        myAuctionAds = it.auctionAds
                         auctionAdapter.updateList(it.auctionAds)
                         handleUi(it.auctionAds)
                     }
@@ -76,13 +81,22 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         }
     }
 
+    override fun onResume() {
+        myAuctionAds?.let {
+            handleUi(it.toCollection(ArrayList()))
+        }
+        super.onResume()
+    }
+
     private fun handleUi(auctionAds: ArrayList<AuctionAdvertisement>) {
-        if (auctionAds.isEmpty()) {
-            binding.rvAuctionMyAds.hide()
-            binding.noBooksAnimationAuctionMy.show()
-        } else {
-            binding.rvAuctionMyAds.show()
-            binding.noBooksAnimationAuctionMy.hide()
+        if (_binding != null) {
+            if (auctionAds.isEmpty()) {
+                binding.rvAuctionMyAds.hide()
+                binding.noBooksAnimationAuctionMy.show()
+            } else {
+                binding.rvAuctionMyAds.show()
+                binding.noBooksAnimationAuctionMy.hide()
+            }
         }
     }
 

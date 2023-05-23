@@ -29,7 +29,7 @@ class MyExchangeAdsViewModel @Inject constructor(
         setLoading(true)
         Timber.d("fetch auction ads ...........")
         viewModelScope.launch(Dispatchers.IO) {
-            getMyExchangeAdsUseCase.invoke(userId).let {
+            getMyExchangeAdsUseCase.invoke(userId).collect {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

@@ -17,12 +17,17 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Resource
+import com.seif.booksislandapp.utils.ResourceProvider
+import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -261,6 +266,8 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    /** Donation ( extract donation functions to another repository ) **/
+
     override suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -377,7 +384,8 @@ class AdvertisementRepositoryImp @Inject constructor(
                     .await()
                 val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
                 for (document in querySnapshot) {
-                    val donateAdvertisementDto = document.toObject(DonateAdvertisementDto::class.java)
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
                     donateAdvertisementsDto.add(donateAdvertisementDto)
                 }
                 Resource.Success(
@@ -475,68 +483,39 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    suspend fun editMyExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String> {
+    override suspend fun fetchMyDonateAds(userId: String) = callbackFlow {
         if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-
-        val imagesToUpload =
-            exchangeAdvertisement.book.images.filter { !it.toString().contains("https") }
-        val oldUploadedImages =
-            exchangeAdvertisement.book.images.filter { it.toString().contains("https") }
-        return when (
-            val result =
-                uploadMultipleImages(exchangeAdvertisement.ownerId, imagesToUpload)
-        ) {
-            is Resource.Error -> {
-                Timber.d("uploadAuctionAdv: Error  ${result.message}")
-                Resource.Error(result.message)
-            }
-            is Resource.Success -> {
-                try {
-                    withTimeout(Constants.TIMEOUT_UPLOAD) {
-                        val document =
-                            firestore.collection(Constants.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                                .document(exchangeAdvertisement.id)
-                        exchangeAdvertisement.book.images = oldUploadedImages + result.data
-                        Timber.d("all images ${exchangeAdvertisement.book.images}")
-                        document.set(exchangeAdvertisement.toExchangeAdvertisementDto())
-                            .await()
-                        Timber.d("Updated successfully")
-                        Resource.Success("Advertisement Updated Successfully")
-                    }
-                } catch (e: Exception) {
-                    Resource.Error(e.message.toString())
-                }
-            }
-        }
-    }
-
-    override suspend fun fetchMyDonateAds(userId: String): Resource<ArrayList<DonateAdvertisement>, String> {
-        if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        return try {
-            delay(500) // to show loading progress
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+        try {
             withTimeout(Constants.TIMEOUT) {
-                val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
                     .whereEqualTo("ownerId", userId)
                     .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val donateAdvertisementDto =
-                        document.toObject(DonateAdvertisementDto::class.java)
-                    donateAdvertisementsDto.add(donateAdvertisementDto)
-                }
-                Resource.Success(
-                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
-                        donateAdvertisementDto.toDonateAdvertisement()
-                    }.toCollection(ArrayList())
-                )
+                    .addSnapshotListener { donationSnapShot, error ->
+                        if (error != null) {
+                            trySend(Resource.Error(error.message.toString()))
+                        }
+                        if (donationSnapShot != null) {
+                            val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                            for (document in donationSnapShot) {
+                                val donateAdvertisementDto =
+                                    document.toObject(DonateAdvertisementDto::class.java)
+                                donateAdvertisementsDto.add(donateAdvertisementDto)
+                            }
+                            trySend(
+                                Resource.Success(
+                                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                                        donateAdvertisementDto.toDonateAdvertisement()
+                                    }.toCollection(ArrayList())
+                                )
+                            )
+                        }
+                    }
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
+        awaitClose { }
     }
 
     override suspend fun editMyDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String> {
@@ -592,31 +571,39 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun fetchMySellAds(userId: String): Resource<ArrayList<SellAdvertisement>, String> {
+    override suspend fun fetchMySellAds(userId: String) = callbackFlow {
         if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        return try {
-            delay(500) // to show loading progress
-            withTimeout(Constants.TIMEOUT) {
-                val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+        else {
+            try {
+                firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
                     .whereEqualTo("ownerId", userId)
                     .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
-                    sellAdvertisementsDto.add(sellAdvertisementDto)
-                }
-                Resource.Success(
-                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
-                        sellAdvertisementDto.toSellAdvertisement()
-                    }.toCollection(ArrayList())
-                )
+                    .addSnapshotListener { mySellAdsQuerySnapshot, error ->
+                        if (error != null) {
+                            trySend(Resource.Error(error.message.toString()))
+                        }
+                        if (mySellAdsQuerySnapshot != null) {
+                            val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                            for (document in mySellAdsQuerySnapshot) {
+                                val sellAdvertisementDto =
+                                    document.toObject(SellAdvertisementDto::class.java)
+                                sellAdvertisementsDto.add(sellAdvertisementDto)
+                            }
+                            trySend(
+                                Resource.Success(
+                                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                                        sellAdvertisementDto.toSellAdvertisement()
+                                    }.toCollection(ArrayList())
+                                )
+                            )
+                        }
+                    }
+            } catch (e: Exception) {
+                Resource.Error(e.message.toString())
             }
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
         }
+        awaitClose { }
     }
 
     private suspend fun uploadMultipleImages(
@@ -650,6 +637,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun fetchBuyWishListAds(buyIdList: List<String>): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -658,10 +646,11 @@ class AdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
                 for (item in buyIdList) {
-                    val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                        .document(item)
-                        .get()
-                        .await()
+                    val querySnapshot =
+                        firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                            .document(item)
+                            .get()
+                            .await()
                     val sellAdvertisementDto =
                         querySnapshot.toObject(SellAdvertisementDto::class.java)
                     if (sellAdvertisementDto!!.status.toString() == "Opened")
@@ -677,6 +666,7 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun fetchDonateWishListAds(donateIdList: List<String>): Resource<ArrayList<DonateAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -685,10 +675,11 @@ class AdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
                 for (item in donateIdList) {
-                    val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                        .document(item)
-                        .get()
-                        .await()
+                    val querySnapshot =
+                        firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                            .document(item)
+                            .get()
+                            .await()
                     val donateAdvertisementDto =
                         querySnapshot.toObject(DonateAdvertisementDto::class.java)
                     if (donateAdvertisementDto!!.status.toString() == "Opened")
