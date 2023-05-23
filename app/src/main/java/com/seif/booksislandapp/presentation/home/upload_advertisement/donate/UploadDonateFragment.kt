@@ -26,8 +26,11 @@ import com.seif.booksislandapp.databinding.FragmentUploadDonateBinding
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
 import com.seif.booksislandapp.utils.*
@@ -50,6 +53,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
     private val uploadDonateAdvertisementViewModel: UploadDonateViewModel by viewModels()
+    private val itemUserViewModel: ItemUserViewModel by activityViewModels()
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
@@ -73,6 +77,12 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadDonateAdvertisementViewModel.getFirebaseCurrentUser()
 
+        observe()
+        observeCategorySelected()
+        observeSelectedUserToRequestConfirmation()
+        checkForUpdateOrPost()
+        checkIsConfirmationMessageSent()
+
         binding.ivBackUpload.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -85,20 +95,15 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                Timber.d("collector: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
-            }
-        }
-        checkForUpdateOrPost()
-
         binding.ivDeleteMyAd.setOnClickListener {
             showConfirmationDialog()
         }
 
-        observe()
+        binding.ivRequestConfirmation.setOnClickListener {
+            // open bottom sheet to get users that he chat with
+            val bottomSheet = UsersBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
+        }
 
         binding.btnSubmit.setOnClickListener {
             val donateAdvertisement = prepareDonateAdvertisement()
@@ -108,6 +113,22 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                 uploadDonateAdvertisementViewModel.uploadDonateAdvertisement(donateAdvertisement)
         }
 
+        handleUi()
+
+        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun observeCategorySelected() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                Timber.d("collector: $it")
+                categoryName = it
+                binding.btnCategory.text = categoryName
+            }
+        }
+    }
+
+    private fun handleUi() {
         if (imageUris.size > 0) {
             binding.rvUploadedImages.show()
             binding.ivUploadImage.hide()
@@ -115,8 +136,62 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             binding.rvUploadedImages.hide()
             binding.ivUploadImage.show()
         }
+    }
 
-        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    private fun checkIsConfirmationMessageSent() {
+        args.myDonateAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
+    }
+
+    private fun enableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            enabled()
+            isClickable = true
+            isFocusable = true
+        }
+    }
+
+    private fun disableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            disable()
+            isClickable = false
+            isFocusable = false
+        }
+        binding.ivRequestConfirmation.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_medium
+            )
+        )
+    }
+
+    private fun observeSelectedUserToRequestConfirmation() {
+        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                // send confirmation request
+                uploadDonateAdvertisementViewModel.sendRequest(
+                    MySentRequest(
+                        id = "",
+                        senderId = firebaseCurrentUser!!.uid,
+                        receiverId = it.id,
+                        advertisementId = args.myDonateAdvertisement!!.id,
+                        username = it.username,
+                        avatarImage = it.avatarImage,
+                        bookTitle = args.myDonateAdvertisement!!.book.title,
+                        condition = args.myDonateAdvertisement!!.book.condition.toString(),
+                        category = args.myDonateAdvertisement!!.book.category,
+                        adType = "Donation",
+                        edition = args.myDonateAdvertisement!!.book.edition,
+                        status = "Pending"
+                    )
+                )
+            }
+        }
     }
 
     private fun checkForUpdateOrPost() {
@@ -129,11 +204,13 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     showMyDonateAdvertisement(it)
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
+                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
+            binding.ivRequestConfirmation.hide()
         }
     }
 
@@ -254,6 +331,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     is UploadState.SendRequestSuccessfully -> {
                         Timber.d("observe: send successfully ->> ${it.message}")
                         binding.root.showSuccessSnackBar(it.message)
+                        disableSentConfirmationMessageButton()
                     }
                 }
             }
@@ -386,6 +464,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedImages.adapter = null
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
+        itemUserViewModel.selectedUser(null)
         uploadDonateAdvertisementViewModel.resetUploadStatus()
         _binding = null
     }
