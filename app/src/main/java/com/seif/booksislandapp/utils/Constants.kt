@@ -21,8 +21,8 @@ class Constants {
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
 
         const val CHATS_FIIRESTORE_COLLECTION: String = "Chats"
-        const val MY_CHATS_FIIRESTORE_COLLECTION: String = "my_chats"
-        const val MESSAGES_FIIRESTORE_COLLECTION: String = "Messages"
+        const val REQUESTS_FIIRESTORE_COLLECTION: String = "Requests"
+
         const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "Chat List"
         const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
         const val FCM_API_KEY: String =

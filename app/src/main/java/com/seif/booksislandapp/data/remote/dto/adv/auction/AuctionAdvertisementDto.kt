@@ -13,11 +13,11 @@ data class AuctionAdvertisementDto(
     override val status: AdvStatus? = null,
     override val publishDate: Date? = null,
     override val location: String = "",
+    override val confirmationMessageSent: Boolean? = null,
     val startPrice: Double = 0.0,
     val endPrice: Double? = null,
     val closeDate: Date? = null,
     val postDuration: String = "",
     var auctionStatus: AuctionStatus? = null,
-    val bidders: List<BidderDto>? = null
-
+    val bidders: List<BidderDto>? = null,
 ) : AdvertisementDto()

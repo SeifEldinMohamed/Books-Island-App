@@ -132,4 +132,18 @@ object RepositoryModule {
             firestore
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideRequestsRepositoryImp(
+        firestore: FirebaseFirestore,
+        resourceProvider: ResourceProvider,
+        connectivityManager: ConnectivityManager,
+    ): RequestsRepository {
+        return RequestsRepositoryImp(
+            firestore,
+            resourceProvider,
+            connectivityManager,
+        )
+    }
 }

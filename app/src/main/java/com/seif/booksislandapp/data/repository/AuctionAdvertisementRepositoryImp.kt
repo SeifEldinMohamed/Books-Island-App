@@ -28,7 +28,6 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -285,32 +284,42 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun fetchMyAuctionAds(userId: String): Resource<ArrayList<AuctionAdvertisement>, String> {
+    override suspend fun fetchMyAuctionAds(userId: String) = callbackFlow {
         if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        return try {
-            delay(500) // to show loading progress
-            withTimeout(Constants.TIMEOUT) {
-                val querySnapshot = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .whereEqualTo("ownerId", userId)
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val auctionAdvertisementDto =
-                        document.toObject(AuctionAdvertisementDto::class.java)
-                    auctionAdvertisementsDto.add(auctionAdvertisementDto)
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+        else {
+            try {
+                withTimeout(Constants.TIMEOUT) {
+                    firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereEqualTo("ownerId", userId)
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .addSnapshotListener { auctionQuerySnapshot, error ->
+                            if (error != null) {
+                                trySend(Resource.Error(error.message.toString()))
+                            }
+                            if (auctionQuerySnapshot != null) {
+                                val auctionAdvertisementsDto =
+                                    arrayListOf<AuctionAdvertisementDto>()
+                                for (document in auctionQuerySnapshot) {
+                                    val auctionAdvertisementDto =
+                                        document.toObject(AuctionAdvertisementDto::class.java)
+                                    auctionAdvertisementsDto.add(auctionAdvertisementDto)
+                                }
+                                trySend(
+                                    Resource.Success(
+                                        data = auctionAdvertisementsDto.map { auctionAdvertisementDto ->
+                                            auctionAdvertisementDto.toAuctionAdvertisement()
+                                        }.toCollection(ArrayList())
+                                    )
+                                )
+                            }
+                        }
                 }
-                Resource.Success(
-                    data = auctionAdvertisementsDto.map { auctionAdvertisementDto ->
-                        auctionAdvertisementDto.toAuctionAdvertisement()
-                    }.toCollection(ArrayList())
-                )
+            } catch (e: Exception) {
+                trySend(Resource.Error(e.message.toString()))
             }
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
         }
+        awaitClose { }
     }
 
     override suspend fun editMyAuctionAdv(auctionAdvertisement: AuctionAdvertisement): Resource<String, String> {
@@ -374,10 +383,11 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
                 for (item in auctionIdList) {
-                    val querySnapshot = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                        .document(item)
-                        .get()
-                        .await()
+                    val querySnapshot =
+                        firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                            .document(item)
+                            .get()
+                            .await()
                     val auctionAdvertisementDto =
                         querySnapshot.toObject(AuctionAdvertisementDto::class.java)
                     if (auctionAdvertisementDto!!.status.toString() == "Opened")
@@ -408,7 +418,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                     .await()
                 val auctionAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
                 for (document in querySnapshot) {
-                    val auctionAdvertisementDto = document.toObject(AuctionAdvertisementDto::class.java)
+                    val auctionAdvertisementDto =
+                        document.toObject(AuctionAdvertisementDto::class.java)
                     auctionAdvertisementsDto.add(auctionAdvertisementDto)
                 }
                 Resource.Success(

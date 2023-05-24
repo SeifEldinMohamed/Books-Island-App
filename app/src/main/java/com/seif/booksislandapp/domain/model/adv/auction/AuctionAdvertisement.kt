@@ -15,6 +15,7 @@ data class AuctionAdvertisement(
     override val status: AdvStatus,
     override val publishDate: Date,
     override val location: String,
+    override val confirmationMessageSent: Boolean,
     val startPrice: Double?,
     val endPrice: Double?,
     var closeDate: Date?,

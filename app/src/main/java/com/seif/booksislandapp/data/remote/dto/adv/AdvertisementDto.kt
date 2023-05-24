@@ -11,4 +11,5 @@ abstract class AdvertisementDto {
     abstract val status: AdvStatus?
     abstract val publishDate: Date?
     abstract val location: String
+    abstract val confirmationMessageSent: Boolean?
 }

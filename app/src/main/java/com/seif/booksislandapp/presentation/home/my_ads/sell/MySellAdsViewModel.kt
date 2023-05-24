@@ -27,7 +27,7 @@ class MySellAdsViewModel @Inject constructor(
     fun fetchAllSellAdvertisement(userId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getMySellAdsUseCase.invoke(userId).let {
+            getMySellAdsUseCase.invoke(userId).collect {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

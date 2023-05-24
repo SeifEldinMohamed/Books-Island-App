@@ -7,5 +7,6 @@ sealed class UploadState {
     data class UploadedSuccessfully(val message: String) : UploadState()
     data class UpdatedSuccessfully(val message: String) : UploadState()
     data class DeletedSuccessfully(val message: String) : UploadState()
+    data class SendRequestSuccessfully(val message: String) : UploadState()
     data class NoInternetConnection(val message: String) : UploadState()
 }

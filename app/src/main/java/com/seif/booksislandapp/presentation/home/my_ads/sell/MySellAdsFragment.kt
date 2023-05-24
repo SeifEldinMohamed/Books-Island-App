@@ -28,6 +28,7 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private val buyAdapter by lazy { BuyAdapter() }
     private val mySellAdsViewModel: MySellAdsViewModel by viewModels()
     private lateinit var userId: String
+    private var mySellAds: List<SellAdvertisement>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,16 +55,19 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun fetchMySellAds() {
-        mySellAdsViewModel.fetchAllSellAdvertisement(userId)
-        observe()
+        if (mySellAds == null) {
+            mySellAdsViewModel.fetchAllSellAdvertisement(userId)
+            observe()
+        }
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenCreated {
             mySellAdsViewModel.mySellAdsState.collect {
                 when (it) {
                     MySellAdsState.Init -> Unit
                     is MySellAdsState.FetchAllMySellAdsSuccessfully -> {
+                        mySellAds = it.sellAds
                         buyAdapter.updateList(it.sellAds)
                         handleUi(it.sellAds)
                     }
@@ -75,13 +79,22 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
     }
 
+    override fun onResume() {
+        mySellAds?.let {
+            handleUi(it.toCollection(ArrayList()))
+        }
+        super.onResume()
+    }
+
     private fun handleUi(sellAds: ArrayList<SellAdvertisement>) {
-        if (sellAds.isEmpty()) {
-            binding.rvSellMyAds.hide()
-            binding.noBooksAnimationSellMy.show()
-        } else {
-            binding.rvSellMyAds.show()
-            binding.noBooksAnimationSellMy.hide()
+        if (_binding != null) {
+            if (sellAds.isEmpty()) {
+                binding.rvSellMyAds.hide()
+                binding.noBooksAnimationSellMy.show()
+            } else {
+                binding.rvSellMyAds.show()
+                binding.noBooksAnimationSellMy.hide()
+            }
         }
     }
 
@@ -144,7 +157,6 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onDestroyView() {
         buyAdapter.onAdItemClick = null
-        dialog.dismiss()
         dialog.setView(null)
         binding.rvSellMyAds.adapter = null
         _binding = null

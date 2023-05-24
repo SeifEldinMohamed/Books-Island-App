@@ -15,5 +15,6 @@ data class ExchangeAdvertisement(
     override val status: AdvStatus,
     override val publishDate: Date,
     var booksToExchange: List<BooksToExchange>,
-    override val location: String
+    override val location: String,
+    override val confirmationMessageSent: Boolean,
 ) : Advertisement(), Parcelable

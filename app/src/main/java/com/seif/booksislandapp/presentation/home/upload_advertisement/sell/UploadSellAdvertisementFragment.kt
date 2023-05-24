@@ -26,8 +26,11 @@ import com.seif.booksislandapp.databinding.FragmentUploadSellAdvertisementBindin
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
 import com.seif.booksislandapp.utils.*
@@ -53,6 +56,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
     private val uploadSellAdvertisementViewModel: UploadSellAdvertisementViewModel by viewModels()
+    private val itemUserViewModel: ItemUserViewModel by activityViewModels()
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
@@ -76,20 +80,21 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadSellAdvertisementViewModel.getFirebaseCurrentUser()
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                categoryName = it
-                binding.btnCategory.text = categoryName
-            }
-        }
-
+        observe()
+        observeCategorySelected()
+        observeSelectedUserToRequestConfirmation()
         checkForUpdateOrPost()
+        checkIsConfirmationMessageSent()
+
+        binding.ivRequestConfirmation.setOnClickListener {
+            // open bottom sheet to get users that he chat with
+            val bottomSheet = UsersBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
+        }
 
         binding.ivDeleteMyAd.setOnClickListener {
             showConfirmationDialog()
         }
-
-        observe()
 
         binding.ivBackUpload.setOnClickListener {
             findNavController().navigateUp()
@@ -111,6 +116,68 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                 uploadSellAdvertisementViewModel.uploadSellAdvertisement(sellAdvertisement)
         }
 
+        handleUi()
+
+        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun checkIsConfirmationMessageSent() {
+        args.mySellAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
+    }
+
+    private fun enableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            enabled()
+            isClickable = true
+            isFocusable = true
+        }
+    }
+
+    private fun disableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            disable()
+            isClickable = false
+            isFocusable = false
+        }
+        binding.ivRequestConfirmation.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_medium
+            )
+        )
+    }
+
+    private fun observeSelectedUserToRequestConfirmation() {
+        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                // send confirmation request
+                uploadSellAdvertisementViewModel.sendRequest(
+                    MySentRequest(
+                        id = "",
+                        senderId = firebaseCurrentUser!!.uid,
+                        receiverId = it.id,
+                        advertisementId = args.mySellAdvertisement!!.id,
+                        username = it.username,
+                        avatarImage = it.avatarImage,
+                        bookTitle = args.mySellAdvertisement!!.book.title,
+                        condition = args.mySellAdvertisement!!.book.condition.toString(),
+                        category = args.mySellAdvertisement!!.book.category,
+                        adType = "Buying",
+                        edition = args.mySellAdvertisement!!.book.edition,
+                        status = "Pending"
+                    )
+                )
+            }
+        }
+    }
+
+    private fun handleUi() {
         if (imageUris.size > 0) {
             binding.rvUploadedImages.show()
             binding.ivUploadImage.hide()
@@ -118,8 +185,15 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             binding.rvUploadedImages.hide()
             binding.ivUploadImage.show()
         }
+    }
 
-        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    private fun observeCategorySelected() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                categoryName = it
+                binding.btnCategory.text = categoryName
+            }
+        }
     }
 
     private fun checkForUpdateOrPost() {
@@ -132,11 +206,13 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                     showMySellAdvertisement(it)
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
+                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
+            binding.ivRequestConfirmation.hide()
         }
     }
 
@@ -254,6 +330,11 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        // edit isConfirmationMessageSent to true
+                        disableSentConfirmationMessageButton()
+                    }
                 }
             }
         }
@@ -303,7 +384,8 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             status = status,
             publishDate = date,
             price = binding.etPrice.text.toString(),
-            location = userLocation
+            location = userLocation,
+            confirmationMessageSent = false
         )
     }
 
@@ -385,6 +467,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
+        itemUserViewModel.selectedUser(null)
         uploadSellAdvertisementViewModel.resetUploadStatus()
     }
 }
