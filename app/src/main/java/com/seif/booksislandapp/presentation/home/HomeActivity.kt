@@ -1,7 +1,6 @@
 package com.seif.booksislandapp.presentation.home
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -27,7 +26,8 @@ class HomeActivity : AppCompatActivity() {
         _binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.mainNavHostFragment) as NavHostFragment
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration.Builder(
@@ -47,27 +47,35 @@ class HomeActivity : AppCompatActivity() {
         binding.fabProfile.setOnClickListener {
             navController.navigate(R.id.profileFragment)
         }
+        binding.ivRequests.setOnClickListener {
+            navController.navigate(R.id.requestsFragment)
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.homeFragment -> {
-                    showBottomBar()
+                    binding.coordinatorLayout.show()
+                    binding.ivRequests.show()
                     showToolBar()
                 }
                 R.id.myAdsFragment -> {
-                    showBottomBar()
+                    binding.coordinatorLayout.show()
+                    binding.ivRequests.show()
                     showToolBar()
                 }
                 R.id.myChatsFragment -> {
-                    showBottomBar()
+                    binding.coordinatorLayout.show()
+                    binding.ivRequests.show()
                     showToolBar()
                 }
                 R.id.wishListFragment -> {
-                    showBottomBar()
+                    binding.coordinatorLayout.show()
+                    binding.ivRequests.show()
                     showToolBar()
                 }
                 else -> {
-                    hideBottomBar()
+                    binding.coordinatorLayout.hide()
+                    binding.ivRequests.hide()
                     hideToolBar()
                 }
             }
@@ -79,16 +87,6 @@ class HomeActivity : AppCompatActivity() {
     }
     private fun hideToolBar() {
         binding.toolBar.hide()
-    }
-
-    private fun hideBottomBar() {
-        binding.bottomAppBar.hide()
-        binding.fabProfile.visibility = View.GONE
-    }
-
-    private fun showBottomBar() {
-        binding.fabProfile.visibility = View.VISIBLE
-        binding.bottomAppBar.show()
     }
 
     private fun setupNavigationComponent() {

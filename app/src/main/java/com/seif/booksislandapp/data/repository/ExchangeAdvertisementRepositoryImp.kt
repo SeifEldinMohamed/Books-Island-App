@@ -18,6 +18,8 @@ import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -129,33 +131,42 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun fetchMyExchangeAds(userId: String): Resource<ArrayList<ExchangeAdvertisement>, String> {
+    override suspend fun fetchMyExchangeAds(userId: String) = callbackFlow {
         if (!connectivityManager.checkInternetConnection())
-            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        return try {
-            delay(500) // to show loading progress
-            withTimeout(Constants.TIMEOUT) {
-                val querySnapshot =
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+        else {
+            try {
+                withTimeout(Constants.TIMEOUT) {
                     firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
                         .whereEqualTo("ownerId", userId)
                         .orderBy("publishDate", Query.Direction.DESCENDING)
-                        .get()
-                        .await()
-                val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val exchangeAdvertisementDto =
-                        document.toObject(ExchangeAdvertisementDto::class.java)
-                    exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                        .addSnapshotListener { exchangeQuerySnapShot, error ->
+                            if (error != null) {
+                                trySend(Resource.Error(error.message.toString()))
+                            }
+                            if (exchangeQuerySnapShot != null) {
+                                val exchangeAdvertisementsDto =
+                                    arrayListOf<ExchangeAdvertisementDto>()
+                                for (document in exchangeQuerySnapShot) {
+                                    val exchangeAdvertisementDto =
+                                        document.toObject(ExchangeAdvertisementDto::class.java)
+                                    exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                                }
+                                trySend(
+                                    Resource.Success(
+                                        data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
+                                            exchangeAdvertisementDto.toExchangeAdvertisement()
+                                        }.toCollection(ArrayList())
+                                    )
+                                )
+                            }
+                        }
                 }
-                Resource.Success(
-                    data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
-                        exchangeAdvertisementDto.toExchangeAdvertisement()
-                    }.toCollection(ArrayList())
-                )
+            } catch (e: Exception) {
+                trySend(Resource.Error(e.message.toString()))
             }
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
         }
+        awaitClose {}
     }
 
     override suspend fun deleteMyExchangeAdv(myExchangeAdId: String): Resource<String, String> {
@@ -263,6 +274,7 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun fetchExchangeWishListAds(exchangeIdList: List<String>): Resource<ArrayList<ExchangeAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -271,10 +283,11 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
                 for (item in exchangeIdList) {
-                    val querySnapshot = firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                        .document(item)
-                        .get()
-                        .await()
+                    val querySnapshot =
+                        firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                            .document(item)
+                            .get()
+                            .await()
                     val exchangeAdvertisementDto =
                         querySnapshot.toObject(ExchangeAdvertisementDto::class.java)
                     if (exchangeAdvertisementDto!!.status.toString() == "Opened")
@@ -290,28 +303,31 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
     override suspend fun getExchangeAdsByFilter(filterBy: FilterBy): Resource<ArrayList<ExchangeAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
             delay(500) // to show loading progress
             withTimeout(Constants.TIMEOUT) {
-                val querySnapshot = firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
-                    .orderBy("status")
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
+                val querySnapshot =
+                    firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
                 val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
                 for (document in querySnapshot) {
-                    val exchangeAdvertisementDto = document.toObject(ExchangeAdvertisementDto::class.java)
+                    val exchangeAdvertisementDto =
+                        document.toObject(ExchangeAdvertisementDto::class.java)
                     exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
                 }
                 Resource.Success(
                     exchangeAdvertisementsDto.filter { ad ->
                         (filterBy.category == null || ad.book?.category == filterBy.category) &&
-                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
-                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                                (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                                (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
                             (filterBy.condition == null || ad.book?.condition == filterBy.condition)
                     }
                         .map { it.toExchangeAdvertisement() }

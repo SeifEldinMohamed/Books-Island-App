@@ -28,6 +28,8 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private val donateAdapter by lazy { DonateAdapter() }
     private val myDonateAdsViewModel: MyDonateAdsViewModel by viewModels()
     private lateinit var userId: String
+    private var myDonationAds: List<DonateAdvertisement>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,16 +57,19 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun fetchMyDonationAds() {
-        myDonateAdsViewModel.fetchAllDonateAdvertisement(userId)
-        observe()
+        if (myDonationAds == null) {
+            myDonateAdsViewModel.fetchAllDonateAdvertisement(userId)
+            observe()
+        }
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenCreated {
             myDonateAdsViewModel.myDonateAdsState.collect {
                 when (it) {
                     MyDonateAdsState.Init -> Unit
                     is MyDonateAdsState.FetchAllMyDonateAdsSuccessfully -> {
+                        myDonationAds = it.donateAds
                         donateAdapter.updateList(it.donateAds)
                         handleUi(it.donateAds)
                     }
@@ -76,13 +81,22 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
     }
 
+    override fun onResume() {
+        myDonationAds?.let {
+            handleUi(it.toCollection(ArrayList()))
+        }
+        super.onResume()
+    }
+
     private fun handleUi(donationAds: ArrayList<DonateAdvertisement>) {
-        if (donationAds.isEmpty()) {
-            binding.rvDonateMyAds.hide()
-            binding.noBooksAnimationDonationMy.show()
-        } else {
-            binding.rvDonateMyAds.show()
-            binding.noBooksAnimationDonationMy.hide()
+        if (_binding != null) {
+            if (donationAds.isEmpty()) {
+                binding.rvDonateMyAds.hide()
+                binding.noBooksAnimationDonationMy.show()
+            } else {
+                binding.rvDonateMyAds.show()
+                binding.noBooksAnimationDonationMy.hide()
+            }
         }
     }
 

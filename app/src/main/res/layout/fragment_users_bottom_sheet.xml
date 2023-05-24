@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.home.upload_advertisement.UsersBottomSheetFragment">
+
+    <TextView
+        android:id="@+id/tv_choose_user"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_38sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
+        android:text="@string/choose_the_user_who_received_the_book_to_send_confirmation_request"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_users"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_330sdp"
+        android:layout_marginTop="8dp"
+        android:paddingVertical="@dimen/_6sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_choose_user"
+        tools:listitem="@layout/user_item" />
+
+    <ProgressBar
+        android:id="@+id/pb_bottom_sheet"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/primary_dark"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_users"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_choose_user" />
+</androidx.constraintlayout.widget.ConstraintLayout>

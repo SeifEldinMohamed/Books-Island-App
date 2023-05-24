@@ -27,8 +27,11 @@ import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedBooksForExchangeAdapter
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
@@ -57,6 +60,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     private val taskViewModel: ExchangeViewModel by activityViewModels()
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
     private val uploadExchangeAdvertisementViewModel: UploadExchangeViewModel by viewModels()
+    private val itemUserViewModel: ItemUserViewModel by activityViewModels()
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
@@ -76,6 +80,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         uploadedExchangeAdapter.onImageItemClick = this
@@ -84,7 +89,15 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         observe()
         observeBooksToExchange()
         observeSelectedCategoryItem()
+        observeSelectedUserToRequestConfirmation()
         checkForUpdateOrPost()
+        checkIsConfirmationMessageSent()
+
+        binding.ivRequestConfirmation.setOnClickListener {
+            // open bottom sheet to get users that he chat with
+            val bottomSheet = UsersBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
+        }
 
         binding.ivDeleteMyExchangeAd.setOnClickListener {
             showConfirmationDialog()
@@ -123,6 +136,62 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedBook.adapter = uploadedExchangeAdapter
     }
 
+    private fun checkIsConfirmationMessageSent() {
+        args.exchangeAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
+    }
+
+    private fun enableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            enabled()
+            isClickable = true
+            isFocusable = true
+        }
+    }
+
+    private fun disableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            disable()
+            isClickable = false
+            isFocusable = false
+        }
+        binding.ivRequestConfirmation.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_medium
+            )
+        )
+    }
+
+    private fun observeSelectedUserToRequestConfirmation() {
+        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                // send confirmation request
+                uploadExchangeAdvertisementViewModel.sendRequest(
+                    MySentRequest(
+                        id = "",
+                        senderId = firebaseCurrentUser!!.uid,
+                        receiverId = it.id,
+                        advertisementId = args.exchangeAdvertisement!!.id,
+                        username = it.username,
+                        avatarImage = it.avatarImage,
+                        bookTitle = args.exchangeAdvertisement!!.book.title,
+                        condition = args.exchangeAdvertisement!!.book.condition.toString(),
+                        category = args.exchangeAdvertisement!!.book.category,
+                        adType = "Exchange",
+                        edition = args.exchangeAdvertisement!!.book.edition,
+                        status = "Pending"
+                    )
+                )
+            }
+        }
+    }
+
     private fun showConfirmationDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Confirmation")
@@ -151,11 +220,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                     showMyDonateAdvertisement(it)
                     binding.btnUpload.text = getString(R.string.update_post)
                     binding.ivDeleteMyExchangeAd.show()
+                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnUpload.text = getString(R.string.submit_post)
             binding.ivDeleteMyExchangeAd.hide()
+            binding.ivRequestConfirmation.hide()
         }
     }
 
@@ -304,6 +375,10 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        disableSentConfirmationMessageButton()
+                    }
                 }
             }
         }
@@ -354,7 +429,8 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             status = status,
             publishDate = date,
             location = userLocation,
-            booksToExchange = exchangeFor
+            booksToExchange = exchangeFor,
+            confirmationMessageSent = false
 
         )
     }
@@ -449,6 +525,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedImages.adapter = null
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
+        itemUserViewModel.selectedUser(null)
         uploadExchangeAdvertisementViewModel.resetUploadStatus()
         _binding = null
     }

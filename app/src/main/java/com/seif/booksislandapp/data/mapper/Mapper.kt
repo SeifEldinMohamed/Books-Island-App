@@ -13,6 +13,7 @@ import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
+import com.seif.booksislandapp.data.remote.dto.request.RequestDto
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
@@ -25,6 +26,8 @@ import com.seif.booksislandapp.domain.model.book.Book
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.domain.model.chat.MyChat
+import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 
 fun User.toUserDto(): UserDto {
     return UserDto(
@@ -63,6 +66,7 @@ fun UserDto.toUser(): User {
 }
 
 fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
+//    Timber.d("toSellAdvertisement: $confirmationMessageSent")
     return SellAdvertisement(
         id = id,
         ownerId = ownerId,
@@ -70,7 +74,8 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         status = status!!,
         publishDate = publishDate!!,
         location = location,
-        price = price
+        price = price,
+        confirmationMessageSent = confirmationMessageSent!!
     )
 }
 
@@ -82,6 +87,8 @@ fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
         status = status!!,
         publishDate = publishDate!!,
         location = location,
+        confirmationMessageSent = confirmationMessageSent!!
+
     )
 }
 
@@ -93,6 +100,8 @@ fun DonateAdvertisement.toDonateAdvertisementDto(): DonateAdvertisementDto {
         status = status,
         publishDate = publishDate,
         location = location,
+        confirmationMessageSent = confirmationMessageSent
+
     )
 }
 
@@ -110,6 +119,8 @@ fun AuctionAdvertisement.toAuctionAdvertisementDto(): AuctionAdvertisementDto {
         postDuration = postDuration,
         auctionStatus = auctionStatus,
         bidders = bidders.map { it.toBidderDto() },
+        confirmationMessageSent = confirmationMessageSent
+
     )
 }
 
@@ -126,7 +137,9 @@ fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
         closeDate = closeDate!!,
         postDuration = postDuration,
         auctionStatus = auctionStatus!!,
-        bidders = bidders!!.map { it.toBidder() }
+        bidders = bidders!!.map { it.toBidder() },
+        confirmationMessageSent = confirmationMessageSent!!
+
     )
 }
 
@@ -140,7 +153,8 @@ fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
         location = location,
         booksToExchange = booksToExchange.map {
             it.toBooksToExchange()
-        }
+        },
+        confirmationMessageSent = confirmationMessageSent!!
 
     )
 }
@@ -155,7 +169,9 @@ fun ExchangeAdvertisement.toExchangeAdvertisementDto(): ExchangeAdvertisementDto
         location = location,
         booksToExchange = booksToExchange.map {
             it.toBooksToExchange()
-        }
+        },
+        confirmationMessageSent = confirmationMessageSent
+
     )
 }
 
@@ -201,7 +217,8 @@ fun SellAdvertisement.toSellAdvertisementDto(): SellAdvertisementDto {
         status = status,
         publishDate = publishDate,
         location = location,
-        price = price
+        price = price,
+        confirmationMessageSent = confirmationMessageSent
     )
 }
 
@@ -279,5 +296,57 @@ fun MyChatDto.toMyChat(): MyChat {
         userIChatWith = userIChatWith!!.toUser(),
         lastMessage = lastMessage,
         lastMessageDate = lastMessageDate
+    )
+}
+
+fun RequestDto.toMyRequest(user: UserDto): MySentRequest {
+    return MySentRequest(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        username = user.username,
+        advertisementId = advertisementId,
+        avatarImage = user.avatarImage,
+        bookTitle = bookTitle,
+        condition = condition,
+        category = category,
+        adType = adType,
+        edition = edition,
+        date = date,
+        status = status
+    )
+}
+
+fun RequestDto.toMyReceivedRequest(user: UserDto): MyReceivedRequest {
+    return MyReceivedRequest(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        username = user.username,
+        advertisementId = advertisementId,
+        avatarImage = user.avatarImage,
+        bookTitle = bookTitle,
+        condition = condition,
+        category = category,
+        adType = adType,
+        edition = edition,
+        date = date
+    )
+}
+
+fun MySentRequest.toRequestDto(): RequestDto {
+    return RequestDto(
+        id = id,
+        senderId = senderId,
+        receiverId = receiverId,
+        advertisementId = advertisementId,
+        username = username,
+        avatarImage = avatarImage,
+        bookTitle = bookTitle,
+        condition = condition,
+        category = category,
+        adType = adType,
+        edition = edition,
+        status = status
     )
 }

@@ -6,6 +6,7 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface AdvertisementRepository {
     suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String>
@@ -15,7 +16,7 @@ interface AdvertisementRepository {
     suspend fun deleteMySellAdv(mySellAdId: String): Resource<String, String>
     suspend fun searchSellAdv(searchQuery: String): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getUserById(id: String): Resource<User, String>
-    suspend fun fetchMySellAds(userId: String): Resource<ArrayList<SellAdvertisement>, String>
+    suspend fun fetchMySellAds(userId: String): Flow<Resource<ArrayList<SellAdvertisement>, String>>
 
     // donate
     suspend fun fetchRelatedSellAdvertisement(
@@ -31,7 +32,7 @@ interface AdvertisementRepository {
     ): Resource<ArrayList<DonateAdvertisement>, String>
 
     suspend fun uploadExchangeAdv(exchangeAdvertisement: ExchangeAdvertisement): Resource<String, String>
-    suspend fun fetchMyDonateAds(userId: String): Resource<ArrayList<DonateAdvertisement>, String>
+    suspend fun fetchMyDonateAds(userId: String): Flow<Resource<ArrayList<DonateAdvertisement>, String>>
     suspend fun editMyDonateAdv(donateAdvertisement: DonateAdvertisement): Resource<String, String>
     suspend fun deleteMyDonateAdv(myDonateAdId: String): Resource<String, String>
     suspend fun fetchBuyWishListAds(buyIdList: List<String>): Resource<ArrayList<SellAdvertisement>, String>

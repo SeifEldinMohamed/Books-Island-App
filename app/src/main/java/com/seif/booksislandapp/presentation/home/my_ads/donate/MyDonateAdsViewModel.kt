@@ -27,7 +27,7 @@ class MyDonateAdsViewModel @Inject constructor(
     fun fetchAllDonateAdvertisement(userId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getMyDonateAdsUseCase.invoke(userId).let {
+            getMyDonateAdsUseCase.invoke(userId).collect {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

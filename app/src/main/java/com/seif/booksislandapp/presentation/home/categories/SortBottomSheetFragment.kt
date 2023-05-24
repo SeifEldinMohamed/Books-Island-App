@@ -1,14 +1,14 @@
-package com.seif.booksislandapp.presentation.home.categories.buy
+package com.seif.booksislandapp.presentation.home.categories
 
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.seif.booksislandapp.databinding.FragmentSortSheetBinding
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.seif.booksislandapp.databinding.FragmentSortSheetBinding
 
-class SortSheetFragment : BottomSheetDialogFragment() {
+class SortBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentSortSheetBinding
     private lateinit var sortViewModel: SortViewModel
 
@@ -17,6 +17,7 @@ class SortSheetFragment : BottomSheetDialogFragment() {
         val activity = requireActivity()
         sortViewModel = ViewModelProvider(activity)[SortViewModel::class.java]
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -28,6 +28,8 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private val myExchangeAdsViewModel: MyExchangeAdsViewModel by viewModels()
     private lateinit var userId: String
+    private var myExchangeAds: List<ExchangeAdvertisement>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,16 +57,19 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     private fun fetchMyExchangeAds() {
-        myExchangeAdsViewModel.fetchAllExchangeAdvertisement(userId)
-        observe()
+        if (myExchangeAds == null) {
+            myExchangeAdsViewModel.fetchAllExchangeAdvertisement(userId)
+            observe()
+        }
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenCreated {
             myExchangeAdsViewModel.myAuctionAdsState.collect {
                 when (it) {
                     MyExchangeAdsState.Init -> Unit
                     is MyExchangeAdsState.FetchAllMyExchangeAdsSuccessfully -> {
+                        myExchangeAds = it.exchangeAds
                         exchangeAdapter.updateList(it.exchangeAds)
                         handleUi(it.exchangeAds)
                     }
@@ -76,13 +81,22 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         }
     }
 
+    override fun onResume() {
+        myExchangeAds?.let {
+            handleUi(it.toCollection(ArrayList()))
+        }
+        super.onResume()
+    }
+
     private fun handleUi(exchangeAds: ArrayList<ExchangeAdvertisement>) {
-        if (exchangeAds.isEmpty()) {
-            binding.rvExchangeMyAds.hide()
-            binding.noBooksAnimationExchangeMy.show()
-        } else {
-            binding.rvExchangeMyAds.show()
-            binding.noBooksAnimationExchangeMy.hide()
+        if (_binding != null) {
+            if (exchangeAds.isEmpty()) {
+                binding.rvExchangeMyAds.hide()
+                binding.noBooksAnimationExchangeMy.show()
+            } else {
+                binding.rvExchangeMyAds.show()
+                binding.noBooksAnimationExchangeMy.hide()
+            }
         }
     }
 

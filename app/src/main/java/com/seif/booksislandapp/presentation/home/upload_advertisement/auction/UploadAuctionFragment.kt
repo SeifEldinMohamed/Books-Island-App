@@ -27,8 +27,11 @@ import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.model.book.Book
+import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.ItemCategoryViewModel
+import com.seif.booksislandapp.presentation.home.upload_advertisement.ItemUserViewModel
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadState
+import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
 import com.seif.booksislandapp.utils.*
@@ -51,6 +54,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
     private val uploadedImagesAdapter by lazy { UploadedImagesAdapter() }
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
     private val uploadAuctionAdvertisementViewModel: UploadAuctionViewModel by viewModels()
+    private val itemUserViewModel: ItemUserViewModel by activityViewModels()
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
@@ -71,7 +75,18 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         uploadedImagesAdapter.onImageItemClick = this
         firebaseCurrentUser = uploadAuctionAdvertisementViewModel.getFirebaseCurrentUser()
+
         observe()
+        observeCategorySelected()
+        observeSelectedUserToRequestConfirmation()
+        checkForUpdateOrPost()
+        checkIsConfirmationMessageSent()
+
+        binding.ivRequestConfirmation.setOnClickListener {
+            // open bottom sheet to get users that he chat with
+            val bottomSheet = UsersBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
+        }
 
         binding.ivBackUpload.setOnClickListener {
             findNavController().navigateUp()
@@ -85,15 +100,6 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             pickPhoto()
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                Timber.d("collector: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
-            }
-        }
-        checkForUpdateOrPost()
-
         binding.ivDeleteMyAuctionAd.setOnClickListener {
             showConfirmationDialog()
         }
@@ -106,6 +112,22 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                 uploadAuctionAdvertisementViewModel.uploadAuctionAdvertisement(auctionAdvertisement)
         }
 
+        handleUi()
+
+        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    }
+
+    private fun observeCategorySelected() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            itemCategoryViewModel.selectedCategoryItem.collect {
+                Timber.d("collector: $it")
+                categoryName = it
+                binding.btnCategory.text = categoryName
+            }
+        }
+    }
+
+    private fun handleUi() {
         if (imageUris.size > 0) {
             binding.rvUploadedImages.show()
             binding.ivUploadImage.hide()
@@ -113,8 +135,62 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             binding.rvUploadedImages.hide()
             binding.ivUploadImage.show()
         }
+    }
 
-        binding.rvUploadedImages.adapter = uploadedImagesAdapter
+    private fun checkIsConfirmationMessageSent() {
+        args.auctionAdvertisement?.confirmationMessageSent?.let {
+            Timber.d("onViewCreated:............. $it")
+            if (it)
+                disableSentConfirmationMessageButton()
+            else
+                enableSentConfirmationMessageButton()
+        }
+    }
+
+    private fun enableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            enabled()
+            isClickable = true
+            isFocusable = true
+        }
+    }
+
+    private fun disableSentConfirmationMessageButton() {
+        binding.ivRequestConfirmation.apply {
+            disable()
+            isClickable = false
+            isFocusable = false
+        }
+        binding.ivRequestConfirmation.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_medium
+            )
+        )
+    }
+
+    private fun observeSelectedUserToRequestConfirmation() {
+        itemUserViewModel.selectedCategoryItem.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                // send confirmation request
+                uploadAuctionAdvertisementViewModel.sendRequest(
+                    MySentRequest(
+                        id = "",
+                        senderId = firebaseCurrentUser!!.uid,
+                        receiverId = it.id,
+                        advertisementId = args.auctionAdvertisement!!.id,
+                        username = it.username,
+                        avatarImage = it.avatarImage,
+                        bookTitle = args.auctionAdvertisement!!.book.title,
+                        condition = args.auctionAdvertisement!!.book.condition.toString(),
+                        category = args.auctionAdvertisement!!.book.category,
+                        adType = "Auction",
+                        edition = args.auctionAdvertisement!!.book.edition,
+                        status = "Pending"
+                    )
+                )
+            }
+        }
     }
 
     private fun checkForUpdateOrPost() {
@@ -127,11 +203,13 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                     showMyAuctionAdvertisement(it)
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAuctionAd.show()
+                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAuctionAd.hide()
+            binding.ivRequestConfirmation.hide()
         }
     }
 
@@ -261,6 +339,10 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+                    is UploadState.SendRequestSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        disableSentConfirmationMessageButton()
+                    }
                 }
             }
         }
@@ -327,7 +409,8 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             closeDate = closeDate,
             postDuration = binding.acPostDuration.text.toString(),
             auctionStatus = auctionStatus,
-            bidders = bidders
+            bidders = bidders,
+            confirmationMessageSent = false
         )
     }
 
@@ -409,6 +492,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         // return states to initial values
         itemCategoryViewModel.selectItem(getString(R.string.choose_category))
+        itemUserViewModel.selectedUser(null)
         uploadAuctionAdvertisementViewModel.resetUploadStatus()
     }
 }
