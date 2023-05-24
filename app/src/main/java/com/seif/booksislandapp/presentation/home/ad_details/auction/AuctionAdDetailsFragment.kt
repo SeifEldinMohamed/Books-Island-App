@@ -20,6 +20,7 @@ import com.seif.booksislandapp.presentation.home.ad_details.auction.adapter.Rela
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetFragment
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetViewModel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<AuctionAdvertisement>? = null
+    private val filterViewModel: FilterViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +70,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             handleIsFavorite()
         }
         binding.ivBackAuctionDetails.setOnClickListener {
+            filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.btnParticipate.setOnClickListener {
