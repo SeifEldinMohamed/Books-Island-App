@@ -3,12 +3,14 @@ package com.seif.booksislandapp.data.service
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDeepLinkBuilder
 import coil.ImageLoader
 import coil.request.ImageRequest

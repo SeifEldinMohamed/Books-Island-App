@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.exchange.adapter.RelatedExchangeAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPend
 class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private var _binding: FragmentExchangeAdDetailsBinding? = null
     private val binding get() = _binding!!
+    private val filterViewModel: FilterViewModel by activityViewModels()
 
     private val args: ExchangeAdDetailsFragmentArgs by navArgs()
     private val exchangeAdDetailsViewModel: ExchangeDetailsViewModel by viewModels()
@@ -68,6 +71,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
             handleIsFavorite()
         }
         binding.ivBackExchangeDetails.setOnClickListener {
+            filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {
