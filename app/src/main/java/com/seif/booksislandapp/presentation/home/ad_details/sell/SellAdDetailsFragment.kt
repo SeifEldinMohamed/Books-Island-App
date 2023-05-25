@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -41,6 +42,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<SellAdvertisement>? = null
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +63,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         fetchRelatedSellAds()
         ownerAdLimitations()
         isFavouriteAd()
+        handleOnBackPressed()
 
         binding.ivChat.setOnClickListener {
             navigateToChatRoomFragment()
@@ -68,10 +72,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             handleIsFavorite()
         }
         binding.ivBackSellDetails.setOnClickListener {
-
             filterViewModel.filter(null)
             findNavController().navigateUp()
         }
+
         binding.clProfile.setOnClickListener {
             owner?.id?.let {
                 val action =
@@ -82,6 +86,21 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             }
         }
         binding.rvRelatedAds.adapter = relatedSellAdsAdapter
+    }
+
+    private fun handleOnBackPressed() {
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button press event
+                filterViewModel.filter(null)
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     private fun navigateToChatRoomFragment() {
@@ -294,6 +313,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        onBackPressedCallback.isEnabled = false // Disable the callback
+        onBackPressedCallback.remove() // Unregister the callback
         binding.rvRelatedAds.adapter = null
         dialog.setView(null)
         _binding = null

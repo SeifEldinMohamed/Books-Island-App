@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -43,6 +44,8 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<ExchangeAdvertisement>? = null
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +66,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         fetchRelatedExchangeAds()
         ownerAdLimitations()
         isFavouriteAd()
+        handleOnBackPressed()
 
         binding.ivChat.setOnClickListener {
             navigateToChatRoomFragment()
@@ -85,6 +89,21 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         }
         binding.rvExchangeFor.adapter = booksToExchangeAdapter
         binding.rvRelatedAds.adapter = relatedExchangeAdsAdapter
+    }
+
+    private fun handleOnBackPressed() {
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button press event
+                filterViewModel.filter(null)
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     private fun isFavouriteAd() {
@@ -294,6 +313,8 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
 
     override fun onDestroyView() {
         super.onDestroyView()
+        onBackPressedCallback.isEnabled = false // Disable the callback
+        onBackPressedCallback.remove() // Unregister the callback
         binding.rvRelatedAds.adapter = null
         dialog.setView(null)
         _binding = null
