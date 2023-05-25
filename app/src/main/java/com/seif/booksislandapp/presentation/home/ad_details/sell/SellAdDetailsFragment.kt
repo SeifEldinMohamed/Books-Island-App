@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +36,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val relatedSellAdsAdapter: RelatedSellAdsAdapter by lazy { RelatedSellAdsAdapter() }
     private var owner: User? = null
+    private val filterViewModel: FilterViewModel by activityViewModels()
+
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<SellAdvertisement>? = null
@@ -64,6 +68,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             handleIsFavorite()
         }
         binding.ivBackSellDetails.setOnClickListener {
+
+            filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {

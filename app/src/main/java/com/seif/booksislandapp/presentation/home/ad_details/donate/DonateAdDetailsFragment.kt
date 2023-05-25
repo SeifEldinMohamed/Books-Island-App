@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.donate.adapter.RelatedDonateAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ import timber.log.Timber
 class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: FragmentDonateAdDetailsBinding? = null
     private val binding get() = _binding!!
+    private val filterViewModel: FilterViewModel by activityViewModels()
 
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -65,6 +68,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             handleIsFavorite()
         }
         binding.ivBackSellDetails.setOnClickListener {
+            filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {
