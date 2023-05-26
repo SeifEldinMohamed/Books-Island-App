@@ -48,14 +48,17 @@
  <color name="cook_color">#89BABF</color>
 
 
- <color name="chat_gray_background">#F7F8FB</color>
- <color name="chat_dark_gray_background">#63697B</color>
- <color name="chat_green_background">#16A860</color>
+    <color name="chat_gray_background">#F7F8FB</color>
+    <color name="chat_dark_gray_background">#63697B</color>
+    <color name="chat_green_background">#16A860</color>
 
- <color name="sender_bubble_background_color">@color/primary_dark</color>
- <color name="receiver_bubble_background_color">@color/chat_dark_gray_background</color>
+    <color name="sender_bubble_background_color">@color/primary_dark</color>
+    <color name="receiver_bubble_background_color">@color/chat_dark_gray_background</color>
 
 
- <color name="nav_item_text_color">@color/black</color>
- <color name="nav_background_color">@color/white</color>
+    <color name="nav_item_text_color">@color/black</color>
+    <color name="nav_background_color">@color/white</color>
+    <color name="cardBackgroundColor">@color/primary_dark</color>
+    <color name="about_text_color">@color/white</color>
+    <color name="light_yellow">#F7E6A5</color>
 </resources>

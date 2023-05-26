@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -34,6 +35,7 @@ import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -379,4 +381,14 @@ fun Message.isValidMessage(): Boolean {
     return if (this.text.isEmpty()) {
         false
     } else !(this.imageUrl != null && this.imageUrl.toString().isEmpty())
+}
+
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+}
+
+fun Context.hideKeyboard(view: View) {
+    Timber.d("hideKeyboard: hide keyboard")
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

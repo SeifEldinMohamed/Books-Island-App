@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Books Island</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -141,7 +141,7 @@
     <string name="hello_heba">Hello Heba,</string>
     <string name="welcome_username">Hello %1$s,</string>
     <string name="donations">Donations</string>
-    <string name="exchange">Exchanges</string>
+    <string name="exchange">Exchange</string>
     <string name="auctions">Auctions</string>
     <string name="logout">Logout</string>
     <string name="heba_adel">Heba Adel</string>
@@ -283,11 +283,27 @@
     <string name="status_">Status:</string>
     <string name="message_sent">"Sent this confirmation message to %1$s."</string>
     <string name="message_received">"Do you received this book from %1$s?"</string>
-    <string name="accept">Accept</string>
+    <string name="yes">Yes</string>
     <string name="do_you_received_this_book_from_seif_mohamed">Do you received this book from Seif Mohamed ?</string>
-    <string name="reject">Reject</string>
+    <string name="no">No</string>
     <string name="no_requests_yet">No Requests Yet</string>
     <string name="no_request_yet_image_description">no request yet image description</string>
+    <string name="share_app">Download Books Island app from here:\n %1$s</string>
+    <string name="share_your_app_with">Choose the app you want to share with:</string>
+    <string name="mail_to_from_books_island">mailto:%1$s%2$s%3$s</string>
+    <string name="subject_email">\?subject=</string>
+    <string name="message_from_books_island">Message from Books Island App</string>
+    <string name="about">About</string>
+    <string name="books_island">Books Island</string>
+    <string name="version_1_0_0">Version: 1.0.0</string>
+    <string name="developed_by_books_island_team">Developed by: Books Island Team</string>
+    <string name="books_island_email" tools:ignore="Typos">Email: booksisland1@gmail.com</string>
+    <string name="requests_history">Requests History</string>
+    <string name="others">Others</string>
+    <string name="your_gateway_to_endless_literary_adventures">Your Gateway to Endless\nLiterary Adventures</string>
+    <string name="delete">Delete</string>
+    <string name="cancel_request">Cancel Request</string>
+    <string name="confirmation_sent_suuccessfully">\"Confirmation Sent Successfully\"</string>
 
 
 </resources>

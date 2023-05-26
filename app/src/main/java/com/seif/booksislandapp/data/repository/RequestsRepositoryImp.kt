@@ -38,21 +38,22 @@ class RequestsRepositoryImp @Inject constructor(
     override suspend fun sendRequest(mySentRequest: MySentRequest): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        else {
+            return try {
+                withTimeout(Constants.TIMEOUT_UPLOAD) {
+                    val doc = firestore.collection(REQUESTS_FIIRESTORE_COLLECTION).document()
+                    mySentRequest.id = doc.id
+                    Timber.d("sendRequest: before mapper")
+                    doc.set(mySentRequest.toRequestDto()).await()
+                    Timber.d("sendRequest: after mapper")
 
-        return withTimeout(Constants.TIMEOUT_UPLOAD) {
-            try {
-                val doc = firestore.collection(REQUESTS_FIIRESTORE_COLLECTION).document()
-                mySentRequest.id = doc.id
-                Timber.d("sendRequest: before mapper")
-                doc.set(mySentRequest.toRequestDto()).await()
-                Timber.d("sendRequest: after mapper")
+                    val collectionName: String = getCollectionNameBaseOnAdType(mySentRequest.adType)
 
-                val collectionName: String = getCollectionNameBaseOnAdType(mySentRequest.adType)
+                    firestore.collection(collectionName).document(mySentRequest.advertisementId)
+                        .update("confirmationMessageSent", true).await()
 
-                firestore.collection(collectionName).document(mySentRequest.advertisementId)
-                    .update("confirmationMessageSent", true).await()
-
-                Resource.Success("Confirmation Request Sent Successfully")
+                    Resource.Success("Confirmation Request Sent Successfully")
+                }
             } catch (e: Exception) {
                 Resource.Error(e.message.toString())
             }

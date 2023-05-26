@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -40,6 +41,9 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<DonateAdvertisement>? = null
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +64,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         fetchRelatedDonateAds()
         ownerAdLimitations()
         isFavouriteAd()
+        handleOnBackPressed()
 
         binding.ivChat.setOnClickListener {
             navigateToChatRoomFragment()
@@ -81,6 +86,21 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         }
         binding.rvRelatedAds.adapter = relatedDonateAdsAdapter
+    }
+
+    private fun handleOnBackPressed() {
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button press event
+                filterViewModel.filter(null)
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     private fun fetchOwnerData() {
@@ -290,6 +310,8 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     override fun onDestroyView() {
+        onBackPressedCallback.isEnabled = false // Disable the callback
+        onBackPressedCallback.remove() // Unregister the callback
         binding.rvRelatedAds.adapter = null
         dialog.setView(null)
         _binding = null

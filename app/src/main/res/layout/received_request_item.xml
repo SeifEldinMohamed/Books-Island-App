@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="@dimen/_7sdp"
-                android:text="@string/accept"
+                android:text="@string/yes"
                 app:backgroundTint="@color/accepted_green"
                 app:icon="@drawable/ic_accept"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_reject_request"
@@ -38,6 +38,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_reject_request"
+                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="TextContrastCheck" />
 
             <TextView
@@ -242,7 +243,7 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginBottom="@dimen/_12sdp"
                 android:paddingVertical="@dimen/_7sdp"
-                android:text="@string/reject"
+                android:text="@string/no"
                 app:backgroundTint="@color/rejected_red"
                 app:icon="@drawable/ic_cancel_flat"
                 app:layout_constraintBottom_toBottomOf="parent"
