@@ -25,10 +25,7 @@ import com.seif.booksislandapp.databinding.FragmentChatRoomBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapter
-import com.seif.booksislandapp.utils.FileUtil
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -89,8 +86,9 @@ class ChatRoomFragment : Fragment() {
         binding.ivBackChatRoom.setOnClickListener {
             findNavController().navigateUp()
         }
+
         observe()
-        handleKeyboard()
+        //  handleKeyboard() //  handling the keyboard visibility changes and scrolling the RecyclerView when the keyboard is shown.
 
         binding.rvChatRoom.adapter = chatRoomAdapter
     }
@@ -105,16 +103,24 @@ class ChatRoomFragment : Fragment() {
     }
 
     private fun handleKeyboard() {
+        // This listener is triggered whenever the layout changes, including changes in keyboard visibility.
         listener = ViewTreeObserver.OnGlobalLayoutListener {
-            val r = Rect()
-            binding.clChatMessages.getWindowVisibleDisplayFrame(r)
-            val screenHeight = binding.clChatMessages.rootView.height
-            val keypadHeight = screenHeight - r.bottom
+            val rect = Rect() // hold the visible display frame of the activity's root view.
+
+            // populates the Rect object with the visible display frame of the activity's root view.
+            // This frame represents the area of the screen that is not obscured by system windows (such as the keyboard).
+            binding.clChatMessages.getWindowVisibleDisplayFrame(rect)
+            val screenHeight =
+                binding.clChatMessages.rootView.height // retrieves the height of the root view, which corresponds to the height of the entire screen.
+            val keypadHeight =
+                screenHeight - rect.bottom // calculates the height of the keyboard by subtracting the bottom coordinate of the visible display frame from the screen height.
             if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                 // Keyboard is shown
+                Timber.d("handleKeyboard: keyboard is shown")
                 val lastItem = (binding.rvChatRoom.adapter!!.itemCount) - 1
                 if (lastItem >= 0) {
-                    binding.rvChatRoom.scrollToPosition(lastItem)
+                    Timber.d("handleKeyboard: smooth scrooll to $lastItem")
+                    binding.rvChatRoom.smoothScrollToPosition(lastItem)
                 }
             }
         }
@@ -298,7 +304,15 @@ class ChatRoomFragment : Fragment() {
 
     override fun onStop() {
         binding.clChatMessages.viewTreeObserver.removeOnGlobalLayoutListener(listener) // to prevent null pointer exception and memory leakks
+        //  hideKeyboard()
         super.onStop()
+    }
+
+    override fun onResume() {
+        binding.etMessage.clearFocus()
+        hideKeyboard()
+        handleKeyboard() // to scroll to last item when user returns to app and show keyboard
+        super.onResume()
     }
 
     override fun onDestroyView() {
@@ -309,3 +323,44 @@ class ChatRoomFragment : Fragment() {
         super.onDestroyView()
     }
 }
+
+//    private fun handleKeyboard() {
+//        // val fragmentRootView = binding.clChatMessages.rootView
+//        // val originalPaddingBottom = fragmentRootView.paddingBottom
+//
+//        // This listener is triggered whenever the layout changes, including changes in keyboard visibility.
+//        listener = ViewTreeObserver.OnGlobalLayoutListener {
+//            val rect = Rect() // hold the visible display frame of the activity's root view.
+//            // populates the Rect object with the visible display frame of the activity's root view.
+//            // This frame represents the area of the screen that is not obscured by system windows (such as the keyboard).
+//            binding.clChatMessages.getWindowVisibleDisplayFrame(rect)
+//            val screenHeight = binding.clChatMessages.rootView.height // retrieves the height of the root view, which corresponds to the height of the entire screen.
+//            val keypadHeight = screenHeight - rect.bottom // calculates the height of the keyboard by subtracting the bottom coordinate of the visible display frame from the screen height.
+//
+//            //  checks if the keyboard height is greater than 15% of the screen height. You can adjust this ratio as needed
+//            //  to determine when the keyboard is considered visible.
+//            if (keypadHeight > screenHeight * 0.15) { // Adjust the ratio as needed
+//                // Keyboard is shown
+//                // val lastItemIndex = binding.rvChatRoom.adapter?.itemCount?.minus(1) ?: -1
+//                Timber.d("handleKeyboard: keyboard is shown")
+//                if (messages.size >= 0) {
+//                    binding.rvChatRoom.post { // ensures that this operation is performed after the layout has been updated.
+//                        // Scroll to the last item with smooth scrolling
+//                        Timber.d("handleKeyboard: scroll to last message")
+//                        binding.rvChatRoom.smoothScrollToPosition(messages.size - 1)
+//                    }
+//                }
+//            } else {
+//                // Keyboard is hidden
+//                binding.rvChatRoom.post {
+//                    // Restore the original padding to avoid any layout issues
+//                    binding.clChatMessages.setPadding(
+//                        binding.clChatMessages.paddingLeft,
+//                        binding.clChatMessages.paddingTop,
+//                        binding.clChatMessages.paddingRight,
+//                        binding.clChatMessages.paddingBottom
+//                    )
+//                }
+//            }
+//        }
+//    }
