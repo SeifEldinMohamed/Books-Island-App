@@ -53,6 +53,12 @@ class Constants {
         const val CURRENT_PROGRESS_ANIMATION = 1500
         const val ANIMATION_DURATION = 1000L
 
+        const val GOOGLE_PLAY_URL: String = "https://play.google.com/store/apps/details?id="
+        const val RATE_ON_GOOGLE_PLAY_URL: String = "market://details?id="
+        const val BOOKS_ISLAND_EMAIL: String = "booksisland1@gmail.com"
+        const val OUR_APPS_ON_GOOGLE_PLAY_URL: String =
+            "https://play.google.com/store/apps/dev?id=8697500693164992079"
+
         // AVATARS
         val AVATAR_MEN_LIST = arrayListOf(
             "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fman_avatar_1.png?alt=media&token=06750e12-87c7-480a-a32e-373be9dc8d1f",
