@@ -13,5 +13,6 @@ data class SellAdvertisementDto(
     override val publishDate: Date? = null,
     override val location: String = "",
     override val confirmationMessageSent: Boolean? = null,
-    val price: String = ""
+    val price: String = "",
+    val confirmationRequestId: String = ""
 ) : AdvertisementDto()
