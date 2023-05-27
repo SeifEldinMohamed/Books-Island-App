@@ -24,6 +24,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/tv_cancel_request2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:paddingVertical="@dimen/_6sdp"
+                    android:text="@string/cancel_request"
+                    android:textColor="@color/rejected_red"
+                    android:textSize="@dimen/_16ssp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_delete_my_ad"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_delete_my_ad"
+                    app:layout_constraintTop_toTopOf="@+id/iv_delete_my_ad" />
+
                 <ImageView
                     android:id="@+id/iv_request_confirmation"
                     android:layout_width="wrap_content"
@@ -98,7 +112,7 @@
 
                 <TextView
                     android:id="@+id/tv_donate"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_6sdp"
                     android:fontFamily="@font/roboto_bold"
@@ -106,7 +120,6 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/_20ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_back_upload"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_request_confirmation"
                     app:layout_constraintStart_toEndOf="@+id/iv_back_upload"
                     app:layout_constraintTop_toTopOf="@+id/iv_back_upload" />
 
@@ -432,7 +445,7 @@
                     android:id="@+id/iv_delete_my_ad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     android:layout_weight="1"
                     android:padding="@dimen/_6sdp"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_donate"
