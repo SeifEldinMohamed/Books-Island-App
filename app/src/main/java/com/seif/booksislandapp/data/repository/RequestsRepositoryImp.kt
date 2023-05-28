@@ -8,6 +8,7 @@ import com.seif.booksislandapp.data.mapper.toMyRequest
 import com.seif.booksislandapp.data.mapper.toRequestDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.domain.repository.RequestsRepository
@@ -50,9 +51,14 @@ class RequestsRepositoryImp @Inject constructor(
                     val collectionName: String = getCollectionNameBaseOnAdType(mySentRequest.adType)
 
                     firestore.collection(collectionName).document(mySentRequest.advertisementId)
-                        .update("confirmationMessageSent", true).await()
+                        .update("confirmationMessageSent", true)
+                        .await()
 
-                    Resource.Success("Confirmation Request Sent Successfully")
+                    firestore.collection(collectionName).document(mySentRequest.advertisementId)
+                        .update("confirmationRequestId", mySentRequest.id)
+                        .await()
+
+                    Resource.Success(mySentRequest.id)
                 }
             } catch (e: Exception) {
                 Resource.Error(e.message.toString())
@@ -75,7 +81,7 @@ class RequestsRepositoryImp @Inject constructor(
                             if (requestsQuerySnapShot != null) {
                                 for (snapShot in requestsQuerySnapShot) {
                                     val request = snapShot.toObject(RequestDto::class.java)
-                                    if (request.senderId == currentUserId && request.status == "Pending") // requests sent by current user
+                                    if (request.senderId == currentUserId) // requests sent by current user
                                         requestsDto.add(request)
                                 }
                                 // fetch sender user
@@ -113,7 +119,7 @@ class RequestsRepositoryImp @Inject constructor(
 
     override suspend fun cancelSentRequest(
         requestId: String,
-        adType: String,
+        adType: AdType,
         advertisementId: String
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
@@ -127,6 +133,17 @@ class RequestsRepositoryImp @Inject constructor(
         updateIsConfirmationRequestSent(adType, advertisementId, false)
 
         return Resource.Success("Request Cancelled")
+    }
+
+    override suspend fun deleteRequest(requestId: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        firestore.collection(REQUESTS_FIIRESTORE_COLLECTION)
+            .document(requestId)
+            .delete()
+            .await()
+        return Resource.Success("Deleted Successfully")
     }
 
     /** Received **/
@@ -185,8 +202,9 @@ class RequestsRepositoryImp @Inject constructor(
     override suspend fun acceptConfirmationRequest(
         requestId: String,
         sellerId: String,
-        adType: String,
-        acceptStatus: String
+        adType: AdType,
+        acceptStatus: String,
+        advertisementId: String
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -195,6 +213,11 @@ class RequestsRepositoryImp @Inject constructor(
             .document(requestId)
             .update("status", acceptStatus)
             .await()
+
+        firestore.collection(getCollectionNameBaseOnAdType(adType)).document(advertisementId)
+            .update("confirmationRequestId", "")
+            .await()
+
         // increase totalNumberOfCompletedDealIn(AdType) in the seller profile
         return Resource.Success("Confirmation Accepted")
     }
@@ -202,7 +225,7 @@ class RequestsRepositoryImp @Inject constructor(
     override suspend fun rejectConfirmationRequest(
         requestId: String,
         advertisementId: String,
-        adType: String,
+        adType: AdType,
         rejectStatus: String
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
@@ -216,11 +239,13 @@ class RequestsRepositoryImp @Inject constructor(
         // update confirmationMessageSent field of that ad to false so seller have opportunity to send another request
         updateIsConfirmationRequestSent(adType, advertisementId, false)
 
+        //  sendConfirmationResultNotification(username,true, sellerId)
+
         return Resource.Success("Confirmation Rejected")
     }
 
     private suspend fun updateIsConfirmationRequestSent(
-        adType: String,
+        adType: AdType,
         advertisementId: String,
         isConfirmationSent: Boolean
     ) {
@@ -234,13 +259,12 @@ class RequestsRepositoryImp @Inject constructor(
         }
     }
 
-    private fun getCollectionNameBaseOnAdType(adType: String): String {
+    private fun getCollectionNameBaseOnAdType(adType: AdType): String {
         return when (adType) {
-            "Buying" -> SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
-            "Donation" -> DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
-            "Exchange" -> EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
-            "Auction" -> AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
-            else -> ""
+            AdType.Buying -> SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
+            AdType.Donation -> DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
+            AdType.Exchange -> EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
+            AdType.Auction -> AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
         }
     }
 }
