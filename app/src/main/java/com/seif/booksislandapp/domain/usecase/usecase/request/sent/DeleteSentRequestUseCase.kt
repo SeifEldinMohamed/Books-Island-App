@@ -1,18 +1,15 @@
 package com.seif.booksislandapp.domain.usecase.usecase.request.sent
 
 import com.seif.booksislandapp.data.repository.RequestsRepositoryImp
-import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.utils.Resource
 import javax.inject.Inject
 
-class CancelSentRequestUseCase @Inject constructor(
+class DeleteSentRequestUseCase @Inject constructor(
     private val requestRepositoryImp: RequestsRepositoryImp
 ) {
     suspend operator fun invoke(
-        requestId: String,
-        adType: AdType,
-        advertisementId: String
+        requestId: String
     ): Resource<String, String> {
-        return requestRepositoryImp.cancelSentRequest(requestId, adType, advertisementId)
+        return requestRepositoryImp.deleteRequest(requestId)
     }
 }
