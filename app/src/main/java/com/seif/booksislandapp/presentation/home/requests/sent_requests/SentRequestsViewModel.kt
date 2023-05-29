@@ -3,7 +3,9 @@ package com.seif.booksislandapp.presentation.home.requests.sent_requests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.usecase.usecase.request.sent.CancelSentRequestUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.request.sent.DeleteSentRequestUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.request.sent.FetchMySentRequestsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetFirebaseCurrentUserUseCase
 import com.seif.booksislandapp.utils.Resource
@@ -21,12 +23,13 @@ class SentRequestsViewModel @Inject constructor(
     private val fetchMySentRequestsUseCase: FetchMySentRequestsUseCase,
     private val resourceProvider: ResourceProvider,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
-    private val cancelSentRequestUseCase: CancelSentRequestUseCase
+    private val cancelSentRequestUseCase: CancelSentRequestUseCase,
+    private val deleteSentRequestUseCase: DeleteSentRequestUseCase,
 ) : ViewModel() {
     private var _sentRequestsState = MutableStateFlow<SentRequestsState>(SentRequestsState.Init)
     val sentRequestsState = _sentRequestsState.asStateFlow()
 
-    fun cancelRequest(requestId: String, adType: String, advertisementId: String) {
+    fun cancelRequest(requestId: String, adType: AdType, advertisementId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             cancelSentRequestUseCase(requestId, adType, advertisementId).let {
@@ -96,5 +99,28 @@ class SentRequestsViewModel @Inject constructor(
 
     fun getCurrentUserId(): String {
         return getFirebaseCurrentUserUseCase()!!.uid
+    }
+
+    fun deleteRequest(requestId: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteSentRequestUseCase(requestId).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _sentRequestsState.value =
+                            SentRequestsState.DeleteSentRequestsSuccessfully(it.data)
+                    }
+                }
+            }
+        }
     }
 }

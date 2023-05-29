@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.seif.booksislandapp.databinding.FragmentSentRequestsBinding
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -59,21 +62,26 @@ class SentRequestsFragment : Fragment(), OnAdItemClick<MySentRequest> {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            sentRequestsViewModel.sentRequestsState.collect {
-                when (it) {
-                    SentRequestsState.Init -> Unit
-                    is SentRequestsState.FetchSentRequestsSuccessfully -> {
-                        sentRequests = it.sentRequests
-                        sentRequestAdapter.updateList(it.sentRequests)
-                        handleUi(it.sentRequests)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sentRequestsViewModel.sentRequestsState.collect {
+                    when (it) {
+                        SentRequestsState.Init -> Unit
+                        is SentRequestsState.FetchSentRequestsSuccessfully -> {
+                            sentRequests = it.sentRequests
+                            sentRequestAdapter.updateList(it.sentRequests)
+                            handleUi(it.sentRequests)
+                        }
+                        is SentRequestsState.CancelSentRequestsSuccessfully -> {
+                            binding.root.showSuccessSnackBar(it.message)
+                        }
+                        is SentRequestsState.DeleteSentRequestsSuccessfully -> {
+                            binding.root.showSuccessSnackBar(it.message)
+                        }
+                        is SentRequestsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is SentRequestsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is SentRequestsState.ShowError -> handleErrorState(it.message)
                     }
-                    is SentRequestsState.CancelSentRequestsSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
-                    }
-                    is SentRequestsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is SentRequestsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is SentRequestsState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
@@ -159,6 +167,9 @@ class SentRequestsFragment : Fragment(), OnAdItemClick<MySentRequest> {
 
     override fun onAdItemClick(item: MySentRequest, position: Int) {
         Timber.d("onAdItemClick: $position) $item ")
-        sentRequestsViewModel.cancelRequest(item.id, item.adType, item.advertisementId)
+        if (item.status != "Pending")
+            sentRequestsViewModel.deleteRequest(item.id)
+        else
+            sentRequestsViewModel.cancelRequest(item.id, item.adType, item.advertisementId)
     }
 }

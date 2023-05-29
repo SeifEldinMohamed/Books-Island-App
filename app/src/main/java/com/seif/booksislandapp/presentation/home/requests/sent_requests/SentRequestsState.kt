@@ -11,4 +11,5 @@ sealed class SentRequestsState {
         SentRequestsState()
 
     data class CancelSentRequestsSuccessfully(val message: String) : SentRequestsState()
+    data class DeleteSentRequestsSuccessfully(val message: String) : SentRequestsState()
 }
