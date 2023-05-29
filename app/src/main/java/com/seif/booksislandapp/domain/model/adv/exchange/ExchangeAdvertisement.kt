@@ -17,4 +17,5 @@ data class ExchangeAdvertisement(
     var booksToExchange: List<BooksToExchange>,
     override val location: String,
     override val confirmationMessageSent: Boolean,
+    val confirmationRequestId: String = ""
 ) : Advertisement(), Parcelable

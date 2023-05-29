@@ -17,4 +17,5 @@ data class SellAdvertisement(
     override val location: String,
     val price: String,
     override val confirmationMessageSent: Boolean,
+    val confirmationRequestId: String = ""
 ) : Advertisement(), Parcelable

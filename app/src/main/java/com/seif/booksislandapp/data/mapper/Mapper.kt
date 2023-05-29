@@ -15,6 +15,7 @@ import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
@@ -75,7 +76,8 @@ fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
         publishDate = publishDate!!,
         location = location,
         price = price,
-        confirmationMessageSent = confirmationMessageSent!!
+        confirmationMessageSent = confirmationMessageSent!!,
+        confirmationRequestId = confirmationRequestId
     )
 }
 
@@ -87,7 +89,8 @@ fun DonateAdvertisementDto.toDonateAdvertisement(): DonateAdvertisement {
         status = status!!,
         publishDate = publishDate!!,
         location = location,
-        confirmationMessageSent = confirmationMessageSent!!
+        confirmationMessageSent = confirmationMessageSent!!,
+        confirmationRequestId = confirmationRequestId
 
     )
 }
@@ -138,8 +141,8 @@ fun AuctionAdvertisementDto.toAuctionAdvertisement(): AuctionAdvertisement {
         postDuration = postDuration,
         auctionStatus = auctionStatus!!,
         bidders = bidders!!.map { it.toBidder() },
-        confirmationMessageSent = confirmationMessageSent!!
-
+        confirmationMessageSent = confirmationMessageSent!!,
+        confirmationRequestId = confirmationRequestId
     )
 }
 
@@ -154,8 +157,8 @@ fun ExchangeAdvertisementDto.toExchangeAdvertisement(): ExchangeAdvertisement {
         booksToExchange = booksToExchange.map {
             it.toBooksToExchange()
         },
-        confirmationMessageSent = confirmationMessageSent!!
-
+        confirmationMessageSent = confirmationMessageSent!!,
+        confirmationRequestId = confirmationRequestId
     )
 }
 
@@ -310,7 +313,7 @@ fun RequestDto.toMyRequest(user: UserDto): MySentRequest {
         bookTitle = bookTitle,
         condition = condition,
         category = category,
-        adType = adType,
+        adType = AdType.valueOf(adType),
         edition = edition,
         date = date,
         status = status
@@ -328,10 +331,11 @@ fun RequestDto.toMyReceivedRequest(user: UserDto): MyReceivedRequest {
         bookTitle = bookTitle,
         condition = condition,
         category = category,
-        adType = adType,
+        adType = AdType.valueOf(adType),
         edition = edition,
-        date = date
-    )
+        date = date,
+
+        )
 }
 
 fun MySentRequest.toRequestDto(): RequestDto {
@@ -345,7 +349,7 @@ fun MySentRequest.toRequestDto(): RequestDto {
         bookTitle = bookTitle,
         condition = condition,
         category = category,
-        adType = adType,
+        adType = adType.toString(),
         edition = edition,
         status = status
     )
