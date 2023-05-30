@@ -3,6 +3,7 @@ package com.seif.booksislandapp.presentation.home.requests.received_requests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.usecase.usecase.request.received.AcceptConfirmationRequestUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.request.received.FetchReceivedRequestsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.request.received.RejectedConfirmationRequestUseCase
@@ -55,13 +56,14 @@ class ReceivedRequestsViewModel @Inject constructor(
     fun acceptConfirmationRequest(
         requestId: String,
         sellerId: String,
-        adType: String,
-        acceptStatus: String
+        adType: AdType,
+        acceptStatus: String,
+        advertisementId: String
     ) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             acceptConfirmationRequestUseCase(
-                requestId, sellerId, adType, acceptStatus
+                requestId, sellerId, adType, acceptStatus, advertisementId
             ).let {
                 when (it) {
                     is Resource.Error -> {
@@ -85,7 +87,7 @@ class ReceivedRequestsViewModel @Inject constructor(
     fun rejectConfirmationRequest(
         requestId: String,
         advertisementId: String,
-        adType: String,
+        adType: AdType,
         rejectStatus: String
     ) {
         setLoading(true)

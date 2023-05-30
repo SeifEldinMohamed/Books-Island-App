@@ -335,7 +335,7 @@ fun RequestDto.toMyReceivedRequest(user: UserDto): MyReceivedRequest {
         edition = edition,
         date = date,
 
-        )
+    )
 }
 
 fun MySentRequest.toRequestDto(): RequestDto {

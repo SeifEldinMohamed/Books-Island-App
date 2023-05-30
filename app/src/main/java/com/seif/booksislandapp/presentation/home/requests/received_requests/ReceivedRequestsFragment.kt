@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.seif.booksislandapp.databinding.FragmentReceivedRequestsBinding
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -57,24 +60,26 @@ class ReceivedRequestsFragment : Fragment(), OnReceivedRequestItemClick<MyReceiv
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            receivedRequestsViewModel.receivedRequestsState.collect {
-                when (it) {
-                    ReceivedRequestsState.Init -> Unit
-                    is ReceivedRequestsState.FetchReceivedRequestsSuccessfully -> {
-                        receivedRequests = it.receivedRequests
-                        receivedRequestAdapter.updateList(it.receivedRequests)
-                        handleUi(it.receivedRequests)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                receivedRequestsViewModel.receivedRequestsState.collect {
+                    when (it) {
+                        ReceivedRequestsState.Init -> Unit
+                        is ReceivedRequestsState.FetchReceivedRequestsSuccessfully -> {
+                            receivedRequests = it.receivedRequests
+                            receivedRequestAdapter.updateList(it.receivedRequests)
+                            handleUi(it.receivedRequests)
+                        }
+                        is ReceivedRequestsState.AcceptedConfirmationRequestSuccessfully -> {
+                            binding.root.showSuccessSnackBar(it.message)
+                        }
+                        is ReceivedRequestsState.RejectedConfirmationRequestSuccessfully -> {
+                            binding.root.showSuccessSnackBar(it.message)
+                        }
+                        is ReceivedRequestsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ReceivedRequestsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is ReceivedRequestsState.ShowError -> handleErrorState(it.message)
                     }
-                    is ReceivedRequestsState.AcceptedConfirmationRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
-                    }
-                    is ReceivedRequestsState.RejectedConfirmationRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
-                    }
-                    is ReceivedRequestsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ReceivedRequestsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is ReceivedRequestsState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
@@ -163,7 +168,8 @@ class ReceivedRequestsFragment : Fragment(), OnReceivedRequestItemClick<MyReceiv
             item.id,
             item.senderId,
             item.adType,
-            "Accepted"
+            "Accepted",
+            item.advertisementId
         )
     }
 
