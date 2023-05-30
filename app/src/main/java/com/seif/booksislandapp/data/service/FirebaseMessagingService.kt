@@ -3,14 +3,12 @@ package com.seif.booksislandapp.data.service
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDeepLinkBuilder
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -29,22 +27,22 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
     override fun handleIntent(intent: Intent) {
         val bundle = intent.extras
         if (bundle != null) {
-            for (key in bundle.keySet()) {
-                val value = bundle[key]
+            for (key in bundle.keySet()) { // to know the keys and values of the sent message
+                val value = bundle.getString(key)
                 Timber.d("handle Intent -> Key: $key Value: $value")
             }
         }
 
         if (bundle == null) return
 
-        val body = bundle["gcm.notification.body"] as String
-        val image = bundle["gcm.notification.image"] as String
-        val title: String = bundle["gcm.notification.title"] as String
-        val senderId: String = bundle["gcm.notification.senderId"] as String
+        val body = bundle.getString("gcm.notification.body")
+        val image = bundle.getString("gcm.notification.image")
+        val title = bundle.getString("gcm.notification.title")
+        val senderId = bundle.getString("gcm.notification.senderId")
         Timber.d("handleIntent: receiverId = $senderId")
         Timber.d("FCM Data = body = $body , title = $title , sentImage= $image")
-        Timber.d("handleIntent: 2) received and show Notifcation .............")
-        sendNotification(title, body, image, senderId)
+        if (title != null && body != null && image != null && senderId != null)
+            sendNotification(title, body, image, senderId)
         super.handleIntent(intent)
     }
 
@@ -114,7 +112,6 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
                     // Set the loaded bitmap as the big picture
                     val bigPictureStyle = NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
-                        .bigLargeIcon(null)
 
                     notificationBuilder.setStyle(bigPictureStyle)
 
