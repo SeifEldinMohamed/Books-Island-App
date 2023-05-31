@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
@@ -93,11 +95,11 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         observe()
     }
 
-    override fun onResume() {
-        super.onResume()
-        listenForSearchEditTextClick()
-        listenForSearchEditTextChange()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        listenForSearchEditTextClick()
+//        listenForSearchEditTextChange()
+//    }
 
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
@@ -151,26 +153,28 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            buyViewModel.buyState.collectLatest {
-                when (it) {
-                    BuyState.Init -> Unit
-                    is BuyState.FetchAllSellAdvertisementSuccessfully -> {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                buyViewModel.buyState.collectLatest {
+                    when (it) {
+                        BuyState.Init -> Unit
+                        is BuyState.FetchAllSellAdvertisementSuccessfully -> {
 
-                        sellAdvertisements = it.sellAds
-                        buyAdapter.updateList(it.sellAds)
-                        handleUi(it.sellAds)
-                        Timber.d("observe: fetched")
+                            sellAdvertisements = it.sellAds
+                            buyAdapter.updateList(it.sellAds)
+                            handleUi(it.sellAds)
+                            Timber.d("observe: fetched")
+                        }
+                        is BuyState.SearchSellAdvertisementSuccessfully -> {
+                            // sellAdvertisements = it.searchedSellAds
+                            Timber.d("observe: searched list: ${it.searchedSellAds}")
+                            buyAdapter.updateList(it.searchedSellAds)
+                            // handleUi(it.searchedSellAds)
+                        }
+                        is BuyState.IsLoading -> handleLoadingState(it.isLoading)
+                        is BuyState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is BuyState.ShowError -> handleErrorState(it.message)
                     }
-                    is BuyState.SearchSellAdvertisementSuccessfully -> {
-                        // sellAdvertisements = it.searchedSellAds
-                        Timber.d("observe: searched list: ${it.searchedSellAds}")
-                        buyAdapter.updateList(it.searchedSellAds)
-                        // handleUi(it.searchedSellAds)
-                    }
-                    is BuyState.IsLoading -> handleLoadingState(it.isLoading)
-                    is BuyState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is BuyState.ShowError -> handleErrorState(it.message)
                 }
             }
         }

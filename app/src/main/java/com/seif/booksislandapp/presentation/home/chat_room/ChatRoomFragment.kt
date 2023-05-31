@@ -16,7 +16,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.firebase.auth.FirebaseUser
@@ -145,29 +147,31 @@ class ChatRoomFragment : Fragment() {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            chatRoomViewModel.chatRoomState.collect {
-                when (it) {
-                    ChatRoomState.Init -> Unit
-                    is ChatRoomState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ChatRoomState.FetchMessagesSuccessfully -> {
-                        messages = it.messages.toCollection(ArrayList())
-                        if (messages.isNotEmpty()) {
-                            if (messages.last().senderId == firebaseCurrentUser!!.uid)
-                                binding.etMessage.setText("")
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                chatRoomViewModel.chatRoomState.collect {
+                    when (it) {
+                        ChatRoomState.Init -> Unit
+                        is ChatRoomState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ChatRoomState.FetchMessagesSuccessfully -> {
+                            messages = it.messages.toCollection(ArrayList())
+                            if (messages.isNotEmpty()) {
+                                if (messages.last().senderId == firebaseCurrentUser!!.uid)
+                                    binding.etMessage.setText("")
+                            }
+                            showMessages(messages)
                         }
-                        showMessages(messages)
+                        is ChatRoomState.FetchUserSuccessfully -> {
+                            receiverUserId = it.user.id
+                            // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
+                            showReceiverData(receiverUser = it.user)
+                        }
+                        is ChatRoomState.SendMessageSuccessfully -> {
+                            dismissLoadingDialog() // in case of upload image
+                        }
+                        is ChatRoomState.ShowError -> handleErrorState(it.message)
+                        is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
                     }
-                    is ChatRoomState.FetchUserSuccessfully -> {
-                        receiverUserId = it.user.id
-                        // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
-                        showReceiverData(receiverUser = it.user)
-                    }
-                    is ChatRoomState.SendMessageSuccessfully -> {
-                        dismissLoadingDialog() // in case of upload image
-                    }
-                    is ChatRoomState.ShowError -> handleErrorState(it.message)
-                    is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
                 }
             }
         }

@@ -10,7 +10,9 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentFilterBinding
@@ -63,10 +65,12 @@ class FilterFragment : Fragment() {
 
             filter()
         }
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                categoryName = it
-                binding.btnCategory.text = categoryName
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                itemCategoryViewModel.selectedCategoryItem.collect {
+                    categoryName = it
+                    binding.btnCategory.text = categoryName
+                }
             }
         }
 

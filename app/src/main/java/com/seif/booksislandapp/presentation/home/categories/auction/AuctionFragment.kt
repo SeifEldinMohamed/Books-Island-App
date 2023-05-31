@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAuctionBinding
@@ -128,29 +130,31 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            auctionViewModel.auctionState.collectLatest {
-                when (it) {
-                    AuctionState.Init -> Unit
-                    is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
-                        auctionsAdvertisements = it.auctionAds
-                        auctionAdapter.updateList(it.auctionAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                auctionViewModel.auctionState.collectLatest {
+                    when (it) {
+                        AuctionState.Init -> Unit
+                        is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
+                            auctionsAdvertisements = it.auctionAds
+                            auctionAdapter.updateList(it.auctionAds)
 
-                        handleUi(it.auctionAds)
+                            handleUi(it.auctionAds)
 
-                        Timber.d("observe: fetched")
-                    }
-                    is AuctionState.SearchAuctionsAdsSuccessfully -> {
-                        // auctionsAdvertisements = it.searchedAuctionsAds
-                        auctionAdapter.updateList(it.searchedAuctionsAds)
+                            Timber.d("observe: fetched")
+                        }
+                        is AuctionState.SearchAuctionsAdsSuccessfully -> {
+                            // auctionsAdvertisements = it.searchedAuctionsAds
+                            auctionAdapter.updateList(it.searchedAuctionsAds)
 
-                        // handleUi(it.searchedAuctionsAds)
-                    }
-                    is AuctionState.IsLoading -> handleLoadingState(it.isLoading)
-                    is AuctionState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is AuctionState.ShowError -> {
+                            // handleUi(it.searchedAuctionsAds)
+                        }
+                        is AuctionState.IsLoading -> handleLoadingState(it.isLoading)
+                        is AuctionState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is AuctionState.ShowError -> {
 
-                        handleErrorState(it.message)
+                            handleErrorState(it.message)
+                        }
                     }
                 }
             }

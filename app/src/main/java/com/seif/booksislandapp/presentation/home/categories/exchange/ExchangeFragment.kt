@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentExchangeBinding
@@ -80,24 +82,26 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            exchangeViewModel.exchangeState.collectLatest {
-                when (it) {
-                    ExchangeState.Init -> Unit
-                    is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
-                        // Log.d("testTwo", it.exchangeAds[0].booksToExchange.toString())
-                        exchangeAdvertisements = it.exchangeAds
-                        exchangeAdapter.updateList(it.exchangeAds)
-                        handleUi(it.exchangeAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                exchangeViewModel.exchangeState.collectLatest {
+                    when (it) {
+                        ExchangeState.Init -> Unit
+                        is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
+                            // Log.d("testTwo", it.exchangeAds[0].booksToExchange.toString())
+                            exchangeAdvertisements = it.exchangeAds
+                            exchangeAdapter.updateList(it.exchangeAds)
+                            handleUi(it.exchangeAds)
+                        }
+                        is ExchangeState.SearchExchangeAdsSuccessfully -> {
+                            exchangeAdvertisements = it.searchExchangeAds
+                            exchangeAdapter.updateList(it.searchExchangeAds)
+                            handleUi(it.searchExchangeAds)
+                        }
+                        is ExchangeState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ExchangeState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is ExchangeState.ShowError -> handleErrorState(it.error)
                     }
-                    is ExchangeState.SearchExchangeAdsSuccessfully -> {
-                        exchangeAdvertisements = it.searchExchangeAds
-                        exchangeAdapter.updateList(it.searchExchangeAds)
-                        handleUi(it.searchExchangeAds)
-                    }
-                    is ExchangeState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ExchangeState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is ExchangeState.ShowError -> handleErrorState(it.error)
                 }
             }
         }
@@ -189,6 +193,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                 exchangeViewModel.isSearching = true
         }
     }
+
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -216,6 +221,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             }
         })
     }
+
     private fun fetchByFilter(filterBy: FilterBy) {
         exchangeViewModel.fetchExchangeAdvertisementByFilter(
             filterBy
@@ -230,7 +236,8 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        val action = ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
+        val action =
+            ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
         findNavController().navigate(action)
     }
 }
