@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyAdsDonateBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.donation.adapter.Don
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -64,18 +67,20 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launchWhenCreated {
-            myDonateAdsViewModel.myDonateAdsState.collect {
-                when (it) {
-                    MyDonateAdsState.Init -> Unit
-                    is MyDonateAdsState.FetchAllMyDonateAdsSuccessfully -> {
-                        myDonationAds = it.donateAds
-                        donateAdapter.updateList(it.donateAds)
-                        handleUi(it.donateAds)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                myDonateAdsViewModel.myDonateAdsState.collect {
+                    when (it) {
+                        MyDonateAdsState.Init -> Unit
+                        is MyDonateAdsState.FetchAllMyDonateAdsSuccessfully -> {
+                            myDonationAds = it.donateAds
+                            donateAdapter.updateList(it.donateAds)
+                            handleUi(it.donateAds)
+                        }
+                        is MyDonateAdsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is MyDonateAdsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is MyDonateAdsState.ShowError -> handleErrorState(it.errorMessage)
                     }
-                    is MyDonateAdsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is MyDonateAdsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is MyDonateAdsState.ShowError -> handleErrorState(it.errorMessage)
                 }
             }
         }

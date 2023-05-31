@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyAdsAuctionsBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.auction.adapter.Auct
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -64,18 +67,20 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launchWhenCreated {
-            myAuctionAdsViewModel.myAuctionAdsState.collect {
-                when (it) {
-                    MyAuctionAdsState.Init -> Unit
-                    is MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully -> {
-                        myAuctionAds = it.auctionAds
-                        auctionAdapter.updateList(it.auctionAds)
-                        handleUi(it.auctionAds)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                myAuctionAdsViewModel.myAuctionAdsState.collect {
+                    when (it) {
+                        MyAuctionAdsState.Init -> Unit
+                        is MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully -> {
+                            myAuctionAds = it.auctionAds
+                            auctionAdapter.updateList(it.auctionAds)
+                            handleUi(it.auctionAds)
+                        }
+                        is MyAuctionAdsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is MyAuctionAdsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is MyAuctionAdsState.ShowError -> handleErrorState(it.errorMessage)
                     }
-                    is MyAuctionAdsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is MyAuctionAdsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is MyAuctionAdsState.ShowError -> handleErrorState(it.errorMessage)
                 }
             }
         }
