@@ -3,10 +3,12 @@ package com.seif.booksislandapp.presentation.home.upload_advertisement.donate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.domain.usecase.usecase.my_ads.donate.DeleteMyDonateAdUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.my_ads.donate.EditMyDonateAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.request.sent.CancelSentRequestUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.request.sent.SendRequestUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.upload_adv.UploadDonateAdvertisementUseCase
@@ -28,7 +30,8 @@ class UploadDonateViewModel @Inject constructor(
     private val editMyDonateAdvertisementUseCase: EditMyDonateAdvertisementUseCase,
     private val getFirebaseCurrentUserUseCase: GetFirebaseCurrentUserUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val sendRequestUseCase: SendRequestUseCase
+    private val sendRequestUseCase: SendRequestUseCase,
+    private val cancelSentRequestUseCase: CancelSentRequestUseCase
 ) : ViewModel() {
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Init)
     val uploadState: StateFlow<UploadState> = _uploadState
@@ -133,6 +136,29 @@ class UploadDonateViewModel @Inject constructor(
                             setLoading(false)
                         }
                         _uploadState.value = UploadState.SendRequestSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun cancelRequest(requestId: String, adType: AdType, advertisementId: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            cancelSentRequestUseCase(requestId, adType, advertisementId).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _uploadState.value =
+                            UploadState.CancelSentRequestsSuccessfully(it.data)
                     }
                 }
             }

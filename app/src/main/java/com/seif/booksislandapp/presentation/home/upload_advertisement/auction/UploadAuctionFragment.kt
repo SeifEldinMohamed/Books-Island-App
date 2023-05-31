@@ -17,12 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadAuctionBinding
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
@@ -58,6 +61,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
+    private lateinit var requestId: String
 
     private val args: UploadAuctionFragmentArgs by navArgs()
     override fun onCreateView(
@@ -86,6 +90,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             // open bottom sheet to get users that he chat with
             val bottomSheet = UsersBottomSheetFragment()
             bottomSheet.show(parentFragmentManager, "")
+        }
+
+        binding.tvCancelRequest.setOnClickListener {
+            uploadAuctionAdvertisementViewModel.cancelRequest(
+                requestId,
+                AdType.Buying,
+                args.auctionAdvertisement!!.id
+            )
         }
 
         binding.ivBackUpload.setOnClickListener {
@@ -118,11 +130,13 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun observeCategorySelected() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                Timber.d("collector: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                itemCategoryViewModel.selectedCategoryItem.collect {
+                    Timber.d("collector: $it")
+                    categoryName = it
+                    binding.btnCategory.text = categoryName
+                }
             }
         }
     }
@@ -140,33 +154,32 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
     private fun checkIsConfirmationMessageSent() {
         args.auctionAdvertisement?.confirmationMessageSent?.let {
             Timber.d("onViewCreated:............. $it")
-            if (it)
-                disableSentConfirmationMessageButton()
-            else
-                enableSentConfirmationMessageButton()
+            if (it) {
+                Timber.d("checkIsConfirmationMessageSent: $requestId")
+                if (requestId.isEmpty()) {
+                    binding.tvCancelRequest.hide()
+                    binding.ivRequestConfirmation.hide()
+                } else {
+                    binding.tvCancelRequest.show()
+                    binding.ivRequestConfirmation.hide()
+                }
+            } else {
+                binding.tvCancelRequest.hide()
+                binding.ivRequestConfirmation.show()
+            }
         }
     }
 
     private fun enableSentConfirmationMessageButton() {
         binding.ivRequestConfirmation.apply {
-            enabled()
-            isClickable = true
-            isFocusable = true
+            binding.tvCancelRequest.hide()
+            binding.ivRequestConfirmation.show()
         }
     }
 
     private fun disableSentConfirmationMessageButton() {
-        binding.ivRequestConfirmation.apply {
-            disable()
-            isClickable = false
-            isFocusable = false
-        }
-        binding.ivRequestConfirmation.setColorFilter(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.gray_medium
-            )
-        )
+        binding.ivRequestConfirmation.hide()
+        binding.tvCancelRequest.show()
     }
 
     private fun observeSelectedUserToRequestConfirmation() {
@@ -184,7 +197,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         bookTitle = args.auctionAdvertisement!!.book.title,
                         condition = args.auctionAdvertisement!!.book.condition.toString(),
                         category = args.auctionAdvertisement!!.book.category,
-                        adType = "Auction",
+                        adType = AdType.Auction,
                         edition = args.auctionAdvertisement!!.book.edition,
                         status = "Pending"
                     )
@@ -197,13 +210,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         if (args.auctionAdvertisement != null) { // edit
             if (uploadAuctionAdvertisementViewModel.isFirstTime) {
                 uploadAuctionAdvertisementViewModel.isFirstTime = false
+                requestId = args.auctionAdvertisement!!.confirmationRequestId
                 args.auctionAdvertisement?.let {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyAuctionAdvertisement(it)
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAuctionAd.show()
-                    binding.ivRequestConfirmation.show()
+                    binding.tvCancelRequest.hide()
                 }
             }
         } else {
@@ -340,8 +354,13 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         findNavController().navigateUp()
                     }
                     is UploadState.SendRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        requestId = it.requestId
                         disableSentConfirmationMessageButton()
+                    }
+                    is UploadState.CancelSentRequestsSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        enableSentConfirmationMessageButton()
                     }
                 }
             }

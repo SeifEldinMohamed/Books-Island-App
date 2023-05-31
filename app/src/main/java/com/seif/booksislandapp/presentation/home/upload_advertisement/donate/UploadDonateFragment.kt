@@ -17,12 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadDonateBinding
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
@@ -57,6 +60,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
 
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
+    private lateinit var requestId: String
 
     private val args: UploadDonateFragmentArgs by navArgs()
 
@@ -105,6 +109,14 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
             bottomSheet.show(parentFragmentManager, "")
         }
 
+        binding.tvCancelRequest2.setOnClickListener {
+            uploadDonateAdvertisementViewModel.cancelRequest(
+                requestId,
+                AdType.Buying,
+                args.myDonateAdvertisement!!.id
+            )
+        }
+
         binding.btnSubmit.setOnClickListener {
             val donateAdvertisement = prepareDonateAdvertisement()
             if (args.myDonateAdvertisement != null)
@@ -119,11 +131,13 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun observeCategorySelected() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                Timber.d("collector: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                itemCategoryViewModel.selectedCategoryItem.collect {
+                    Timber.d("collector: $it")
+                    categoryName = it
+                    binding.btnCategory.text = categoryName
+                }
             }
         }
     }
@@ -141,33 +155,30 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
     private fun checkIsConfirmationMessageSent() {
         args.myDonateAdvertisement?.confirmationMessageSent?.let {
             Timber.d("onViewCreated:............. $it")
-            if (it)
-                disableSentConfirmationMessageButton()
-            else
-                enableSentConfirmationMessageButton()
+            if (it) {
+                Timber.d("checkIsConfirmationMessageSent: $requestId")
+                if (requestId.isEmpty()) {
+                    binding.tvCancelRequest2.hide()
+                    binding.ivRequestConfirmation.hide()
+                } else {
+                    binding.tvCancelRequest2.show()
+                    binding.ivRequestConfirmation.hide()
+                }
+            } else {
+                binding.tvCancelRequest2.hide()
+                binding.ivRequestConfirmation.show()
+            }
         }
     }
 
     private fun enableSentConfirmationMessageButton() {
-        binding.ivRequestConfirmation.apply {
-            enabled()
-            isClickable = true
-            isFocusable = true
-        }
+        binding.tvCancelRequest2.hide()
+        binding.ivRequestConfirmation.show()
     }
 
     private fun disableSentConfirmationMessageButton() {
-        binding.ivRequestConfirmation.apply {
-            disable()
-            isClickable = false
-            isFocusable = false
-        }
-        binding.ivRequestConfirmation.setColorFilter(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.gray_medium
-            )
-        )
+        binding.ivRequestConfirmation.hide()
+        binding.tvCancelRequest2.show()
     }
 
     private fun observeSelectedUserToRequestConfirmation() {
@@ -185,7 +196,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                         bookTitle = args.myDonateAdvertisement!!.book.title,
                         condition = args.myDonateAdvertisement!!.book.condition.toString(),
                         category = args.myDonateAdvertisement!!.book.category,
-                        adType = "Donation",
+                        adType = AdType.Donation,
                         edition = args.myDonateAdvertisement!!.book.edition,
                         status = "Pending"
                     )
@@ -198,19 +209,20 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         if (args.myDonateAdvertisement != null) { // edit
             if (uploadDonateAdvertisementViewModel.isFirstTime) {
                 uploadDonateAdvertisementViewModel.isFirstTime = false
+                requestId = args.myDonateAdvertisement!!.confirmationRequestId
                 args.myDonateAdvertisement?.let {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyDonateAdvertisement(it)
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
-                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
             binding.ivRequestConfirmation.hide()
+            binding.tvCancelRequest2.hide()
         }
     }
 
@@ -329,9 +341,16 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                         findNavController().navigateUp()
                     }
                     is UploadState.SendRequestSuccessfully -> {
-                        Timber.d("observe: send successfully ->> ${it.message}")
-                        binding.root.showSuccessSnackBar(it.message)
+                        // Timber.d("observe: send successfully ->> ${it.message}")
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        requestId = it.requestId
                         disableSentConfirmationMessageButton()
+                    }
+                    is UploadState.CancelSentRequestsSuccessfully -> {
+                        // Timber.d("observe: send successfully ->> ${it.message}")
+                        binding.root.showSuccessSnackBar(it.message)
+                        // edit isConfirmationMessageSent to true
+                        enableSentConfirmationMessageButton()
                     }
                 }
             }
