@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.WishlistExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
@@ -16,8 +18,10 @@ import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.Exc
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
 class ExchangeWishList : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private var _binding: WishlistExchangeBinding? = null
@@ -56,22 +60,26 @@ class ExchangeWishList : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         exchangeWishListViewModel.fetchAllExchangeWishListAdvertisement(userId)
         observe()
     }
+
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            exchangeWishListViewModel.exchangeWishListState.collect {
-                when (it) {
-                    ExchangeWishListState.Init -> Unit
-                    is ExchangeWishListState.FetchAllWishExchangeItemsSuccessfully -> {
-                        exchangeAdapter.updateList(it.exchangeAds)
-                        handleUi(it.exchangeAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                exchangeWishListViewModel.exchangeWishListState.collect {
+                    when (it) {
+                        ExchangeWishListState.Init -> Unit
+                        is ExchangeWishListState.FetchAllWishExchangeItemsSuccessfully -> {
+                            exchangeAdapter.updateList(it.exchangeAds)
+                            handleUi(it.exchangeAds)
+                        }
+                        is ExchangeWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ExchangeWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is ExchangeWishListState.ShowError -> handleErrorState(it.message)
                     }
-                    is ExchangeWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ExchangeWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is ExchangeWishListState.ShowError -> handleErrorState(it.message)
                 }
             }
         }
     }
+
     private fun handleUi(exchangeAds: ArrayList<ExchangeAdvertisement>) {
         if (exchangeAds.isEmpty()) {
             binding.rvExchangeWishList.hide()
@@ -147,8 +155,10 @@ class ExchangeWishList : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         _binding = null
         super.onDestroyView()
     }
+
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        val action = WishListFragmentDirections.actionWishListFragmentToExchangeAdDetailsFragment(item)
+        val action =
+            WishListFragmentDirections.actionWishListFragmentToExchangeAdDetailsFragment(item)
         findNavController().navigate(action)
     }
 }

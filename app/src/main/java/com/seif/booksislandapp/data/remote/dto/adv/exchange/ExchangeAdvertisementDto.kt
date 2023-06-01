@@ -13,5 +13,6 @@ data class ExchangeAdvertisementDto(
     override val publishDate: Date? = null,
     override val location: String = "",
     override val confirmationMessageSent: Boolean? = null,
-    val booksToExchange: List<BooksToExchangeDto> = emptyList()
+    val booksToExchange: List<BooksToExchangeDto> = emptyList(),
+    val confirmationRequestId: String = ""
 ) : AdvertisementDto()

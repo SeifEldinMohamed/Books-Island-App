@@ -17,12 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseUser
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentUploadExchangeBinding
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.book.Book
@@ -65,6 +68,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     private var categoryName: String = ""
     private var firebaseCurrentUser: FirebaseUser? = null
     private var exchangeFor: ArrayList<BooksToExchange> = ArrayList()
+    private lateinit var requestId: String
 
     private val args: UploadExchangeFragmentArgs by navArgs()
 
@@ -97,6 +101,14 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
             // open bottom sheet to get users that he chat with
             val bottomSheet = UsersBottomSheetFragment()
             bottomSheet.show(parentFragmentManager, "")
+        }
+
+        binding.tvCancelRequest.setOnClickListener {
+            uploadExchangeAdvertisementViewModel.cancelRequest(
+                requestId,
+                AdType.Buying,
+                args.exchangeAdvertisement!!.id
+            )
         }
 
         binding.ivDeleteMyExchangeAd.setOnClickListener {
@@ -139,33 +151,30 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     private fun checkIsConfirmationMessageSent() {
         args.exchangeAdvertisement?.confirmationMessageSent?.let {
             Timber.d("onViewCreated:............. $it")
-            if (it)
-                disableSentConfirmationMessageButton()
-            else
-                enableSentConfirmationMessageButton()
+            if (it) {
+                Timber.d("checkIsConfirmationMessageSent: $requestId")
+                if (requestId.isEmpty()) {
+                    binding.tvCancelRequest.hide()
+                    binding.ivRequestConfirmation.hide()
+                } else {
+                    binding.tvCancelRequest.show()
+                    binding.ivRequestConfirmation.hide()
+                }
+            } else {
+                binding.tvCancelRequest.hide()
+                binding.ivRequestConfirmation.show()
+            }
         }
     }
 
     private fun enableSentConfirmationMessageButton() {
-        binding.ivRequestConfirmation.apply {
-            enabled()
-            isClickable = true
-            isFocusable = true
-        }
+        binding.tvCancelRequest.hide()
+        binding.ivRequestConfirmation.show()
     }
 
     private fun disableSentConfirmationMessageButton() {
-        binding.ivRequestConfirmation.apply {
-            disable()
-            isClickable = false
-            isFocusable = false
-        }
-        binding.ivRequestConfirmation.setColorFilter(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.gray_medium
-            )
-        )
+        binding.ivRequestConfirmation.hide()
+        binding.tvCancelRequest.show()
     }
 
     private fun observeSelectedUserToRequestConfirmation() {
@@ -183,7 +192,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         bookTitle = args.exchangeAdvertisement!!.book.title,
                         condition = args.exchangeAdvertisement!!.book.condition.toString(),
                         category = args.exchangeAdvertisement!!.book.category,
-                        adType = "Exchange",
+                        adType = AdType.Exchange,
                         edition = args.exchangeAdvertisement!!.book.edition,
                         status = "Pending"
                     )
@@ -213,6 +222,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         if (args.exchangeAdvertisement != null) { // edit
             if (uploadExchangeAdvertisementViewModel.isFirstTime) {
                 uploadExchangeAdvertisementViewModel.isFirstTime = false
+                requestId = args.exchangeAdvertisement!!.confirmationRequestId
                 args.exchangeAdvertisement?.let {
                     imageUris = it.book.images.toCollection(ArrayList())
                     exchangeFor = it.booksToExchange.toCollection(ArrayList())
@@ -220,13 +230,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                     showMyDonateAdvertisement(it)
                     binding.btnUpload.text = getString(R.string.update_post)
                     binding.ivDeleteMyExchangeAd.show()
-                    binding.ivRequestConfirmation.show()
                 }
             }
         } else {
             binding.btnUpload.text = getString(R.string.submit_post)
             binding.ivDeleteMyExchangeAd.hide()
             binding.ivRequestConfirmation.hide()
+            binding.tvCancelRequest.hide()
         }
     }
 
@@ -241,11 +251,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
     }
 
     private fun observeSelectedCategoryItem() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            itemCategoryViewModel.selectedCategoryItem.collect {
-                Timber.d("collector: $it")
-                categoryName = it
-                binding.btnCategory.text = categoryName
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                itemCategoryViewModel.selectedCategoryItem.collect {
+                    Timber.d("collector: $it")
+                    categoryName = it
+                    binding.btnCategory.text = categoryName
+                }
             }
         }
     }
@@ -376,8 +388,14 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         findNavController().navigateUp()
                     }
                     is UploadState.SendRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        requestId = it.requestId
                         disableSentConfirmationMessageButton()
+                    }
+                    is UploadState.CancelSentRequestsSuccessfully -> {
+                        // Timber.d("observe: send successfully ->> ${it.message}")
+                        binding.root.showSuccessSnackBar(it.message)
+                        enableSentConfirmationMessageButton()
                     }
                 }
             }

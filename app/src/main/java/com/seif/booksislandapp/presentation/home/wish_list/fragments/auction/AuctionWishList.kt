@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.WishlistAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.auction.adapter.Auct
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 @AndroidEntryPoint
@@ -55,17 +58,19 @@ class AuctionWishList : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         observe()
     }
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            auctionWishListViewModel.auctionWishListState.collect {
-                when (it) {
-                    AuctionWishListState.Init -> Unit
-                    is AuctionWishListState.FetchAllWishAuctionItemsSuccessfully -> {
-                        auctionAdapter.updateList(it.auctionAds)
-                        handleUi(it.auctionAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                auctionWishListViewModel.auctionWishListState.collect {
+                    when (it) {
+                        AuctionWishListState.Init -> Unit
+                        is AuctionWishListState.FetchAllWishAuctionItemsSuccessfully -> {
+                            auctionAdapter.updateList(it.auctionAds)
+                            handleUi(it.auctionAds)
+                        }
+                        is AuctionWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                        is AuctionWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is AuctionWishListState.ShowError -> handleErrorState(it.message)
                     }
-                    is AuctionWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                    is AuctionWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is AuctionWishListState.ShowError -> handleErrorState(it.message)
                 }
             }
         }

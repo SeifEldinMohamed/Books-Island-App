@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.WishlistSellBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapt
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -56,17 +59,19 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
         observe()
     }
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            buyWishListViewModel.buyWishListState.collect {
-                when (it) {
-                    BuyWishListState.Init -> Unit
-                    is BuyWishListState.FetchAllWishBuyItemsSuccessfully -> {
-                        buyAdapter.updateList(it.sellAds)
-                        handleUi(it.sellAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                buyWishListViewModel.buyWishListState.collect {
+                    when (it) {
+                        BuyWishListState.Init -> Unit
+                        is BuyWishListState.FetchAllWishBuyItemsSuccessfully -> {
+                            buyAdapter.updateList(it.sellAds)
+                            handleUi(it.sellAds)
+                        }
+                        is BuyWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                        is BuyWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is BuyWishListState.ShowError -> handleErrorState(it.message)
                     }
-                    is BuyWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                    is BuyWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is BuyWishListState.ShowError -> handleErrorState(it.message)
                 }
             }
         }

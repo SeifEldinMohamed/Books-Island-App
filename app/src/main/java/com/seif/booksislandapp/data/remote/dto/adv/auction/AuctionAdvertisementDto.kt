@@ -20,4 +20,5 @@ data class AuctionAdvertisementDto(
     val postDuration: String = "",
     var auctionStatus: AuctionStatus? = null,
     val bidders: List<BidderDto>? = null,
+    val confirmationRequestId: String = ""
 ) : AdvertisementDto()

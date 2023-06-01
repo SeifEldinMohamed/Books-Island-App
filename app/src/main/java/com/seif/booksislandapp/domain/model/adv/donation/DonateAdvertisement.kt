@@ -16,4 +16,5 @@ data class DonateAdvertisement(
     override val publishDate: Date,
     override val location: String,
     override val confirmationMessageSent: Boolean,
+    val confirmationRequestId: String = ""
 ) : Advertisement(), Parcelable

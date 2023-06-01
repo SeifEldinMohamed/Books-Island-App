@@ -13,4 +13,5 @@ data class DonateAdvertisementDto(
     override val publishDate: Date? = null,
     override val location: String = "",
     override val confirmationMessageSent: Boolean? = null,
+    val confirmationRequestId: String = ""
 ) : AdvertisementDto()

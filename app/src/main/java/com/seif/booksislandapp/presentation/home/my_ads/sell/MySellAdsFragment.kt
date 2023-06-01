@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMySellAdsBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
@@ -17,6 +19,7 @@ import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -62,18 +65,20 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launchWhenCreated {
-            mySellAdsViewModel.mySellAdsState.collect {
-                when (it) {
-                    MySellAdsState.Init -> Unit
-                    is MySellAdsState.FetchAllMySellAdsSuccessfully -> {
-                        mySellAds = it.sellAds
-                        buyAdapter.updateList(it.sellAds)
-                        handleUi(it.sellAds)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                mySellAdsViewModel.mySellAdsState.collect {
+                    when (it) {
+                        MySellAdsState.Init -> Unit
+                        is MySellAdsState.FetchAllMySellAdsSuccessfully -> {
+                            mySellAds = it.sellAds
+                            buyAdapter.updateList(it.sellAds)
+                            handleUi(it.sellAds)
+                        }
+                        is MySellAdsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is MySellAdsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is MySellAdsState.ShowError -> handleErrorState(it.errorMessage)
                     }
-                    is MySellAdsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is MySellAdsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is MySellAdsState.ShowError -> handleErrorState(it.errorMessage)
                 }
             }
         }

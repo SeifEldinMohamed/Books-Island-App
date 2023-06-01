@@ -11,8 +11,6 @@ import com.seif.booksislandapp.databinding.SentRequestItemBinding
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDateInDetails
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
 import timber.log.Timber
 
 class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>() {
@@ -29,7 +27,7 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
                 tvTitle.text = mySentRequest.bookTitle
                 tvCondition.text = mySentRequest.condition
                 tvCategory.text = mySentRequest.category
-                tvType.text = mySentRequest.adType
+                tvType.text = mySentRequest.adType.toString()
                 tvCondition.text = mySentRequest.condition
                 tvEdition.text = mySentRequest.edition
                 tvMessageSent.text =
@@ -77,7 +75,7 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
                         R.color.light_orange
                     )
                 )
-                binding.btnCancelRequest.show()
+                binding.btnCancelRequest.text = binding.root.context.getString(R.string.cancel)
             }
             "Accepted" -> {
                 binding.tvStatus.setTextColor(
@@ -92,7 +90,7 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
                         R.color.light_green
                     )
                 )
-                binding.btnCancelRequest.hide()
+                binding.btnCancelRequest.text = binding.root.context.getString(R.string.delete)
             }
             "Rejected" -> {
                 binding.tvStatus.setTextColor(
@@ -107,7 +105,7 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
                         R.color.light_red
                     )
                 )
-                binding.btnCancelRequest.hide()
+                binding.btnCancelRequest.text = binding.root.context.getString(R.string.delete)
             }
         }
     }

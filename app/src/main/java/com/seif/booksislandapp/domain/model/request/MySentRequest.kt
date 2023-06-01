@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.domain.model.request
 
+import com.seif.booksislandapp.domain.model.adv.AdType
 import java.util.*
 
 data class MySentRequest(
@@ -12,7 +13,7 @@ data class MySentRequest(
     val bookTitle: String,
     val condition: String,
     val category: String,
-    val adType: String,
+    val adType: AdType,
     val edition: String,
     val date: Date? = null,
     val status: String

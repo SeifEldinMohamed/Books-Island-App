@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.domain.repository
 
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.utils.Resource
@@ -12,20 +13,23 @@ interface RequestsRepository {
     suspend fun acceptConfirmationRequest(
         requestId: String,
         sellerId: String,
-        adType: String,
-        acceptStatus: String
+        adType: AdType,
+        acceptStatus: String,
+        advertisementId: String
     ): Resource<String, String>
 
     suspend fun rejectConfirmationRequest(
         requestId: String,
         advertisementId: String,
-        adType: String,
+        adType: AdType,
         rejectStatus: String
     ): Resource<String, String>
 
     suspend fun cancelSentRequest(
         requestId: String,
-        adType: String,
+        adType: AdType,
         advertisementId: String
     ): Resource<String, String>
+
+    suspend fun deleteRequest(requestId: String): Resource<String, String>
 }

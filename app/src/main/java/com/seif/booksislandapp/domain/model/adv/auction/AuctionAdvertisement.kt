@@ -21,6 +21,6 @@ data class AuctionAdvertisement(
     var closeDate: Date?,
     val postDuration: String,
     val auctionStatus: AuctionStatus,
-    val bidders: List<Bidder>
-
+    val bidders: List<Bidder>,
+    val confirmationRequestId: String = ""
 ) : Advertisement(), Parcelable

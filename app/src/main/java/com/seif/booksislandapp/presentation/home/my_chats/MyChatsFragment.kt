@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyChatsBinding
 import com.seif.booksislandapp.domain.model.chat.MyChat
@@ -17,6 +19,7 @@ import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.adapter.MyChatsAdapter
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -63,19 +66,21 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     }
 
     private fun observe() {
-        lifecycleScope.launchWhenCreated {
-            myChatsViewModel.buyingChatsState.collect {
-                when (it) {
-                    MyChatsState.Init -> Unit
-                    is MyChatsState.FetchMyChatsSuccessfully -> {
-                        myChats = it.myBuyingChat
-                        Timber.d("observe: ${it.myBuyingChat}")
-                        myChatsAdapter.updateList(it.myBuyingChat)
-                        handleUi(it.myBuyingChat)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                myChatsViewModel.buyingChatsState.collect {
+                    when (it) {
+                        MyChatsState.Init -> Unit
+                        is MyChatsState.FetchMyChatsSuccessfully -> {
+                            myChats = it.myBuyingChat
+                            Timber.d("observe: ${it.myBuyingChat}")
+                            myChatsAdapter.updateList(it.myBuyingChat)
+                            handleUi(it.myBuyingChat)
+                        }
+                        is MyChatsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is MyChatsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is MyChatsState.ShowError -> handleErrorState(it.errorMessage)
                     }
-                    is MyChatsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is MyChatsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is MyChatsState.ShowError -> handleErrorState(it.errorMessage)
                 }
             }
         }

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.WishlistDonateBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.donation.adapter.Don
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 @AndroidEntryPoint
@@ -56,17 +59,19 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
         observe()
     }
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            donateWishListViewModel.donateWishListState.collect {
-                when (it) {
-                    DonateWishListState.Init -> Unit
-                    is DonateWishListState.FetchAllWishDonateItemsSuccessfully -> {
-                        donateAdapter.updateList(it.donateAds)
-                        handleUi(it.donateAds)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                donateWishListViewModel.donateWishListState.collect {
+                    when (it) {
+                        DonateWishListState.Init -> Unit
+                        is DonateWishListState.FetchAllWishDonateItemsSuccessfully -> {
+                            donateAdapter.updateList(it.donateAds)
+                            handleUi(it.donateAds)
+                        }
+                        is DonateWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                        is DonateWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is DonateWishListState.ShowError -> handleErrorState(it.message)
                     }
-                    is DonateWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                    is DonateWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is DonateWishListState.ShowError -> handleErrorState(it.message)
                 }
             }
         }

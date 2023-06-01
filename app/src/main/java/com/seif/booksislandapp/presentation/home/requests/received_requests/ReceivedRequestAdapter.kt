@@ -25,7 +25,7 @@ class ReceivedRequestAdapter : RecyclerView.Adapter<ReceivedRequestAdapter.MyVie
                 tvTitle.text = myReceivedRequest.bookTitle
                 tvCondition.text = myReceivedRequest.condition
                 tvCategory.text = myReceivedRequest.category
-                tvType.text = myReceivedRequest.adType
+                tvType.text = myReceivedRequest.adType.toString()
                 tvCondition.text = myReceivedRequest.condition
                 tvEdition.text = myReceivedRequest.edition
                 tvMessageReceived.text =

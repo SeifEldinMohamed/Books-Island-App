@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.seif.booksislandapp.R
@@ -23,6 +25,7 @@ import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import timber.log.Timber
@@ -88,9 +91,11 @@ class ProfileFragment : Fragment() {
         avatarImage = handleAvatarImage(user.gender)
         binding.ivAvatar.load(avatarImage)
         enableUpdateProfileButton()
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            delay(500)
-            binding.ivAvatar.enabled()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                delay(500)
+                binding.ivAvatar.enabled()
+            }
         }
     }
 
@@ -115,45 +120,47 @@ class ProfileFragment : Fragment() {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            profileViewModel.profileState.collect {
-                when (it) {
-                    ProfileState.Init -> Unit
-                    is ProfileState.GetUserByIdSuccessfully -> {
-                        user = it.user
-                        avatarImage = user.avatarImage
-                        showUserProfileData(it.user)
-                        profileViewModel.getGovernorates()
-                    }
-                    is ProfileState.UpdateUserProfileSuccessfully -> {
-                        binding.root.showSuccessSnackBar(getString(R.string.profile_updated_successfully))
-                        user = it.user
-                        enableUpdateProfileButton()
-                    }
-                    is ProfileState.GetGovernoratesSuccessfully -> {
-                        governorates = it.governorates
-                        setUpGovernoratesDropDown(it.governorates)
-                        governorateId?.let { id ->
-                            profileViewModel.getDistricts(id)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                profileViewModel.profileState.collect {
+                    when (it) {
+                        ProfileState.Init -> Unit
+                        is ProfileState.GetUserByIdSuccessfully -> {
+                            user = it.user
+                            avatarImage = user.avatarImage
+                            showUserProfileData(it.user)
+                            profileViewModel.getGovernorates()
                         }
-                    }
-                    is ProfileState.GetDistrictsSuccessfully -> {
-                        districts = it.districts
-                        binding.acDistricts.setText("")
-                        setUpDistrictsDropDown(it.districts)
-                        enableUpdateProfileButton()
-                        listenForUserInput()
-                    }
-                    is ProfileState.LogoutSuccessfully -> {
-                        binding.root.showSuccessSnackBar(it.message)
-                        requireActivity().apply {
-                            start<IntroActivity>()
-                            finish()
+                        is ProfileState.UpdateUserProfileSuccessfully -> {
+                            binding.root.showSuccessSnackBar(getString(R.string.profile_updated_successfully))
+                            user = it.user
+                            enableUpdateProfileButton()
                         }
+                        is ProfileState.GetGovernoratesSuccessfully -> {
+                            governorates = it.governorates
+                            setUpGovernoratesDropDown(it.governorates)
+                            governorateId?.let { id ->
+                                profileViewModel.getDistricts(id)
+                            }
+                        }
+                        is ProfileState.GetDistrictsSuccessfully -> {
+                            districts = it.districts
+                            binding.acDistricts.setText("")
+                            setUpDistrictsDropDown(it.districts)
+                            enableUpdateProfileButton()
+                            listenForUserInput()
+                        }
+                        is ProfileState.LogoutSuccessfully -> {
+                            binding.root.showSuccessSnackBar(it.message)
+                            requireActivity().apply {
+                                start<IntroActivity>()
+                                finish()
+                            }
+                        }
+                        is ProfileState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ProfileState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is ProfileState.ShowError -> handleErrorState(it.message)
                     }
-                    is ProfileState.IsLoading -> handleLoadingState(it.isLoading)
-                    is ProfileState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is ProfileState.ShowError -> handleErrorState(it.message)
                 }
             }
         }

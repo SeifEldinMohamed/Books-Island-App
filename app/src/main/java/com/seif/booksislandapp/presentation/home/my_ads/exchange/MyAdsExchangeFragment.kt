@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyadsExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
@@ -16,6 +18,7 @@ import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.Exc
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
@@ -64,18 +67,20 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     private fun observe() {
-        lifecycleScope.launchWhenCreated {
-            myExchangeAdsViewModel.myAuctionAdsState.collect {
-                when (it) {
-                    MyExchangeAdsState.Init -> Unit
-                    is MyExchangeAdsState.FetchAllMyExchangeAdsSuccessfully -> {
-                        myExchangeAds = it.exchangeAds
-                        exchangeAdapter.updateList(it.exchangeAds)
-                        handleUi(it.exchangeAds)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                myExchangeAdsViewModel.myAuctionAdsState.collect {
+                    when (it) {
+                        MyExchangeAdsState.Init -> Unit
+                        is MyExchangeAdsState.FetchAllMyExchangeAdsSuccessfully -> {
+                            myExchangeAds = it.exchangeAds
+                            exchangeAdapter.updateList(it.exchangeAds)
+                            handleUi(it.exchangeAds)
+                        }
+                        is MyExchangeAdsState.IsLoading -> handleLoadingState(it.isLoading)
+                        is MyExchangeAdsState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is MyExchangeAdsState.ShowError -> handleErrorState(it.errorMessage)
                     }
-                    is MyExchangeAdsState.IsLoading -> handleLoadingState(it.isLoading)
-                    is MyExchangeAdsState.NoInternetConnection -> handleNoInternetConnectionState()
-                    is MyExchangeAdsState.ShowError -> handleErrorState(it.errorMessage)
                 }
             }
         }
