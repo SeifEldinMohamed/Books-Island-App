@@ -5,70 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AdProviderProfileFragment">
+    tools:context=".presentation.home.ad_provider_profile.AdProviderProfileFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/user_action">
+        app:menu="@menu/user_action" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/tv_userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_7sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/profile"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_18ssp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_back"
-                app:layout_constraintStart_toEndOf="@id/iv_back"
-                app:layout_constraintTop_toTopOf="@id/iv_back" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/tv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:text="@string/profile"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_18ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_back"
+        app:layout_constraintStart_toEndOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="@+id/iv_back"
+        tools:ignore="VisualLintBounds" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
-        android:layout_width="@dimen/_300sdp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="70dp"
+        android:layout_marginTop="@dimen/_24sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints,VisualLintBounds">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
-            android:layout_width="@dimen/_250sdp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_20sdp"
-            android:layout_marginRight="@dimen/_20sdp"
             android:layout_gravity="fill"
-            android:layout_marginTop="@dimen/_70sdp"
+            android:layout_marginStart="@dimen/_26sdp"
+            android:layout_marginTop="@dimen/_68sdp"
+            android:layout_marginEnd="@dimen/_26sdp"
             app:cardCornerRadius="@dimen/_16sdp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,13 +78,15 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_username"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_44sdp"
+                    android:layout_marginTop="@dimen/_48sdp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="@string/heba_adel"
+                    tools:text="@string/heba_adel"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/_23ssp"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:textSize="@dimen/_22ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -102,15 +95,21 @@
                     android:id="@+id/tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="@dimen/_8sdp"
                     android:focusable="true"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="@string/maddi"
+                    tools:text="@string/maddi"
                     android:textColor="@color/gray_medium"
-                    android:textSize="@dimen/_16ssp"
-                    app:drawableStartCompat="@drawable/ic_location"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingHorizontal="@dimen/_8sdp"
+                    android:textSize="@dimen/_15ssp"
                     app:layout_constraintEnd_toEndOf="@+id/tv_username"
                     app:layout_constraintStart_toStartOf="@+id/tv_username"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_username" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_username"
+                    tools:ignore="TextContrastCheck" />
 
                 <ImageView
                     android:id="@+id/iv_details"
@@ -128,9 +127,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_18sdp"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="@string/averagerate"
+                    android:text="@string/average_rate"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintStart_toEndOf="@+id/iv_details"
@@ -141,35 +140,33 @@
                     android:id="@+id/tv_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
                     android:fontFamily="@font/roboto_medium"
                     android:text="@string/rat"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14ssp"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_average"
-                    app:layout_constraintStart_toStartOf="@+id/iv_details"
+                    app:layout_constraintStart_toStartOf="@+id/tv_average"
                     app:layout_constraintTop_toBottomOf="@+id/tv_average"
                     tools:ignore="TextContrastCheck" />
 
                 <RatingBar
                     android:id="@+id/ratingbar"
+                    style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_30sdp"
                     android:isIndicator="true"
                     android:numStars="5"
                     android:progressTint="@color/primary"
-                    android:rating="4"
-                    android:scaleX=".6"
-                    android:scaleY=".6"
-                    android:stepSize="1"
-                    android:transformPivotX="0dp"
-                    android:transformPivotY="0dp"
+                    android:scaleX="0.9"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:stepSize="0.5"
+                    android:rating="2.5"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_rate"
                     app:layout_constraintStart_toEndOf="@+id/tv_rate"
                     app:layout_constraintTop_toTopOf="@+id/tv_rate" />
 
                 <ImageView
-                    android:id="@+id/iv_colmn"
+                    android:id="@+id/iv_column"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/iv_details"
@@ -177,21 +174,23 @@
                     app:layout_constraintEnd_toEndOf="@+id/iv_details"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/iv_details"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_rate"
+                    app:layout_constraintTop_toTopOf="@+id/tv_posts"
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/tv_posts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_18sdp"
+                    android:layout_marginBottom="@dimen/_24sdp"
                     android:fontFamily="@font/roboto_medium"
                     android:text="@string/posts"
                     android:textColor="@color/primary"
-                    android:textSize="@dimen/_16sdp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ratingbar"
-                    app:layout_constraintStart_toEndOf="@+id/iv_colmn"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_rate"
+                    android:textSize="@dimen/_16ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_column"
+                    app:layout_constraintTop_toBottomOf="@+id/ratingbar"
                     tools:ignore="TextContrastCheck" />
 
 
@@ -214,7 +213,7 @@
                 android:layout_height="@dimen/_110sdp"
                 android:padding="@dimen/_4sdp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/woman_avatar_2"
+                tools:src="@drawable/woman_avatar_2"
                 tools:ignore="ContentDescription,ImageContrastCheck,MissingConstraints"
                 tools:layout_editor_absoluteX="124dp" />
         </androidx.cardview.widget.CardView>
