@@ -1,7 +1,7 @@
 package com.seif.booksislandapp.data.remote.dto.chat
 
 import com.google.firebase.firestore.ServerTimestamp
-import java.util.*
+import java.util.Date
 
 data class MessageDto(
     val id: String = "",
@@ -11,5 +11,6 @@ data class MessageDto(
     val imageUrl: String? = null,
     @ServerTimestamp
     val date: Date? = null,
-    val chatUsers: ArrayList<String>? = null
+    val chatUsers: ArrayList<String>? = null,
+    val seen: Boolean? = null
 )

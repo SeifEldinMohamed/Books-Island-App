@@ -1,7 +1,7 @@
 package com.seif.booksislandapp.domain.model.chat
 
 import android.net.Uri
-import java.util.*
+import java.util.Date
 
 data class Message(
     var id: String,
@@ -9,5 +9,6 @@ data class Message(
     val receiverId: String,
     val text: String = "",
     var imageUrl: Uri? = null,
-    var date: Date? = null
+    var date: Date? = null,
+    val isSeen: Boolean = false
 )
