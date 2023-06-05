@@ -1,4 +1,4 @@
-package com.seif.booksislandapp.presentation.home.wish_list.fragments.auction
+package com.seif.booksislandapp.presentation.home.wish_list.fragments.exchange
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -11,76 +11,91 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.seif.booksislandapp.databinding.WishlistAuctionBinding
-import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.databinding.WishlistExchangeBinding
+import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
+import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
-class AuctionWishList : Fragment(), OnAdItemClick<AuctionAdvertisement> {
-    private var _binding: WishlistAuctionBinding? = null
+class ExchangeWishListFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
+    private var _binding: WishlistExchangeBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var dialog: AlertDialog
-    private val auctionAdapter by lazy { AuctionAdapter() }
-    private val auctionWishListViewModel: AuctionWishListViewModel by viewModels()
+    private val exchangeAdapter by lazy { ExchangeAdapter() }
+    private val exchangeWishListViewModel: ExchangeWishListViewModel by viewModels()
     private lateinit var userId: String
+    //   private var myExchangeWishAds: List<ExchangeAdvertisement>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = WishlistAuctionBinding.inflate(inflater, container, false)
+        _binding = WishlistExchangeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
-        auctionAdapter.onAdItemClick = this
-        userId = auctionWishListViewModel.getFromSP(Constants.USER_ID_KEY, String::class.java)
+        exchangeAdapter.onAdItemClick = this
+        userId = exchangeWishListViewModel.getFromSP(Constants.USER_ID_KEY, String::class.java)
 
         binding.swipeRefresh.setOnRefreshListener {
-            auctionWishListViewModel.fetchAllAuctionWishListAdvertisement(userId)
+            exchangeWishListViewModel.fetchAllExchangeWishListAdvertisement(userId)
             observe()
             binding.swipeRefresh.isRefreshing = false
         }
-        fetchAuctionWishList()
+        fetchExchangeWishList()
 
-        binding.rvAuctionWishList.adapter = auctionAdapter
+        binding.rvExchangeWishList.adapter = exchangeAdapter
     }
-    private fun fetchAuctionWishList() {
-        auctionWishListViewModel.fetchAllAuctionWishListAdvertisement(userId)
+
+    private fun fetchExchangeWishList() {
+        //  if (myExchangeWishAds == null) {
+        exchangeWishListViewModel.fetchAllExchangeWishListAdvertisement(userId)
         observe()
+        //  }
     }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                auctionWishListViewModel.auctionWishListState.collect {
+                exchangeWishListViewModel.exchangeWishListState.collect {
                     when (it) {
-                        AuctionWishListState.Init -> Unit
-                        is AuctionWishListState.FetchAllWishAuctionItemsSuccessfully -> {
-                            auctionAdapter.updateList(it.auctionAds)
-                            handleUi(it.auctionAds)
+                        ExchangeWishListState.Init -> Unit
+                        is ExchangeWishListState.FetchAllWishExchangeItemsSuccessfully -> {
+                            //   myExchangeWishAds = it.exchangeAds
+                            exchangeAdapter.updateList(it.exchangeAds)
+                            handleUi(it.exchangeAds)
                         }
-                        is AuctionWishListState.IsLoading -> handleLoadingState(it.isLoading)
-                        is AuctionWishListState.NoInternetConnection -> handleNoInternetConnectionState()
-                        is AuctionWishListState.ShowError -> handleErrorState(it.message)
+                        is ExchangeWishListState.IsLoading -> handleLoadingState(it.isLoading)
+                        is ExchangeWishListState.NoInternetConnection -> handleNoInternetConnectionState()
+                        is ExchangeWishListState.ShowError -> handleErrorState(it.message)
                     }
                 }
             }
         }
     }
-    private fun handleUi(auctionAds: ArrayList<AuctionAdvertisement>) {
-        if (auctionAds.isEmpty()) {
-            binding.rvAuctionWishList.hide()
+
+    private fun handleUi(exchangeAds: ArrayList<ExchangeAdvertisement>) {
+        if (exchangeAds.isEmpty()) {
+            binding.rvExchangeWishList.hide()
             binding.noBooksAnimationSellMy.show()
         } else {
-            binding.rvAuctionWishList.show()
+            binding.rvExchangeWishList.show()
             binding.noBooksAnimationSellMy.hide()
         }
     }
@@ -96,7 +111,7 @@ class AuctionWishList : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                         when (hasActiveConnection) {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
-                                fetchAuctionWishList()
+                                fetchExchangeWishList()
                             }
                             false -> Unit
                         }
@@ -143,15 +158,17 @@ class AuctionWishList : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     override fun onDestroyView() {
-        auctionAdapter.onAdItemClick = null
+        exchangeAdapter.onAdItemClick = null
         dialog.dismiss()
         dialog.setView(null)
-        binding.rvAuctionWishList.adapter = null
+        binding.rvExchangeWishList.adapter = null
         _binding = null
         super.onDestroyView()
     }
-    override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
-        val action = WishListFragmentDirections.actionWishListFragmentToAuctionAdDetailsFragment(item)
+
+    override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
+        val action =
+            WishListFragmentDirections.actionWishListFragmentToExchangeAdDetailsFragment(item)
         findNavController().navigate(action)
     }
 }
