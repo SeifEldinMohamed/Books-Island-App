@@ -92,11 +92,12 @@ class ChatRepositoryImp @Inject constructor(
 
             // Update the document with the modified or new array
             firestore.collection(Constants.CHAT_LIST_FIIRESTORE_COLLECTION)
-                .document(message.senderId).set(hashMapOf("ids" to ids)).await()
+                .document(message.senderId)
+                .set(hashMapOf("ids" to ids)) // change to update
+                .await()
         } else { // first time to chat with someone
-
             firestore.collection(Constants.CHAT_LIST_FIIRESTORE_COLLECTION)
-                .document(message.senderId).set(hashMapOf("ids" to message.receiverId))
+                .document(message.senderId).set(hashMapOf("ids" to arrayListOf(message.receiverId)))
                 .await()
         }
 
@@ -122,7 +123,7 @@ class ChatRepositoryImp @Inject constructor(
                 .document(message.receiverId).set(hashMapOf("ids" to ids)).await()
         } else { // first time to chat with someone
             firestore.collection(Constants.CHAT_LIST_FIIRESTORE_COLLECTION)
-                .document(message.receiverId).set(hashMapOf("ids" to message.senderId))
+                .document(message.receiverId).set(hashMapOf("ids" to arrayListOf(message.senderId)))
                 .await()
         }
 
@@ -231,6 +232,39 @@ class ChatRepositoryImp @Inject constructor(
             }
 
         awaitClose { }
+    }
+
+    override suspend fun updateIsSeen(
+        senderId: String,
+        receiverId: String,
+        messages: List<Message>
+    ) {
+        val collectionReference = firestore.collection(CHATS_FIIRESTORE_COLLECTION)
+//        val querySnapshot = collectionReference
+//            .whereEqualTo("senderId", receiverId)
+//            .whereEqualTo("receiverId", senderId)
+//            .get()
+//            .await()
+        //   for (document in querySnapshot) {
+        //     val messageDto = document.toObject(MessageDto::class.java)
+        // if (messageDto.senderId == receiverId && messageDto.receiverId == senderId) {
+        //     Timber.d("updateSeen: messagesReceived = $messageDto")
+//                val hashmap = HashMap<String, Any>()
+//                hashmap["seen"] = true
+//                collectionReference.document(document.id)
+//                    .update(hashmap)
+//                    .await()
+        // }
+        messages.forEach {
+            if ((it.senderId == receiverId && it.receiverId == senderId) && !it.isSeen) {
+                val hashmap = HashMap<String, Any>()
+                hashmap["seen"] = true
+                collectionReference.document(it.id)
+                    .update(hashmap)
+                    .await()
+            }
+        }
+        // }
     }
 
     private suspend fun uploadImageToStorage(
