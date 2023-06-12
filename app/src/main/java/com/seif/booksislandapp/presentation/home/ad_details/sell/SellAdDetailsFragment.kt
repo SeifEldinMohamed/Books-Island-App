@@ -20,8 +20,14 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.formatDateInDetails
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -77,12 +83,15 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.clProfile.setOnClickListener {
-            owner?.id?.let {
-                val action =
-                    SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentToAdProviderProfile(
-                        it
-                    )
-                findNavController().navigate(action)
+            owner?.id?.let { ownerId ->
+                currUser?.id?.let { currentUserId ->
+                    val action =
+                        SellAdDetailsFragmentDirections.actionSellAdDetailsFragmentToAdProviderProfile(
+                            providerId = ownerId,
+                            currentUserId = currentUserId
+                        )
+                    findNavController().navigate(action)
+                }
             }
         }
         binding.rvRelatedAds.adapter = relatedSellAdsAdapter
@@ -198,8 +207,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                         else
                             binding.tvNoRelatedAds.hide()
                     }
+
                     is SellDetailsState.AddedToFavorite -> {
                     }
+
                     is SellDetailsState.GetCurrentUserByIdSuccessfully -> {
                         currUser = it.user
                         isFavouriteAd()
@@ -223,6 +234,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                                 fetchOwnerData()
                                 fetchRelatedSellAds()
                             }
+
                             false -> Unit
                         }
                     }
@@ -250,6 +262,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }

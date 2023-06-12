@@ -21,7 +21,14 @@ import com.seif.booksislandapp.presentation.home.ad_details.exchange.adapter.Rel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.formatDateInDetails
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -79,12 +86,15 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {
-            owner?.id?.let {
-                val action =
-                    ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentToAdProviderProfile(
-                        it
-                    )
-                findNavController().navigate(action)
+            owner?.id?.let { ownerId ->
+                currUser?.id?.let { currentUserId ->
+                    val action =
+                        ExchangeAdDetailsFragmentDirections.actionExchangeAdDetailsFragmentToAdProviderProfile(
+                            providerId = ownerId,
+                            currentUserId = currentUserId
+                        )
+                    findNavController().navigate(action)
+                }
             }
         }
         binding.rvExchangeFor.adapter = booksToExchangeAdapter
@@ -316,6 +326,7 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         onBackPressedCallback.isEnabled = false // Disable the callback
         onBackPressedCallback.remove() // Unregister the callback
         binding.rvRelatedAds.adapter = null
+        binding.rvExchangeFor.adapter = null
         dialog.setView(null)
         _binding = null
     }
