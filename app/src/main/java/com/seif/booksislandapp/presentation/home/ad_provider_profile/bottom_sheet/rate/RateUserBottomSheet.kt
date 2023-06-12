@@ -1,4 +1,4 @@
-package com.seif.booksislandapp
+package com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.rate
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.seif.booksislandapp.databinding.FragmentRateUserSheetBinding
+import com.seif.booksislandapp.presentation.home.ad_provider_profile.AdProviderProfileViewModel
 
-class RateUserSheet : BottomSheetDialogFragment() {
+class RateUserBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentRateUserSheetBinding
-    private lateinit var rateViewModel: ViewModel
+    private lateinit var rateAdProviderProfileViewModel: AdProviderProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity = requireActivity()
-        rateViewModel = ViewModelProvider(activity)[ViewModel::class.java]
+        rateAdProviderProfileViewModel =
+            ViewModelProvider(activity)[AdProviderProfileViewModel::class.java]
     }
 
     override fun onCreateView(
