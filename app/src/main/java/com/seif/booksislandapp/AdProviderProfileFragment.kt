@@ -16,12 +16,12 @@ class AdProviderProfileFragment : Fragment(), MenuProvider {
     private lateinit var _binding: FragmentAdProviderProfileBinding
     private lateinit var reportViewModel: ViewModel
     private lateinit var rateViewModel: ViewModel
-    private lateinit var blockViewModel: ViewModel
     private val binding get() = _binding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
+
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentAdProviderProfileBinding.inflate(layoutInflater)

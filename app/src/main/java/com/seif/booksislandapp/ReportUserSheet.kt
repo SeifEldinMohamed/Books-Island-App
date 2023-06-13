@@ -25,6 +25,7 @@ class ReportUserSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
+
         binding = FragmentReportUserSheetBinding.inflate(inflater, container, false)
         return binding.root
     }

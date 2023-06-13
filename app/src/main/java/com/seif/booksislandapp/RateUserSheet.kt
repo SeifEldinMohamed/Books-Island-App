@@ -25,6 +25,7 @@ class RateUserSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
+
         binding = FragmentRateUserSheetBinding.inflate(inflater, container, false)
         return binding.root
     }
