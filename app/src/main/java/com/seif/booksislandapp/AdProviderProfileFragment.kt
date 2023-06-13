@@ -8,16 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentAdProviderProfileBinding
-import com.seif.booksislandapp.utils.ReportViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 
 class AdProviderProfileFragment : Fragment(), MenuProvider {
     private lateinit var _binding: FragmentAdProviderProfileBinding
-    private lateinit var reportViewModel: ReportViewModel
-    private lateinit var rateViewModel: RateViewModel
-    private lateinit var blockViewModel: BlockViewModel
+    private lateinit var reportViewModel: ViewModel
+    private lateinit var rateViewModel: ViewModel
+    private lateinit var blockViewModel: ViewModel
     private val binding get() = _binding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,9 +25,8 @@ class AdProviderProfileFragment : Fragment(), MenuProvider {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentAdProviderProfileBinding.inflate(layoutInflater)
-        reportViewModel = ViewModelProvider(this)[ReportViewModel::class.java]
-        rateViewModel = ViewModelProvider(this)[RateViewModel::class.java]
-        blockViewModel = ViewModelProvider(this)[BlockViewModel::class.java]
+        reportViewModel = ViewModelProvider(this)[ViewModel::class.java]
+        rateViewModel = ViewModelProvider(this)[ViewModel::class.java]
         return binding.root
     }
 
@@ -47,7 +45,6 @@ class AdProviderProfileFragment : Fragment(), MenuProvider {
                     RateUserSheet().show(parentFragmentManager, "")
                 }
                 R.id.menu_block -> {
-                    BlockUserSheet().show(parentFragmentManager, " ")
                 }
                 else -> {
                 }

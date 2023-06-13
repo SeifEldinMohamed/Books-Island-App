@@ -11,12 +11,12 @@ import com.seif.booksislandapp.databinding.FragmentRateUserSheetBinding
 class RateUserSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentRateUserSheetBinding
-    private lateinit var rateViewModel: RateViewModel
+    private lateinit var rateViewModel: ViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity = requireActivity()
-        rateViewModel = ViewModelProvider(activity)[RateViewModel::class.java]
+        rateViewModel = ViewModelProvider(activity)[ViewModel::class.java]
     }
 
     override fun onCreateView(

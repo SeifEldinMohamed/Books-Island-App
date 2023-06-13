@@ -7,17 +7,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.seif.booksislandapp.databinding.FragmentReportUserSheetBinding
-import com.seif.booksislandapp.utils.ReportViewModel
 
 class ReportUserSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentReportUserSheetBinding
-    private lateinit var reportViewModel: ReportViewModel
+    private lateinit var reportViewModel: ViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity = requireActivity()
-        reportViewModel = ViewModelProvider(activity)[ReportViewModel::class.java]
+        reportViewModel = ViewModelProvider(activity)[ViewModel::class.java]
     }
 
     override fun onCreateView(
