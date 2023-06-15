@@ -27,7 +27,12 @@ import com.seif.booksislandapp.databinding.FragmentChatRoomBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.chat.Message
 import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hideKeyboard
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +69,9 @@ class ChatRoomFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        firebaseCurrentUser = chatRoomViewModel.getFirebaseCurrentUser()
+        if (firebaseCurrentUser == null) {
+            firebaseCurrentUser = chatRoomViewModel.getFirebaseCurrentUser()
+        }
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
 
         receiverUserId = arguments?.getString("ownerId")
@@ -89,18 +96,33 @@ class ChatRoomFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        binding.clProfile.setOnClickListener {
+            receiverUserId?.let { ownerId ->
+                firebaseCurrentUser?.uid?.let { currentUserId ->
+                    val action =
+                        ChatRoomFragmentDirections.actionChatRoomFragmentToAdProviderProfile(
+                            providerId = ownerId,
+                            currentUserId = currentUserId
+                        )
+                    findNavController().navigate(action)
+                }
+            }
+        }
+
         observe()
         //  handleKeyboard() //  handling the keyboard visibility changes and scrolling the RecyclerView when the keyboard is shown.
-
+        chatRoomViewModel.setInMyChats(Constants.NOT_IN_MYCHATS_OR_CHATROOM, false)
         binding.rvChatRoom.adapter = chatRoomAdapter
     }
 
     private fun fetchMessagesBetweenTwoUsers(receiverUserId: String) {
-        firebaseCurrentUser?.uid?.let { currentId ->
-            chatRoomViewModel.requestFetchMessagesBetweenTwoUsers(
-                senderId = currentId,
-                receiverId = receiverUserId
-            )
+        if (messages.isEmpty()) {
+            firebaseCurrentUser?.uid?.let { currentId ->
+                chatRoomViewModel.requestFetchMessagesBetweenTwoUsers(
+                    senderId = currentId,
+                    receiverId = receiverUserId
+                )
+            }
         }
     }
 
@@ -158,17 +180,27 @@ class ChatRoomFragment : Fragment() {
                             if (messages.isNotEmpty()) {
                                 if (messages.last().senderId == firebaseCurrentUser!!.uid)
                                     binding.etMessage.setText("")
+
+                                showMessages(messages)
+                                // update received messages to isSeen to true
+                                chatRoomViewModel.updateReceivedMessagesIsSeen(
+                                    firebaseCurrentUser!!.uid,
+                                    receiverUserId!!,
+                                    messages
+                                )
                             }
-                            showMessages(messages)
                         }
+
                         is ChatRoomState.FetchUserSuccessfully -> {
                             receiverUserId = it.user.id
                             // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
                             showReceiverData(receiverUser = it.user)
                         }
+
                         is ChatRoomState.SendMessageSuccessfully -> {
                             dismissLoadingDialog() // in case of upload image
                         }
+
                         is ChatRoomState.ShowError -> handleErrorState(it.message)
                         is ChatRoomState.NoInternetConnection -> handleNoInternetConnectionState()
                     }
@@ -191,6 +223,7 @@ class ChatRoomFragment : Fragment() {
                                 // fetchMessagesBetweenTwoUsers(receiverUserId)
                                 chatRoomViewModel.fetchUserById(receiverUserId!!)
                             }
+
                             false -> Unit
                         }
                     }
@@ -277,6 +310,7 @@ class ChatRoomFragment : Fragment() {
                         }
                     }
                 }
+
                 else -> {
                     dismissLoadingDialog()
                     Timber.d("Task Cancelled")
@@ -289,6 +323,7 @@ class ChatRoomFragment : Fragment() {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }
@@ -308,6 +343,7 @@ class ChatRoomFragment : Fragment() {
 
     override fun onStop() {
         binding.clChatMessages.viewTreeObserver.removeOnGlobalLayoutListener(listener) // to prevent null pointer exception and memory leakks
+        chatRoomViewModel.setInMyChats(Constants.NOT_IN_MYCHATS_OR_CHATROOM, true)
         //  hideKeyboard()
         super.onStop()
     }
