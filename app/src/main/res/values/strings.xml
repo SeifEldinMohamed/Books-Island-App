@@ -304,23 +304,24 @@
     <string name="delete">Delete</string>
     <string name="cancel_request">Cancel Request</string>
     <string name="confirmation_sent_suuccessfully">\"Confirmation Sent Successfully\"</string>
-    <!--sellerprofile-->
+    <string name="unread">UnRead</string>
+
+    <!--seller profile-->
     <string name="report_user">Report User</string>
     <string name="block_user">Block User</string>
     <string name="rate_user">Rate User</string>
     <string name="maddi">Maddi,Cairo</string>
     <string name="Photo">photo</string>
     <string name="posts">Posts</string>
-    <string name="averagerate">Average Rate</string>
-    <string name="rat">4 out of 5</string>
+    <string name="average_rate">Average Rate</string>
+    <string name="rat">4.5 / 5</string>
     <string name="spam">Spam</string>
-    <string name="reportuser">Report User</string>
-    <string name="threatingme">this user is threatening me</string>
-    <string name="insaltingme">this user is insulting me</string>
+    <string name="threatening_me">This user is threatening me</string>
+    <string name="insulting_me">This user is insulting me</string>
     <string name="fraud">Fraud</string>
     <string name="Other">Other</string>
-    <string name="canel">Cancel</string>
     <string name="send">Send</string>
-    <string name="userblock">User Blocked Successfully !</string>
+    <string name="user_block">User Blocked Successfully !</string>
+    <string name="unread_messages_counter">229</string>
 
 </resources>

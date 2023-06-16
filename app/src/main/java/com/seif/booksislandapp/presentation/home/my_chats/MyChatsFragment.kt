@@ -17,7 +17,13 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsState
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsViewModel
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.adapter.MyChatsAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.Constants.Companion.NOT_IN_MYCHATS_OR_CHATROOM
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -54,6 +60,7 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
             binding.swipeRefresh.isRefreshing = false
         }
         fetchMyBuyingChats()
+        myChatsViewModel.setInMyChats(NOT_IN_MYCHATS_OR_CHATROOM, false)
 
         binding.rvBuyingUsersChat.adapter = myChatsAdapter
     }
@@ -77,6 +84,7 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
                             myChatsAdapter.updateList(it.myBuyingChat)
                             handleUi(it.myBuyingChat)
                         }
+
                         is MyChatsState.IsLoading -> handleLoadingState(it.isLoading)
                         is MyChatsState.NoInternetConnection -> handleNoInternetConnectionState()
                         is MyChatsState.ShowError -> handleErrorState(it.errorMessage)
@@ -86,14 +94,33 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         }
     }
 
+    override fun onResume() {
+        myChats?.let {
+            handleUi(it)
+        }
+        super.onResume()
+    }
+
     private fun handleUi(myBuyingChats: List<MyChat>) {
         if (_binding != null) {
             if (myBuyingChats.isEmpty()) {
                 binding.rvBuyingUsersChat.hide()
                 binding.noBooksAnimationMyBuyingChats.show()
+                binding.tvUnreadMessages.hide()
+                binding.cvUnreadMessages.hide()
             } else {
                 binding.rvBuyingUsersChat.show()
                 binding.noBooksAnimationMyBuyingChats.hide()
+                val allUnReadMessagesCount = myBuyingChats.sumOf { it.unreadMessages }
+                Timber.d("handleUi: allUnreadMessgaes = $allUnReadMessagesCount")
+                if (allUnReadMessagesCount == 0) {
+                    binding.tvUnreadMessages.hide()
+                    binding.cvUnreadMessages.hide()
+                } else {
+                    binding.tvUnreadMessages.show()
+                    binding.cvUnreadMessages.show()
+                    binding.tvUnreadCounnter.text = allUnReadMessagesCount.toString()
+                }
             }
         }
     }
@@ -159,6 +186,11 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         val action =
             MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith.id)
         findNavController().navigate(action)
+    }
+
+    override fun onStop() {
+        myChatsViewModel.setInMyChats(NOT_IN_MYCHATS_OR_CHATROOM, true)
+        super.onStop()
     }
 
     override fun onDestroyView() {

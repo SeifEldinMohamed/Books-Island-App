@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.my_chats.GetMyBuyingChatsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.SaveInSharedPreferenceUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +21,8 @@ import javax.inject.Inject
 class MyChatsViewModel @Inject constructor(
     private val getMyBuyingChatsUseCase: GetMyBuyingChatsUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val saveInSharedPreferenceUseCase: SaveInSharedPreferenceUseCase
 ) : ViewModel() {
     private var _buyingChatsState = MutableStateFlow<MyChatsState>(MyChatsState.Init)
     val buyingChatsState get() = _buyingChatsState.asStateFlow()
@@ -30,7 +30,7 @@ class MyChatsViewModel @Inject constructor(
     fun getMyBuyingChats(myId: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getMyBuyingChatsUseCase.invoke(myId).collect() {
+            getMyBuyingChatsUseCase.invoke(myId).collect {
                 Timber.d("getMyBuyingChats: $it")
                 when (it) {
                     is Resource.Error -> {
@@ -39,6 +39,7 @@ class MyChatsViewModel @Inject constructor(
                             showError(it.message)
                         }
                     }
+
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
@@ -68,6 +69,7 @@ class MyChatsViewModel @Inject constructor(
             resourceProvider.string(R.string.no_internet_connection) -> {
                 _buyingChatsState.value = MyChatsState.NoInternetConnection(message)
             }
+
             else -> {
                 _buyingChatsState.value = MyChatsState.ShowError(message)
             }
@@ -76,5 +78,9 @@ class MyChatsViewModel @Inject constructor(
 
     fun <T> getFromSP(key: String, clazz: Class<T>): T {
         return getFromSharedPreferenceUseCase(key, clazz)
+    }
+
+    fun setInMyChats(key: String, value: Boolean) {
+        saveInSharedPreferenceUseCase(key, value)
     }
 }

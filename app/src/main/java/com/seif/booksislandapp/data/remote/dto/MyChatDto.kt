@@ -1,10 +1,13 @@
 package com.seif.booksislandapp.data.remote.dto
 
-import java.util.*
+import java.util.Date
 
 data class MyChatDto(
-    val senderId: String = "",
+    var currentUserId: String,
+    var senderId: String,
     var userIChatWith: UserDto? = null,
     var lastMessage: String = "",
-    var lastMessageDate: Date? = null
+    var lastMessageDate: Date? = null,
+    var isSeen: Boolean,
+    var unreadMessages: Int
 )

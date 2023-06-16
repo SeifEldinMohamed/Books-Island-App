@@ -3,6 +3,7 @@ package com.seif.booksislandapp.data.mapper
 import android.net.Uri
 import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.MyChatDto
+import com.seif.booksislandapp.data.remote.dto.ReportDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.BidderDto
@@ -14,6 +15,7 @@ import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
+import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
@@ -45,7 +47,8 @@ fun User.toUserDto(): UserDto {
         wishListExchange = this.wishListExchange as List<String>,
         wishListAuction = this.wishListAuction as List<String>,
         myBuyingChats = myBuyingChats as List<String>,
-        mySellingChats = mySellingChats as List<String>
+        mySellingChats = mySellingChats as List<String>,
+        reportedPersonsIds = reportedPersonsIds
     )
 }
 
@@ -63,6 +66,7 @@ fun UserDto.toUser(): User {
         wishListDonate = wishListDonate as ArrayList<String>,
         wishListExchange = wishListExchange as ArrayList<String>,
         wishListAuction = wishListAuction as ArrayList<String>,
+        reportedPersonsIds = reportedPersonsIds
     )
 }
 
@@ -274,7 +278,8 @@ fun MessageDto.toMessage(): Message {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        date = date
+        date = date,
+        isSeen = seen!!
     )
 }
 
@@ -289,16 +294,20 @@ fun Message.toMessageDto(): MessageDto {
         chatUsers = arrayListOf( // remove this attribute (no need for it) but we will need to delete all messages on firestore
             senderId,
             receiverId
-        )
+        ),
+        seen = false
     )
 }
 
 fun MyChatDto.toMyChat(): MyChat {
     return MyChat(
+        currentUserId = currentUserId,
         senderId = senderId,
         userIChatWith = userIChatWith!!.toUser(),
         lastMessage = lastMessage,
-        lastMessageDate = lastMessageDate
+        lastMessageDate = lastMessageDate,
+        isSeen = isSeen,
+        unreadMessages = unreadMessages
     )
 }
 
@@ -352,5 +361,15 @@ fun MySentRequest.toRequestDto(): RequestDto {
         adType = adType.toString(),
         edition = edition,
         status = status
+    )
+}
+
+fun Report.toReportDto(): ReportDto {
+    return ReportDto(
+        id = id,
+        reporterId = reporterId,
+        reportedPersonId = reportedPersonId,
+        comment = comment,
+        category = category,
     )
 }

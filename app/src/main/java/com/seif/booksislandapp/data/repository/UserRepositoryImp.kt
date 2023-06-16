@@ -5,13 +5,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.data.mapper.toReportDto
 import com.seif.booksislandapp.data.mapper.toUser
 import com.seif.booksislandapp.data.remote.dto.UserDto
+import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.repository.UserRepository
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.CHAT_LIST_FIIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.REPORTS_FIIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Resource
+import com.seif.booksislandapp.utils.ResourceProvider
+import com.seif.booksislandapp.utils.SharedPrefs
+import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
@@ -78,6 +85,30 @@ class UserRepositoryImp @Inject constructor(
             }
         } catch (e: Exception) {
             Resource.Error(message = e.message.toString())
+        }
+    }
+
+    override suspend fun reportUser(report: Report): Resource<String, String> {
+        return try {
+            val documentReference = firestore.collection(REPORTS_FIIRESTORE_COLLECTION).document()
+            report.id = documentReference.id
+            documentReference.set(report.toReportDto()).await()
+
+            val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                .document(report.reporterId)
+
+            val userDocumentSnapshot = userDocumentReference.get().await()
+            val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
+            val reportedIds: List<String> = userDto?.reportedPersonsIds ?: emptyList()
+            val reportedIdsArrayList = reportedIds.toCollection(ArrayList())
+
+            reportedIdsArrayList.add(report.reportedPersonId)
+            userDocumentReference.update("reportedPersonsIds", reportedIdsArrayList)
+                .await()
+
+            Resource.Success("report sent successfully!")
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
         }
     }
 

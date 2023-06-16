@@ -18,11 +18,19 @@ import com.google.firebase.messaging.RemoteMessage
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.utils.Constants.Companion.NOTIFICATION_CHANNEL_ID
+import com.seif.booksislandapp.utils.Constants.Companion.NOT_IN_MYCHATS_OR_CHATROOM
+import com.seif.booksislandapp.utils.SharedPrefs
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.random.Random
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
+@AndroidEntryPoint
 open class FirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var sharedPreferences: SharedPrefs
 
     override fun handleIntent(intent: Intent) {
         val bundle = intent.extras
@@ -34,6 +42,7 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (bundle == null) return
+        if (!sharedPreferences.get(NOT_IN_MYCHATS_OR_CHATROOM, Boolean::class.java)) return
 
         val body = bundle.getString("gcm.notification.body")
         val image = bundle.getString("gcm.notification.image")

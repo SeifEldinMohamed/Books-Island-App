@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/hello_heba"

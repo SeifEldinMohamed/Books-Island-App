@@ -19,12 +19,12 @@ class Constants {
         const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "exchange advertisements"
         const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "donate advertisement"
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
-
-        const val CHATS_FIIRESTORE_COLLECTION: String = "Chats"
+        const val CHATS_FIIRESTORE_COLLECTION: String = "CHats"
+        const val REPORTS_FIIRESTORE_COLLECTION: String = "Reports"
         const val REQUESTS_FIIRESTORE_COLLECTION: String = "Requests"
-
-        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "Chat List"
+        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "chat list"
         const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
+
         const val FCM_API_KEY: String =
             "AAAA92L23Rs:APA91bEe5qTrNsAsrLti3mPkXCcyF3bemZwh4vSjAypuEZhSbPihuYI6c3gCAtuaRSyTfSiBrPeeTeTuOEoImvV3YCfMB2c1cIAEkFzmh4kkxHI49gjwFhw5B2uucpPFXEj03iRqQy3v"
         const val FCM_BASE_URL: String = "https://fcm.googleapis.com/"
@@ -41,7 +41,7 @@ class Constants {
         const val USER_AVATAR_KEY = "user_avatar"
         const val IS_FIRST_TIME_KEY = "is_first_time"
         const val IS_LOGGED_IN_KEY = "is_logged_in"
-        const val FCM_TOKEN = "fcm_token"
+        const val NOT_IN_MYCHATS_OR_CHATROOM = "inChatRoomOrMyChats"
 
         // Upload
         const val MAX_UPLOADED_IMAGES_NUMBER = 5

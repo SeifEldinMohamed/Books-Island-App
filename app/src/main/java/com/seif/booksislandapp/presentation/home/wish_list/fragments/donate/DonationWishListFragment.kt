@@ -16,19 +16,27 @@ import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+
 @AndroidEntryPoint
-class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
+class DonationWishListFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: WishlistDonateBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
     private val donateWishListViewModel: DonateWishListViewModel by viewModels()
     private lateinit var userId: String
+    //   private var myDonationWishAds: List<DonateAdvertisement>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +46,7 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
         _binding = WishlistDonateBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
@@ -55,9 +64,12 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun fetchDonateWishList() {
+        //   if (myDonationWishAds == null) {
         donateWishListViewModel.fetchAllDonateWishListAdvertisement(userId)
         observe()
+        //  }
     }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -65,6 +77,7 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
                     when (it) {
                         DonateWishListState.Init -> Unit
                         is DonateWishListState.FetchAllWishDonateItemsSuccessfully -> {
+                            // myDonationWishAds = it.donateAds
                             donateAdapter.updateList(it.donateAds)
                             handleUi(it.donateAds)
                         }
@@ -76,6 +89,7 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         }
     }
+
     private fun handleUi(donateAds: ArrayList<DonateAdvertisement>) {
         if (donateAds.isEmpty()) {
             binding.rvDonateWishList.hide()
@@ -151,8 +165,10 @@ class DonateWishList : Fragment(), OnAdItemClick<DonateAdvertisement> {
         _binding = null
         super.onDestroyView()
     }
+
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action = WishListFragmentDirections.actionWishListFragmentToDonateAdDetailsFragment(item)
+        val action =
+            WishListFragmentDirections.actionWishListFragmentToDonateAdDetailsFragment(item)
         findNavController().navigate(action)
     }
 }

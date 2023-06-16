@@ -16,8 +16,12 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -84,7 +88,7 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
     }
 
-    override fun onResume() {
+    override fun onResume() { // why we add this code ?
         mySellAds?.let {
             handleUi(it.toCollection(ArrayList()))
         }

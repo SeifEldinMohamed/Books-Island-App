@@ -21,7 +21,11 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -231,6 +235,8 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
 
     override fun onDestroyView() {
         exchangeViewModel.isSearching = false
+        binding.rvExchange.adapter = null
+        dialog.setView(null)
         _binding = null
         super.onDestroyView()
     }

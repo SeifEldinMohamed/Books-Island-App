@@ -24,6 +24,7 @@ import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
@@ -391,4 +392,16 @@ fun Context.hideKeyboard(view: View) {
     Timber.d("hideKeyboard: hide keyboard")
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Report.isValidReport(): Resource<String, String> {
+    return if (this.comment.isEmpty()) {
+        Resource.Error("Please write comment for this report so we can help you!")
+    } else if (this.reporterId.isEmpty()) {
+        Resource.Error("reporterId is missing")
+    } else if (this.reportedPersonId.isEmpty()) {
+        Resource.Error("reportedPersonId is missing")
+    } else {
+        Resource.Success("All Report Data is Valid")
+    }
 }

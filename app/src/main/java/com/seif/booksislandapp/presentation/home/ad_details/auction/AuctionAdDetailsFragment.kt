@@ -22,7 +22,14 @@ import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.Auctio
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetViewModel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.formatDateInDetails
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -82,12 +89,15 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             observeUpdatedAuctionAd()
         }
         binding.clProfile.setOnClickListener {
-            owner?.id?.let {
-                val action =
-                    AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentToAdProviderProfile(
-                        it
-                    )
-                findNavController().navigate(action)
+            owner?.id?.let { ownerId ->
+                currUser?.id?.let { currentUserId ->
+                    val action =
+                        AuctionAdDetailsFragmentDirections.actionAuctionAdDetailsFragmentToAdProviderProfile(
+                            providerId = ownerId,
+                            currentUserId = currentUserId
+                        )
+                    findNavController().navigate(action)
+                }
             }
         }
         binding.rvRelatedAds.adapter = relatedAuctionAdsAdapter

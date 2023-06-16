@@ -10,4 +10,10 @@ interface ChatRepository {
         senderId: String,
         receiverId: String,
     ): Flow<Resource<List<Message>, String>>
+
+    suspend fun updateIsSeen(
+        senderId: String,
+        receiverId: String,
+        messages: List<Message>
+    )
 }

@@ -28,6 +28,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG = "HomeActivity"
+    //  private lateinit var onBackPressedCallback: OnBackPressedCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +82,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     binding.ivRequests.show()
                     showToolBar()
                 }
+
                 else -> {
                     binding.coordinatorLayout.hide()
                     binding.ivRequests.hide()
@@ -88,6 +90,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+
+        // handleOnBackPressed()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -101,6 +105,33 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         binding.drawerLayout.close()
         return true
+    }
+
+//    private fun handleOnBackPressed() {
+//        onBackPressedCallback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                // Handle the back button press event
+//                if (binding.drawerLayout.isOpen) {
+//                    binding.drawerLayout.close()
+//                } else {
+//                    if (navController.currentDestination?.id != R.id.homeFragment) {
+//                        navController.popBackStack(R.id.homeFragment, false)
+//                    } else if (isTaskRoot && supportFragmentManager.backStackEntryCount == 0) {
+//                        finishAfterTransition()
+//                    }
+//                }
+//            }
+//        }
+//        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+//    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (binding.drawerLayout.isOpen) {
+            binding.drawerLayout.close()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun shareApp() {
@@ -166,14 +197,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog.show()
     }
 
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isOpen) {
-            binding.drawerLayout.close()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     private fun showToolBar() {
         binding.toolBar.show()
     }
@@ -197,6 +220,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDestroy() {
+        // onBackPressedCallback.isEnabled = false // Disable the callback
+        //  onBackPressedCallback.remove() // Unregister the callback
         _binding = null
         super.onDestroy()
     }

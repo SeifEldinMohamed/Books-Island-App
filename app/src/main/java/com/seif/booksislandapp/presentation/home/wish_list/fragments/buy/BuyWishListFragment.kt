@@ -16,20 +16,28 @@ import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 
 @AndroidEntryPoint
-class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
+class BuyWishListFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private var _binding: WishlistSellBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var dialog: AlertDialog
     private val buyAdapter by lazy { BuyAdapter() }
     private val buyWishListViewModel: BuyWishListViewModel by viewModels()
     private lateinit var userId: String
+    // private var myBuyWishAds: List<SellAdvertisement>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,10 +62,14 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
 
         binding.rvBuyList.adapter = buyAdapter
     }
+
     private fun fetchBuyWishList() {
+        // if (myBuyWishAds == null) {
         buyWishListViewModel.fetchAllBuyWishListAdvertisement(userId)
         observe()
+        //  }
     }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -65,6 +77,7 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
                     when (it) {
                         BuyWishListState.Init -> Unit
                         is BuyWishListState.FetchAllWishBuyItemsSuccessfully -> {
+                            //      myBuyWishAds = it.sellAds
                             buyAdapter.updateList(it.sellAds)
                             handleUi(it.sellAds)
                         }
@@ -76,6 +89,7 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
             }
         }
     }
+
     private fun handleUi(sellAds: ArrayList<SellAdvertisement>) {
         if (sellAds.isEmpty()) {
             binding.rvBuyList.hide()
@@ -151,6 +165,7 @@ class SellWishList : Fragment(), OnAdItemClick<SellAdvertisement> {
         _binding = null
         super.onDestroyView()
     }
+
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
         val action = WishListFragmentDirections.actionWishListFragmentToSellAdDetailsFragment(item)
         findNavController().navigate(action)

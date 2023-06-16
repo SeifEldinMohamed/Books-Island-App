@@ -16,31 +16,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_username"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/roboto_regular"
-        tools:text="@string/hazem_khaled"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_16ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_avatar"
-        app:layout_constraintStart_toEndOf="@+id/iv_avatar"
-        app:layout_constraintTop_toTopOf="@+id/iv_avatar"
-        tools:ignore="TextContrastCheck" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="@dimen/_38sdp"
-        android:layout_height="@dimen/_38sdp"
-        android:layout_marginStart="8dp"
-        tools:src="@drawable/man_avatar_1"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:padding="@dimen/_4sdp"
         app:layout_constraintBottom_toBottomOf="@+id/chat_toolbar"
         app:layout_constraintStart_toEndOf="@+id/iv_back_chat_room"
-        app:layout_constraintTop_toTopOf="@+id/chat_toolbar"
-        app:layout_constraintVertical_bias="0.428"
-        tools:ignore="ImageContrastCheck,ImageContrastCheck" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_avatar"
+            app:layout_constraintTop_toTopOf="@+id/iv_avatar"
+            tools:ignore="TextContrastCheck"
+            tools:text="@string/hazem_khaled" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/_38sdp"
+            android:layout_height="@dimen/_38sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ImageContrastCheck,ImageContrastCheck"
+            tools:src="@drawable/man_avatar_1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/iv_back_chat_room"
