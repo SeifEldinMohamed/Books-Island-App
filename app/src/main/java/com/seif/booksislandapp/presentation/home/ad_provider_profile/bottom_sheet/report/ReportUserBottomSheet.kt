@@ -55,6 +55,9 @@ class ReportUserBottomSheet : BottomSheetDialogFragment() {
             )
             observe()
         }
+        binding.btnCancel.setOnClickListener {
+            this.dismiss()
+        }
     }
 
     private fun observe() {

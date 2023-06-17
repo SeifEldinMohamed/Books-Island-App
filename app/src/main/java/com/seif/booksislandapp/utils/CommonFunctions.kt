@@ -72,6 +72,10 @@ fun View.showInfoSnackBar(message: String) {
     Snackify.info(this, message, Snackify.LENGTH_SHORT).show()
 }
 
+fun View.showWarningSnackBar(message: String) {
+    Snackify.warning(this, message, Snackify.LENGTH_INDEFINITE).show()
+}
+
 fun Fragment.toast(msg: String?) {
     Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
 }
