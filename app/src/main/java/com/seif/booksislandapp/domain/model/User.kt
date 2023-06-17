@@ -19,5 +19,6 @@ data class User(
     var wishListAuction: ArrayList<String> = arrayListOf(),
     var myBuyingChats: ArrayList<String> = arrayListOf(),
     var mySellingChats: ArrayList<String> = arrayListOf(),
-    var reportedPersonsIds: List<String> = emptyList()
+    var reportedPersonsIds: List<String> = emptyList(),
+    var blockedUsersIds: List<String> = emptyList()
 ) : Parcelable

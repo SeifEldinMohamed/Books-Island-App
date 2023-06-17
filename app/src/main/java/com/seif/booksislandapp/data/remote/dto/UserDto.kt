@@ -15,5 +15,6 @@ data class UserDto(
     var wishListAuction: List<String> = emptyList(),
     var myBuyingChats: List<String> = emptyList(),
     var mySellingChats: List<String> = emptyList(),
-    var reportedPersonsIds: List<String> = emptyList()
+    var reportedPersonsIds: List<String> = emptyList(),
+    var blockedUsersIds: List<String> = emptyList(),
 )

@@ -48,7 +48,8 @@ fun User.toUserDto(): UserDto {
         wishListAuction = this.wishListAuction as List<String>,
         myBuyingChats = myBuyingChats as List<String>,
         mySellingChats = mySellingChats as List<String>,
-        reportedPersonsIds = reportedPersonsIds
+        reportedPersonsIds = reportedPersonsIds,
+        blockedUsersIds = blockedUsersIds
     )
 }
 
@@ -66,7 +67,8 @@ fun UserDto.toUser(): User {
         wishListDonate = wishListDonate as ArrayList<String>,
         wishListExchange = wishListExchange as ArrayList<String>,
         wishListAuction = wishListAuction as ArrayList<String>,
-        reportedPersonsIds = reportedPersonsIds
+        reportedPersonsIds = reportedPersonsIds,
+        blockedUsersIds = blockedUsersIds
     )
 }
 
