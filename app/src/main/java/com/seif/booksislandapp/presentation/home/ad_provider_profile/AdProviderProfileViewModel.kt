@@ -3,6 +3,7 @@ package com.seif.booksislandapp.presentation.home.ad_provider_profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.usecase.usecase.user.BlockUserUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class AdProviderProfileViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
 
     ) : ViewModel() {
     private var _adProviderProfileState =
@@ -42,6 +44,49 @@ class AdProviderProfileViewModel @Inject constructor(
                         }
                         _adProviderProfileState.value =
                             AdProviderProfileState.FetchAdProviderUserSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun blockUser(currentUserId: String, adProviderUserId: String, blockUser: Boolean) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            blockUserUseCase.invoke(currentUserId, adProviderUserId, blockUser).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _adProviderProfileState.value =
+                            AdProviderProfileState.BlockUserSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchCurrentUser(currentUserId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getUserByIdUseCase(currentUserId).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            showError(it.message)
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        _adProviderProfileState.value =
+                            AdProviderProfileState.FetchCurrentUserSuccessfully(it.data)
                     }
                 }
             }
