@@ -112,6 +112,39 @@ class UserRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun blockUser(
+        currentUserId: String,
+        adProviderId: String,
+        blockUser: Boolean
+    ): Resource<String, String> {
+        return try {
+
+            val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                .document(currentUserId)
+
+            val userDocumentSnapshot = userDocumentReference.get().await()
+            val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
+
+            val blockedUsersIds: List<String> = userDto?.blockedUsersIds ?: emptyList()
+            val blockedIdsArrayList = blockedUsersIds.toCollection(ArrayList())
+
+            val message: String = if (blockUser) {
+                blockedIdsArrayList.add(adProviderId)
+                resourceProvider.string(R.string.blocked_successfully)
+            } else {
+                blockedIdsArrayList.remove(adProviderId)
+                resourceProvider.string(R.string.unBlocked_successfully)
+            }
+
+            userDocumentReference.update("blockedUsersIds", blockedIdsArrayList)
+                .await()
+
+            Resource.Success(message)
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     private fun saveUserData(user: User) {
         sharedPrefs.put(Constants.USER_ID_KEY, user.id)
         sharedPrefs.put(Constants.USERNAME_KEY, user.username)

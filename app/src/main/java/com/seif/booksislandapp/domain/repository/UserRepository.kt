@@ -10,4 +10,9 @@ interface UserRepository {
     suspend fun updateUserProfile(user: User): Resource<User, String>
     suspend fun fetchUsersIChatWith(currentUserId: String): Resource<List<User>, String>
     suspend fun reportUser(report: Report): Resource<String, String>
+    suspend fun blockUser(
+        currentUserId: String,
+        adProviderId: String,
+        blockUser: Boolean
+    ): Resource<String, String>
 }
