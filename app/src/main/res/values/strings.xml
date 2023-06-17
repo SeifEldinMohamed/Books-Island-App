@@ -323,5 +323,10 @@
     <string name="send">Send</string>
     <string name="user_block">User Blocked Successfully !</string>
     <string name="unread_messages_counter">229</string>
+    <string name="unblock_user">UnBlock User</string>
+    <string name="blocked_successfully">Blocked Successfully!</string>
+    <string name="unBlocked_successfully">UnBlocked Successfully!</string>
+    <string name="conversation_is_blocked">Conversation with this user is blocked.</string>
+    <string name="lock_icon_description">lock icon description</string>
 
 </resources>
