@@ -25,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AdProviderProfileFragment : Fragment() {
@@ -35,6 +36,7 @@ class AdProviderProfileFragment : Fragment() {
     private val reportSheetViewModel: ReportSheetViewModel by activityViewModels()
     private val args = navArgs<AdProviderProfileFragmentArgs>()
     private var adProviderUser: User? = null
+    private var currentUser: User? = null
     private var currentUserId: String? = null
     private lateinit var dialog: AlertDialog
 
@@ -66,10 +68,29 @@ class AdProviderProfileFragment : Fragment() {
         }
         observe()
         // addMenuProvider()
+        currentUserId?.let {
+            fetchCurrentUserById(it)
+        }
         onMenuItemClick()
 
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+    }
+
+    private fun handleBlockMenuItemText() {
+        if (currentUser!!.blockedUsersIds.contains(adProviderUserId)) { // user blocked adProvider
+            Timber.d("onViewCreated: show unblock")
+            binding.toolbar.menu.findItem(R.id.menu_block).title = getString(R.string.unblock_user)
+        } else {
+            Timber.d("onViewCreated: show block")
+            binding.toolbar.menu.findItem(R.id.menu_block).title = getString(R.string.block_user)
+        }
+    }
+
+    private fun fetchCurrentUserById(currentUserId: String) {
+        if (currentUser == null) {
+            adProviderProfileViewModel.fetchCurrentUser(currentUserId)
         }
     }
 
@@ -86,7 +107,21 @@ class AdProviderProfileFragment : Fragment() {
                         showAdProviderData(it.user)
                     }
 
-                    is AdProviderProfileState.BlockUserSuccessfully -> TODO()
+                    is AdProviderProfileState.FetchCurrentUserSuccessfully -> {
+                        currentUser = it.user
+                        handleBlockMenuItemText()
+                    }
+
+                    is AdProviderProfileState.BlockUserSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        if (it.message == getString(R.string.blocked_successfully)) {
+                            binding.toolbar.menu.findItem(R.id.menu_block).title =
+                                getString(R.string.unblock_user)
+                        } else {
+                            binding.toolbar.menu.findItem(R.id.menu_block).title =
+                                getString(R.string.block_user)
+                        }
+                    }
                 }
             }
         }
@@ -179,6 +214,19 @@ class AdProviderProfileFragment : Fragment() {
 
                 R.id.menu_block -> {
                     // block this seller then if success show snack bar
+                    if (item.title == getString(R.string.block_user)) {
+                        adProviderProfileViewModel.blockUser(
+                            currentUserId!!,
+                            adProviderUserId,
+                            true
+                        )
+                    } else { // unblock
+                        adProviderProfileViewModel.blockUser(
+                            currentUserId!!,
+                            adProviderUserId,
+                            false
+                        )
+                    }
                 }
 
                 else -> {
