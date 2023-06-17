@@ -55,7 +55,31 @@ class ChatRoomViewModel @Inject constructor(
                     is Resource.Error -> showError(it.message)
                     is Resource.Success -> {
                         _chatRoomState.value =
-                            ChatRoomState.FetchUserSuccessfully(it.data)
+                            ChatRoomState.FetchReceiverUserSuccessfully(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchCurrentUserById(id: String) {
+        setLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            getUserByIdUseCase(id).let {
+                when (it) {
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                            showError(it.message)
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        withContext(Dispatchers.Main) {
+                            setLoading(false)
+                        }
+                        _chatRoomState.value =
+                            ChatRoomState.FetchCurrentUserSuccessfully(it.data)
                     }
                 }
             }
