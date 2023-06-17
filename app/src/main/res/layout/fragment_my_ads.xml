@@ -15,7 +15,7 @@
             android:id="@+id/tl_myAds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
+
             android:background="@drawable/tab_my_ads_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.48"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="fill"
             app:tabInlineLabel="true"
-            app:tabMode="auto"
+            app:tabMode="fixed"
             android:layout_marginTop="@dimen/_4sdp"
             app:tabRippleColor="@null"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"

@@ -61,7 +61,7 @@ class MyAdsFragment : Fragment() {
         for (i in 0 until tabTitle.size) {
             val textView =
                 LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
-                        as TextView
+                    as TextView
             binding.tlMyAds.getTabAt(i)?.customView = textView
         }
     }

@@ -323,5 +323,7 @@
     <string name="send">Send</string>
     <string name="user_block">User Blocked Successfully !</string>
     <string name="unread_messages_counter">229</string>
+    <string name="userblock">User Blocked Successfully !</string>
+    <string name="share_location">Share Location</string>
 
 </resources>
