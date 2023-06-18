@@ -303,7 +303,7 @@
     <string name="your_gateway_to_endless_literary_adventures">Your Gateway to Endless\nLiterary Adventures</string>
     <string name="delete">Delete</string>
     <string name="cancel_request">Cancel Request</string>
-    <string name="confirmation_sent_suuccessfully">\"Confirmation Sent Successfully\"</string>
+    <string name="confirmation_sent_successfully">Confirmation Sent Successfully</string>
     <string name="unread">UnRead</string>
 
     <!--seller profile-->
@@ -328,5 +328,9 @@
     <string name="unBlocked_successfully">UnBlocked Successfully!</string>
     <string name="conversation_is_blocked">Conversation with this user is blocked.</string>
     <string name="lock_icon_description">lock icon description</string>
+    <string name="rating_bar_description">rating bar description</string>
+    <string name="rate_user_successfully">Your rate added Successfully</string>
+    <string name="rate_value">%1$s / 5</string>
+    <string name="edit">Edit</string>
 
 </resources>
