@@ -17,4 +17,7 @@ data class UserDto(
     var mySellingChats: List<String> = emptyList(),
     var reportedPersonsIds: List<String> = emptyList(),
     var blockedUsersIds: List<String> = emptyList(),
+    var averageRate: Double = 0.0,
+    var givenRates: List<RateDto> = emptyList(),
+    var receivedRates: List<ReceivedRateDto> = emptyList(),
 )
