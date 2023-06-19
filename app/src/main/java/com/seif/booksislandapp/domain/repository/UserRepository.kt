@@ -15,4 +15,10 @@ interface UserRepository {
         adProviderId: String,
         blockUser: Boolean
     ): Resource<String, String>
+
+    suspend fun rateUser(
+        currentUserId: String,
+        adProviderId: String,
+        rate: Double
+    ): Resource<Pair<String, String>, String>
 }

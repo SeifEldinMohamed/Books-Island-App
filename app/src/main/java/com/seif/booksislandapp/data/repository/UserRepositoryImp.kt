@@ -7,6 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toReportDto
 import com.seif.booksislandapp.data.mapper.toUser
+import com.seif.booksislandapp.data.remote.dto.RateDto
+import com.seif.booksislandapp.data.remote.dto.ReceivedRateDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
@@ -89,24 +91,30 @@ class UserRepositoryImp @Inject constructor(
     }
 
     override suspend fun reportUser(report: Report): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
         return try {
-            val documentReference = firestore.collection(REPORTS_FIIRESTORE_COLLECTION).document()
-            report.id = documentReference.id
-            documentReference.set(report.toReportDto()).await()
+            withTimeout(Constants.TIMEOUT) {
+                val documentReference =
+                    firestore.collection(REPORTS_FIIRESTORE_COLLECTION).document()
+                report.id = documentReference.id
+                documentReference.set(report.toReportDto()).await()
 
-            val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
-                .document(report.reporterId)
+                val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(report.reporterId)
 
-            val userDocumentSnapshot = userDocumentReference.get().await()
-            val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
-            val reportedIds: List<String> = userDto?.reportedPersonsIds ?: emptyList()
-            val reportedIdsArrayList = reportedIds.toCollection(ArrayList())
+                val userDocumentSnapshot = userDocumentReference.get().await()
+                val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
+                val reportedIds: List<String> = userDto?.reportedPersonsIds ?: emptyList()
+                val reportedIdsArrayList = reportedIds.toCollection(ArrayList())
 
-            reportedIdsArrayList.add(report.reportedPersonId)
-            userDocumentReference.update("reportedPersonsIds", reportedIdsArrayList)
-                .await()
+                reportedIdsArrayList.add(report.reportedPersonId)
+                userDocumentReference.update("reportedPersonsIds", reportedIdsArrayList)
+                    .await()
 
-            Resource.Success("report sent successfully!")
+                Resource.Success("report sent successfully!")
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
@@ -117,29 +125,112 @@ class UserRepositoryImp @Inject constructor(
         adProviderId: String,
         blockUser: Boolean
     ): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
         return try {
+            withTimeout(Constants.TIMEOUT) {
+                val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(currentUserId)
 
-            val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
-                .document(currentUserId)
+                val userDocumentSnapshot = userDocumentReference.get().await()
+                val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
 
-            val userDocumentSnapshot = userDocumentReference.get().await()
-            val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
+                val blockedUsersIds: List<String> = userDto?.blockedUsersIds ?: emptyList()
+                val blockedIdsArrayList = blockedUsersIds.toCollection(ArrayList())
 
-            val blockedUsersIds: List<String> = userDto?.blockedUsersIds ?: emptyList()
-            val blockedIdsArrayList = blockedUsersIds.toCollection(ArrayList())
+                val message: String = if (blockUser) {
+                    blockedIdsArrayList.add(adProviderId)
+                    resourceProvider.string(R.string.blocked_successfully)
+                } else {
+                    blockedIdsArrayList.remove(adProviderId)
+                    resourceProvider.string(R.string.unBlocked_successfully)
+                }
 
-            val message: String = if (blockUser) {
-                blockedIdsArrayList.add(adProviderId)
-                resourceProvider.string(R.string.blocked_successfully)
-            } else {
-                blockedIdsArrayList.remove(adProviderId)
-                resourceProvider.string(R.string.unBlocked_successfully)
+                userDocumentReference.update("blockedUsersIds", blockedIdsArrayList)
+                    .await()
+
+                Resource.Success(message)
             }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
 
-            userDocumentReference.update("blockedUsersIds", blockedIdsArrayList)
-                .await()
+    override suspend fun rateUser(
+        currentUserId: String,
+        adProviderId: String,
+        rate: Double
+    ): Resource<Pair<String, String>, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
-            Resource.Success(message)
+        return try {
+            withTimeout(Constants.TIMEOUT_RATE) {
+                val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(currentUserId)
+
+                val userDocumentSnapshot = userDocumentReference.get().await()
+                val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
+
+                val givenRates: List<RateDto> = userDto?.givenRates ?: emptyList()
+                val givenRatesArrayList = givenRates.toCollection(ArrayList())
+
+                val oldRate: RateDto? =
+                    givenRatesArrayList.find { it.reportedPersonId == adProviderId }
+                if (oldRate == null) { // first time to rate this ad provider
+                    givenRatesArrayList.add(
+                        RateDto(
+                            reportedPersonId = adProviderId,
+                            rate = rate
+                        )
+                    )
+                } else { // already rated him ( then he wants to update the rate )
+                    val oldRateIndex = givenRatesArrayList.indexOf(oldRate)
+                    givenRatesArrayList[oldRateIndex].rate = rate
+                }
+
+                userDocumentReference.update("givenRates", givenRatesArrayList)
+                    .await()
+
+                // add or update rate in receivedRates of adProvider User
+
+                val adProviderDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(adProviderId)
+
+                val adProviderDocumentSnapshot = adProviderDocumentReference.get().await()
+                val adProviderDto = adProviderDocumentSnapshot.toObject(UserDto::class.java)
+
+                val receivedRates: List<ReceivedRateDto> =
+                    adProviderDto?.receivedRates ?: emptyList()
+                val receivedRatesArrayList = receivedRates.toCollection(ArrayList())
+
+                val receivedOldRate: ReceivedRateDto? =
+                    receivedRatesArrayList.find { it.reporterId == currentUserId }
+                if (receivedOldRate == null) { // first time to rate this ad provider
+                    receivedRatesArrayList.add(
+                        ReceivedRateDto(
+                            reporterId = currentUserId,
+                            rate = rate
+                        )
+                    )
+                } else { // already rated him ( then he wants to update the rate )
+                    val oldRateIndex = receivedRatesArrayList.indexOf(receivedOldRate)
+                    receivedRatesArrayList[oldRateIndex].rate = rate
+                }
+
+                adProviderDocumentReference.update("receivedRates", receivedRatesArrayList)
+                    .await()
+
+                val totalRateOfAdProvider =
+                    receivedRatesArrayList.fold(0.0) { accumulator, receivedRateDto ->
+                        accumulator + receivedRateDto.rate
+                    }
+                val averageRateOfAdProvider = totalRateOfAdProvider / receivedRatesArrayList.size
+                adProviderDocumentReference.update("averageRate", averageRateOfAdProvider).await()
+
+                Resource.Success(Pair(rate.toString(), averageRateOfAdProvider.toString()))
+            }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
