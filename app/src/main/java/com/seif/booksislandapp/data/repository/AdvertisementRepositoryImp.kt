@@ -4,9 +4,15 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.data.mapper.*
+import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
+import com.seif.booksislandapp.data.mapper.toDonateAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toExchangeAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toSellAdvertisement
+import com.seif.booksislandapp.data.mapper.toSellAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toUser
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
@@ -25,10 +31,15 @@ import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTI
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -222,7 +233,7 @@ class AdvertisementRepositoryImp @Inject constructor(
 
                 delay(500) // to show loading progress
                 val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION).document(id)
-                    .get()
+                    .get(Source.SERVER)
                     .await()
                 val user = querySnapshot.toObject(UserDto::class.java)
                 Resource.Success(
