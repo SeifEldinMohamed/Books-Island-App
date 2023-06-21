@@ -36,10 +36,18 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadStat
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_IMAGES_NUMBER
 import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Date
 
 @AndroidEntryPoint
 class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
@@ -360,7 +368,7 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                         findNavController().navigateUp()
                     }
                     is UploadState.SendRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_successfully))
                         requestId = it.requestId
                         disableSentConfirmationMessageButton()
                     }
