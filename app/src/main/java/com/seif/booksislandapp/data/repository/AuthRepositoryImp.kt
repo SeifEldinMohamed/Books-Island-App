@@ -13,6 +13,7 @@ import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.admin.Admin
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.repository.AuthRepository
@@ -40,7 +41,6 @@ class AuthRepositoryImp @Inject constructor(
     private val connectivityManager: ConnectivityManager,
     private val fcm: FirebaseMessaging
 ) : AuthRepository {
-    private val TAG = "AuthRepositoryImp"
     override suspend fun register(user: User): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -85,6 +85,9 @@ class AuthRepositoryImp @Inject constructor(
         sharedPrefs.put(USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(USER_AVATAR_KEY, user.avatarImage)
     }
+    private fun saveAdminData(admin: Admin) {
+        sharedPrefs.put(USER_ID_KEY, admin.id)
+    }
 
     private suspend fun addUser(user: User): Resource<String, String> {
         return try {
@@ -105,17 +108,22 @@ class AuthRepositoryImp @Inject constructor(
 
         return try {
             withTimeout(Constants.TIMEOUT_AUTH) {
-                auth.signInWithEmailAndPassword(email, password).await()
-                when (val result = getUserById(auth.currentUser!!.uid)) {
-                    is Resource.Error -> Resource.Error(result.message)
-                    is Resource.Success -> {
-                        // save user data
-                        saveUserData(result.data)
-                        // update token
-                        val token = fcm.token.await()
-                        updateToken(auth.currentUser!!.uid, token)
+                if (Constants.ADMINS_LIST.contains(Admin("", email, password))) {
+                    saveAdminData(Admin("", email, password))
+                    Resource.Success(resourceProvider.string(R.string.admin))
+                } else {
+                    auth.signInWithEmailAndPassword(email, password).await()
+                    when (val result = getUserById(auth.currentUser!!.uid)) {
+                        is Resource.Error -> Resource.Error(result.message)
+                        is Resource.Success -> {
+                            // save user data
+                            saveUserData(result.data)
+                            // update token
+                            val token = fcm.token.await()
+                            updateToken(auth.currentUser!!.uid, token)
 
-                        Resource.Success(resourceProvider.string(R.string.welcome_back))
+                            Resource.Success(resourceProvider.string(R.string.welcome_back))
+                        }
                     }
                 }
             }

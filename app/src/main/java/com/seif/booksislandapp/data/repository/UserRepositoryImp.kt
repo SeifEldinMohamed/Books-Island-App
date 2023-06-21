@@ -19,6 +19,8 @@ import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
 import com.seif.booksislandapp.utils.checkInternetConnection
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
@@ -118,5 +120,37 @@ class UserRepositoryImp @Inject constructor(
         sharedPrefs.put(Constants.USER_GOVERNORATE_KEY, user.governorate)
         sharedPrefs.put(Constants.USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(Constants.USER_AVATAR_KEY, user.avatarImage)
+    }
+    override suspend fun getAllUsers() = callbackFlow {
+        if (!connectivityManager.checkInternetConnection())
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+
+        try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .addSnapshotListener { usersQuerySnapshot, error ->
+                        if (error != null) {
+                            trySend(Resource.Error(error.message.toString()))
+                        }
+                        if (usersQuerySnapshot != null) {
+                            val allUsersDto = arrayListOf<UserDto>()
+                            for (document in usersQuerySnapshot) {
+                                val userDto = document.toObject(UserDto::class.java)
+                                allUsersDto.add(userDto)
+                            }
+                            trySend(
+                                Resource.Success(
+                                    data = allUsersDto.map { userDto ->
+                                        userDto.toUser()
+                                    }.toCollection(java.util.ArrayList())
+                                )
+                            )
+                        }
+                    }
+            }
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message.toString()))
+        }
+        awaitClose { }
     }
 }

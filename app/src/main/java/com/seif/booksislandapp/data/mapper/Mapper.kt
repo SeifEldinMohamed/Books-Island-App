@@ -70,6 +70,26 @@ fun UserDto.toUser(): User {
     )
 }
 
+fun ReportDto.toReport(): Report {
+    return Report(
+        id = id,
+        reporterId = reporterId,
+        reportedPersonId = reportedPersonId,
+        comment = comment,
+        category = category,
+    )
+}
+
+fun Report.toReportDto(): ReportDto {
+    return ReportDto(
+        id = id,
+        reporterId = reporterId,
+        reportedPersonId = reportedPersonId,
+        comment = comment,
+        category = category,
+    )
+}
+
 fun SellAdvertisementDto.toSellAdvertisement(): SellAdvertisement {
 //    Timber.d("toSellAdvertisement: $confirmationMessageSent")
     return SellAdvertisement(
@@ -361,15 +381,5 @@ fun MySentRequest.toRequestDto(): RequestDto {
         adType = adType.toString(),
         edition = edition,
         status = status
-    )
-}
-
-fun Report.toReportDto(): ReportDto {
-    return ReportDto(
-        id = id,
-        reporterId = reporterId,
-        reportedPersonId = reportedPersonId,
-        comment = comment,
-        category = category,
     )
 }

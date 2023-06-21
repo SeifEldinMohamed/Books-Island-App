@@ -61,4 +61,5 @@
     <color name="cardBackgroundColor">@color/primary_dark</color>
     <color name="about_text_color">@color/white</color>
     <color name="light_yellow">#F7E6A5</color>
+    <color name="cancel_red">#E12D0A</color>
 </resources>

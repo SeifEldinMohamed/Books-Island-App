@@ -146,4 +146,18 @@ object RepositoryModule {
             connectivityManager,
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideAdminRepository(
+        firestore: FirebaseFirestore,
+        resourceProvider: ResourceProvider,
+        connectivityManager: ConnectivityManager,
+    ): AdminRepository {
+        return AdminRepositoryImp(
+            firestore,
+            resourceProvider,
+            connectivityManager,
+        )
+    }
 }

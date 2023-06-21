@@ -44,7 +44,7 @@ class AdProviderProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
 
-        ): View {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentAdProviderProfileBinding.inflate(layoutInflater)
         return binding.root

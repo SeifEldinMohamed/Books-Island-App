@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/report"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_report_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/hash"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_25ssp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_report"
+        app:layout_constraintStart_toEndOf="@+id/tv_report"
+        app:layout_constraintTop_toTopOf="@+id/tv_report" />
+
+    <TextView
+        android:id="@+id/tv_report_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/_1"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_25ssp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_report_num"
+        app:layout_constraintStart_toEndOf="@+id/tv_report_num"
+        app:layout_constraintTop_toTopOf="@+id/tv_report_num" />
+
+    <TextView
+        android:id="@+id/tv_report_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_65sdp"
+
+        android:fontFamily="@font/roboto_bold"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="@string/_12_june_2023"
+        android:textColor="@color/gray_medium"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_report_num"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_report_number"
+        app:layout_constraintTop_toTopOf="@id/tv_report_num" />
+
+    <TextView
+        android:id="@+id/tv_reporter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/reporter"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_report"
+        app:layout_constraintTop_toBottomOf="@+id/tv_report" />
+
+    <TextView
+        android:id="@+id/tv_reported"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/seif_mohammed"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_reporter"
+        app:layout_constraintStart_toEndOf="@+id/tv_reporter"
+        app:layout_constraintTop_toTopOf="@+id/tv_reporter" />
+
+    <TextView
+        android:id="@+id/tv_reported_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/reported_to"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_reporter"
+        app:layout_constraintTop_toBottomOf="@+id/tv_reporter" />
+
+    <TextView
+        android:id="@+id/tv_reported_to_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/hazem_khaled"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_reported_to"
+        app:layout_constraintStart_toEndOf="@+id/tv_reported_to"
+        app:layout_constraintTop_toTopOf="@+id/tv_reported_to" />
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="@string/category_report"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_reported_to"
+        app:layout_constraintTop_toBottomOf="@+id/tv_reported_to" />
+
+    <TextView
+        android:id="@+id/tv_category_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/this_user_is_threatening_me"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_category"
+        app:layout_constraintStart_toEndOf="@+id/tv_category"
+        app:layout_constraintTop_toTopOf="@+id/tv_category" />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="@string/comment"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_category"
+        app:layout_constraintTop_toBottomOf="@+id/tv_category" />
+
+    <TextView
+        android:id="@+id/tv_comment_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="@string/this_user_is_threatening_comment"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_comment"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_accused"
+        android:layout_width="@dimen/_280sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/accused_profile"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
+        app:cornerRadius="@dimen/_8sdp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_cancel_report"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_comment_details" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_report"
+        android:layout_width="@dimen/_280sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
+        app:backgroundTint="@color/cancel_red"
+        app:cornerRadius="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btn_accused"
+        app:layout_constraintStart_toStartOf="@id/btn_accused" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

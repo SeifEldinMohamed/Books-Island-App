@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav_graph"
+    app:startDestination="@id/allUsersFragment">
+
+    <fragment
+        android:id="@+id/allUsersFragment"
+        android:name="com.seif.booksislandapp.presentation.admin.all_users.AllUsersFragment"
+        android:label="fragment_all_users"
+        tools:layout="@layout/fragment_all_users" >
+        <action
+            android:id="@+id/action_allUsersFragment_to_userDetailsFragment"
+            app:destination="@id/userDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.seif.booksislandapp.presentation.admin.reports.ReportsFragment"
+        android:label="fragment_reports"
+        tools:layout="@layout/fragment_reports" >
+        <action
+            android:id="@+id/action_reportsFragment_to_reportDetailsFragment"
+            app:destination="@id/reportDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="com.seif.booksislandapp.presentation.admin.user_details.UserDetailsFragment"
+        android:label="UserDetailsFragment" >
+        <argument
+            android:name="user"
+            app:argType="com.seif.booksislandapp.domain.model.User" />
+        <action
+            android:id="@+id/action_userDetailsFragment_to_reportDetailsFragment"
+            app:destination="@id/reportDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reportDetailsFragment"
+        android:name="com.seif.booksislandapp.presentation.admin.report_details.ReportDetailsFragment"
+        android:label="ReportDetailsFragment" >
+        <action
+            android:id="@+id/action_reportDetailsFragment_to_userDetailsFragment"
+            app:destination="@id/userDetailsFragment" />
+        <argument
+            android:name="report"
+            app:argType="com.seif.booksislandapp.domain.model.Report" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
+    </fragment>
+</navigation>

@@ -1,9 +1,10 @@
-package com.seif.booksislandapp.presentation.home.ad_provider_profile
+package com.seif.booksislandapp.presentation.admin.report_details.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
+import com.seif.booksislandapp.presentation.admin.report_details.GetUserByIdState
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,21 +14,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 @HiltViewModel
-class AdProviderProfileViewModel @Inject constructor(
-    private val resourceProvider: ResourceProvider,
+class ReportDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val resourceProvider: ResourceProvider
 
 ) : ViewModel() {
-    private var _adProviderProfileState =
-        MutableStateFlow<AdProviderProfileState>(AdProviderProfileState.Init)
-    val adProviderProfileState = _adProviderProfileState.asStateFlow()
+    private var _userState = MutableStateFlow<GetUserByIdState>(GetUserByIdState.Init)
+    val userState = _userState.asStateFlow()
 
-    fun getAdProviderUserById(currUserId: String) {
+    fun getUserById(id: String) {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
-            getUserByIdUseCase(currUserId).let {
+            getUserByIdUseCase(id).let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
@@ -35,13 +34,12 @@ class AdProviderProfileViewModel @Inject constructor(
                             showError(it.message)
                         }
                     }
-
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _adProviderProfileState.value =
-                            AdProviderProfileState.FetchAdProviderUserSuccessfully(it.data)
+                        _userState.value =
+                            GetUserByIdState.GetUserByIdSuccessfully(it.data)
                     }
                 }
             }
@@ -51,11 +49,10 @@ class AdProviderProfileViewModel @Inject constructor(
     private fun setLoading(status: Boolean) {
         when (status) {
             true -> {
-                _adProviderProfileState.value = AdProviderProfileState.IsLoading(true)
+                _userState.value = GetUserByIdState.IsLoading(true)
             }
-
             false -> {
-                _adProviderProfileState.value = AdProviderProfileState.IsLoading(false)
+                _userState.value = GetUserByIdState.IsLoading(false)
             }
         }
     }
@@ -63,11 +60,10 @@ class AdProviderProfileViewModel @Inject constructor(
     private fun showError(message: String) {
         when (message) {
             resourceProvider.string(R.string.no_internet_connection) -> {
-                _adProviderProfileState.value = AdProviderProfileState.NoInternetConnection(message)
+                _userState.value = GetUserByIdState.NoInternetConnection(message)
             }
-
             else -> {
-                _adProviderProfileState.value = AdProviderProfileState.ShowError(message)
+                _userState.value = GetUserByIdState.ShowError(message)
             }
         }
     }

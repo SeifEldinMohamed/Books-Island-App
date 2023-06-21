@@ -1,5 +1,7 @@
 package com.seif.booksislandapp.utils
 
+import com.seif.booksislandapp.domain.model.admin.Admin
+
 class Constants {
     companion object {
 
@@ -36,6 +38,7 @@ class Constants {
         // Shared Preference Keys
         const val USER_ID_KEY = "user_id"
         const val USERNAME_KEY = "user_name"
+        const val EMAIL_KEY = "email"
         const val USER_GOVERNORATE_KEY = "user_governorate"
         const val USER_DISTRICT_KEY = "user_district"
         const val USER_AVATAR_KEY = "user_avatar"
@@ -75,6 +78,9 @@ class Constants {
             "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_4.png?alt=media&token=b8eb1c6d-4ad6-41d2-8309-a1a12cc4f9fe",
             "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_5.png?alt=media&token=7ab3ec81-a0bb-40ba-8e92-eb1d9fa6d14a",
             "https://firebasestorage.googleapis.com/v0/b/books-island-app.appspot.com/o/app%2Favatars%2Fwoman_avatar_6.png?alt=media&token=33205a23-1c55-4a53-83e2-b05663625ca5",
+        )
+        val ADMINS_LIST = arrayListOf(
+            Admin("", "hazem1234@gmail.com", "Hazem1020$")
         )
     }
 }
