@@ -85,7 +85,7 @@ class ChatRoomFragment : Fragment() {
             }
         }
         receiverUserId?.let {
-            chatRoomViewModel.fetchUserById(it)
+            chatRoomViewModel.fetchReceiverUserById(it)
             fetchMessagesBetweenTwoUsers(it)
         }
 
@@ -254,7 +254,7 @@ class ChatRoomFragment : Fragment() {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
                                 // fetchMessagesBetweenTwoUsers(receiverUserId)
-                                chatRoomViewModel.fetchUserById(receiverUserId!!)
+                                chatRoomViewModel.fetchReceiverUserById(receiverUserId!!)
                             }
 
                             false -> Unit
