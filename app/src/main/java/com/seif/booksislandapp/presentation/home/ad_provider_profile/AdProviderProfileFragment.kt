@@ -14,6 +14,7 @@ import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAdProviderProfileBinding
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.rate.RateSheetViewModel
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.rate.RateUserBottomSheet
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportSheetViewModel
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportUserBottomSheet
@@ -34,10 +35,12 @@ class AdProviderProfileFragment : Fragment() {
 
     private val adProviderProfileViewModel: AdProviderProfileViewModel by viewModels()
     private val reportSheetViewModel: ReportSheetViewModel by activityViewModels()
+    private val rateSheetViewModel: RateSheetViewModel by activityViewModels()
     private val args = navArgs<AdProviderProfileFragmentArgs>()
     private var adProviderUser: User? = null
     private var currentUser: User? = null
     private var currentUserId: String? = null
+    private var givenRate: String? = null
     private lateinit var dialog: AlertDialog
 
     private lateinit var adProviderUserId: String
@@ -61,16 +64,17 @@ class AdProviderProfileFragment : Fragment() {
 
         if (currentUserId == adProviderUserId) { // hide menu if current user is ad provider
             binding.toolbar.menu.clear()
+        } else {
+            currentUserId?.let {
+                fetchCurrentUserById(it)
+            }
         }
 
         if (adProviderUser == null) {
             adProviderProfileViewModel.getAdProviderUserById(adProviderUserId)
         }
+
         observe()
-        // addMenuProvider()
-        currentUserId?.let {
-            fetchCurrentUserById(it)
-        }
         onMenuItemClick()
 
         binding.ivBack.setOnClickListener {
@@ -109,6 +113,9 @@ class AdProviderProfileFragment : Fragment() {
 
                     is AdProviderProfileState.FetchCurrentUserSuccessfully -> {
                         currentUser = it.user
+                        givenRate = it.user.givenRates.find { givenRate ->
+                            givenRate.reportedPersonId == adProviderUserId
+                        }?.rate.toString()
                         handleBlockMenuItemText()
                     }
 
@@ -132,7 +139,8 @@ class AdProviderProfileFragment : Fragment() {
         binding.tvUsername.text = user.username
         binding.tvLocation.text = "${user.district}, ${user.governorate}"
         binding.ivAvatar.load(user.avatarImage)
-        // binding.tvRate.text = user.averageRate
+        binding.tvRate.text = "${user.averageRate} / 5"
+        binding.ratingbar.rating = user.averageRate.toFloat()
     }
 
     private fun handleNoInternetConnectionState() {
@@ -209,7 +217,16 @@ class AdProviderProfileFragment : Fragment() {
                 }
 
                 R.id.menu_rate -> {
-                    RateUserBottomSheet().show(parentFragmentManager, "")
+                    val rateUserBottomSheet = RateUserBottomSheet()
+                    val bundle = Bundle()
+
+                    bundle.putString("reporterId", currentUserId)
+                    bundle.putString("reportedPersonId", adProviderUserId)
+                    Timber.d("onViewCreated: In Ad Provider given rate = $givenRate")
+                    bundle.putString("givenRate", givenRate)
+                    rateUserBottomSheet.arguments = bundle
+                    rateUserBottomSheet.show(parentFragmentManager, " ")
+                    observeRateSent()
                 }
 
                 R.id.menu_block -> {
@@ -240,6 +257,20 @@ class AdProviderProfileFragment : Fragment() {
         reportSheetViewModel.reportSent.observe(viewLifecycleOwner) { message ->
             message?.let {
                 binding.root.showSuccessSnackBar(message)
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeRateSent() {
+        rateSheetViewModel.rateSent.observe(viewLifecycleOwner) { rates ->
+            rates?.let {
+                val returnedGivenRate = rates.first
+                val averageRate = rates.second
+                binding.root.showSuccessSnackBar(getString(R.string.rate_user_successfully))
+                binding.tvRate.text = getString(R.string.rate_value, averageRate)
+                binding.ratingbar.rating = averageRate.toFloat()
+                givenRate = returnedGivenRate
             }
         }
     }
