@@ -7,6 +7,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
     id ("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -189,7 +190,17 @@ dependencies {
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    
+
     // gson converter library
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // Any Chart
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
+    // google maps
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+    // places api
+    implementation 'com.google.android.libraries.places:places:3.1.0'
+
 }
