@@ -11,6 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.anychart.AnyChart
+import com.anychart.chart.common.dataentry.DataEntry
+import com.anychart.chart.common.dataentry.ValueDataEntry
+import com.anychart.enums.Align
+import com.anychart.enums.LegendLayout
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAdProviderProfileBinding
 import com.seif.booksislandapp.domain.model.User
@@ -19,6 +24,8 @@ import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_shee
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportSheetViewModel
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportUserBottomSheet
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import com.seif.booksislandapp.utils.showSuccessSnackBar
@@ -141,6 +148,44 @@ class AdProviderProfileFragment : Fragment() {
         binding.ivAvatar.load(user.avatarImage)
         binding.tvRate.text = "${user.averageRate} / 5"
         binding.ratingbar.rating = user.averageRate.toFloat()
+
+        if (user.numberOfCompletedAuctionAds == 0 && user.numberOfCompletedSellAds == 0 &&
+            user.numberOfCompletedExchangeAds == 0 && user.numberOfCompletedDonateAds == 0
+        ) { // don't complete any ad so hide statistics
+            binding.anyChartView.hide()
+            binding.progressBar2.hide()
+            binding.tvNoCompletedAds.show()
+        } else {
+            binding.tvNoCompletedAds.hide()
+            binding.anyChartView.show()
+            binding.progressBar2.show()
+            val data: MutableList<DataEntry> = ArrayList()
+            data.add(ValueDataEntry("Sell Ads", user.numberOfCompletedSellAds))
+            data.add(ValueDataEntry("Donate Ads", user.numberOfCompletedDonateAds))
+            data.add(ValueDataEntry("Auction Ads", user.numberOfCompletedAuctionAds))
+            data.add(ValueDataEntry("Exchange Ads", user.numberOfCompletedExchangeAds))
+            showStatisticsPieChart(data)
+        }
+    }
+
+    private fun showStatisticsPieChart(data: MutableList<DataEntry>) {
+        binding.anyChartView.setProgressBar(binding.progressBar2)
+        val pie = AnyChart.pie()
+        pie.apply {
+            data(data)
+            labels().position("inside")
+            radius("42%")
+            sort("desc")
+            legend().title().enabled(false)
+        }
+
+        pie.legend()
+            .position("left")
+            .itemsLayout(LegendLayout.VERTICAL_EXPANDABLE)
+            .align(Align.CENTER)
+            .itemsSpacing(10)
+
+        binding.anyChartView.setChart(pie)
     }
 
     private fun handleNoInternetConnectionState() {
@@ -211,6 +256,8 @@ class AdProviderProfileFragment : Fragment() {
 
                     bundle.putString("reporterId", currentUserId)
                     bundle.putString("reportedPersonId", adProviderUserId)
+                    bundle.putString("reporterName", currentUser!!.username)
+                    bundle.putString("reportedPersonName", adProviderUser!!.username)
                     reportUserBottomSheet.arguments = bundle
                     reportUserBottomSheet.show(parentFragmentManager, " ")
                     observeReportSent()
