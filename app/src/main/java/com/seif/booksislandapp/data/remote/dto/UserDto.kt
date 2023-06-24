@@ -20,4 +20,10 @@ data class UserDto(
     var averageRate: Double = 0.0,
     var givenRates: List<RateDto> = emptyList(),
     var receivedRates: List<ReceivedRateDto> = emptyList(),
+    var numberOfCompletedSellAds: Int = 0,
+    var numberOfCompletedDonateAds: Int = 0,
+    var numberOfCompletedExchangeAds: Int = 0,
+    var numberOfCompletedAuctionAds: Int = 0,
+    val isSuspended: Boolean = false
+
 )

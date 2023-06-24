@@ -24,4 +24,9 @@ data class User(
     var averageRate: String = "0.0",
     var givenRates: List<Rate> = emptyList(),
     var receivedRates: List<ReceivedRate> = emptyList(),
+    var numberOfCompletedSellAds: Int = 0,
+    var numberOfCompletedDonateAds: Int = 0,
+    var numberOfCompletedExchangeAds: Int = 0,
+    var numberOfCompletedAuctionAds: Int = 0,
+    val isSuspended: Boolean = false
 ) : Parcelable
