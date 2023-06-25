@@ -56,7 +56,12 @@ fun User.toUserDto(): UserDto {
         blockedUsersIds = blockedUsersIds,
         averageRate = averageRate.toDouble(),
         givenRates = givenRates.map { it.toRateDto() },
-        receivedRates = receivedRates.map { it.toReceivedRateDto() }
+        receivedRates = receivedRates.map { it.toReceivedRateDto() },
+        numberOfCompletedSellAds = numberOfCompletedSellAds,
+        numberOfCompletedDonateAds = numberOfCompletedDonateAds,
+        numberOfCompletedExchangeAds = numberOfCompletedExchangeAds,
+        numberOfCompletedAuctionAds = numberOfCompletedAuctionAds,
+        isSuspended = isSuspended
     )
 }
 
@@ -78,7 +83,12 @@ fun UserDto.toUser(): User {
         blockedUsersIds = blockedUsersIds,
         averageRate = averageRate.toString(),
         givenRates = givenRates.map { it.toRate() },
-        receivedRates = receivedRates.map { it.toReceivedRate() }
+        receivedRates = receivedRates.map { it.toReceivedRate() },
+        numberOfCompletedSellAds = numberOfCompletedSellAds,
+        numberOfCompletedDonateAds = numberOfCompletedDonateAds,
+        numberOfCompletedExchangeAds = numberOfCompletedExchangeAds,
+        numberOfCompletedAuctionAds = numberOfCompletedAuctionAds,
+        isSuspended = isSuspended
     )
 }
 
@@ -380,9 +390,12 @@ fun Report.toReportDto(): ReportDto {
     return ReportDto(
         id = id,
         reporterId = reporterId,
+        reporterName = reporterName,
         reportedPersonId = reportedPersonId,
+        reportedPersonName = reportedPersonName,
         comment = comment,
         category = category,
+        reviewed = isReviewed
     )
 }
 
