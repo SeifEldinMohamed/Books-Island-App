@@ -26,6 +26,12 @@ class Constants {
         const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "chat list"
         const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
 
+        // Fields
+        const val NUMBER_OF_COMPLETED_SELL_ADS_FIELD = "numberOfCompletedSellAds"
+        const val NUMBER_OF_COMPLETED_DONATE_ADS_FIELD = "numberOfCompletedDonateAds"
+        const val NUMBER_OF_COMPLETED_EXCHANGE_ADS_FIELD = "numberOfCompletedExchangeAds"
+        const val NUMBER_OF_COMPLETED_AUCTION_ADS_FIELD = "numberOfCompletedAuctionAds"
+
         const val FCM_API_KEY: String =
             "AAAA92L23Rs:APA91bEe5qTrNsAsrLti3mPkXCcyF3bemZwh4vSjAypuEZhSbPihuYI6c3gCAtuaRSyTfSiBrPeeTeTuOEoImvV3YCfMB2c1cIAEkFzmh4kkxHI49gjwFhw5B2uucpPFXEj03iRqQy3v"
         const val FCM_BASE_URL: String = "https://fcm.googleapis.com/"
