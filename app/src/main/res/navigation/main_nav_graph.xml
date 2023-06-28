@@ -299,6 +299,9 @@
         <action
             android:id="@+id/action_chatRoomFragment_to_adProviderProfile"
             app:destination="@id/adProviderProfile" />
+        <action
+            android:id="@+id/action_chatRoomFragment_to_shareLocationFragment"
+            app:destination="@id/shareLocationFragment" />
 
     </fragment>
     <fragment
@@ -327,4 +330,13 @@
         android:name="com.seif.booksislandapp.presentation.home.requests.RequestsFragment"
         android:label="Requests"
         tools:layout="@layout/fragment_requests" />
+    <fragment
+        android:id="@+id/shareLocationFragment"
+        android:name="com.seif.booksislandapp.ShareLocationFragment"
+        android:label="fragment_share_location"
+        tools:layout="@layout/fragment_share_location">
+        <argument
+            android:name="governorate"
+            app:argType="string" />
+    </fragment>
 </navigation>
