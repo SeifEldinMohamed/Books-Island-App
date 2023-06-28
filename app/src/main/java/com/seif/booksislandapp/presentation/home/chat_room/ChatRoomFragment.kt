@@ -8,12 +8,10 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -46,7 +44,7 @@ import timber.log.Timber
 import java.io.File
 
 @AndroidEntryPoint
-class ChatRoomFragment : Fragment() {
+class ChatRoomFragment : Fragment(), MenuProvider {
     private var _binding: FragmentChatRoomBinding? = null
     private val binding get() = _binding!!
     private val chatRoomViewModel: ChatRoomViewModel by viewModels()
@@ -99,6 +97,17 @@ class ChatRoomFragment : Fragment() {
         binding.ivBackChatRoom.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.chatToolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+
+                R.id.menu_shareLocation -> {
+                }
+
+                else -> {
+                }
+            }
+            true
+        }
 
         binding.clProfile.setOnClickListener {
             receiverUserId?.let { ownerId ->
@@ -119,6 +128,13 @@ class ChatRoomFragment : Fragment() {
         //  handleKeyboard() //  handling the keyboard visibility changes and scrolling the RecyclerView when the keyboard is shown.
         chatRoomViewModel.setInMyChats(Constants.NOT_IN_MYCHATS_OR_CHATROOM, false)
         binding.rvChatRoom.adapter = chatRoomAdapter
+    }
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.chat_room_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        TODO("Not yet implemented")
     }
 
     private fun fetchCurrentUserById(currentUserId: String) {

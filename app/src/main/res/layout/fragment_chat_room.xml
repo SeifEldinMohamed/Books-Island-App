@@ -5,16 +5,22 @@
     android:id="@+id/cl_chat_messages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
+
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_height="@dimen/_50sdp"
         android:background="@color/chat_gray_background"
+        app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/chat_room_menu"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_profile"
@@ -39,6 +45,7 @@
             app:layout_constraintTop_toTopOf="@+id/iv_avatar"
             tools:ignore="TextContrastCheck"
             tools:text="@string/hazem_khaled" />
+
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_avatar"
