@@ -16,7 +16,7 @@ import com.seif.booksislandapp.presentation.home.wish_list.Adapter.WishListPager
 class WishListFragment : Fragment() {
     private var _binding: FragmentWishListBinding? = null
     private val binding get() = _binding!!
-    private val tabTitle = arrayListOf(" Buying ", " Donation ", " Exchanges ", " Auctions ")
+    private val tabTitle = arrayListOf(" Buying ", " Donation ", " Exchange ", " Auction ")
     private var viewPager: ViewPager2? = null
     override fun onCreateView(
         inflater: LayoutInflater,
