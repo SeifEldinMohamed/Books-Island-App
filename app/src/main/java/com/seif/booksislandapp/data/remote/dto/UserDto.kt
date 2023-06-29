@@ -13,8 +13,6 @@ data class UserDto(
     var wishListDonate: List<String> = emptyList(),
     var wishListExchange: List<String> = emptyList(),
     var wishListAuction: List<String> = emptyList(),
-    var myBuyingChats: List<String> = emptyList(),
-    var mySellingChats: List<String> = emptyList(),
     var reportedPersonsIds: List<String> = emptyList(),
     var blockedUsersIds: List<String> = emptyList(),
     var averageRate: Double = 0.0,
