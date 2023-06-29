@@ -50,8 +50,6 @@ fun User.toUserDto(): UserDto {
         wishListDonate = this.wishListDonate as List<String>,
         wishListExchange = this.wishListExchange as List<String>,
         wishListAuction = this.wishListAuction as List<String>,
-        myBuyingChats = myBuyingChats as List<String>,
-        mySellingChats = mySellingChats as List<String>,
         reportedPersonsIds = reportedPersonsIds,
         blockedUsersIds = blockedUsersIds,
         averageRate = averageRate.toDouble(),
@@ -226,6 +224,7 @@ fun Bidder.toBidderDto(): BidderDto {
     return BidderDto(
         bidderId = bidderId,
         bidderName = bidderName,
+        bidderAvatar = bidderAvatar,
         suggestedPrice = suggestedPrice.toInt()
     )
 }
@@ -234,6 +233,7 @@ fun BidderDto.toBidder(): Bidder {
     return Bidder(
         bidderId = bidderId,
         bidderName = bidderName,
+        bidderAvatar = bidderAvatar,
         suggestedPrice = suggestedPrice.toString()
     )
 }
@@ -313,10 +313,6 @@ fun Message.toMessageDto(): MessageDto {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        chatUsers = arrayListOf( // remove this attribute (no need for it) but we will need to delete all messages on firestore
-            senderId,
-            receiverId
-        ),
         seen = false
     )
 }
