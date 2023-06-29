@@ -205,6 +205,9 @@
             app:argType="com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_uploadAuctionFragment_to_biddersHistoryFragment"
+            app:destination="@id/biddersHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/uploadExchangeFragment"
@@ -338,5 +341,17 @@
         <argument
             android:name="governorate"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/biddersHistoryFragment"
+        android:name="com.seif.booksislandapp.presentation.home.bidders_history.BiddersHistoryFragment"
+        android:label="fragment_bidders_history"
+        tools:layout="@layout/fragment_bidders_history">
+        <argument
+            android:name="auctionAdId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_biddersHistoryFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
     </fragment>
 </navigation>

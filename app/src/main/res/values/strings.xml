@@ -199,7 +199,7 @@
 
     <!-- auction(Design) -->
     <string name="started">STARTED</string>
-    <string name="bidders">Bidders: 2</string>
+    <string name="bidders_2">Bidders: 2</string>
     <string name="bidders_number">Bidders: %1$s</string>
     <string name="current_price_120_egp">Current Price: 120 EGP</string>
 
@@ -312,7 +312,7 @@
     <string name="rate_user">Rate User</string>
     <string name="maddi">Maddi,Cairo</string>
     <string name="Photo">photo</string>
-    <string name="posts">Posts</string>
+    <string name="completed">Completed</string>
     <string name="average_rate">Average Rate</string>
     <string name="rat">4.5 / 5</string>
     <string name="spam">Spam</string>
@@ -334,5 +334,19 @@
     <string name="rate_user_successfully">Your rate added Successfully</string>
     <string name="rate_value">%1$s / 5</string>
     <string name="edit">Edit</string>
+    <string name="no_completed_ads_yet">No Completed Ads Yet</string>
+    <string name="search_location">search for location</string>
+    <string name="search_for_place">search for place</string>
+    <string name="share_marked_location">share marked location</string>
+    <string name="write_correct_place">The place enter is not correct</string>
+    <string name="bidders">Bidders History</string>
+    <string name="bid_value">Value: 300</string>
+    <string name="current_price_3000">Current Price: 3000</string>
+    <string name="num_of_bids_26">Num of Bids: 26</string>
+    <string name="current_price_history">Current Price: %1$s</string>
+    <string name="num_of_bids">Num of Bids: %1$s</string>
+    <string name="you">You</string>
+    <string name="no_ads_yet">No Ads Yet</string>
+    <string name="instructions">Instructions</string>
 
 </resources>
