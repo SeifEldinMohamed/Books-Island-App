@@ -17,10 +17,12 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAuctionAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.presentation.home.ad_details.auction.adapter.RelatedAuctionAdsAdapter
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetFragment
 import com.seif.booksislandapp.presentation.home.ad_details.auction.sheet.AuctionSheetViewModel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -49,7 +51,8 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     private var isFavorite: Boolean? = false
     private var relatedAds: List<AuctionAdvertisement>? = null
     private val filterViewModel: FilterViewModel by activityViewModels()
-
+    private var lastFilter = FilterBy()
+    private var districts: List<District>? = null
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,6 +84,10 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         }
         binding.ivBackAuctionDetails.setOnClickListener {
             filterViewModel.filter(null)
+            filterViewModel.lastFilter = lastFilter
+            districts?.let {
+                filterViewModel.lastDistricts = it
+            }
             findNavController().navigateUp()
         }
         binding.btnParticipate.setOnClickListener {
@@ -108,6 +115,10 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             override fun handleOnBackPressed() {
                 // Handle the back button press event
                 filterViewModel.filter(null)
+                filterViewModel.lastFilter = lastFilter
+                districts?.let {
+                    filterViewModel.lastDistricts = it
+                }
                 findNavController().navigateUp()
             }
         }

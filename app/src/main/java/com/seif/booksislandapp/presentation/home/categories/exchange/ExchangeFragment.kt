@@ -18,9 +18,11 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -43,6 +45,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private var exchangeAdvertisements: List<ExchangeAdvertisement> = emptyList()
+    private val sortViewModel: SortViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +68,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
 
         binding.ivBack.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
 
@@ -75,6 +79,15 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             if (it != null) {
                 fetchByFilter(it)
             }
+        }
+        sortViewModel.liveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                handleSort(it)
+            }
+        }
+        binding.tvSortBy.setOnClickListener {
+            val bottomSheet = SortBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -178,7 +191,17 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private fun dismissLoadingDialog() {
         dialog.dismiss()
     }
-
+    private fun handleSort(sortBy: String) {
+        when (sortBy) {
+            "Added Recently" -> {
+                exchangeAdapter.updateList(
+                    exchangeAdvertisements.sortedByDescending {
+                        it.publishDate
+                    }
+                )
+            }
+        }
+    }
     private fun firstTimeFetch() {
         if (exchangeViewModel.firstTime) {
             Timber.d("onViewCreated: fetch....")
@@ -237,7 +260,9 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         exchangeViewModel.isSearching = false
         binding.rvExchange.adapter = null
         dialog.setView(null)
+        sortViewModel.setLastSort("")
         _binding = null
+        filterViewModel.reset()
         super.onDestroyView()
     }
 

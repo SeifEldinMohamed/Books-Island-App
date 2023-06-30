@@ -17,8 +17,10 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentDonateAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.presentation.home.ad_details.donate.adapter.RelatedDonateAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -39,7 +41,8 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: FragmentDonateAdDetailsBinding? = null
     private val binding get() = _binding!!
     private val filterViewModel: FilterViewModel by activityViewModels()
-
+    private var lastFilter = FilterBy()
+    private var districts: List<District>? = null
     private val donateAdDetailsViewModel: DonateAdDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val args: DonateAdDetailsFragmentArgs by navArgs()
@@ -81,6 +84,10 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
         binding.ivBackSellDetails.setOnClickListener {
             filterViewModel.filter(null)
+            filterViewModel.lastFilter = lastFilter
+            districts?.let {
+                filterViewModel.lastDistricts = it
+            }
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {
@@ -103,6 +110,10 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             override fun handleOnBackPressed() {
                 // Handle the back button press event
                 filterViewModel.filter(null)
+                filterViewModel.lastFilter = lastFilter
+                districts?.let {
+                    filterViewModel.lastDistricts = it
+                }
                 findNavController().navigateUp()
             }
         }

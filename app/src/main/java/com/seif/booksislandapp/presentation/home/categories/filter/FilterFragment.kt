@@ -34,13 +34,14 @@ class FilterFragment : Fragment() {
     private val binding get() = _binding!!
     private var governorates: List<Governorate>? = null
     private val itemCategoryViewModel: ItemCategoryViewModel by activityViewModels()
-
+    private val chooseCategory = "Choose Category"
     private var districts: List<District>? = null
     private val registerViewModel: RegisterViewModel by viewModels()
     private val filterViewModel: FilterViewModel by activityViewModels()
     private var governorateId: String? = null
     private var governorateName: String? = null
     private var districtName: String? = null
+    private var condition: String? = null
     private var categoryName: String? = null
     private lateinit var dialog: AlertDialog
     override fun onCreateView(
@@ -56,31 +57,39 @@ class FilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
-        observe()
+        setLastFilter(filterViewModel.lastFilter)
         binding.ivBack.setOnClickListener {
             filterViewModel.filter(null)
             findNavController().navigateUp()
         }
         binding.btnApply.setOnClickListener {
-
             filter()
         }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 itemCategoryViewModel.selectedCategoryItem.collect {
-                    categoryName = it
-                    binding.btnCategory.text = categoryName
+                    if (it != chooseCategory) {
+                        categoryName = it
+                        binding.btnCategory.text = categoryName
+                    }
                 }
             }
         }
-
         binding.btnCategory.setOnClickListener {
+            filterViewModel.lastFilter = FilterBy(
+                categoryName,
+                governorateName,
+                districtName,
+                condition
+            )
+            districts?.let {
+                filterViewModel.lastDistricts = it
+            }
             findNavController().navigate(R.id.action_filterFragment_to_bookCategoriesFragment)
         }
         binding.acGovernorates.setOnItemClickListener { _, _, i, _ ->
             governorates?.let {
                 governorateId = it[i].id
-
                 governorateName = it[i].name
                 registerViewModel.getDistricts(it[i].id)
             }
@@ -90,35 +99,85 @@ class FilterFragment : Fragment() {
                 districtName = it[i].name
             }
         }
-        binding.tilDistrict.disable()
+        if (filterViewModel.lastDistricts.isEmpty())
+            binding.tilDistrict.disable()
+    }
+
+    private fun setLastFilter(lastFilter: FilterBy) {
+        checkFetchingDataFromServer()
+        observe()
+        binding.btnCategory.text = chooseCategory
+
+        if (lastFilter.category != null) {
+            binding.btnCategory.text = lastFilter.category
+            categoryName = lastFilter.category
+        }
+        if (lastFilter.district != null) {
+            districtName = lastFilter.district
+            binding.tilDistrict.hint = districtName
+        }
+        if (lastFilter.governorate != null) {
+
+            binding.tilGovernorate.hint = lastFilter.governorate
+            governorateName = lastFilter.governorate
+            binding.tilDistrict.enabled()
+            districts = filterViewModel.lastDistricts
+            setUpDistrictsDropDown(districts!!)
+        }
+
+        if (lastFilter.condition != null && lastFilter.condition == "All") {
+            binding.cbBadUsed.isChecked = true
+            binding.cbGoodUsed.isChecked = true
+            binding.cbNew.isChecked = true
+            condition = "All"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "Used") {
+            binding.cbGoodUsed.isChecked = true
+            condition = "Used With Good Condition"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "Used") {
+            binding.cbBadUsed.isChecked = true
+            condition = "Used With Bad Condition"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "New") {
+            binding.cbNew.isChecked = true
+            condition = "New"
+        }
     }
 
     private fun filter() {
-        if (categoryName == "Choose Category")
+        setConditionStatus()
+        if (categoryName == chooseCategory)
             categoryName = null
-
+        filterViewModel.lastFilter = FilterBy(
+            categoryName,
+            governorateName,
+            districtName,
+            condition
+        )
+        districts?.let {
+            filterViewModel.lastDistricts = it
+        }
         observeOnFilterState(
             FilterBy(
                 categoryName,
                 governorateName,
                 districtName,
-                getConditionStatus()
+                condition
             )
         )
     }
 
-    private fun getConditionStatus(): String? {
-        return if (binding.cbNew.isChecked && binding.cbUsed.isChecked) {
-
+    private fun setConditionStatus() {
+        condition = if (binding.cbNew.isChecked && binding.cbGoodUsed.isChecked && binding.cbBadUsed.isChecked) {
             "All"
-        } else if (binding.cbUsed.isChecked) {
-
-            "Used"
+        } else if (binding.cbGoodUsed.isChecked) {
+            "Used With Good Condition"
+        } else if (binding.cbBadUsed.isChecked) {
+            "Used With Bad Condition"
         } else if (binding.cbNew.isChecked) {
-
             "New"
         } else {
-
             null
         }
     }
@@ -257,13 +316,13 @@ class FilterFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        itemCategoryViewModel.reset()
         governorateId = null
         governorateName = null
         districtName = null
         categoryName = null
         districts = null
         governorates = null
+        itemCategoryViewModel.reset()
         _binding = null
     }
 }

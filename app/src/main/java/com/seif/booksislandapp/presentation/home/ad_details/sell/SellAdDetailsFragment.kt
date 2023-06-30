@@ -2,6 +2,7 @@ package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +18,10 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentSellAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -44,7 +47,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private val relatedSellAdsAdapter: RelatedSellAdsAdapter by lazy { RelatedSellAdsAdapter() }
     private var owner: User? = null
     private val filterViewModel: FilterViewModel by activityViewModels()
-
+    private var lastFilter = FilterBy()
+    private var districts: List<District>? = null
     private var currUser: User? = null
     private var isFavorite: Boolean? = false
     private var relatedAds: List<SellAdvertisement>? = null
@@ -62,6 +66,9 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        Log.d("hhhh", filterViewModel.lastFilter.toString())
+        lastFilter = filterViewModel.lastFilter
+        districts = filterViewModel.lastDistricts
         relatedSellAdsAdapter.onRelatedAdItemClick = this
         fetchOwnerData()
         showAdDetails()
@@ -79,6 +86,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
         binding.ivBackSellDetails.setOnClickListener {
             filterViewModel.filter(null)
+            filterViewModel.lastFilter = lastFilter
+            districts?.let {
+                filterViewModel.lastDistricts = it
+            }
             findNavController().navigateUp()
         }
 
@@ -102,6 +113,10 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             override fun handleOnBackPressed() {
                 // Handle the back button press event
                 filterViewModel.filter(null)
+                filterViewModel.lastFilter = lastFilter
+                districts?.let {
+                    filterViewModel.lastDistricts = it
+                }
                 findNavController().navigateUp()
             }
         }

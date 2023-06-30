@@ -390,7 +390,8 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         val condition: String? =
             when (binding.acCondition.text.toString()) {
                 "New" -> "New"
-                "Used" -> "Used"
+                "Used With Good Condition" -> "Used With Good Condition"
+                "Used With Bad Condition" -> "Used With Bad Condition"
                 else -> null
             }
         val id = if (args.mySellAdvertisement == null) "" else args.mySellAdvertisement!!.id

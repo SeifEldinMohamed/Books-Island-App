@@ -17,9 +17,11 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentExchangeAdDetailsBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
+import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.presentation.home.ad_details.exchange.adapter.RelatedExchangeAdsAdapter
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.BooksToExchangeAdapter
+import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -39,7 +41,8 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     private var _binding: FragmentExchangeAdDetailsBinding? = null
     private val binding get() = _binding!!
     private val filterViewModel: FilterViewModel by activityViewModels()
-
+    private var lastFilter = FilterBy()
+    private var districts: List<District>? = null
     private val args: ExchangeAdDetailsFragmentArgs by navArgs()
     private val exchangeAdDetailsViewModel: ExchangeDetailsViewModel by viewModels()
     private lateinit var dialog: AlertDialog
@@ -83,6 +86,10 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
         }
         binding.ivBackExchangeDetails.setOnClickListener {
             filterViewModel.filter(null)
+            filterViewModel.lastFilter = lastFilter
+            districts?.let {
+                filterViewModel.lastDistricts = it
+            }
             findNavController().navigateUp()
         }
         binding.clProfile.setOnClickListener {
@@ -106,6 +113,10 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
             override fun handleOnBackPressed() {
                 // Handle the back button press event
                 filterViewModel.filter(null)
+                filterViewModel.lastFilter = lastFilter
+                districts?.let {
+                    filterViewModel.lastDistricts = it
+                }
                 findNavController().navigateUp()
             }
         }

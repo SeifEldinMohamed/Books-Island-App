@@ -79,7 +79,8 @@
 
     <string-array name="condition">
         <item>New</item>
-        <item>Used</item>
+        <item>Used With Good Condition</item>
+        <item>Used With Bad Condition</item>
     </string-array>
     <string-array name="edition">
         <item>1</item>
@@ -347,4 +348,6 @@
     <string name="comment">Comment :</string>
     <string name="this_user_is_threatening_comment">This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.This user is threatening me.</string>
     <string name="accused_profile">Accused Profile</string>
+    <string name="used_with_good_condition">Used With Good Condition</string>
+    <string name="used_with_bad_condition">Used With Bad Condition</string>
 </resources>
