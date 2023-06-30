@@ -3,6 +3,7 @@ package com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction
 import com.seif.booksislandapp.data.repository.AuctionAdvertisementRepositoryImp
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class AddBidderUseCase @Inject constructor(
@@ -23,6 +24,7 @@ class AddBidderUseCase @Inject constructor(
     }
 
     private fun checkBidValue(bidValue: String, currentBidValue: Int): Resource<String, String> {
+        Timber.d("checkBidValue: bidVAlue = $bidValue ,, currentValue = $currentBidValue")
         return if (bidValue.isEmpty()) {
             Resource.Error("Add your bid first!")
         } else if (bidValue.toInt() <= currentBidValue) {
