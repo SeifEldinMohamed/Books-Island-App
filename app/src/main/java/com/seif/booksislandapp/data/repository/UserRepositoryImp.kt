@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toReportDto
 import com.seif.booksislandapp.data.mapper.toUser
+import com.seif.booksislandapp.data.mapper.toUserDto
 import com.seif.booksislandapp.data.remote.dto.RateDto
 import com.seif.booksislandapp.data.remote.dto.ReceivedRateDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
@@ -47,7 +48,7 @@ class UserRepositoryImp @Inject constructor(
 //                auth.currentUser.reauthenticate()
 //                auth.currentUser!!.updateEmail(user.email).await()
                 firestore.collection(USER_FIRESTORE_COLLECTION).document(user.id)
-                    .set(user)
+                    .set(user.toUserDto())
                     .await()
                 saveUserData(user)
                 Resource.Success(user)
