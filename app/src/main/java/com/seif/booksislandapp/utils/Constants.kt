@@ -26,6 +26,10 @@ class Constants {
         const val REQUESTS_FIIRESTORE_COLLECTION: String = "Requests"
         const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "chat list"
         const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
+        const val WISHLIST_EXCHANGE: String = "wishListExchange"
+        const val WISHLIST_BUY: String = "wishListBuy"
+        const val WISHLIST_DONATE: String = "wishListDonate"
+        const val WISHLIST_AUCTION: String = "wishListAuction"
 
         const val FCM_API_KEY: String =
             "AAAA92L23Rs:APA91bEe5qTrNsAsrLti3mPkXCcyF3bemZwh4vSjAypuEZhSbPihuYI6c3gCAtuaRSyTfSiBrPeeTeTuOEoImvV3YCfMB2c1cIAEkFzmh4kkxHI49gjwFhw5B2uucpPFXEj03iRqQy3v"

@@ -2,7 +2,6 @@ package com.seif.booksislandapp.presentation.home.ad_details.sell
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.presentation.home.ad_details.sell.adapter.RelatedSellAdsAdapter
+import com.seif.booksislandapp.presentation.home.ad_details.sell.viewmodel.SellAdDetailsViewModel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
@@ -66,7 +66,6 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
-        Log.d("hhhh", filterViewModel.lastFilter.toString())
         lastFilter = filterViewModel.lastFilter
         districts = filterViewModel.lastDistricts
         relatedSellAdsAdapter.onRelatedAdItemClick = this

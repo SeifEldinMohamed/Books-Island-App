@@ -121,7 +121,6 @@ class AuthRepositoryImp @Inject constructor(
                             // update token
                             val token = fcm.token.await()
                             updateToken(auth.currentUser!!.uid, token)
-
                             Resource.Success(resourceProvider.string(R.string.welcome_back))
                         }
                     }

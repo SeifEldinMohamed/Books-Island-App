@@ -1,13 +1,15 @@
-package com.seif.booksislandapp.presentation.home.ad_details.sell
+package com.seif.booksislandapp.presentation.home.ad_details.sell.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.FetchRelatedSellAdsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.user.UpdateUserProfileUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.wish_list.UpdateUserWishListUseCase
+import com.seif.booksislandapp.presentation.home.ad_details.sell.SellDetailsState
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +26,7 @@ class SellAdDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val fetchRelatedSellAdsUseCase: FetchRelatedSellAdsUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
-    private val updateUserProfileUseCase: UpdateUserProfileUseCase
+    private val updateUserWishListUseCase: UpdateUserWishListUseCase
 ) : ViewModel() {
     private var _sellDetailsState = MutableStateFlow<SellDetailsState>(SellDetailsState.Init)
     val sellDetailsState = _sellDetailsState.asStateFlow()
@@ -44,14 +46,16 @@ class SellAdDetailsViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             setLoading(false)
                         }
-                        _sellDetailsState.value = SellDetailsState.GetCurrentUserByIdSuccessfully(it.data)
+                        _sellDetailsState.value =
+                            SellDetailsState.GetCurrentUserByIdSuccessfully(it.data)
                         getUserByIdUseCase(ownerId).let { result ->
                             when (result) {
                                 is Resource.Error -> {
                                     showError(result.message)
                                 }
                                 is Resource.Success -> {
-                                    _sellDetailsState.value = SellDetailsState.GetUserByIdSuccessfully(result.data)
+                                    _sellDetailsState.value =
+                                        SellDetailsState.GetUserByIdSuccessfully(result.data)
                                 }
                             }
                         }
@@ -62,7 +66,7 @@ class SellAdDetailsViewModel @Inject constructor(
     }
     fun updateUserWishList(user: User) {
         viewModelScope.launch {
-            updateUserProfileUseCase.invoke(user).let {
+            updateUserWishListUseCase.invoke(user.id, AdType.Buying, user.wishListBuy).let {
                 when (it) {
                     is Resource.Error -> showError(it.message)
                     is Resource.Success -> {
