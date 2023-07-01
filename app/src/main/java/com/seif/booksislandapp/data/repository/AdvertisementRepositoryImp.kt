@@ -4,7 +4,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Source
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
@@ -233,7 +232,7 @@ class AdvertisementRepositoryImp @Inject constructor(
 
                 delay(500) // to show loading progress
                 val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION).document(id)
-                    .get(Source.SERVER)
+                    .get()
                     .await()
                 val user = querySnapshot.toObject(UserDto::class.java)
                 Resource.Success(
