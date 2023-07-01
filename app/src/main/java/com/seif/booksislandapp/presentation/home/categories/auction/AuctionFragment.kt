@@ -21,7 +21,11 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -165,9 +169,13 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         if (auctionAds.isEmpty()) {
             binding.rvAuctions.hide()
             binding.noBooksAnimation.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvAuctions.show()
             binding.noBooksAnimation.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

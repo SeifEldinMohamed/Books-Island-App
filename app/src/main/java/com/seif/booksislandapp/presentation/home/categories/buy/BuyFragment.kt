@@ -22,7 +22,11 @@ import com.seif.booksislandapp.presentation.home.categories.SortBottomSheetFragm
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -184,9 +188,13 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         if (sellAds.isEmpty()) {
             binding.rvBuy.hide()
             binding.noBooksAnimationBuy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvBuy.show()
             binding.noBooksAnimationBuy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

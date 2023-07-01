@@ -19,7 +19,11 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -155,9 +159,13 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         if (donateAds.isEmpty()) {
             binding.rvDonate.hide()
             binding.noBooksAnimationDonation.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvDonate.show()
             binding.noBooksAnimationDonation.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

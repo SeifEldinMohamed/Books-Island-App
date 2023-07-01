@@ -115,9 +115,13 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         if (exchangeAds.isEmpty()) {
             binding.rvExchange.hide()
             binding.noBooksAnimationExchange.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvExchange.show()
             binding.noBooksAnimationExchange.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

@@ -17,10 +17,38 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
+            <ImageView
+                android:id="@+id/iv_no_ads_yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@color/white"
+                android:contentDescription="@string/no_request_yet_image_description"
+                android:src="@drawable/no_ads_yet"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/no_books_animation_sell_my"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="ImageContrastCheck" />
+
+            <TextView
+                android:id="@+id/tv_no_ads_yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/no_ads_yet"
+                android:textColor="@color/primary_dark"
+                android:textSize="@dimen/_17ssp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/iv_no_ads_yet"
+                app:layout_constraintStart_toStartOf="@+id/iv_no_ads_yet"
+                app:layout_constraintTop_toTopOf="@+id/iv_no_ads_yet" />
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/no_books_animation_sell_my"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_290sdp"
+                android:layout_marginTop="@dimen/_50sdp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

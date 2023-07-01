@@ -348,5 +348,6 @@
     <string name="you">You</string>
     <string name="no_ads_yet">No Ads Yet</string>
     <string name="instructions">Instructions</string>
+    <string name="no_chats_yet">No Chats Yet</string>
 
 </resources>
