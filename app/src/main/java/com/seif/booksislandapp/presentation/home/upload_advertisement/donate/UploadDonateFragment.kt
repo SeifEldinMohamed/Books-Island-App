@@ -36,7 +36,16 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadStat
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +53,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Date
 
 @AndroidEntryPoint
 class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
@@ -214,10 +223,10 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyDonateAdvertisement(it)
-                    binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
                 }
             }
+            binding.btnSubmit.text = getString(R.string.update_post)
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
@@ -342,7 +351,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     }
                     is UploadState.SendRequestSuccessfully -> {
                         // Timber.d("observe: send successfully ->> ${it.message}")
-                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_successfully))
                         requestId = it.requestId
                         disableSentConfirmationMessageButton()
                     }
@@ -482,9 +491,13 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         binding.rvUploadedImages.adapter = null
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadDonateAdvertisementViewModel.resetUploadStatus()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

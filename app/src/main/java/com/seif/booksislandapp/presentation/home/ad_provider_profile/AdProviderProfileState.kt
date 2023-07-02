@@ -8,5 +8,6 @@ sealed class AdProviderProfileState {
     data class ShowError(val message: String) : AdProviderProfileState()
     data class BlockUserSuccessfully(val message: String) : AdProviderProfileState()
     data class FetchAdProviderUserSuccessfully(val user: User) : AdProviderProfileState()
+    data class FetchCurrentUserSuccessfully(val user: User) : AdProviderProfileState()
     data class NoInternetConnection(val message: String) : AdProviderProfileState()
 }

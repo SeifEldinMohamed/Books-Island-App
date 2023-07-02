@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ExchangeListItemBinding
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
 import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.setBookUriImage
 import com.seif.booksislandapp.utils.show
 
 class BooksToExchangeAdapter() : RecyclerView.Adapter<BooksToExchangeAdapter.MyViewHolder>() {
@@ -16,9 +16,12 @@ class BooksToExchangeAdapter() : RecyclerView.Adapter<BooksToExchangeAdapter.MyV
     inner class MyViewHolder(private val binding: ExchangeListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(booksToExchange: BooksToExchange, position: Int) {
             binding.tvBookName.text = booksToExchange.title
-            binding.ivBook.load(booksToExchange.imageUri)
+            booksToExchange.imageUri?.let {
+                binding.ivBook.setBookUriImage(it)
+            }
             // Log.d("adapter", exchangeItems[position].imageUri.toString())
-            binding.tvBookAuther.text = itemView.context.getString(R.string.by, booksToExchange.author)
+            binding.tvBookAuther.text =
+                itemView.context.getString(R.string.by, booksToExchange.author)
             if (position == exchangeItems.size - 1)
                 binding.line.hide()
             else

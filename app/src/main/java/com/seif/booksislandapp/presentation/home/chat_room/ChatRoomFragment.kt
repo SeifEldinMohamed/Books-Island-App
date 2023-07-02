@@ -8,10 +8,12 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,7 +30,9 @@ import com.seif.booksislandapp.presentation.home.chat_room.adapter.ChatRoomAdapt
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.FileUtil
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.hideKeyboard
+import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +46,7 @@ import timber.log.Timber
 import java.io.File
 
 @AndroidEntryPoint
-class ChatRoomFragment : Fragment(), MenuProvider {
+class ChatRoomFragment : Fragment() {
     private var _binding: FragmentChatRoomBinding? = null
     private val binding get() = _binding!!
     private val chatRoomViewModel: ChatRoomViewModel by viewModels()
@@ -55,6 +59,8 @@ class ChatRoomFragment : Fragment(), MenuProvider {
     lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
     lateinit var imageUris: Uri
     private var receiverUserId: String? = null
+    private var currentUser: User? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,13 +85,18 @@ class ChatRoomFragment : Fragment(), MenuProvider {
             }
         }
         receiverUserId?.let {
-            chatRoomViewModel.fetchUserById(it)
+            chatRoomViewModel.fetchReceiverUserById(it)
             fetchMessagesBetweenTwoUsers(it)
         }
 
         binding.btnSendMessage.setOnClickListener {
             val message = prepareMessage()
             chatRoomViewModel.requestSendMessage(message)
+
+            // to open google maps
+//            val uri = "http://maps.google.com/maps?saddr="
+//            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+//            requireContext().startActivity(intent)
         }
         binding.ivUploadImage.setOnClickListener {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -95,11 +106,12 @@ class ChatRoomFragment : Fragment(), MenuProvider {
         }
         binding.chatToolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-
                 R.id.menu_shareLocation -> {
-                }
-
-                else -> {
+                    val action =
+                        ChatRoomFragmentDirections.actionChatRoomFragmentToShareLocationFragment(
+                            currentUser!!.governorate
+                        )
+                    findNavController().navigate(action)
                 }
             }
             true
@@ -113,22 +125,23 @@ class ChatRoomFragment : Fragment(), MenuProvider {
                             providerId = ownerId,
                             currentUserId = currentUserId
                         )
+                    currentUser = null
                     findNavController().navigate(action)
                 }
             }
         }
 
         observe()
+
         //  handleKeyboard() //  handling the keyboard visibility changes and scrolling the RecyclerView when the keyboard is shown.
         chatRoomViewModel.setInMyChats(Constants.NOT_IN_MYCHATS_OR_CHATROOM, false)
         binding.rvChatRoom.adapter = chatRoomAdapter
     }
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.chat_room_menu, menu)
-    }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        TODO("Not yet implemented")
+    private fun fetchCurrentUserById(currentUserId: String) {
+        if (currentUser == null) {
+            chatRoomViewModel.fetchCurrentUserById(currentUserId)
+        }
     }
 
     private fun fetchMessagesBetweenTwoUsers(receiverUserId: String) {
@@ -169,7 +182,9 @@ class ChatRoomFragment : Fragment(), MenuProvider {
     }
 
     private fun showReceiverData(receiverUser: User) {
-        binding.ivAvatar.load(receiverUser.avatarImage)
+        binding.ivAvatar.load(receiverUser.avatarImage) {
+            crossfade(true)
+        }
         binding.tvUsername.text = receiverUser.username
     }
 
@@ -207,10 +222,19 @@ class ChatRoomFragment : Fragment(), MenuProvider {
                             }
                         }
 
-                        is ChatRoomState.FetchUserSuccessfully -> {
+                        is ChatRoomState.FetchReceiverUserSuccessfully -> {
                             receiverUserId = it.user.id
                             // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
                             showReceiverData(receiverUser = it.user)
+
+                            firebaseCurrentUser?.uid?.let { currUserId ->
+                                fetchCurrentUserById(currUserId)
+                            }
+                        }
+
+                        is ChatRoomState.FetchCurrentUserSuccessfully -> {
+                            currentUser = it.user
+                            handleIsReceiverBlocked(currentUser!!.blockedUsersIds)
                         }
 
                         is ChatRoomState.SendMessageSuccessfully -> {
@@ -222,6 +246,18 @@ class ChatRoomFragment : Fragment(), MenuProvider {
                     }
                 }
             }
+        }
+    }
+
+    private fun handleIsReceiverBlocked(blockedUsersIds: List<String>) {
+        if (blockedUsersIds.contains(receiverUserId)) { // blocked
+            Timber.d("handleIsReceiverBlocked: blocked")
+            binding.chatLayout.hide()
+            binding.clConversationIsBlocked.show()
+        } else {
+            Timber.d("handleIsReceiverBlocked: not blocked")
+            binding.chatLayout.show()
+            binding.clConversationIsBlocked.hide()
         }
     }
 
@@ -237,7 +273,7 @@ class ChatRoomFragment : Fragment(), MenuProvider {
                             true -> {
                                 binding.root.showInfoSnackBar("Internet connection is back")
                                 // fetchMessagesBetweenTwoUsers(receiverUserId)
-                                chatRoomViewModel.fetchUserById(receiverUserId!!)
+                                chatRoomViewModel.fetchReceiverUserById(receiverUserId!!)
                             }
 
                             false -> Unit
@@ -360,6 +396,7 @@ class ChatRoomFragment : Fragment(), MenuProvider {
     override fun onStop() {
         binding.clChatMessages.viewTreeObserver.removeOnGlobalLayoutListener(listener) // to prevent null pointer exception and memory leakks
         chatRoomViewModel.setInMyChats(Constants.NOT_IN_MYCHATS_OR_CHATROOM, true)
+        currentUser = null
         //  hideKeyboard()
         super.onStop()
     }
@@ -368,10 +405,13 @@ class ChatRoomFragment : Fragment(), MenuProvider {
         binding.etMessage.clearFocus()
         hideKeyboard()
         handleKeyboard() // to scroll to last item when user returns to app and show keyboard
+        currentUser = null
+        fetchCurrentUserById(firebaseCurrentUser!!.uid)
         super.onResume()
     }
 
     override fun onDestroyView() {
+        hideKeyboard()
         activity?.window?.statusBarColor = requireActivity().getColor(R.color.white)
         binding.rvChatRoom.adapter = null
         _binding = null

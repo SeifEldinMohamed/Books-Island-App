@@ -21,8 +21,14 @@ import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.presentation.intro.IntroActivity
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
+import com.seif.booksislandapp.utils.start
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -89,7 +95,9 @@ class ProfileFragment : Fragment() {
     private fun changeAvatarImage() {
         binding.ivAvatar.disable()
         avatarImage = handleAvatarImage(user.gender)
-        binding.ivAvatar.load(avatarImage)
+        binding.ivAvatar.load(avatarImage) {
+            crossfade(true)
+        }
         enableUpdateProfileButton()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -112,10 +120,19 @@ class ProfileFragment : Fragment() {
             governorate = binding.acGovernorate.text.toString(),
             district = binding.acDistricts.text.toString(),
             gender = user.gender,
-            wishListBuy = arrayListOf(),
-            wishListDonate = arrayListOf(),
-            wishListExchange = arrayListOf(),
-            wishListAuction = arrayListOf()
+            wishListBuy = user.wishListBuy,
+            wishListDonate = user.wishListDonate,
+            wishListExchange = user.wishListExchange,
+            wishListAuction = user.wishListAuction,
+            blockedUsersIds = user.blockedUsersIds,
+            averageRate = user.averageRate,
+            givenRates = user.givenRates,
+            receivedRates = user.receivedRates,
+            numberOfCompletedSellAds = user.numberOfCompletedSellAds,
+            numberOfCompletedDonateAds = user.numberOfCompletedDonateAds,
+            numberOfCompletedExchangeAds = user.numberOfCompletedExchangeAds,
+            numberOfCompletedAuctionAds = user.numberOfCompletedAuctionAds,
+            isSuspended = user.isSuspended
         )
     }
 
@@ -131,11 +148,13 @@ class ProfileFragment : Fragment() {
                             showUserProfileData(it.user)
                             profileViewModel.getGovernorates()
                         }
+
                         is ProfileState.UpdateUserProfileSuccessfully -> {
                             binding.root.showSuccessSnackBar(getString(R.string.profile_updated_successfully))
                             user = it.user
                             enableUpdateProfileButton()
                         }
+
                         is ProfileState.GetGovernoratesSuccessfully -> {
                             governorates = it.governorates
                             setUpGovernoratesDropDown(it.governorates)
@@ -143,6 +162,7 @@ class ProfileFragment : Fragment() {
                                 profileViewModel.getDistricts(id)
                             }
                         }
+
                         is ProfileState.GetDistrictsSuccessfully -> {
                             districts = it.districts
                             binding.acDistricts.setText("")
@@ -150,6 +170,7 @@ class ProfileFragment : Fragment() {
                             enableUpdateProfileButton()
                             listenForUserInput()
                         }
+
                         is ProfileState.LogoutSuccessfully -> {
                             binding.root.showSuccessSnackBar(it.message)
                             requireActivity().apply {
@@ -157,6 +178,7 @@ class ProfileFragment : Fragment() {
                                 finish()
                             }
                         }
+
                         is ProfileState.IsLoading -> handleLoadingState(it.isLoading)
                         is ProfileState.NoInternetConnection -> handleNoInternetConnectionState()
                         is ProfileState.ShowError -> handleErrorState(it.message)
@@ -181,6 +203,7 @@ class ProfileFragment : Fragment() {
                                 }
                                 binding.root.showInfoSnackBar("Internet connection is back")
                             }
+
                             false -> Unit
                         }
                     }
@@ -231,10 +254,12 @@ class ProfileFragment : Fragment() {
                 menAvatarList.remove(avatarImage)
                 menAvatarList.random().toString()
             }
+
             getString(R.string.female) -> {
                 womenAvatarList.remove(avatarImage)
                 womenAvatarList.random().toString()
             }
+
             else -> Unit.toString()
         }
     }
@@ -281,7 +306,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showUserProfileData(user: User) {
-        binding.ivAvatar.load(user.avatarImage)
+        binding.ivAvatar.load(user.avatarImage) {
+            crossfade(true)
+        }
         binding.etEmail.setText(user.email)
         binding.etUsername.setText(user.username)
         binding.tvUsername.text = user.username
@@ -318,6 +345,7 @@ class ProfileFragment : Fragment() {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }

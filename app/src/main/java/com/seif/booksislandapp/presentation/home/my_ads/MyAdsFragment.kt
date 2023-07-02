@@ -54,6 +54,9 @@ class MyAdsFragment : Fragment() {
         viewPager = binding.viewPager
         viewPager!!.adapter = MyAdsPagerAdapter(this)
 
+        viewPager!!.offscreenPageLimit =
+            1 // to prevent creating preloading fragment when click on tab
+
         mediator = TabLayoutMediator(binding.tlMyAds, viewPager!!) { tab, position ->
             tab.text = tabTitle[position]
         }
@@ -61,7 +64,7 @@ class MyAdsFragment : Fragment() {
         for (i in 0 until tabTitle.size) {
             val textView =
                 LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
-                    as TextView
+                        as TextView
             binding.tlMyAds.getTabAt(i)?.customView = textView
         }
     }

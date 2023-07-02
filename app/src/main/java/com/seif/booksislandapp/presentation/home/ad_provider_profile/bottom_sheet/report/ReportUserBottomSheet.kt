@@ -42,18 +42,25 @@ class ReportUserBottomSheet : BottomSheetDialogFragment() {
 
         val reporterId = arguments?.getString("reporterId")
         val reportedPersonId = arguments?.getString("reportedPersonId")
+        val reporterName = arguments?.getString("reporterName")
+        val reportedPersonName = arguments?.getString("reportedPersonName")
 
         binding.btnSend.setOnClickListener {
             reportSheetViewModel.reportUser(
                 Report(
                     id = "",
                     reporterId = reporterId!!,
+                    reporterName = reporterName!!,
                     reportedPersonId = reportedPersonId!!,
+                    reportedPersonName = reportedPersonName!!,
                     comment = binding.etComment.text.toString().trim(),
                     category = getReportCategory(binding.rgReport.checkedRadioButtonId)
                 )
             )
             observe()
+        }
+        binding.btnCancel.setOnClickListener {
+            this.dismiss()
         }
     }
 

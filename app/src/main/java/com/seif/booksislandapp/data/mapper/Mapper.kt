@@ -3,6 +3,8 @@ package com.seif.booksislandapp.data.mapper
 import android.net.Uri
 import com.seif.booksislandapp.data.remote.dto.BookDto
 import com.seif.booksislandapp.data.remote.dto.MyChatDto
+import com.seif.booksislandapp.data.remote.dto.RateDto
+import com.seif.booksislandapp.data.remote.dto.ReceivedRateDto
 import com.seif.booksislandapp.data.remote.dto.ReportDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
@@ -15,6 +17,8 @@ import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
+import com.seif.booksislandapp.domain.model.Rate
+import com.seif.booksislandapp.domain.model.ReceivedRate
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.AdType
@@ -46,9 +50,16 @@ fun User.toUserDto(): UserDto {
         wishListDonate = this.wishListDonate as List<String>,
         wishListExchange = this.wishListExchange as List<String>,
         wishListAuction = this.wishListAuction as List<String>,
-        myBuyingChats = myBuyingChats as List<String>,
-        mySellingChats = mySellingChats as List<String>,
-        reportedPersonsIds = reportedPersonsIds
+        reportedPersonsIds = reportedPersonsIds,
+        blockedUsersIds = blockedUsersIds,
+        averageRate = averageRate.toDouble(),
+        givenRates = givenRates.map { it.toRateDto() },
+        receivedRates = receivedRates.map { it.toReceivedRateDto() },
+        numberOfCompletedSellAds = numberOfCompletedSellAds,
+        numberOfCompletedDonateAds = numberOfCompletedDonateAds,
+        numberOfCompletedExchangeAds = numberOfCompletedExchangeAds,
+        numberOfCompletedAuctionAds = numberOfCompletedAuctionAds,
+        isSuspended = isSuspended
     )
 }
 
@@ -66,7 +77,16 @@ fun UserDto.toUser(): User {
         wishListDonate = wishListDonate as ArrayList<String>,
         wishListExchange = wishListExchange as ArrayList<String>,
         wishListAuction = wishListAuction as ArrayList<String>,
-        reportedPersonsIds = reportedPersonsIds
+        reportedPersonsIds = reportedPersonsIds,
+        blockedUsersIds = blockedUsersIds,
+        averageRate = averageRate.toString(),
+        givenRates = givenRates.map { it.toRate() },
+        receivedRates = receivedRates.map { it.toReceivedRate() },
+        numberOfCompletedSellAds = numberOfCompletedSellAds,
+        numberOfCompletedDonateAds = numberOfCompletedDonateAds,
+        numberOfCompletedExchangeAds = numberOfCompletedExchangeAds,
+        numberOfCompletedAuctionAds = numberOfCompletedAuctionAds,
+        isSuspended = isSuspended
     )
 }
 
@@ -204,6 +224,7 @@ fun Bidder.toBidderDto(): BidderDto {
     return BidderDto(
         bidderId = bidderId,
         bidderName = bidderName,
+        bidderAvatar = bidderAvatar,
         suggestedPrice = suggestedPrice.toInt()
     )
 }
@@ -212,6 +233,7 @@ fun BidderDto.toBidder(): Bidder {
     return Bidder(
         bidderId = bidderId,
         bidderName = bidderName,
+        bidderAvatar = bidderAvatar,
         suggestedPrice = suggestedPrice.toString()
     )
 }
@@ -291,10 +313,6 @@ fun Message.toMessageDto(): MessageDto {
         receiverId = receiverId,
         text = text,
         imageUrl = image,
-        chatUsers = arrayListOf( // remove this attribute (no need for it) but we will need to delete all messages on firestore
-            senderId,
-            receiverId
-        ),
         seen = false
     )
 }
@@ -368,8 +386,39 @@ fun Report.toReportDto(): ReportDto {
     return ReportDto(
         id = id,
         reporterId = reporterId,
+        reporterName = reporterName,
         reportedPersonId = reportedPersonId,
+        reportedPersonName = reportedPersonName,
         comment = comment,
         category = category,
+        reviewed = isReviewed
+    )
+}
+
+fun Rate.toRateDto(): RateDto {
+    return RateDto(
+        reportedPersonId = reportedPersonId,
+        rate = rate
+    )
+}
+
+fun RateDto.toRate(): Rate {
+    return Rate(
+        reportedPersonId = reportedPersonId,
+        rate = rate
+    )
+}
+
+fun ReceivedRate.toReceivedRateDto(): ReceivedRateDto {
+    return ReceivedRateDto(
+        reporterId = reporterId,
+        rate = rate
+    )
+}
+
+fun ReceivedRateDto.toReceivedRate(): ReceivedRate {
+    return ReceivedRate(
+        reporterId = reporterId,
+        rate = rate
     )
 }

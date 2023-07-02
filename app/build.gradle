@@ -20,6 +20,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+        buildConfigField "String", "PLACES_API_KEY", "\"${properties.getProperty("PLACES_API_KEY")}\""
+        buildConfigField "String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\""
     }
 
     buildTypes {
@@ -189,7 +195,17 @@ dependencies {
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    
+
     // gson converter library
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // Any Chart
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
+    // google maps
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+    // places api
+    implementation 'com.google.android.libraries.places:places:3.1.0'
+
 }

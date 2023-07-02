@@ -25,6 +25,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -63,6 +64,9 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         myChatsViewModel.setInMyChats(NOT_IN_MYCHATS_OR_CHATROOM, false)
 
         binding.rvBuyingUsersChat.adapter = myChatsAdapter
+        binding.rvBuyingUsersChat.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchMyBuyingChats() {
@@ -105,12 +109,16 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         if (_binding != null) {
             if (myBuyingChats.isEmpty()) {
                 binding.rvBuyingUsersChat.hide()
-                binding.noBooksAnimationMyBuyingChats.show()
                 binding.tvUnreadMessages.hide()
                 binding.cvUnreadMessages.hide()
+                binding.noBooksAnimationMyBuyingChats.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvBuyingUsersChat.show()
                 binding.noBooksAnimationMyBuyingChats.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
                 val allUnReadMessagesCount = myBuyingChats.sumOf { it.unreadMessages }
                 Timber.d("handleUi: allUnreadMessgaes = $allUnReadMessagesCount")
                 if (allUnReadMessagesCount == 0) {

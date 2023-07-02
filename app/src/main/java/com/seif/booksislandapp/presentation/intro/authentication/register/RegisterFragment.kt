@@ -20,11 +20,19 @@ import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterState
 import com.seif.booksislandapp.presentation.intro.authentication.register.viewmodel.RegisterViewModel
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_MEN_LIST
 import com.seif.booksislandapp.utils.Constants.Companion.AVATAR_WOMEN_LIST
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
-import com.skydoves.balloon.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.showAlignBottom
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
@@ -227,8 +235,14 @@ class RegisterFragment : Fragment() {
             wishListDonate = arrayListOf(),
             wishListExchange = arrayListOf(),
             wishListAuction = arrayListOf(),
-            myBuyingChats = arrayListOf(),
-            mySellingChats = arrayListOf()
+            averageRate = "0.0",
+            givenRates = emptyList(),
+            receivedRates = emptyList(),
+            numberOfCompletedSellAds = 0,
+            numberOfCompletedDonateAds = 0,
+            numberOfCompletedExchangeAds = 0,
+            numberOfCompletedAuctionAds = 0,
+            isSuspended = false
         )
     }
 

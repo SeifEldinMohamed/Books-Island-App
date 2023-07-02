@@ -8,7 +8,8 @@ sealed class ChatRoomState {
     data class IsLoading(val isLoading: Boolean) : ChatRoomState()
     data class ShowError(val message: String) : ChatRoomState()
     data class FetchMessagesSuccessfully(val messages: List<Message>) : ChatRoomState()
-    data class FetchUserSuccessfully(val user: User) : ChatRoomState()
+    data class FetchReceiverUserSuccessfully(val user: User) : ChatRoomState()
+    data class FetchCurrentUserSuccessfully(val user: User) : ChatRoomState()
     data class SendMessageSuccessfully(val message: Message) : ChatRoomState()
     data class NoInternetConnection(val message: String) : ChatRoomState()
 }

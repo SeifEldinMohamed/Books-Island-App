@@ -37,7 +37,16 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.UploadStat
 import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +54,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Date
 
 @AndroidEntryPoint
 class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
@@ -114,6 +123,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
 
         binding.ivDeleteMyAuctionAd.setOnClickListener {
             showConfirmationDialog()
+        }
+
+        binding.ivBiddersHistory.setOnClickListener {
+            val action =
+                UploadAuctionFragmentDirections.actionUploadAuctionFragmentToBiddersHistoryFragment(
+                    args.auctionAdvertisement!!.id
+                )
+            findNavController().navigate(action)
         }
 
         binding.btnSubmit.setOnClickListener {
@@ -215,15 +232,17 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyAuctionAdvertisement(it)
-                    binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAuctionAd.show()
                     binding.tvCancelRequest.hide()
+                    binding.ivBiddersHistory.show()
                 }
             }
+            binding.btnSubmit.text = getString(R.string.update_post)
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAuctionAd.hide()
             binding.ivRequestConfirmation.hide()
+            binding.ivBiddersHistory.hide()
         }
     }
 
@@ -326,6 +345,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         }
                     }
                 }
+
                 else -> {
                     dismissLoadingDialog()
                     Timber.d("Task Cancelled")
@@ -345,19 +365,23 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+
                     is UploadState.UpdatedSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+
                     is UploadState.DeletedSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+
                     is UploadState.SendRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_successfully))
                         requestId = it.requestId
                         disableSentConfirmationMessageButton()
                     }
+
                     is UploadState.CancelSentRequestsSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         enableSentConfirmationMessageButton()
@@ -372,6 +396,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }
@@ -510,8 +535,12 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         _binding = null
         dialog.setView(null)
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadAuctionAdvertisementViewModel.resetUploadStatus()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

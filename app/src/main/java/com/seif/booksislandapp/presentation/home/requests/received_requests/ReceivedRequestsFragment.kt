@@ -12,8 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.seif.booksislandapp.databinding.FragmentReceivedRequestsBinding
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -51,6 +57,9 @@ class ReceivedRequestsFragment : Fragment(), OnReceivedRequestItemClick<MyReceiv
         }
 
         binding.rvReceivedRequests.adapter = receivedRequestAdapter
+        binding.rvReceivedRequests.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun getMyReceivedRequests() {

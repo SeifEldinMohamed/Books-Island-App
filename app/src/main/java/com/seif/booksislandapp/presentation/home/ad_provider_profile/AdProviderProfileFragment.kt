@@ -11,13 +11,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.anychart.AnyChart
+import com.anychart.chart.common.dataentry.DataEntry
+import com.anychart.chart.common.dataentry.ValueDataEntry
+import com.anychart.enums.Align
+import com.anychart.enums.LegendLayout
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAdProviderProfileBinding
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.rate.RateSheetViewModel
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.rate.RateUserBottomSheet
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportSheetViewModel
 import com.seif.booksislandapp.presentation.home.ad_provider_profile.bottom_sheet.report.ReportUserBottomSheet
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import com.seif.booksislandapp.utils.showSuccessSnackBar
@@ -25,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AdProviderProfileFragment : Fragment() {
@@ -33,9 +42,12 @@ class AdProviderProfileFragment : Fragment() {
 
     private val adProviderProfileViewModel: AdProviderProfileViewModel by viewModels()
     private val reportSheetViewModel: ReportSheetViewModel by activityViewModels()
+    private val rateSheetViewModel: RateSheetViewModel by activityViewModels()
     private val args = navArgs<AdProviderProfileFragmentArgs>()
     private var adProviderUser: User? = null
+    private var currentUser: User? = null
     private var currentUserId: String? = null
+    private var givenRate: String? = null
     private lateinit var dialog: AlertDialog
 
     private lateinit var adProviderUserId: String
@@ -59,17 +71,37 @@ class AdProviderProfileFragment : Fragment() {
 
         if (currentUserId == adProviderUserId) { // hide menu if current user is ad provider
             binding.toolbar.menu.clear()
+        } else {
+            currentUserId?.let {
+                fetchCurrentUserById(it)
+            }
         }
 
         if (adProviderUser == null) {
             adProviderProfileViewModel.getAdProviderUserById(adProviderUserId)
         }
+
         observe()
-        // addMenuProvider()
         onMenuItemClick()
 
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+    }
+
+    private fun handleBlockMenuItemText() {
+        if (currentUser!!.blockedUsersIds.contains(adProviderUserId)) { // user blocked adProvider
+            Timber.d("onViewCreated: show unblock")
+            binding.toolbar.menu.findItem(R.id.menu_block).title = getString(R.string.unblock_user)
+        } else {
+            Timber.d("onViewCreated: show block")
+            binding.toolbar.menu.findItem(R.id.menu_block).title = getString(R.string.block_user)
+        }
+    }
+
+    private fun fetchCurrentUserById(currentUserId: String) {
+        if (currentUser == null) {
+            adProviderProfileViewModel.fetchCurrentUser(currentUserId)
         }
     }
 
@@ -86,7 +118,24 @@ class AdProviderProfileFragment : Fragment() {
                         showAdProviderData(it.user)
                     }
 
-                    is AdProviderProfileState.BlockUserSuccessfully -> TODO()
+                    is AdProviderProfileState.FetchCurrentUserSuccessfully -> {
+                        currentUser = it.user
+                        givenRate = it.user.givenRates.find { givenRate ->
+                            givenRate.reportedPersonId == adProviderUserId
+                        }?.rate.toString()
+                        handleBlockMenuItemText()
+                    }
+
+                    is AdProviderProfileState.BlockUserSuccessfully -> {
+                        binding.root.showSuccessSnackBar(it.message)
+                        if (it.message == getString(R.string.blocked_successfully)) {
+                            binding.toolbar.menu.findItem(R.id.menu_block).title =
+                                getString(R.string.unblock_user)
+                        } else {
+                            binding.toolbar.menu.findItem(R.id.menu_block).title =
+                                getString(R.string.block_user)
+                        }
+                    }
                 }
             }
         }
@@ -96,8 +145,49 @@ class AdProviderProfileFragment : Fragment() {
     private fun showAdProviderData(user: User) {
         binding.tvUsername.text = user.username
         binding.tvLocation.text = "${user.district}, ${user.governorate}"
-        binding.ivAvatar.load(user.avatarImage)
-        // binding.tvRate.text = user.averageRate
+        binding.ivAvatar.load(user.avatarImage) {
+            crossfade(true)
+        }
+        binding.tvRate.text = "${user.averageRate} / 5"
+        binding.ratingbar.rating = user.averageRate.toFloat()
+
+        if (user.numberOfCompletedAuctionAds == 0 && user.numberOfCompletedSellAds == 0 &&
+            user.numberOfCompletedExchangeAds == 0 && user.numberOfCompletedDonateAds == 0
+        ) { // don't complete any ad so hide statistics
+            binding.anyChartView.hide()
+            binding.progressBar2.hide()
+            binding.tvNoCompletedAds.show()
+        } else {
+            binding.tvNoCompletedAds.hide()
+            binding.anyChartView.show()
+            binding.progressBar2.show()
+            val data: MutableList<DataEntry> = ArrayList()
+            data.add(ValueDataEntry("Sell Ads", user.numberOfCompletedSellAds))
+            data.add(ValueDataEntry("Donate Ads", user.numberOfCompletedDonateAds))
+            data.add(ValueDataEntry("Auction Ads", user.numberOfCompletedAuctionAds))
+            data.add(ValueDataEntry("Exchange Ads", user.numberOfCompletedExchangeAds))
+            showStatisticsPieChart(data)
+        }
+    }
+
+    private fun showStatisticsPieChart(data: MutableList<DataEntry>) {
+        binding.anyChartView.setProgressBar(binding.progressBar2)
+        val pie = AnyChart.pie()
+        pie.apply {
+            data(data)
+            labels().position("inside")
+            radius("42%")
+            sort("desc")
+            legend().title().enabled(false)
+        }
+
+        pie.legend()
+            .position("left")
+            .itemsLayout(LegendLayout.VERTICAL_EXPANDABLE)
+            .align(Align.CENTER)
+            .itemsSpacing(10)
+
+        binding.anyChartView.setChart(pie)
     }
 
     private fun handleNoInternetConnectionState() {
@@ -168,17 +258,41 @@ class AdProviderProfileFragment : Fragment() {
 
                     bundle.putString("reporterId", currentUserId)
                     bundle.putString("reportedPersonId", adProviderUserId)
+                    bundle.putString("reporterName", currentUser!!.username)
+                    bundle.putString("reportedPersonName", adProviderUser!!.username)
                     reportUserBottomSheet.arguments = bundle
                     reportUserBottomSheet.show(parentFragmentManager, " ")
                     observeReportSent()
                 }
 
                 R.id.menu_rate -> {
-                    RateUserBottomSheet().show(parentFragmentManager, "")
+                    val rateUserBottomSheet = RateUserBottomSheet()
+                    val bundle = Bundle()
+
+                    bundle.putString("reporterId", currentUserId)
+                    bundle.putString("reportedPersonId", adProviderUserId)
+                    Timber.d("onViewCreated: In Ad Provider given rate = $givenRate")
+                    bundle.putString("givenRate", givenRate)
+                    rateUserBottomSheet.arguments = bundle
+                    rateUserBottomSheet.show(parentFragmentManager, " ")
+                    observeRateSent()
                 }
 
                 R.id.menu_block -> {
                     // block this seller then if success show snack bar
+                    if (item.title == getString(R.string.block_user)) {
+                        adProviderProfileViewModel.blockUser(
+                            currentUserId!!,
+                            adProviderUserId,
+                            true
+                        )
+                    } else { // unblock
+                        adProviderProfileViewModel.blockUser(
+                            currentUserId!!,
+                            adProviderUserId,
+                            false
+                        )
+                    }
                 }
 
                 else -> {
@@ -192,6 +306,20 @@ class AdProviderProfileFragment : Fragment() {
         reportSheetViewModel.reportSent.observe(viewLifecycleOwner) { message ->
             message?.let {
                 binding.root.showSuccessSnackBar(message)
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeRateSent() {
+        rateSheetViewModel.rateSent.observe(viewLifecycleOwner) { rates ->
+            rates?.let {
+                val returnedGivenRate = rates.first
+                val averageRate = rates.second
+                binding.root.showSuccessSnackBar(getString(R.string.rate_user_successfully))
+                binding.tvRate.text = getString(R.string.rate_value, averageRate)
+                binding.ratingbar.rating = averageRate.toFloat()
+                givenRate = returnedGivenRate
             }
         }
     }

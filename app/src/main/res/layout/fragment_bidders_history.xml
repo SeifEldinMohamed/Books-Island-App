@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.home.bidders_history.BiddersHistoryFragment">
+
+    <TextView
+        android:id="@+id/tv_current_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/current_price_3000"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_num_of_bids"
+        app:layout_constraintTop_toBottomOf="@+id/iv_back_bidders" />
+
+    <ImageView
+        android:id="@+id/iv_back_bidders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:contentDescription="@string/back_image"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_sell2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/bidders"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_back_bidders"
+        app:layout_constraintStart_toEndOf="@+id/iv_back_bidders"
+        app:layout_constraintTop_toTopOf="@+id/iv_back_bidders" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_bidders_history"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        tools:listitem="@layout/bidder_item"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_num_of_bids" />
+
+
+    <ImageView
+        android:id="@+id/iv_no_ads_yet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@color/white"
+        android:contentDescription="@string/no_request_yet_image_description"
+        android:src="@drawable/no_ads_yet"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/no_books_animation_sell_my"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/tv_no_ads_yet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/no_bidders_yet"
+        android:textColor="@color/primary_dark"
+        android:textSize="@dimen/_17ssp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/iv_no_ads_yet"
+        app:layout_constraintStart_toStartOf="@+id/iv_no_ads_yet"
+        app:layout_constraintTop_toTopOf="@+id/iv_no_ads_yet" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/no_books_animation_sell_my"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_270sdp"
+        android:layout_marginTop="@dimen/_44sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_bidders_history"
+        app:layout_constraintVertical_bias="0.39999998"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/no_books" />
+
+    <TextView
+        android:id="@+id/tv_num_of_bids"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/num_of_bids_26"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_current_value"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_back_bidders" />
+</androidx.constraintlayout.widget.ConstraintLayout>

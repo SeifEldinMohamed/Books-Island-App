@@ -13,8 +13,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.seif.booksislandapp.databinding.FragmentSentRequestsBinding
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -53,6 +59,9 @@ class SentRequestsFragment : Fragment(), OnAdItemClick<MySentRequest> {
         }
 
         binding.rvSetRequests.adapter = sentRequestAdapter
+        binding.rvSetRequests.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun getMySentRequests() {

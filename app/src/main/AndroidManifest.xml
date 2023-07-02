@@ -4,8 +4,8 @@
     package="com.seif.booksislandapp">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".MyApplication"
@@ -19,6 +19,9 @@
         android:theme="@style/Theme.BooksIslandApp"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="$MAPS_API_KEY" />
 
         <service
             android:name=".data.service.FirebaseMessagingService"
@@ -41,10 +44,7 @@
             android:name=".presentation.home.HomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
-
-
-        </activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".presentation.intro.IntroActivity"
             android:exported="true"
@@ -52,11 +52,10 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
     </application>
 
 </manifest>
