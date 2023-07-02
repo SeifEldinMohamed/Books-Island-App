@@ -1,6 +1,7 @@
 package com.seif.booksislandapp.data.repository
 
 import android.net.ConnectivityManager
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toMyReceivedRequest
@@ -16,6 +17,10 @@ import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.NUMBER_OF_COMPLETED_AUCTION_ADS_FIELD
+import com.seif.booksislandapp.utils.Constants.Companion.NUMBER_OF_COMPLETED_DONATE_ADS_FIELD
+import com.seif.booksislandapp.utils.Constants.Companion.NUMBER_OF_COMPLETED_EXCHANGE_ADS_FIELD
+import com.seif.booksislandapp.utils.Constants.Companion.NUMBER_OF_COMPLETED_SELL_ADS_FIELD
 import com.seif.booksislandapp.utils.Constants.Companion.REQUESTS_FIIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
@@ -215,10 +220,14 @@ class RequestsRepositoryImp @Inject constructor(
             .await()
 
         firestore.collection(getCollectionNameBaseOnAdType(adType)).document(advertisementId)
-            .update("confirmationRequestId", "")
+            .update("confirmationRequestId", "", "status", "Closed")
             .await()
 
         // increase totalNumberOfCompletedDealIn(AdType) in the seller profile
+        firestore.collection(USER_FIRESTORE_COLLECTION)
+            .document(sellerId)
+            .update(getCounterFieldNameBaseOnAdType(adType), FieldValue.increment(1))
+            .await()
         return Resource.Success("Confirmation Accepted")
     }
 
@@ -249,11 +258,14 @@ class RequestsRepositoryImp @Inject constructor(
         advertisementId: String,
         isConfirmationSent: Boolean
     ) {
+        Timber.d("updateIsConfirmationRequestSent: in function")
+
         val advertisementDocumentReference =
             firestore.collection(getCollectionNameBaseOnAdType(adType))
                 .document(advertisementId)
         val doc = advertisementDocumentReference.get().await()
         if (doc.exists()) { // check if ad is still exists because the seller may delete ad after sending the confirmation request
+            Timber.d("updateIsConfirmationRequestSent: update confirmationMessageSent to $isConfirmationSent")
             advertisementDocumentReference.update("confirmationMessageSent", isConfirmationSent)
                 .await()
         }
@@ -265,6 +277,15 @@ class RequestsRepositoryImp @Inject constructor(
             AdType.Donation -> DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
             AdType.Exchange -> EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
             AdType.Auction -> AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
+        }
+    }
+
+    private fun getCounterFieldNameBaseOnAdType(adType: AdType): String {
+        return when (adType) {
+            AdType.Buying -> NUMBER_OF_COMPLETED_SELL_ADS_FIELD
+            AdType.Donation -> NUMBER_OF_COMPLETED_DONATE_ADS_FIELD
+            AdType.Exchange -> NUMBER_OF_COMPLETED_EXCHANGE_ADS_FIELD
+            AdType.Auction -> NUMBER_OF_COMPLETED_AUCTION_ADS_FIELD
         }
     }
 }

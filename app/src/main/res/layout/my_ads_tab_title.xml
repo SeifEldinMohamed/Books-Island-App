@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     android:id="@android:id/text1"
     android:fontFamily="@font/roboto_medium"
-    android:paddingVertical="@dimen/_6sdp"
+    android:paddingVertical="@dimen/_5sdp"
     android:paddingHorizontal="@dimen/_8sdp"
     android:background="@drawable/my_ads_tab_background_selector"
     android:textColor="@color/myads_tab_text_selector"
-    android:textSize="@dimen/_13ssp"
+    android:textSize="@dimen/_8ssp"
     android:text="@string/titles"
     />

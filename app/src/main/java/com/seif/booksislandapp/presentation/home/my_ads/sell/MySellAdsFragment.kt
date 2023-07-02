@@ -23,6 +23,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -59,6 +60,9 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         fetchMySellAds()
 
         binding.rvSellMyAds.adapter = buyAdapter
+        binding.rvSellMyAds.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchMySellAds() {
@@ -100,9 +104,13 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             if (sellAds.isEmpty()) {
                 binding.rvSellMyAds.hide()
                 binding.noBooksAnimationSellMy.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvSellMyAds.show()
                 binding.noBooksAnimationSellMy.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
             }
         }
     }

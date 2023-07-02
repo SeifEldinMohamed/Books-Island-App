@@ -1,15 +1,15 @@
 package com.seif.booksislandapp.presentation.home.categories.exchange.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ExchangeAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDate
+import com.seif.booksislandapp.utils.setBookUriImage
 
 class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
     var exchangeAds: List<ExchangeAdvertisement> = emptyList()
@@ -24,9 +24,7 @@ class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
             binding.rvContent.adapter = booksToExchangeAdapter
             booksToExchangeAdapter.updateList(exchangeAdvertisement.booksToExchange)
             binding.tvLocation.text = exchangeAdvertisement.location
-            binding.ivBook.load(exchangeAdvertisement.book.images.first()) {
-                placeholder(R.drawable.book_placeholder)
-            }
+            binding.ivBook.setBookUriImage(exchangeAdvertisement.book.images.first())
             binding.cvExchange.setOnClickListener {
                 onAdItemClick?.onAdItemClick(exchangeAdvertisement, position)
             }
@@ -44,9 +42,10 @@ class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
     override fun getItemCount(): Int {
         return exchangeAds.size
     }
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newExchangeAds: List<ExchangeAdvertisement>) {
+        val diffUtilCallBack = MyDiffUtil(this.exchangeAds, newExchangeAds)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.exchangeAds = newExchangeAds
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

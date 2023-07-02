@@ -58,7 +58,7 @@
     <string name="favourite_image">favourite image</string>
     <string name="book_image">book image</string>
     <string name="_120_egp">120 EGP</string>
-    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredibel exprience of how knowing the real business men</string>
+    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredible experience of how knowing the real business men</string>
     <string name="book_title">Qudrant Flow of Money</string>
     <string name="user_location">Maadi, Cairo</string>
     <string name="adv_publish_date">11 NOV</string>
@@ -200,7 +200,7 @@
 
     <!-- auction(Design) -->
     <string name="started">STARTED</string>
-    <string name="bidders">Bidders: 2</string>
+    <string name="bidders_2">Bidders: 2</string>
     <string name="bidders_number">Bidders: %1$s</string>
     <string name="current_price_120_egp">Current Price: 120 EGP</string>
 
@@ -231,12 +231,12 @@
     <string name="other">Other</string>
     <string name="status_started">Status: Started</string>
     <string name="status_value">Status: %1$s</string>
-    <string name="last_bidder_value">Last Bidder: %1$s</string>
+    <string name="last_bidder_value">Last Bidder:</string>
     <string name="add_bid_successfully">Your Bid Added Successfully</string>
     <string name="profile_updated_successfully">Updated Successfully</string>
     <string name="password_tool_tip_image">password tool tip image</string>
     <string name="tooltip_password">- Password must be more than 5 characters in length. \n - Password must be alphanumeric with a minimum of 1 letters, 1 digits and special character. \n- Password is Case Sensitive</string>
-    <string name="tooltip_username">- Usernae is Cas Sensitive.\n- Maximum usernaem length is 22.</string>
+    <string name="tooltip_username">- Username is Cas Sensitive.\n- Maximum username length is 22.</string>
     <string name="tooltip_email">"- Email is Case Sensitive. "</string>
     <string name="update_post">Update Post</string>
     <string name="delete_ad_icon">delete ad icon</string>
@@ -304,7 +304,7 @@
     <string name="your_gateway_to_endless_literary_adventures">Your Gateway to Endless\nLiterary Adventures</string>
     <string name="delete">Delete</string>
     <string name="cancel_request">Cancel Request</string>
-    <string name="confirmation_sent_suuccessfully">\"Confirmation Sent Successfully\"</string>
+    <string name="confirmation_sent_successfully">Confirmation Sent Successfully</string>
     <string name="unread">UnRead</string>
     <!-- admin-->
     <string name="admin">Welcome Admin</string>
@@ -317,7 +317,7 @@
     <string name="rate_user">Rate User</string>
     <string name="maddi">Maddi,Cairo</string>
     <string name="Photo">photo</string>
-    <string name="posts">Posts</string>
+    <string name="completed">Completed</string>
     <string name="average_rate">Average Rate</string>
     <string name="rat">4.5 / 5</string>
     <string name="spam">Spam</string>
@@ -340,6 +340,33 @@
     <string name="suspended">Suspended</string>
     <string name="rate_value">4.3</string>
     <string name="num">12</string>
+    <string name="userblock">User Blocked Successfully !</string>
+    <string name="share_location">Share Location</string>
+    <string name="unblock_user">UnBlock User</string>
+    <string name="blocked_successfully">Blocked Successfully!</string>
+    <string name="unBlocked_successfully">UnBlocked Successfully!</string>
+    <string name="conversation_is_blocked">Conversation with this user is blocked.</string>
+    <string name="lock_icon_description">lock icon description</string>
+    <string name="rating_bar_description">rating bar description</string>
+    <string name="rate_user_successfully">Your rate added Successfully</string>
+    <string name="rate_value">%1$s / 5</string>
+    <string name="edit">Edit</string>
+    <string name="no_completed_ads_yet">No Completed Ads Yet</string>
+    <string name="search_location">search for location</string>
+    <string name="search_for_place">search for place</string>
+    <string name="share_marked_location">share marked location</string>
+    <string name="write_correct_place">The place enter is not correct</string>
+    <string name="bidders">Bidders History</string>
+    <string name="bid_value">Value: 300</string>
+    <string name="current_price_3000">Current Price: 3000</string>
+    <string name="num_of_bids_26">Num of Bids: 26</string>
+    <string name="current_price_history">Current Price: %1$s</string>
+    <string name="num_of_bids">Num of Bids: %1$s</string>
+    <string name="you">You</string>
+    <string name="no_ads_yet">No Ads Yet</string>
+    <string name="instructions">Instructions</string>
+    <string name="no_chats_yet">No Chats Yet</string>
+    <string name="no_bidders_yet">No Bidders Yet</string>
 
     <string name="_email">Email:</string>
     <string name="_rate">Rate:</string>

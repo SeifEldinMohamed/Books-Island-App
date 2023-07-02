@@ -18,10 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_exchange_my_ads"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/_6sdp"
+                android:paddingBottom="@dimen/_65sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="10"
+                tools:listitem="@layout/exchange_adv_item" />
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/no_books_animation_exchange_my"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_290sdp"
+                android:layout_marginTop="@dimen/_50sdp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -32,20 +48,33 @@
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/no_books" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_exchange_my_ads"
-                tools:itemCount="10"
-                tools:listitem="@layout/exchange_adv_item"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:paddingTop="@dimen/_6sdp"
-                android:paddingBottom="@dimen/_65sdp"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ImageView
+                android:id="@+id/iv_no_ads_yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@color/white"
+                android:contentDescription="@string/no_request_yet_image_description"
+                android:src="@drawable/no_ads_yet"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/no_books_animation_exchange_my"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                tools:ignore="ImageContrastCheck" />
+
+            <TextView
+                android:id="@+id/tv_no_ads_yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/no_ads_yet"
+                android:textColor="@color/primary_dark"
+                android:textSize="@dimen/_17ssp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/iv_no_ads_yet"
+                app:layout_constraintStart_toStartOf="@+id/iv_no_ads_yet"
+                app:layout_constraintTop_toTopOf="@+id/iv_no_ads_yet" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

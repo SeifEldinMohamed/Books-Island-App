@@ -6,9 +6,12 @@ import java.util.Date
 data class ReportDto(
     val id: String = "",
     val reporterId: String = "",
+    val reporterName: String = "",
     val reportedPersonId: String = "",
+    val reportedPersonName: String = "",
     val comment: String = "",
     val category: String = "",
     @ServerTimestamp
-    val date: Date? = null
+    val date: Date? = null,
+    val reviewed: Boolean = false
 )

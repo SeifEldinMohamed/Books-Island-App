@@ -96,7 +96,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_requests_history -> {} // navigate to requests history
+            R.id.menu_instructions -> {} // navigate to requests history
             R.id.menu_share -> shareApp()
             R.id.menu_rate -> rateApp()
             R.id.menu_review -> reviewApp()

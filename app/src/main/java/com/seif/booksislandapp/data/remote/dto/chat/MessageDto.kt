@@ -11,6 +11,5 @@ data class MessageDto(
     val imageUrl: String? = null,
     @ServerTimestamp
     val date: Date? = null,
-    val chatUsers: ArrayList<String>? = null,
     val seen: Boolean? = null
 )

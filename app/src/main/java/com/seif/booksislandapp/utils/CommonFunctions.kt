@@ -24,6 +24,7 @@ import androidx.core.util.PatternsCompat
 import androidx.fragment.app.Fragment
 import com.musfickjamil.snackify.Snackify
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.domain.model.Rate
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
@@ -70,6 +71,10 @@ fun View.showErrorSnackBar(message: String) {
 
 fun View.showInfoSnackBar(message: String) {
     Snackify.info(this, message, Snackify.LENGTH_SHORT).show()
+}
+
+fun View.showWarningSnackBar(message: String) {
+    Snackify.warning(this, message, Snackify.LENGTH_INDEFINITE).show()
 }
 
 fun Fragment.toast(msg: String?) {
@@ -403,5 +408,15 @@ fun Report.isValidReport(): Resource<String, String> {
         Resource.Error("reportedPersonId is missing")
     } else {
         Resource.Success("All Report Data is Valid")
+    }
+}
+
+fun Rate.isValidRate(): Resource<String, String> {
+    return if (this.rate == 0.0) {
+        Resource.Error("Please add rate first!")
+    } else if (this.reportedPersonId.isEmpty()) {
+        Resource.Error("reported person id is empty!")
+    } else {
+        Resource.Success("All Rate Data is Valid")
     }
 }

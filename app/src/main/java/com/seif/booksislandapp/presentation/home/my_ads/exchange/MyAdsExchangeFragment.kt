@@ -16,8 +16,14 @@ import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -57,6 +63,9 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         fetchMyExchangeAds()
 
         binding.rvExchangeMyAds.adapter = exchangeAdapter
+        binding.rvExchangeMyAds.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchMyExchangeAds() {
@@ -98,9 +107,13 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             if (exchangeAds.isEmpty()) {
                 binding.rvExchangeMyAds.hide()
                 binding.noBooksAnimationExchangeMy.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvExchangeMyAds.show()
                 binding.noBooksAnimationExchangeMy.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
             }
         }
     }

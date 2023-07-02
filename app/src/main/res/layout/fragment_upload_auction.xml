@@ -28,35 +28,36 @@
                     android:id="@+id/tv_cancel_request"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:fontFamily="@font/roboto_bold"
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/cancel_request"
                     android:textColor="@color/rejected_red"
-                    android:textSize="@dimen/_16ssp"
+                    android:textSize="@dimen/_13ssp"
                     android:visibility="gone"
-                    android:layout_marginEnd="@dimen/_8sdp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_delete_my_auction_ad"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_delete_my_auction_ad"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_bidders_history"
                     app:layout_constraintTop_toTopOf="@+id/iv_delete_my_auction_ad" />
 
                 <ImageView
                     android:id="@+id/iv_request_confirmation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:contentDescription="@string/request_confirmation_icon"
                     android:padding="@dimen/_6sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_delete_my_auction_ad"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_delete_my_auction_ad"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_bidders_history"
                     app:layout_constraintTop_toTopOf="@+id/iv_delete_my_auction_ad"
+                    app:layout_constraintVertical_bias="0.0"
                     app:srcCompat="@drawable/ic_true" />
 
                 <ImageView
                     android:id="@+id/iv_delete_my_auction_ad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
                     android:layout_weight="1"
                     android:padding="@dimen/_6sdp"
                     android:contentDescription="@string/delete_ad_icon"
@@ -73,7 +74,7 @@
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="40"
+                    app:counterMaxLength="80"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -85,7 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="40"
+                        android:maxLength="80"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -146,7 +147,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="40"
+                    app:counterMaxLength="80"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_author"
@@ -158,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="40"
+                        android:maxLength="80"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -379,7 +380,7 @@
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="200"
+                    app:counterMaxLength="500"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_description"
@@ -392,7 +393,7 @@
                         android:layout_height="@dimen/_80sdp"
                         android:gravity="start"
                         android:inputType="textMultiLine"
-                        android:maxLength="200"
+                        android:maxLength="500"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -542,6 +543,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/til_post_duration"
                     tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+                <ImageView
+                    android:id="@+id/iv_bidders_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_6sdp"
+                    android:src="@drawable/ic_history"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_delete_my_auction_ad"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_delete_my_auction_ad"
+                    app:layout_constraintTop_toTopOf="@+id/iv_delete_my_auction_ad" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

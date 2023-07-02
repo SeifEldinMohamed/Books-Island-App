@@ -38,8 +38,18 @@ import com.seif.booksislandapp.presentation.home.upload_advertisement.UsersBotto
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.OnImageItemClick
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedBooksForExchangeAdapter
 import com.seif.booksislandapp.presentation.home.upload_advertisement.adapter.UploadedImagesAdapter
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_UPLOADED_EXCHANGE_FOR_IMAGES_NUMBER
+import com.seif.booksislandapp.utils.FileUtil
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.disable
+import com.seif.booksislandapp.utils.enabled
+import com.seif.booksislandapp.utils.handleNoInternetConnectionState
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.invisible
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showSuccessSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +57,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Date
 
 @AndroidEntryPoint
 class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
@@ -228,10 +238,10 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                     exchangeFor = it.booksToExchange.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyDonateAdvertisement(it)
-                    binding.btnUpload.text = getString(R.string.update_post)
                     binding.ivDeleteMyExchangeAd.show()
                 }
             }
+            binding.btnUpload.text = getString(R.string.update_post)
         } else {
             binding.btnUpload.text = getString(R.string.submit_post)
             binding.ivDeleteMyExchangeAd.hide()
@@ -388,7 +398,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                         findNavController().navigateUp()
                     }
                     is UploadState.SendRequestSuccessfully -> {
-                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_suuccessfully))
+                        binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_successfully))
                         requestId = it.requestId
                         disableSentConfirmationMessageButton()
                     }
@@ -543,9 +553,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedBook.adapter = null
         binding.rvUploadedImages.adapter = null
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadExchangeAdvertisementViewModel.resetUploadStatus()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

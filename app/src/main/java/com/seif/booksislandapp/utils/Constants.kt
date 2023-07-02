@@ -12,9 +12,10 @@ class Constants {
         const val TIMEOUT = 10000L // 8 seconds to fetch
         const val TIMEOUT_AUTH = 12000L // 10 seconds to fetch
         const val TIMEOUT_UPLOAD = 12000L // 10 seconds to upload
+        const val TIMEOUT_RATE = 15000L // 10 seconds to upload
 
         // FireStore
-        const val USER_FIRESTORE_COLLECTION = "users"
+        const val USER_FIRESTORE_COLLECTION = "Users"
         const val GOVERNORATES_FIRESTORE_COLLECTION = "governorate"
         const val DISTRICTS_FIRESTORE_COLLECTION = "districts"
         const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "sell advertisements"
@@ -30,6 +31,21 @@ class Constants {
         const val WISHLIST_BUY: String = "wishListBuy"
         const val WISHLIST_DONATE: String = "wishListDonate"
         const val WISHLIST_AUCTION: String = "wishListAuction"
+        const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "Sell Advertisements"
+        const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Exchange Advertisements"
+        const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Donate Advertisement"
+        const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "Auctions Advertisements"
+        const val CHATS_FIIRESTORE_COLLECTION: String = "All Chats"
+        const val REPORTS_FIIRESTORE_COLLECTION: String = "All Reports"
+        const val REQUESTS_FIIRESTORE_COLLECTION: String = "All Requests"
+        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "The Chat List"
+        const val TOKENS_FIIRESTORE_COLLECTION: String = "The Tokens"
+
+        // Fields
+        const val NUMBER_OF_COMPLETED_SELL_ADS_FIELD = "numberOfCompletedSellAds"
+        const val NUMBER_OF_COMPLETED_DONATE_ADS_FIELD = "numberOfCompletedDonateAds"
+        const val NUMBER_OF_COMPLETED_EXCHANGE_ADS_FIELD = "numberOfCompletedExchangeAds"
+        const val NUMBER_OF_COMPLETED_AUCTION_ADS_FIELD = "numberOfCompletedAuctionAds"
 
         const val FCM_API_KEY: String =
             "AAAA92L23Rs:APA91bEe5qTrNsAsrLti3mPkXCcyF3bemZwh4vSjAypuEZhSbPihuYI6c3gCAtuaRSyTfSiBrPeeTeTuOEoImvV3YCfMB2c1cIAEkFzmh4kkxHI49gjwFhw5B2uucpPFXEj03iRqQy3v"

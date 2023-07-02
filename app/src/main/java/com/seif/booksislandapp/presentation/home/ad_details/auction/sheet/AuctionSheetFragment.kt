@@ -14,6 +14,7 @@ import com.seif.booksislandapp.databinding.FragmentAuctionSheetBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.utils.Constants.Companion.USERNAME_KEY
+import com.seif.booksislandapp.utils.Constants.Companion.USER_AVATAR_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.showInfoSnackBar
@@ -55,6 +56,10 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
                 val bidder = Bidder(
                     bidderId = auctionSheetViewModel.readFromSP(USER_ID_KEY, String::class.java),
                     bidderName = auctionSheetViewModel.readFromSP(USERNAME_KEY, String::class.java),
+                    bidderAvatar = auctionSheetViewModel.readFromSP(
+                        USER_AVATAR_KEY,
+                        String::class.java
+                    ),
                     suggestedPrice = bidValue
                 )
                 auctionSheetViewModel.addBidder(
@@ -85,6 +90,7 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
                         auctionSheetViewModel.sendUpdatedAdvertisement(it.auctionAd)
                         updateUi(it.auctionAd)
                     }
+
                     is AuctionSheetState.AddBidderSuccessfully -> {
                         binding.etBid.text?.clear()
                         Snackify.success(binding.root, it.message, Snackify.LENGTH_SHORT)
@@ -110,6 +116,7 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
                                     auctionSheetViewModel.fetchAuctionAdById(it.id)
                                 }
                             }
+
                             false -> Unit
                         }
                     }
@@ -137,6 +144,7 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }
@@ -159,19 +167,37 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                    ?: auctionAdvertisement.startPrice
-                ).toString()
+                    auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                        ?: auctionAdvertisement.startPrice
+                    ).toString()
         )
+
         binding.tvStatus.text =
             getString(R.string.status_value, auctionAdvertisement.auctionStatus.toString())
+
         binding.tvBiddersNumber.text =
-            getString(R.string.bidders_number, auctionAdvertisement.bidders.distinctBy { it.bidderId }.size.toString())
+            getString(
+                R.string.bidders_number,
+                auctionAdvertisement.bidders.distinctBy { it.bidderId }.size.toString()
+            )
+
+        val lastBidderId =
+            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderId
+
         binding.tvLastBidderValue.text =
-            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
-                ?: getString(
-                    R.string.no_one
-                )
+            if (lastBidderId == null) {
+                getString(R.string.no_one)
+            } else {
+                if (lastBidderId == auctionSheetViewModel.readFromSP(
+                        USER_ID_KEY,
+                        String::class.java
+                    )
+                ) {
+                    getString(R.string.you)
+                } else {
+                    getString(R.string.other)
+                }
+            }
     }
 
     override fun onDestroyView() {

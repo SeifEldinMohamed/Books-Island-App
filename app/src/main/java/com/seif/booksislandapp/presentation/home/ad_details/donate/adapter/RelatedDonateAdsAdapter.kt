@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.RelatedAdsItemBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
@@ -22,7 +21,7 @@ class RelatedDonateAdsAdapter : RecyclerView.Adapter<RelatedDonateAdsAdapter.MyV
             binding.tvPublishDate.text = donateAdvertisement.publishDate.formatDate()
             binding.tvPrice.text = itemView.context.getString(R.string.free)
             binding.tvLocation.text = donateAdvertisement.location
-            binding.ivBook.load(donateAdvertisement.book.images.first())
+            binding.ivBook.setImageURI(donateAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
                 onRelatedAdItemClick?.onAdItemClick(donateAdvertisement, position)

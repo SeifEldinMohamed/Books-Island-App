@@ -1,5 +1,6 @@
 package com.seif.booksislandapp.presentation.home.ad_details.auction
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -148,23 +149,29 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeUpdatedAuctionAd() {
         auctionSheetViewModel.updatedAuctionAdvertisement.observe(viewLifecycleOwner) { updatedAuctionAdvertisement ->
             binding.tvCurrentPriceValue.text = getString(
                 R.string.egypt_pound,
                 (
-                    updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                        ?: args.auctionAdvertisement.startPrice?.toInt()
-                    ).toString()
+                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                            ?: args.auctionAdvertisement.startPrice?.toInt()
+                        ).toString()
             )
 
-            binding.tvLastBidder.text = getString(
-                R.string.last_bidder_value,
-                updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
-                    ?: getString(
-                        R.string.no_one
-                    )
-            )
+            val lastBidderId =
+                updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderId
+            binding.tvLastBidder.text =
+                getString(R.string.last_bidder_value) + " " + if (lastBidderId == null) {
+                    getString(R.string.no_one)
+                } else {
+                    if (currUser!!.id == lastBidderId) {
+                        getString(R.string.you)
+                    } else {
+                        getString(R.string.other)
+                    }
+                }
         }
     }
 
@@ -220,7 +227,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     }
 
     private fun showOwnerData(owner: User) {
-        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.ivOwnerAvatar.load(owner.avatarImage) {
+            crossfade(true)
+        }
         binding.tvOwnerName.text = owner.username
     }
 
@@ -236,6 +245,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                         owner = it.user
                         showOwnerData(it.user)
                     }
+
                     is AuctionDetailsState.FetchRelatedAuctionAdvertisementSuccessfully -> {
                         relatedAds = it.relatedAds
                         relatedAuctionAdsAdapter.updateList(it.relatedAds)
@@ -244,15 +254,35 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                         else
                             binding.tvNoRelatedAds.hide()
                     }
+
                     is AuctionDetailsState.AddedToFavorite -> {
                     }
+
                     is AuctionDetailsState.GetCurrentUserByIdSuccessfully -> {
                         currUser = it.user
+                        showLastBidderFromArgs()
                         isFavouriteAd()
                     }
                 }
             }
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showLastBidderFromArgs() {
+        // if last bidder is current user then show "You" else show "Other"
+        val lastBidderId =
+            args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderId
+        binding.tvLastBidder.text =
+            getString(R.string.last_bidder_value) + " " + if (lastBidderId == null) {
+                getString(R.string.no_one)
+            } else {
+                if (currUser!!.id == lastBidderId) {
+                    getString(R.string.you)
+                } else {
+                    getString(R.string.other)
+                }
+            }
     }
 
     private fun handleNoInternetConnectionState() {
@@ -269,6 +299,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
                                 fetchOwnerData()
                                 fetchRelatedAuctionAds()
                             }
+
                             false -> Unit
                         }
                     }
@@ -296,6 +327,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }
@@ -324,13 +356,15 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                    ?: args.auctionAdvertisement.startPrice?.toInt()
-                ).toString()
+                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
+                    ).toString()
         )
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())
-        binding.ivBook.load(auctionAdvertisement.book.images.first())
+        binding.ivBook.load(auctionAdvertisement.book.images.first()) {
+            crossfade(true)
+        }
         binding.tvLocation.text = auctionAdvertisement.location
         binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDateInDetails()
         binding.tvBookDescription.text = auctionAdvertisement.book.description
@@ -338,14 +372,6 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = auctionAdvertisement.book.category
         binding.tvEditionValue.text = auctionAdvertisement.book.edition
-        // if last bidder is current user then show "You" else show "Other"
-        binding.tvLastBidder.text = getString(
-            R.string.last_bidder_value,
-            auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderName
-                ?: getString(
-                    R.string.no_one
-                )
-        )
     }
 
     override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {

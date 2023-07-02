@@ -13,5 +13,16 @@ interface UserRepository {
     suspend fun getAllUsers(): Flow<Resource<ArrayList<User>, String>>
     suspend fun fetchUsersIChatWith(currentUserId: String): Resource<List<User>, String>
     suspend fun reportUser(report: Report): Resource<String, String>
+    suspend fun blockUser(
+        currentUserId: String,
+        adProviderId: String,
+        blockUser: Boolean
+    ): Resource<String, String>
+
+    suspend fun rateUser(
+        currentUserId: String,
+        adProviderId: String,
+        rate: Double
+    ): Resource<Pair<String, String>, String>
     suspend fun updateUserWishList(userId: String, adType: AdType, wishList: ArrayList<String>): Resource<String, String>
 }

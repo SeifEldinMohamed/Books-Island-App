@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +26,6 @@ class MyExchangeAdsViewModel @Inject constructor(
 
     fun fetchAllExchangeAdvertisement(userId: String) {
         setLoading(true)
-        Timber.d("fetch auction ads ...........")
         viewModelScope.launch(Dispatchers.IO) {
             getMyExchangeAdsUseCase.invoke(userId).collect {
                 when (it) {
@@ -40,9 +38,9 @@ class MyExchangeAdsViewModel @Inject constructor(
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
-                            _myExchangeAdsState.value =
-                                MyExchangeAdsState.FetchAllMyExchangeAdsSuccessfully(it.data)
                         }
+                        _myExchangeAdsState.value =
+                            MyExchangeAdsState.FetchAllMyExchangeAdsSuccessfully(it.data)
                     }
                 }
             }
@@ -50,7 +48,6 @@ class MyExchangeAdsViewModel @Inject constructor(
     }
 
     private fun setLoading(status: Boolean) {
-        Timber.d("setLoadingn: $status")
         when (status) {
             true -> {
                 _myExchangeAdsState.value = MyExchangeAdsState.IsLoading(true)

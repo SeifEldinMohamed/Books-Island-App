@@ -16,8 +16,14 @@ import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -57,6 +63,9 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         fetchMyDonationAds()
 
         binding.rvDonateMyAds.adapter = donateAdapter
+        binding.rvDonateMyAds.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchMyDonationAds() {
@@ -98,9 +107,13 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             if (donationAds.isEmpty()) {
                 binding.rvDonateMyAds.hide()
                 binding.noBooksAnimationDonationMy.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvDonateMyAds.show()
                 binding.noBooksAnimationDonationMy.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
             }
         }
     }

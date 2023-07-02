@@ -54,6 +54,9 @@ class MyAdsFragment : Fragment() {
         viewPager = binding.viewPager
         viewPager!!.adapter = MyAdsPagerAdapter(this)
 
+        viewPager!!.offscreenPageLimit =
+            1 // to prevent creating preloading fragment when click on tab
+
         mediator = TabLayoutMediator(binding.tlMyAds, viewPager!!) { tab, position ->
             tab.text = tabTitle[position]
         }

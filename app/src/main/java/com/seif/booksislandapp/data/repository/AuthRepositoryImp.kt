@@ -17,7 +17,7 @@ import com.seif.booksislandapp.domain.model.admin.Admin
 import com.seif.booksislandapp.domain.model.auth.District
 import com.seif.booksislandapp.domain.model.auth.Governorate
 import com.seif.booksislandapp.domain.repository.AuthRepository
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.DISTRICTS_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.GOVERNORATES_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
@@ -27,6 +27,10 @@ import com.seif.booksislandapp.utils.Constants.Companion.USER_DISTRICT_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_GOVERNORATE_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
+import com.seif.booksislandapp.utils.Resource
+import com.seif.booksislandapp.utils.ResourceProvider
+import com.seif.booksislandapp.utils.SharedPrefs
+import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
@@ -131,7 +135,7 @@ class AuthRepositoryImp @Inject constructor(
         }
     }
 
-    private suspend fun getUserById(id: String): Resource<User, String> {
+    suspend fun getUserById(id: String): Resource<User, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {

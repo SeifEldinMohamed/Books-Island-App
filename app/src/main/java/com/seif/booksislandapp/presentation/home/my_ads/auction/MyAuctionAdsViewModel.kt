@@ -27,7 +27,6 @@ class MyAuctionAdsViewModel @Inject constructor(
 
     fun fetchAllAuctionAdvertisement(userId: String) {
         setLoading(true)
-        Timber.d("fetch auction ads ...........")
         viewModelScope.launch(Dispatchers.IO) {
             getMyAuctionAdsUseCase.invoke(userId).collect {
                 when (it) {
@@ -40,9 +39,9 @@ class MyAuctionAdsViewModel @Inject constructor(
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)
-                            _myAuctionAdsState.value =
-                                MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully(it.data)
                         }
+                        _myAuctionAdsState.value =
+                            MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully(it.data)
                     }
                 }
             }
@@ -50,7 +49,7 @@ class MyAuctionAdsViewModel @Inject constructor(
     }
 
     private fun setLoading(status: Boolean) {
-        Timber.d("setLoadingn: $status")
+        Timber.d("setLoading: $status")
         when (status) {
             true -> {
                 _myAuctionAdsState.value = MyAuctionAdsState.IsLoading(true)

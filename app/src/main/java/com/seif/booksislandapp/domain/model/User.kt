@@ -17,7 +17,14 @@ data class User(
     var wishListDonate: ArrayList<String> = arrayListOf(),
     var wishListExchange: ArrayList<String> = arrayListOf(),
     var wishListAuction: ArrayList<String> = arrayListOf(),
-    var myBuyingChats: ArrayList<String> = arrayListOf(),
-    var mySellingChats: ArrayList<String> = arrayListOf(),
-    var reportedPersonsIds: List<String> = emptyList()
+    var reportedPersonsIds: List<String> = emptyList(),
+    var blockedUsersIds: List<String> = emptyList(),
+    var averageRate: String = "0.0",
+    var givenRates: List<Rate> = emptyList(),
+    var receivedRates: List<ReceivedRate> = emptyList(),
+    var numberOfCompletedSellAds: Int = 0,
+    var numberOfCompletedDonateAds: Int = 0,
+    var numberOfCompletedExchangeAds: Int = 0,
+    var numberOfCompletedAuctionAds: Int = 0,
+    val isSuspended: Boolean = false
 ) : Parcelable

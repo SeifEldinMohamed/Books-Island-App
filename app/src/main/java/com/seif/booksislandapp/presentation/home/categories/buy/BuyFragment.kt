@@ -24,7 +24,13 @@ import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewMod
 import com.seif.booksislandapp.presentation.home.categories.sort.BuyBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -94,6 +100,9 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.rvBuy.adapter = buyAdapter
+        binding.rvBuy.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun handleSort(sortBy: String) {
@@ -218,9 +227,13 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         if (sellAds.isEmpty()) {
             binding.rvBuy.hide()
             binding.noBooksAnimationBuy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvBuy.show()
             binding.noBooksAnimationBuy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

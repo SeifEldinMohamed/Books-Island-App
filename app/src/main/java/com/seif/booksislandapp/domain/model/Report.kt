@@ -7,7 +7,11 @@ import kotlinx.parcelize.Parcelize
 data class Report(
     var id: String,
     val reporterId: String,
+    val reporterName: String,
     val reportedPersonId: String,
+    val reportedPersonName: String,
     val comment: String,
     val category: String,
-) : Parcelable
+    val isReviewed: Boolean = false
+    ) : Parcelable
+

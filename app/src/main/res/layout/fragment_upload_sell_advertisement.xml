@@ -45,7 +45,7 @@
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="40"
+                    app:counterMaxLength="80"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -57,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="40"
+                        android:maxLength="80"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
 
@@ -118,7 +118,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="40"
+                    app:counterMaxLength="80"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_author"
@@ -130,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:maxLength="40"
+                        android:maxLength="80"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -351,7 +351,7 @@
                     android:layout_marginTop="@dimen/_6sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     app:counterEnabled="true"
-                    app:counterMaxLength="200"
+                    app:counterMaxLength="500"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_description"
@@ -364,7 +364,7 @@
                         android:layout_height="@dimen/_80sdp"
                         android:gravity="start"
                         android:inputType="textMultiLine"
-                        android:maxLength="200"
+                        android:maxLength="500"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
