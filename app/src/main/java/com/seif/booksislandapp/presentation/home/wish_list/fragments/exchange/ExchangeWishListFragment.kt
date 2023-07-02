@@ -94,9 +94,13 @@ class ExchangeWishListFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement
         if (exchangeAds.isEmpty()) {
             binding.rvExchangeWishList.hide()
             binding.noBooksAnimationSellMy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvExchangeWishList.show()
             binding.noBooksAnimationSellMy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

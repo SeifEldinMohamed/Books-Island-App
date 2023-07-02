@@ -16,11 +16,17 @@ import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
-import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
@@ -61,15 +67,18 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
 
     private fun fetchMyAuctionAds() {
         if (myAuctionAds == null) {
+            Timber.d("fetchMyAuctionAds: called")
             myAuctionAdsViewModel.fetchAllAuctionAdvertisement(userId)
             observe()
         }
     }
 
     private fun observe() {
+        Timber.d("observe: observe")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 myAuctionAdsViewModel.myAuctionAdsState.collect {
+                    Timber.d("collect: $it")
                     when (it) {
                         MyAuctionAdsState.Init -> Unit
                         is MyAuctionAdsState.FetchAllMyAuctionAdsSuccessfully -> {
@@ -77,6 +86,7 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                             auctionAdapter.updateList(it.auctionAds)
                             handleUi(it.auctionAds)
                         }
+
                         is MyAuctionAdsState.IsLoading -> handleLoadingState(it.isLoading)
                         is MyAuctionAdsState.NoInternetConnection -> handleNoInternetConnectionState()
                         is MyAuctionAdsState.ShowError -> handleErrorState(it.errorMessage)
@@ -98,9 +108,13 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             if (auctionAds.isEmpty()) {
                 binding.rvAuctionMyAds.hide()
                 binding.noBooksAnimationAuctionMy.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvAuctionMyAds.show()
                 binding.noBooksAnimationAuctionMy.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
             }
         }
     }

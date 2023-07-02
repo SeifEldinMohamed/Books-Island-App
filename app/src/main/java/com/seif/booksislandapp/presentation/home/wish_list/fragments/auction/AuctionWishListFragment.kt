@@ -91,9 +91,13 @@ class AuctionWishListFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> 
         if (auctionAds.isEmpty()) {
             binding.rvAuctionWishList.hide()
             binding.noBooksAnimationSellMy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvAuctionWishList.show()
             binding.noBooksAnimationSellMy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

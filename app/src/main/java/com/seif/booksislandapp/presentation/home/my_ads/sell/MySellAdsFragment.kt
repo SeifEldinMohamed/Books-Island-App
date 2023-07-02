@@ -100,9 +100,13 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             if (sellAds.isEmpty()) {
                 binding.rvSellMyAds.hide()
                 binding.noBooksAnimationSellMy.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvSellMyAds.show()
                 binding.noBooksAnimationSellMy.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
             }
         }
     }

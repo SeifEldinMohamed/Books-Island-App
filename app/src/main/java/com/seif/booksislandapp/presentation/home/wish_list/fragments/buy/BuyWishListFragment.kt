@@ -94,9 +94,13 @@ class BuyWishListFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         if (sellAds.isEmpty()) {
             binding.rvBuyList.hide()
             binding.noBooksAnimationSellMy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvBuyList.show()
             binding.noBooksAnimationSellMy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

@@ -94,9 +94,13 @@ class DonationWishListFragment : Fragment(), OnAdItemClick<DonateAdvertisement> 
         if (donateAds.isEmpty()) {
             binding.rvDonateWishList.hide()
             binding.noBooksAnimationSellMy.show()
+            binding.tvNoAdsYet.show()
+            binding.ivNoAdsYet.show()
         } else {
             binding.rvDonateWishList.show()
             binding.noBooksAnimationSellMy.hide()
+            binding.tvNoAdsYet.hide()
+            binding.ivNoAdsYet.hide()
         }
     }
 

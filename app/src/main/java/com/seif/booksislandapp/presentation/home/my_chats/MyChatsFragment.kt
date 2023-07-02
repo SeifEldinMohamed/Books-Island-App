@@ -105,12 +105,16 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
         if (_binding != null) {
             if (myBuyingChats.isEmpty()) {
                 binding.rvBuyingUsersChat.hide()
-                binding.noBooksAnimationMyBuyingChats.show()
                 binding.tvUnreadMessages.hide()
                 binding.cvUnreadMessages.hide()
+                binding.noBooksAnimationMyBuyingChats.show()
+                binding.tvNoAdsYet.show()
+                binding.ivNoAdsYet.show()
             } else {
                 binding.rvBuyingUsersChat.show()
                 binding.noBooksAnimationMyBuyingChats.hide()
+                binding.tvNoAdsYet.hide()
+                binding.ivNoAdsYet.hide()
                 val allUnReadMessagesCount = myBuyingChats.sumOf { it.unreadMessages }
                 Timber.d("handleUi: allUnreadMessgaes = $allUnReadMessagesCount")
                 if (allUnReadMessagesCount == 0) {
