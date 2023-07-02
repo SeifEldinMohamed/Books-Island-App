@@ -7,11 +7,13 @@ import com.google.firebase.auth.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -39,6 +41,9 @@ class AuthRepositoryImpTest {
     @Mock
     lateinit var sharedPrefs: SharedPrefs
 
+    @Mock
+    lateinit var fcm: FirebaseMessaging
+
     private var connectivityManager: ConnectivityManager = mockk(relaxed = true)
 
     @Before
@@ -48,7 +53,8 @@ class AuthRepositoryImpTest {
             firebaseAuth,
             resourceProvider,
             sharedPrefs,
-            connectivityManager
+            connectivityManager,
+            fcm
         )
         MockKAnnotations.init(this)
     }
@@ -193,6 +199,8 @@ class AuthRepositoryImpTest {
             every {
                 connectivityManager.checkInternetConnection()
             } returns true
+
+            coEvery { authRepositoryImp.getUserById(anyString()) } returns Resource.Success(testUser)
             val expected = Resource.Success(resourceProvider.string(R.string.welcome_back))
 
             // Act
