@@ -44,7 +44,8 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Places.initialize(requireContext(), "AIzaSyAbLlXzfA3nJVxhpyR3wwzAA-QoE3kpotw")
+
+        Places.initialize(requireContext(), BuildConfig.PLACES_API_KEY)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)

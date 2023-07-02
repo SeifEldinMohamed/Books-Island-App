@@ -21,7 +21,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAF-iXbZ9-ZBNcy2yfKbHgzLFDftPZBfLA" />
+            android:value="$MAPS_API_KEY" />
 
         <service
             android:name=".data.service.FirebaseMessagingService"
