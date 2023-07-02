@@ -15,6 +15,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -46,6 +47,9 @@ class UsersBottomSheetFragment : BottomSheetDialogFragment(), OnAdItemClick<User
         observe()
 
         binding.rvUsers.adapter = userAdapter
+        binding.rvUsers.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun observe() {

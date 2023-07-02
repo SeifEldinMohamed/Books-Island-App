@@ -1,13 +1,14 @@
 package com.seif.booksislandapp.presentation.home.categories.auction.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.AuctionAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDate
 import com.seif.booksislandapp.utils.setBookUriImage
 
@@ -56,9 +57,10 @@ class AuctionAdapter : RecyclerView.Adapter<AuctionAdapter.MyViewHolder>() {
         return auctionsAds.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newAuctionsAds: List<AuctionAdvertisement>) {
+        val diffUtilCallBack = MyDiffUtil(this.auctionsAds, newAuctionsAds)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.auctionsAds = newAuctionsAds
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

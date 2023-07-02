@@ -1,12 +1,13 @@
 package com.seif.booksislandapp.presentation.home.categories.exchange.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.seif.booksislandapp.databinding.ExchangeAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDate
 import com.seif.booksislandapp.utils.setBookUriImage
 
@@ -41,9 +42,10 @@ class ExchangeAdapter : RecyclerView.Adapter<ExchangeAdapter.MyViewHolder>() {
     override fun getItemCount(): Int {
         return exchangeAds.size
     }
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newExchangeAds: List<ExchangeAdvertisement>) {
+        val diffUtilCallBack = MyDiffUtil(this.exchangeAds, newExchangeAds)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.exchangeAds = newExchangeAds
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

@@ -23,6 +23,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
@@ -61,6 +62,9 @@ class BuyWishListFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         fetchBuyWishList()
 
         binding.rvBuyList.adapter = buyAdapter
+        binding.rvBuyList.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchBuyWishList() {

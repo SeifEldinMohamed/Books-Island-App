@@ -1,15 +1,15 @@
 package com.seif.booksislandapp.presentation.home.requests.received_requests
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ReceivedRequestItemBinding
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDateInDetails
-import timber.log.Timber
 
 class ReceivedRequestAdapter : RecyclerView.Adapter<ReceivedRequestAdapter.MyViewHolder>() {
     var onReceivedButtonClick: OnReceivedRequestItemClick<MyReceivedRequest>? = null
@@ -64,10 +64,10 @@ class ReceivedRequestAdapter : RecyclerView.Adapter<ReceivedRequestAdapter.MyVie
         return myReceivedRequests.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(myReceivedRequests: List<MyReceivedRequest>) {
-        Timber.d("myRequests= $myReceivedRequests")
+        val diffUtilCallBack = MyDiffUtil(this.myReceivedRequests, myReceivedRequests)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.myReceivedRequests = myReceivedRequests
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

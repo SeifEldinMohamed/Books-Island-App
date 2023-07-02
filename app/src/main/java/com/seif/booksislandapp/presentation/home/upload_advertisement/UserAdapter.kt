@@ -1,14 +1,14 @@
 package com.seif.booksislandapp.presentation.home.upload_advertisement
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.databinding.UserItemBinding
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import timber.log.Timber
+import com.seif.booksislandapp.utils.MyDiffUtil
 
 class UserAdapter : RecyclerView.Adapter<UserAdapter.MyViewHolder>() {
     var onAdItemClick: OnAdItemClick<User>? = null
@@ -45,10 +45,10 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.MyViewHolder>() {
         return users.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newUsers: List<User>) {
-        Timber.d("users= $newUsers")
+        val diffUtilCallBack = MyDiffUtil(this.users, newUsers)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.users = newUsers
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

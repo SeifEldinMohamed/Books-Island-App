@@ -1,17 +1,17 @@
 package com.seif.booksislandapp.presentation.home.requests.sent_requests
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.SentRequestItemBinding
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDateInDetails
-import timber.log.Timber
 
 class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>() {
     var onCancelButtonItemClick: OnAdItemClick<MySentRequest>? = null
@@ -112,10 +112,10 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(mySentRequests: List<MySentRequest>) {
-        Timber.d("myRequests= $mySentRequests")
+        val diffUtilCallBack = MyDiffUtil(this.mySentRequests, mySentRequests)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.mySentRequests = mySentRequests
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

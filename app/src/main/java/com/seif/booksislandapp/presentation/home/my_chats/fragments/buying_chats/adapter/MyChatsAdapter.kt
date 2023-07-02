@@ -1,15 +1,16 @@
 package com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.MyChatItemBinding
 import com.seif.booksislandapp.domain.model.chat.MyChat
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDateToTime
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -90,10 +91,10 @@ class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
         return myChats.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newMyChats: List<MyChat>) {
-        Timber.d("updateList: myChats in Adapter = $newMyChats")
+        val diffUtilCallBack = MyDiffUtil(this.myChats, newMyChats)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.myChats = newMyChats
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

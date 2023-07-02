@@ -1,13 +1,14 @@
 package com.seif.booksislandapp.presentation.home.categories.buy.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.BuyDonateAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 import com.seif.booksislandapp.utils.formatDate
 import com.seif.booksislandapp.utils.setBookUriImage
 
@@ -48,9 +49,10 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
         return buyAds.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newBuyAds: List<SellAdvertisement>) {
+        val diffUtilCallBack = MyDiffUtil(this.buyAds, newBuyAds)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.buyAds = newBuyAds
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

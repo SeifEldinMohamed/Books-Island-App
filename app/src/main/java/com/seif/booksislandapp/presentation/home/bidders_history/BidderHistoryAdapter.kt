@@ -1,15 +1,16 @@
 package com.seif.booksislandapp.presentation.home.bidders_history
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.BidderItemBinding
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.utils.MyDiffUtil
 
 class BidderHistoryAdapter : RecyclerView.Adapter<BidderHistoryAdapter.MyViewHolder>() {
     var onChatItemClick: OnAdItemClick<String>? = null
@@ -70,9 +71,10 @@ class BidderHistoryAdapter : RecyclerView.Adapter<BidderHistoryAdapter.MyViewHol
         return bidders.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newBidders: List<Bidder>) {
+        val diffUtilCallBack = MyDiffUtil(this.bidders, newBidders)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallBack)
         this.bidders = newBidders
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }

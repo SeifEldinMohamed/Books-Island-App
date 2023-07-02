@@ -28,6 +28,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -90,6 +91,9 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.rvBuy.adapter = buyAdapter
+        binding.rvBuy.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun fetchByFilter(filterBy: FilterBy) {

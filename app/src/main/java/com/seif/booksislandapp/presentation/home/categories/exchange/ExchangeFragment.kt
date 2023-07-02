@@ -27,6 +27,7 @@ import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -83,6 +84,9 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             binding.swipeRefresh.isRefreshing = false
         }
         binding.rvExchange.adapter = exchangeAdapter
+        binding.rvExchange.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 300
+        }
     }
 
     private fun observe() {
