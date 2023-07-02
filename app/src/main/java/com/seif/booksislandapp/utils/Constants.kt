@@ -13,18 +13,18 @@ class Constants {
         const val TIMEOUT_RATE = 15000L // 10 seconds to upload
 
         // FireStore
-        const val USER_FIRESTORE_COLLECTION = "users"
+        const val USER_FIRESTORE_COLLECTION = "Users"
         const val GOVERNORATES_FIRESTORE_COLLECTION = "governorate"
         const val DISTRICTS_FIRESTORE_COLLECTION = "districts"
-        const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "sell advertisements"
-        const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "exchange advertisements"
-        const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "donate advertisement"
-        const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "auctions advertisements"
-        const val CHATS_FIIRESTORE_COLLECTION: String = "CHats"
-        const val REPORTS_FIIRESTORE_COLLECTION: String = "Reports"
-        const val REQUESTS_FIIRESTORE_COLLECTION: String = "Requests"
-        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "chat list"
-        const val TOKENS_FIIRESTORE_COLLECTION: String = "Tokens"
+        const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "Sell Advertisements"
+        const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Exchange Advertisements"
+        const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Donate Advertisement"
+        const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "Auctions Advertisements"
+        const val CHATS_FIIRESTORE_COLLECTION: String = "All Chats"
+        const val REPORTS_FIIRESTORE_COLLECTION: String = "All Reports"
+        const val REQUESTS_FIIRESTORE_COLLECTION: String = "All Requests"
+        const val CHAT_LIST_FIIRESTORE_COLLECTION: String = "The Chat List"
+        const val TOKENS_FIIRESTORE_COLLECTION: String = "The Tokens"
 
         // Fields
         const val NUMBER_OF_COMPLETED_SELL_ADS_FIELD = "numberOfCompletedSellAds"
