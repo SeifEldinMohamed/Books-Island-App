@@ -18,7 +18,9 @@ class BidderHistoryAdapter : RecyclerView.Adapter<BidderHistoryAdapter.MyViewHol
     inner class MyViewHolder(private val binding: BidderItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(bidder: Bidder, position: Int) {
-            binding.ivAvatarImage.load(bidder.bidderAvatar)
+            binding.ivAvatarImage.load(bidder.bidderAvatar) {
+                crossfade(true)
+            }
             binding.tvUsername.text = bidder.bidderName
             binding.tvBidValue.text = bidder.suggestedPrice
             handleFirstItem(binding, position)

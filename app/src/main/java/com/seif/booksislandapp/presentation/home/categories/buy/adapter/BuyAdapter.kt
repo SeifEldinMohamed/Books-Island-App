@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.BuyDonateAdvItemBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
+import com.seif.booksislandapp.utils.setBookUriImage
 
 class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
     var onAdItemClick: OnAdItemClick<SellAdvertisement>? = null
@@ -23,9 +23,7 @@ class BuyAdapter : RecyclerView.Adapter<BuyAdapter.MyViewHolder>() {
             binding.tvPublishDate.text = buyAdvertisement.publishDate.formatDate()
             binding.tvPrice.text = itemView.context.getString(R.string.egypt_pound, buyAdvertisement.price)
             binding.tvLocation.text = buyAdvertisement.location
-            binding.ivImage.load(buyAdvertisement.book.images.first()) {
-                placeholder(R.drawable.book_placeholder)
-            }
+            binding.ivImage.setBookUriImage(buyAdvertisement.book.images.first())
             binding.cvBuyDonateAd.setOnClickListener {
                 onAdItemClick?.onAdItemClick(buyAdvertisement, position)
             }

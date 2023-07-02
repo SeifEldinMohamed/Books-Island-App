@@ -25,6 +25,7 @@ import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.disable
 import com.seif.booksislandapp.utils.formatDateInDetails
 import com.seif.booksislandapp.utils.hide
+import com.seif.booksislandapp.utils.setBookUriImage
 import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
@@ -148,7 +149,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
         binding.tvTitle.text = donateAdvertisement.book.title
         binding.tvPrice.text = getString(R.string.free)
-        binding.ivBook.load(donateAdvertisement.book.images.first())
+        binding.ivBook.setBookUriImage(donateAdvertisement.book.images.first())
         binding.tvLocation.text = donateAdvertisement.location
         binding.tvPublishDate.text = donateAdvertisement.publishDate.formatDateInDetails()
         binding.tvBookDescription.text = donateAdvertisement.book.description
@@ -232,7 +233,9 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     private fun showOwnerData(owner: User) {
-        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.ivOwnerAvatar.load(owner.avatarImage) {
+            crossfade(true)
+        }
         binding.tvOwnerName.text = owner.username
     }
 

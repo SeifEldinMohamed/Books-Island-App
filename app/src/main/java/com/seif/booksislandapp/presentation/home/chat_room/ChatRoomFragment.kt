@@ -182,7 +182,9 @@ class ChatRoomFragment : Fragment() {
     }
 
     private fun showReceiverData(receiverUser: User) {
-        binding.ivAvatar.load(receiverUser.avatarImage)
+        binding.ivAvatar.load(receiverUser.avatarImage) {
+            crossfade(true)
+        }
         binding.tvUsername.text = receiverUser.username
     }
 

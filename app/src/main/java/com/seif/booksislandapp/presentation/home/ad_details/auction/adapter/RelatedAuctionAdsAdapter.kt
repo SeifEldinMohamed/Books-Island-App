@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.RelatedAuctionAdsItemBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
+import com.seif.booksislandapp.utils.setBookUriImage
 
 class RelatedAuctionAdsAdapter : RecyclerView.Adapter<RelatedAuctionAdsAdapter.MyViewHolder>() {
     var onRelatedAdItemClick: OnAdItemClick<AuctionAdvertisement>? = null
@@ -28,7 +28,7 @@ class RelatedAuctionAdsAdapter : RecyclerView.Adapter<RelatedAuctionAdsAdapter.M
                     ).toString()
             )
             binding.tvLocation.text = auctionAdvertisement.location
-            binding.ivBook.load(auctionAdvertisement.book.images.first())
+            binding.ivBook.setBookUriImage(auctionAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
                 onRelatedAdItemClick?.onAdItemClick(auctionAdvertisement, position)

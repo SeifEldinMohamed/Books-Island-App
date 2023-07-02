@@ -223,10 +223,10 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyDonateAdvertisement(it)
-                    binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
                 }
             }
+            binding.btnSubmit.text = getString(R.string.update_post)
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
@@ -491,9 +491,13 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         dialog.setView(null)
         binding.rvUploadedImages.adapter = null
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadDonateAdvertisementViewModel.resetUploadStatus()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

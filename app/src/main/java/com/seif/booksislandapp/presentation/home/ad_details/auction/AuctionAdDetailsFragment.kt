@@ -216,7 +216,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
     }
 
     private fun showOwnerData(owner: User) {
-        binding.ivOwnerAvatar.load(owner.avatarImage)
+        binding.ivOwnerAvatar.load(owner.avatarImage) {
+            crossfade(true)
+        }
         binding.tvOwnerName.text = owner.username
     }
 
@@ -343,13 +345,15 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                    ?: args.auctionAdvertisement.startPrice?.toInt()
-                ).toString()
+                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
+                    ).toString()
         )
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())
-        binding.ivBook.load(auctionAdvertisement.book.images.first())
+        binding.ivBook.load(auctionAdvertisement.book.images.first()) {
+            crossfade(true)
+        }
         binding.tvLocation.text = auctionAdvertisement.location
         binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDateInDetails()
         binding.tvBookDescription.text = auctionAdvertisement.book.description

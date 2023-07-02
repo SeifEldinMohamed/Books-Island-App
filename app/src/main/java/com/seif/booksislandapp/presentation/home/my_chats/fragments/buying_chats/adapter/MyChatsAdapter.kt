@@ -22,7 +22,9 @@ class MyChatsAdapter : RecyclerView.Adapter<MyChatsAdapter.MyViewHolder>() {
     inner class MyViewHolder(private val binding: MyChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(myChat: MyChat, position: Int) {
-            binding.ivAvatarImage.load(myChat.userIChatWith.avatarImage)
+            binding.ivAvatarImage.load(myChat.userIChatWith.avatarImage) {
+                crossfade(true)
+            }
             binding.tvUsername.text = myChat.userIChatWith.username
             binding.tvTime.text = myChat.lastMessageDate!!.formatDateToTime()
             binding.tvLastMessage.text = myChat.lastMessage

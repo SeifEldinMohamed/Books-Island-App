@@ -22,7 +22,9 @@ class SentRequestAdapter : RecyclerView.Adapter<SentRequestAdapter.MyViewHolder>
         fun bind(mySentRequest: MySentRequest, position: Int) {
             binding.apply {
                 tvUsername.text = mySentRequest.username
-                ivAvatarImage.load(mySentRequest.avatarImage)
+                ivAvatarImage.load(mySentRequest.avatarImage) {
+                    crossfade(true)
+                }
                 tvDate.text = mySentRequest.date!!.formatDateInDetails()
                 tvTitle.text = mySentRequest.bookTitle
                 tvCondition.text = mySentRequest.condition

@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.RelatedAdsItemBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.formatDate
+import com.seif.booksislandapp.utils.setBookUriImage
 
 class RelatedExchangeAdsAdapter : RecyclerView.Adapter<RelatedExchangeAdsAdapter.MyViewHolder>() {
     var onRelatedAdItemClick: OnAdItemClick<ExchangeAdvertisement>? = null
@@ -22,7 +22,7 @@ class RelatedExchangeAdsAdapter : RecyclerView.Adapter<RelatedExchangeAdsAdapter
             binding.tvPublishDate.text = exchangeAdvertisement.publishDate.formatDate()
             binding.tvPrice.text = itemView.context.getString(R.string.exchange)
             binding.tvLocation.text = exchangeAdvertisement.location
-            binding.ivBook.load(exchangeAdvertisement.book.images.first())
+            binding.ivBook.setBookUriImage(exchangeAdvertisement.book.images.first())
 
             binding.cvRelatedAd.setOnClickListener {
                 onRelatedAdItemClick?.onAdItemClick(exchangeAdvertisement, position)

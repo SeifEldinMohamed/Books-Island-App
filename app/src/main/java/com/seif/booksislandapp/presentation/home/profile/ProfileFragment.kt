@@ -95,7 +95,9 @@ class ProfileFragment : Fragment() {
     private fun changeAvatarImage() {
         binding.ivAvatar.disable()
         avatarImage = handleAvatarImage(user.gender)
-        binding.ivAvatar.load(avatarImage)
+        binding.ivAvatar.load(avatarImage) {
+            crossfade(true)
+        }
         enableUpdateProfileButton()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -304,7 +306,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showUserProfileData(user: User) {
-        binding.ivAvatar.load(user.avatarImage)
+        binding.ivAvatar.load(user.avatarImage) {
+            crossfade(true)
+        }
         binding.etEmail.setText(user.email)
         binding.etUsername.setText(user.username)
         binding.tvUsername.text = user.username

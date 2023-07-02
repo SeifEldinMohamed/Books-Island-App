@@ -20,7 +20,9 @@ class ReceivedRequestAdapter : RecyclerView.Adapter<ReceivedRequestAdapter.MyVie
         fun bind(myReceivedRequest: MyReceivedRequest, position: Int) {
             binding.apply {
                 tvUsername.text = myReceivedRequest.username
-                ivAvatarImage.load(myReceivedRequest.avatarImage)
+                ivAvatarImage.load(myReceivedRequest.avatarImage) {
+                    crossfade(true)
+                }
                 tvDate.text = myReceivedRequest.date!!.formatDateInDetails()
                 tvTitle.text = myReceivedRequest.bookTitle
                 tvCondition.text = myReceivedRequest.condition

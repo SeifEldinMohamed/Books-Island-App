@@ -5,10 +5,10 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.UploadedExchangeItemBinding
 import com.seif.booksislandapp.domain.model.book.BooksToExchange
+import com.seif.booksislandapp.utils.setBookUriImage
 import timber.log.Timber
 
 class UploadedBooksForExchangeAdapter : RecyclerView.Adapter<UploadedBooksForExchangeAdapter.MyViewHolder>() {
@@ -17,15 +17,20 @@ class UploadedBooksForExchangeAdapter : RecyclerView.Adapter<UploadedBooksForExc
     inner class MyViewHolder(private val binding: UploadedExchangeItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(booksToExchange: BooksToExchange, position: Int) {
             // binding.ivNoteImage.setImageURI(booksToExchange.imageUri)
-            binding.ivNoteImage.load(booksToExchange.imageUri) {
-                placeholder(R.drawable.book_placeholder)
+            booksToExchange.imageUri?.let {
+                binding.ivNoteImage.setBookUriImage(it)
             }
             binding.tvBookName.text = booksToExchange.title
-            binding.tvBookAuther.text = itemView.context.getString(R.string.by, booksToExchange.author)
+            binding.tvBookAuther.text =
+                itemView.context.getString(R.string.by, booksToExchange.author)
             // Timber.d("image uri $image")
             binding.ivRemoveBook.setOnClickListener {
                 Timber.d("remove clicked")
-                onImageItemClick?.onRemoveImageItemClick(booksToExchange.imageUri!!, position, "Book")
+                onImageItemClick?.onRemoveImageItemClick(
+                    booksToExchange.imageUri!!,
+                    position,
+                    "Book"
+                )
             }
         }
     }

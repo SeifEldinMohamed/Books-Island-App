@@ -238,10 +238,10 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
                     exchangeFor = it.booksToExchange.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMyDonateAdvertisement(it)
-                    binding.btnUpload.text = getString(R.string.update_post)
                     binding.ivDeleteMyExchangeAd.show()
                 }
             }
+            binding.btnUpload.text = getString(R.string.update_post)
         } else {
             binding.btnUpload.text = getString(R.string.submit_post)
             binding.ivDeleteMyExchangeAd.hide()
@@ -552,9 +552,13 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         binding.rvUploadedBook.adapter = null
         binding.rvUploadedImages.adapter = null
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadExchangeAdvertisementViewModel.resetUploadStatus()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

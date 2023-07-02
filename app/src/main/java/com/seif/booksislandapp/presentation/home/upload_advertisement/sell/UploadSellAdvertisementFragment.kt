@@ -239,12 +239,12 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
                     imageUris = it.book.images.toCollection(ArrayList())
                     categoryName = it.book.category
                     showMySellAdvertisement(it)
-                    binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAd.show()
 //                    binding.ivRequestConfirmation.show()
 //                    binding.tvCancelRequest.hide()
                 }
             }
+            binding.btnSubmit.text = getString(R.string.update_post)
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAd.hide()
@@ -507,8 +507,12 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         _binding = null
         dialog.setView(null)
         // return states to initial values
-        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
         itemUserViewModel.selectedUser(null)
         uploadSellAdvertisementViewModel.resetUploadStatus()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        itemCategoryViewModel.selectItem(getString(R.string.choose_category))
     }
 }

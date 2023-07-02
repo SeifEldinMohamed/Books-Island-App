@@ -17,7 +17,9 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.MyViewHolder>() {
     inner class MyViewHolder(private val binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User, position: Int) {
-            binding.ivAvatarImage.load(user.avatarImage)
+            binding.ivAvatarImage.load(user.avatarImage) {
+                crossfade(true)
+            }
             binding.tvUsername.text = user.username
             binding.cvMyChat.setOnClickListener {
                 onAdItemClick?.onAdItemClick(user, position)
