@@ -64,14 +64,10 @@ class ProfileViewModel @Inject constructor(
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
-                            setLoading(false)
                             showError(it.message)
                         }
                     }
                     is Resource.Success -> {
-                        withContext(Dispatchers.Main) {
-                            setLoading(false)
-                        }
                         _profileState.value =
                             ProfileState.GetUserByIdSuccessfully(it.data)
                     }
@@ -103,20 +99,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getGovernorates() {
-        setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             getGovernoratesUseCase().let {
                 when (it) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {
-                            setLoading(false)
                             showError(it.message)
                         }
                     }
                     is Resource.Success -> {
-                        withContext(Dispatchers.Main) {
-                            setLoading(false)
-                        }
                         _profileState.value = ProfileState.GetGovernoratesSuccessfully(it.data)
                     }
                 }
@@ -125,7 +116,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getDistricts(governorateId: String) {
-        setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
             getDistrictsUseCase(governorateId = governorateId).let {
                 when (it) {
