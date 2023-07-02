@@ -141,7 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_rate"
         app:layout_constraintTop_toTopOf="@id/tv_rate"
-        tools:text="@string/rate_value" />
+        tools:text="@string/rate_value_4.3" />
 
     <TextView
         android:id="@+id/tv_location"
@@ -236,7 +236,7 @@
         android:layout_height="0dp"
         android:paddingVertical="@dimen/_6sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
+        app:layout_constraintBottom_toTopOf="@+id/btn_suspend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView16"
@@ -244,7 +244,7 @@
         tools:listitem="@layout/user_detail_item" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_cancel"
+        android:id="@+id/btn_suspend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_20sdp"
@@ -252,7 +252,7 @@
         android:layout_marginEnd="@dimen/_25sdp"
         android:paddingHorizontal="@dimen/_16sdp"
         android:paddingVertical="@dimen/_8sdp"
-        android:text="@string/suspended"
+        android:text="@string/suspend"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_16ssp"

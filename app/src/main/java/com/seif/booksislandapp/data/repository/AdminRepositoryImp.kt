@@ -37,7 +37,8 @@ class AdminRepositoryImp @Inject constructor(
                             val allReportsDto = arrayListOf<ReportDto>()
                             for (document in reportsQuerySnapshot) {
                                 val reportDto = document.toObject(ReportDto::class.java)
-                                allReportsDto.add(reportDto)
+                                if (!reportDto.reviewed)
+                                    allReportsDto.add(reportDto)
                             }
                             trySend(
                                 Resource.Success(
@@ -65,7 +66,8 @@ class AdminRepositoryImp @Inject constructor(
 
                 val querySnapshot = firestore.collection(REPORTS_FIIRESTORE_COLLECTION)
                     .whereEqualTo("reportedPersonId", userId)
-                    .orderBy("date", Query.Direction.DESCENDING)
+                    .whereNotEqualTo("reviewed", true)
+                    .orderBy("reviewed", Query.Direction.DESCENDING)
                     .get()
                     .await()
                 val reportsDto = arrayListOf<ReportDto>()
@@ -82,6 +84,22 @@ class AdminRepositoryImp @Inject constructor(
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun setReportReviewed(reportId: String): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(REPORTS_FIIRESTORE_COLLECTION).document(reportId)
+                    .update("reviewed", true)
+                    .await()
+                Resource.Success("Reviewed")
+            }
+        } catch (e: Exception) {
+            Resource.Error(message = e.message.toString())
         }
     }
 }

@@ -125,7 +125,7 @@
                 android:focusable="true"
                 android:fontFamily="@font/roboto_bold"
                 android:padding="@dimen/_10sdp"
-                android:text="@string/rate_value"
+                android:text="@string/rate_value_4.3"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintEnd_toStartOf="@+id/iv_star"

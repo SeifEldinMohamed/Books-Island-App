@@ -22,6 +22,6 @@ data class UserDto(
     var numberOfCompletedDonateAds: Int = 0,
     var numberOfCompletedExchangeAds: Int = 0,
     var numberOfCompletedAuctionAds: Int = 0,
-    val isSuspended: Boolean = false
+    var isSuspended: Boolean = false
 
 )

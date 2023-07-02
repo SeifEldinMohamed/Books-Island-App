@@ -16,8 +16,7 @@ class UserDetailsAdapter : RecyclerView.Adapter<UserDetailsAdapter.MyViewHolder>
     inner class MyViewHolder(private val binding: UserDetailItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(report: Report, position: Int) {
-            // binding.tvReporter.text = report.reporterName
-            // binding.tvReported.text = report.reportedPersonName
+            binding.tvReported.text = report.reporterName
             binding.tvCategoryType.text = report.category
             reportNum = position + 1
             binding.tvReportNumber.text = reportNum.toString()

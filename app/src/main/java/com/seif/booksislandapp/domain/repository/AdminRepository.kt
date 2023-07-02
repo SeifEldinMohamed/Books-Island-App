@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface AdminRepository {
     suspend fun getAllReports(): Flow<Resource<ArrayList<Report>, String>>
     suspend fun getAllReportsOnUsers(userId: String): Resource<ArrayList<Report>, String>
+    suspend fun setReportReviewed(reportId: String): Resource<String, String>
 }

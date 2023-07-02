@@ -98,4 +98,12 @@ class AllUsersFragment : Fragment(), OnAdItemClick<User> {
         val action = AllUsersFragmentDirections.actionAllUsersFragmentToUserDetailsFragment(item)
         findNavController().navigate(action)
     }
+    override fun onDestroyView() {
+        allUsersAdapter.onAdItemClick = null
+        binding.rvUsers.adapter = null
+        dialog.setView(null)
+        _binding = null
+        allUsers = null
+        super.onDestroyView()
+    }
 }

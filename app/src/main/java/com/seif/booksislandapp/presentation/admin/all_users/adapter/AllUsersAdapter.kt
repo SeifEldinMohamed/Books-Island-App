@@ -14,14 +14,24 @@ class AllUsersAdapter : RecyclerView.Adapter<AllUsersAdapter.MyViewHolder>() {
 
     var onAdItemClick: OnAdItemClick<User>? = null
     var users: List<User> = emptyList()
-
     inner class MyViewHolder(private val binding: AdminUserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User, position: Int) {
             binding.tvUsername.text = user.username
             binding.tvEmail.text = user.email
-            //  binding.tvStatus.text = user.status
-            //   binding.tvStar.text = user.rate
+            when (user.isSuspended) {
+                true -> {
+                    binding.tvStatus.text = binding.root.context.getString(R.string.suspended)
+                    binding.tvStatus.setTextColor(binding.root.context.getColor(R.color.pending_orange))
+                    binding.cvStatusBackground.setCardBackgroundColor(binding.root.context.getColor(R.color.light_orange))
+                }
+                false -> {
+                    binding.tvStatus.text = binding.root.context.getString(R.string.active)
+                    binding.tvStatus.setTextColor(binding.root.context.getColor(R.color.accepted_green))
+                    binding.cvStatusBackground.setCardBackgroundColor(binding.root.context.getColor(R.color.light_green))
+                }
+            }
+            binding.tvStar.text = user.averageRate
             binding.ivAvatarImage.load(user.avatarImage) {
                 placeholder(R.drawable.person_placeholder)
             }

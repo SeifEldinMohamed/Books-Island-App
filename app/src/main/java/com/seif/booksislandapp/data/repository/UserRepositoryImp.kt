@@ -61,6 +61,7 @@ class UserRepositoryImp @Inject constructor(
             Resource.Error(message = e.message.toString())
         }
     }
+
     override suspend fun updateUserWishList(
         userId: String,
         adType: AdType,
@@ -68,7 +69,6 @@ class UserRepositoryImp @Inject constructor(
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
-        Timber.d(userId)
         return try {
             withTimeout(Constants.TIMEOUT) {
                 firestore.collection(USER_FIRESTORE_COLLECTION).document(userId)
@@ -267,6 +267,7 @@ class UserRepositoryImp @Inject constructor(
         sharedPrefs.put(Constants.USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(Constants.USER_AVATAR_KEY, user.avatarImage)
     }
+
     override suspend fun getAllUsers() = callbackFlow {
         if (!connectivityManager.checkInternetConnection())
             trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
@@ -299,12 +300,34 @@ class UserRepositoryImp @Inject constructor(
         }
         awaitClose { }
     }
+
     private fun getAdType(adType: AdType): String {
         return when (adType) {
             AdType.Buying -> Constants.WISHLIST_BUY
             AdType.Donation -> Constants.WISHLIST_DONATE
             AdType.Exchange -> Constants.WISHLIST_EXCHANGE
             AdType.Auction -> Constants.WISHLIST_AUCTION
+        }
+    }
+
+    override suspend fun updateSuspendState(
+        suspended: Boolean,
+        userId: String
+    ): Resource<Boolean, String> {
+
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION).document(userId)
+                    .update("suspended", suspended)
+                    .await()
+                Timber.d((suspended).toString())
+                Resource.Success(suspended)
+            }
+        } catch (e: Exception) {
+            Resource.Error(message = e.message.toString())
         }
     }
 }

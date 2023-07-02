@@ -155,23 +155,23 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             binding.tvCurrentPriceValue.text = getString(
                 R.string.egypt_pound,
                 (
-                        updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                            ?: args.auctionAdvertisement.startPrice?.toInt()
-                        ).toString()
+                    updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                        ?: args.auctionAdvertisement.startPrice?.toInt()
+                    ).toString()
             )
 
             val lastBidderId =
                 updatedAuctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderId
             binding.tvLastBidder.text =
                 getString(R.string.last_bidder_value) + " " + if (lastBidderId == null) {
-                    getString(R.string.no_one)
+                getString(R.string.no_one)
+            } else {
+                if (currUser!!.id == lastBidderId) {
+                    getString(R.string.you)
                 } else {
-                    if (currUser!!.id == lastBidderId) {
-                        getString(R.string.you)
-                    } else {
-                        getString(R.string.other)
-                    }
+                    getString(R.string.other)
                 }
+            }
         }
     }
 
@@ -275,14 +275,14 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
             args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.bidderId
         binding.tvLastBidder.text =
             getString(R.string.last_bidder_value) + " " + if (lastBidderId == null) {
-                getString(R.string.no_one)
+            getString(R.string.no_one)
+        } else {
+            if (currUser!!.id == lastBidderId) {
+                getString(R.string.you)
             } else {
-                if (currUser!!.id == lastBidderId) {
-                    getString(R.string.you)
-                } else {
-                    getString(R.string.other)
-                }
+                getString(R.string.other)
             }
+        }
     }
 
     private fun handleNoInternetConnectionState() {
@@ -356,9 +356,9 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                    args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                        ?: args.auctionAdvertisement.startPrice?.toInt()
-                    ).toString()
+                args.auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                    ?: args.auctionAdvertisement.startPrice?.toInt()
+                ).toString()
         )
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())

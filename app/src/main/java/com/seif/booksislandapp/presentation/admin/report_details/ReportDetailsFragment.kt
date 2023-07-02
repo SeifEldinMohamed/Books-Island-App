@@ -18,7 +18,6 @@ import com.seif.booksislandapp.utils.handleNoInternetConnectionState
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 @AndroidEntryPoint
 class ReportDetailsFragment : Fragment() {
     private var _binding: FragmentReportDetailsBinding? = null
@@ -40,6 +39,15 @@ class ReportDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
+        binding.ivBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.btnCancelReport.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.ivBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
         binding.btnAccused.setOnClickListener {
             user?.let {
                 val action =
@@ -86,7 +94,6 @@ class ReportDetailsFragment : Fragment() {
     }
 
     private fun handleLoadingState(isLoading: Boolean) {
-        Timber.d("handleLoadingState: loading $isLoading")
         when (isLoading) {
             true -> {
                 startLoadingDialog()
@@ -102,5 +109,12 @@ class ReportDetailsFragment : Fragment() {
 
     private fun dismissLoadingDialog() {
         dialog.dismiss()
+    }
+
+    override fun onDestroyView() {
+        dialog.setView(null)
+        _binding = null
+        user = null
+        super.onDestroyView()
     }
 }

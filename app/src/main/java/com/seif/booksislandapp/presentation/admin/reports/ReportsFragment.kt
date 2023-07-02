@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentReportsBinding
 import com.seif.booksislandapp.domain.model.Report
+import com.seif.booksislandapp.presentation.admin.OnReportReviewedItemClick
 import com.seif.booksislandapp.presentation.admin.reports.adapter.ReportsAdapter
 import com.seif.booksislandapp.presentation.admin.reports.viewmodel.AllReportsViewModel
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
@@ -21,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ReportsFragment : Fragment(), OnAdItemClick<Report> {
+class ReportsFragment : Fragment(), OnAdItemClick<Report>, OnReportReviewedItemClick<Report> {
     private var _binding: FragmentReportsBinding? = null
     private val binding get() = _binding!!
     private val allReportsViewModel: AllReportsViewModel by viewModels()
@@ -43,7 +44,8 @@ class ReportsFragment : Fragment(), OnAdItemClick<Report> {
         super.onViewCreated(view, savedInstanceState)
         dialog = requireContext().createLoadingAlertDialog(requireActivity())
         reportsAdapter.onAdItemClick = this
-
+        reportsAdapter.onReportReviewedItemClick = this
+        ifReportReviewed()
         fetchAllReports()
         binding.rvReportsRequests.adapter = reportsAdapter
     }
@@ -98,10 +100,36 @@ class ReportsFragment : Fragment(), OnAdItemClick<Report> {
     private fun handleErrorState(message: String) {
         binding.root.showErrorSnackBar(message)
     }
+    private fun ifReportReviewed() {
+        lifecycleScope.launch {
+            allReportsViewModel.reportReviewState.collect {
+                when (it) {
+                    ReviewedState.Init -> Unit
+                    is ReviewedState.NoInternetConnection -> handleNoInternetConnectionState(binding.root)
+                    is ReviewedState.ShowError -> handleErrorState(it.message)
+                    is ReviewedState.UpdatedSuccessfully -> Unit
+                }
+            }
+        }
+    }
 
     override fun onAdItemClick(item: Report, position: Int) {
         val action =
             ReportsFragmentDirections.actionReportsFragmentToReportDetailsFragment(item, position)
         findNavController().navigate(action)
+    }
+
+    override fun onReportReviewedItemClick(item: Report) {
+        allReportsViewModel.setReviewed(item.id)
+    }
+
+    override fun onDestroyView() {
+        reportsAdapter.onAdItemClick = null
+        reportsAdapter.onReportReviewedItemClick = null
+        binding.rvReportsRequests.adapter = null
+        dialog.setView(null)
+        _binding = null
+        allReports = null
+        super.onDestroyView()
     }
 }
