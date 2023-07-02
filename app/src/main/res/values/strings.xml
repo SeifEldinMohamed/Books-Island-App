@@ -58,7 +58,7 @@
     <string name="favourite_image">favourite image</string>
     <string name="book_image">book image</string>
     <string name="_120_egp">120 EGP</string>
-    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredibel exprience of how knowing the real business men</string>
+    <string name="book_description">Rich Dad Poor Dad is a 1997 book written by Robert T. Kiyosaki and Sharon Lechter. It was an incredible experience of how knowing the real business men</string>
     <string name="book_title">Qudrant Flow of Money</string>
     <string name="user_location">Maadi, Cairo</string>
     <string name="adv_publish_date">11 NOV</string>
@@ -230,12 +230,12 @@
     <string name="other">Other</string>
     <string name="status_started">Status: Started</string>
     <string name="status_value">Status: %1$s</string>
-    <string name="last_bidder_value">Last Bidder: %1$s</string>
+    <string name="last_bidder_value">Last Bidder:</string>
     <string name="add_bid_successfully">Your Bid Added Successfully</string>
     <string name="profile_updated_successfully">Updated Successfully</string>
     <string name="password_tool_tip_image">password tool tip image</string>
     <string name="tooltip_password">- Password must be more than 5 characters in length. \n - Password must be alphanumeric with a minimum of 1 letters, 1 digits and special character. \n- Password is Case Sensitive</string>
-    <string name="tooltip_username">- Usernae is Cas Sensitive.\n- Maximum usernaem length is 22.</string>
+    <string name="tooltip_username">- Username is Cas Sensitive.\n- Maximum username length is 22.</string>
     <string name="tooltip_email">"- Email is Case Sensitive. "</string>
     <string name="update_post">Update Post</string>
     <string name="delete_ad_icon">delete ad icon</string>
@@ -349,5 +349,6 @@
     <string name="no_ads_yet">No Ads Yet</string>
     <string name="instructions">Instructions</string>
     <string name="no_chats_yet">No Chats Yet</string>
+    <string name="no_bidders_yet">No Bidders Yet</string>
 
 </resources>

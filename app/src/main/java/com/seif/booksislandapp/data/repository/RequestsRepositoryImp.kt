@@ -220,7 +220,7 @@ class RequestsRepositoryImp @Inject constructor(
             .await()
 
         firestore.collection(getCollectionNameBaseOnAdType(adType)).document(advertisementId)
-            .update("confirmationRequestId", "")
+            .update("confirmationRequestId", "", "status", "Closed")
             .await()
 
         // increase totalNumberOfCompletedDealIn(AdType) in the seller profile
@@ -258,11 +258,14 @@ class RequestsRepositoryImp @Inject constructor(
         advertisementId: String,
         isConfirmationSent: Boolean
     ) {
+        Timber.d("updateIsConfirmationRequestSent: in function")
+
         val advertisementDocumentReference =
             firestore.collection(getCollectionNameBaseOnAdType(adType))
                 .document(advertisementId)
         val doc = advertisementDocumentReference.get().await()
         if (doc.exists()) { // check if ad is still exists because the seller may delete ad after sending the confirmation request
+            Timber.d("updateIsConfirmationRequestSent: update confirmationMessageSent to $isConfirmationSent")
             advertisementDocumentReference.update("confirmationMessageSent", isConfirmationSent)
                 .await()
         }
