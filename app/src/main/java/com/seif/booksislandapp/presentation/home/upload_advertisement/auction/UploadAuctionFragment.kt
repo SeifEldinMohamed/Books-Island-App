@@ -125,6 +125,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             showConfirmationDialog()
         }
 
+        binding.ivBiddersHistory.setOnClickListener {
+            val action =
+                UploadAuctionFragmentDirections.actionUploadAuctionFragmentToBiddersHistoryFragment(
+                    args.auctionAdvertisement!!.id
+                )
+            findNavController().navigate(action)
+        }
+
         binding.btnSubmit.setOnClickListener {
             val auctionAdvertisement = prepareAuctionAdvertisement()
             if (args.auctionAdvertisement != null)
@@ -227,12 +235,14 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                     binding.btnSubmit.text = getString(R.string.update_post)
                     binding.ivDeleteMyAuctionAd.show()
                     binding.tvCancelRequest.hide()
+                    binding.ivBiddersHistory.show()
                 }
             }
         } else {
             binding.btnSubmit.text = getString(R.string.submit_post)
             binding.ivDeleteMyAuctionAd.hide()
             binding.ivRequestConfirmation.hide()
+            binding.ivBiddersHistory.hide()
         }
     }
 
@@ -335,6 +345,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         }
                     }
                 }
+
                 else -> {
                     dismissLoadingDialog()
                     Timber.d("Task Cancelled")
@@ -354,19 +365,23 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
                         binding.root.showSuccessSnackBar("Uploaded Successfully")
                         findNavController().navigateUp()
                     }
+
                     is UploadState.UpdatedSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+
                     is UploadState.DeletedSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         findNavController().navigateUp()
                     }
+
                     is UploadState.SendRequestSuccessfully -> {
                         binding.root.showSuccessSnackBar(getString(R.string.confirmation_sent_successfully))
                         requestId = it.requestId
                         disableSentConfirmationMessageButton()
                     }
+
                     is UploadState.CancelSentRequestsSuccessfully -> {
                         binding.root.showSuccessSnackBar(it.message)
                         enableSentConfirmationMessageButton()
@@ -381,6 +396,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
             true -> {
                 startLoadingDialog()
             }
+
             false -> dismissLoadingDialog()
         }
     }
