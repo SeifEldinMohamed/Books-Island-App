@@ -154,8 +154,8 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private fun showAdDetails() {
         val donateAdvertisement = args.donateAdv
         val bookCondition: String = when (donateAdvertisement.book.condition) {
-            "Used" -> "Used"
-            "New" -> "New"
+            "Used With Good Condition" -> "Used With Good Condition"
+            "Used With Bad Condition" -> "Used With Bad Condition" "New" -> "New"
             else -> ""
         }
         binding.tvTitle.text = donateAdvertisement.book.title

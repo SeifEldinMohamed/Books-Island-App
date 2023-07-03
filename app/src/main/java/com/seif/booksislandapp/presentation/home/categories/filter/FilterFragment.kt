@@ -131,11 +131,26 @@ class FilterFragment : Fragment() {
             binding.cbNew.isChecked = true
             condition = "All"
         }
-        if (lastFilter.condition != null && lastFilter.condition == "Used") {
+        if (lastFilter.condition != null && lastFilter.condition == "Used With Good Condition") {
             binding.cbGoodUsed.isChecked = true
             condition = "Used With Good Condition"
         }
-        if (lastFilter.condition != null && lastFilter.condition == "Used") {
+        if (lastFilter.condition != null && lastFilter.condition == "New&Used With Good Condition") {
+            binding.cbGoodUsed.isChecked = true
+            binding.cbNew.isChecked = true
+            condition = "New&Used With Good Condition"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "New&Used With Bad Condition") {
+            binding.cbBadUsed.isChecked = true
+            binding.cbNew.isChecked = true
+            condition = "New&Used With Bad Condition"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "Used With Good Condition&Used With Bad Condition") {
+            binding.cbGoodUsed.isChecked = true
+            binding.cbBadUsed.isChecked = true
+            condition = "Used With Good Condition&Used With Bad Condition"
+        }
+        if (lastFilter.condition != null && lastFilter.condition == "Used With Bad Condition") {
             binding.cbBadUsed.isChecked = true
             condition = "Used With Bad Condition"
         }
@@ -169,17 +184,24 @@ class FilterFragment : Fragment() {
     }
 
     private fun setConditionStatus() {
-        condition = if (binding.cbNew.isChecked && binding.cbGoodUsed.isChecked && binding.cbBadUsed.isChecked) {
-            "All"
-        } else if (binding.cbGoodUsed.isChecked) {
-            "Used With Good Condition"
-        } else if (binding.cbBadUsed.isChecked) {
-            "Used With Bad Condition"
-        } else if (binding.cbNew.isChecked) {
-            "New"
-        } else {
-            null
-        }
+        condition =
+            if (binding.cbNew.isChecked && binding.cbGoodUsed.isChecked && binding.cbBadUsed.isChecked) {
+                "All"
+            } else if (binding.cbNew.isChecked && binding.cbGoodUsed.isChecked) {
+                "New&Used With Good Condition"
+            } else if (binding.cbGoodUsed.isChecked && binding.cbBadUsed.isChecked) {
+                "Used With Good Condition&Used With Bad Condition"
+            } else if (binding.cbNew.isChecked && binding.cbBadUsed.isChecked) {
+                "New&Used With Bad Condition"
+            } else if (binding.cbGoodUsed.isChecked) {
+                "Used With Good Condition"
+            } else if (binding.cbBadUsed.isChecked) {
+                "Used With Bad Condition"
+            } else if (binding.cbNew.isChecked) {
+                "New"
+            } else {
+                null
+            }
     }
 
     private fun observeOnFilterState(filterBy: FilterBy) {
