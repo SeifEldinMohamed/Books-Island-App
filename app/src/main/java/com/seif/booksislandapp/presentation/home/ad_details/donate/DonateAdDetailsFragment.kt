@@ -167,6 +167,7 @@ class DonateAdDetailsFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         binding.tvAuthorName.text = donateAdvertisement.book.author
         binding.tvConditionStatus.text = bookCondition
         binding.tvCategoryStatus.text = donateAdvertisement.book.category
+        binding.tvEditionValue.text = donateAdvertisement.book.edition
     }
 
     private fun observe() {

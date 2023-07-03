@@ -18,6 +18,7 @@ import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
+import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import com.seif.booksislandapp.utils.showInfoSnackBar
@@ -93,9 +94,9 @@ class BiddersHistoryFragment : Fragment(), OnAdItemClick<String> {
             binding.tvNoAdsYet.show()
         } else {
             bidderHistoryAdapter.updateList(newBidders = bidders.sortedByDescending { bidder -> bidder.suggestedPrice.toInt() })
-            binding.noBooksAnimationSellMy.show()
-            binding.ivNoAdsYet.show()
-            binding.tvNoAdsYet.show()
+            binding.noBooksAnimationSellMy.hide()
+            binding.ivNoAdsYet.hide()
+            binding.tvNoAdsYet.hide()
         }
         binding.tvNumOfBids.text = getString(
             R.string.num_of_bids,
