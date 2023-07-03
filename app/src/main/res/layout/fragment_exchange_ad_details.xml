@@ -606,15 +606,15 @@
                     app:layout_constraintStart_toEndOf="@id/iv_owner_avatar"
                     app:layout_constraintTop_toTopOf="@id/iv_owner_avatar" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_owner_avatar"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_12sdp"
                     android:layout_marginBottom="@dimen/_12sdp"
-                    android:src="@drawable/man_avatar_6"
-
+                    tools:src="@drawable/man_avatar_6"
+                    style="@style/CircleStyle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

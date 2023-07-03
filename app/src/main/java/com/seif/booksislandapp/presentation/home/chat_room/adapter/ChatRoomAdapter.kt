@@ -26,7 +26,7 @@ class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.ChatBubbleViewHolde
                 messageTextView.visibility = View.GONE
                 imageView.visibility = View.VISIBLE
                 imageView.load(message.imageUrl) {
-                    crossfade(true)
+                    crossfade(200)
                 }
             } else { // text message
                 messageTextView.visibility = View.VISIBLE

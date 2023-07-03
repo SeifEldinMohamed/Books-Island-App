@@ -18,11 +18,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_owner_avatar"
         android:layout_width="@dimen/_90sdp"
         android:layout_height="@dimen/_90sdp"
-        android:src="@drawable/woman_avatar_2"
+        style="@style/CircleStyle"
+        tools:src="@drawable/woman_avatar_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_back"

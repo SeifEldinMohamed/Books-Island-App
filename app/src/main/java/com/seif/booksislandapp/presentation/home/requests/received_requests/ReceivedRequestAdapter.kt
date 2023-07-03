@@ -21,7 +21,7 @@ class ReceivedRequestAdapter : RecyclerView.Adapter<ReceivedRequestAdapter.MyVie
             binding.apply {
                 tvUsername.text = myReceivedRequest.username
                 ivAvatarImage.load(myReceivedRequest.avatarImage) {
-                    crossfade(true)
+                    crossfade(200)
                 }
                 tvDate.text = myReceivedRequest.date!!.formatDateInDetails()
                 tvTitle.text = myReceivedRequest.bookTitle

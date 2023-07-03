@@ -146,7 +146,7 @@ class AdProviderProfileFragment : Fragment() {
         binding.tvUsername.text = user.username
         binding.tvLocation.text = "${user.district}, ${user.governorate}"
         binding.ivAvatar.load(user.avatarImage) {
-            crossfade(true)
+            crossfade(200)
         }
         binding.tvRate.text = "${user.averageRate} / 5"
         binding.ratingbar.rating = user.averageRate.toFloat()

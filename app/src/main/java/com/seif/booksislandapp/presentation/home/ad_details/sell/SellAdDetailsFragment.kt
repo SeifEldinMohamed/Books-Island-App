@@ -198,7 +198,7 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     private fun showOwnerData(owner: User) {
         binding.ivOwnerAvatar.load(owner.avatarImage) {
-            crossfade(true)
+            crossfade(200)
         }
         binding.tvOwnerName.text = owner.username
     }
