@@ -1,7 +1,9 @@
 package com.seif.booksislandapp.di
 
 import android.content.Context
+import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.ResourceProvider
+import com.seif.booksislandapp.utils.StandardDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +19,16 @@ object AppModule {
     fun resourceProvider(@ApplicationContext context: Context): ResourceProvider {
         return ResourceProvider.Base(context = context)
     }
+
     @Singleton
     @Provides
     fun provideApplicationContext(@ApplicationContext context: Context): Context {
         return context
+    }
+
+    @Provides
+    @Singleton
+    fun provideStandardProvider(): DispatcherProvider {
+        return StandardDispatcher()
     }
 }
