@@ -8,14 +8,14 @@ import com.seif.booksislandapp.R
 
 fun ImageView.setBookDrawableImage(@DrawableRes resource: Int) {
     this.load(resource) {
-        crossfade(true)
+        crossfade(200)
         placeholder(R.drawable.book_placeholder)
     }
 }
 
 fun ImageView.setBookUriImage(uri: Uri) {
     this.load(uri) {
-        crossfade(true)
+        crossfade(200)
         placeholder(R.drawable.book_placeholder)
     }
 }

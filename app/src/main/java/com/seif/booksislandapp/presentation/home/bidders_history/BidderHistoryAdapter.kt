@@ -20,7 +20,7 @@ class BidderHistoryAdapter : RecyclerView.Adapter<BidderHistoryAdapter.MyViewHol
         RecyclerView.ViewHolder(binding.root) {
         fun bind(bidder: Bidder, position: Int) {
             binding.ivAvatarImage.load(bidder.bidderAvatar) {
-                crossfade(true)
+                crossfade(200)
             }
             binding.tvUsername.text = bidder.bidderName
             binding.tvBidValue.text = bidder.suggestedPrice

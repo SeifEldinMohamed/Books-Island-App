@@ -7,12 +7,17 @@ import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllS
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetSellAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +25,8 @@ class BuyViewModel @Inject constructor(
     private val getAllSellAdvertisementUseCase: GetAllSellAdvertisementUseCase,
     private val getSellAdsByFilterUseCase: GetSellAdsByFilterUseCase,
     private val searchSellAdvertisementUseCase: SearchSellAdvertisementUseCase,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val dispatcher: DispatcherProvider
 ) : ViewModel() {
     private var _buyState = MutableStateFlow<BuyState>(BuyState.Init)
     val buyState get() = _buyState.asStateFlow()
@@ -30,7 +36,7 @@ class BuyViewModel @Inject constructor(
 
     fun fetchAllSellAdvertisement() {
         setLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher.io) {
             getAllSellAdvertisementUseCase.invoke().let {
                 when (it) {
                     is Resource.Error -> {
@@ -39,6 +45,7 @@ class BuyViewModel @Inject constructor(
                             showError(it.message)
                         }
                     }
+
                     is Resource.Success -> {
                         withContext(Dispatchers.Main) {
                             setLoading(false)

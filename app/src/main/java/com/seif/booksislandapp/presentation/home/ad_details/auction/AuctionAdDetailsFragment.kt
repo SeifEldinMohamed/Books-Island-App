@@ -228,7 +228,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
 
     private fun showOwnerData(owner: User) {
         binding.ivOwnerAvatar.load(owner.avatarImage) {
-            crossfade(true)
+            crossfade(200)
         }
         binding.tvOwnerName.text = owner.username
     }
@@ -364,7 +364,7 @@ class AuctionAdDetailsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement>
         binding.tvStartPriceValue.text =
             getString(R.string.egypt_pound, auctionAdvertisement.startPrice?.toInt().toString())
         binding.ivBook.load(auctionAdvertisement.book.images.first()) {
-            crossfade(true)
+            crossfade(200)
         }
         binding.tvLocation.text = auctionAdvertisement.location
         binding.tvPublishDate.text = auctionAdvertisement.publishDate.formatDateInDetails()

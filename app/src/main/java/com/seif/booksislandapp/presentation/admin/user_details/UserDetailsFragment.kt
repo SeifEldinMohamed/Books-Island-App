@@ -2,10 +2,10 @@ package com.seif.booksislandapp.presentation.admin.user_details
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -75,7 +75,9 @@ class UserDetailsFragment : Fragment(), OnAdItemClick<Report> {
     }
 
     private fun setUserDate() {
-        binding.ivOwnerAvatar.load(args.user.avatarImage)
+        binding.ivOwnerAvatar.load(args.user.avatarImage) {
+            crossfade(200)
+        }
         binding.tvOwnerName.text = args.user.username
         binding.tvUserEmail.text = args.user.email
         binding.tvUserRate.text = args.user.averageRate

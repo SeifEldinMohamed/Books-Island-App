@@ -33,6 +33,7 @@ class AllUsersAdapter : RecyclerView.Adapter<AllUsersAdapter.MyViewHolder>() {
             }
             binding.tvStar.text = user.averageRate
             binding.ivAvatarImage.load(user.avatarImage) {
+                crossfade(200)
                 placeholder(R.drawable.person_placeholder)
             }
             binding.cvUsers.setOnClickListener {

@@ -102,10 +102,14 @@ dependencies {
     def nav_version = "2.5.3"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
     def fragment_version = "1.5.7"
-   // androidTestImplementation "androidx.fragment:fragment-testing:$fragment_version"
-    debugImplementation ("androidx.fragment:fragment-testing:$fragment_version"){
+    // androidTestImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version") {
         exclude group: 'androidx.test', module: 'core'
     }
+
+    // option ( making testing flows easily )
+    testImplementation 'app.cash.turbine:turbine:0.7.0'
+
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
