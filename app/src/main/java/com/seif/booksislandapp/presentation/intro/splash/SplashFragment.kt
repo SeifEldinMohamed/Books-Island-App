@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentSplashBinding
+import com.seif.booksislandapp.presentation.admin.AdminActivity
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.utils.Constants.Companion.ANIMATION_DURATION
 import com.seif.booksislandapp.utils.Constants.Companion.CURRENT_PROGRESS_ANIMATION
@@ -19,6 +20,7 @@ import com.seif.booksislandapp.utils.Constants.Companion.HANDLER_DELAY
 import com.seif.booksislandapp.utils.Constants.Companion.IS_FIRST_TIME_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.IS_LOGGED_IN_KEY
 import com.seif.booksislandapp.utils.Constants.Companion.MAX_PROGRESS_BAR
+import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
 import com.seif.booksislandapp.utils.start
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -57,10 +59,16 @@ class SplashFragment : Fragment() {
             findNavController().navigate(R.id.action_splashFragment_to_viewPagerFragment)
         } else { // not first time
             if (splashViewModel.getFromSP(IS_LOGGED_IN_KEY, Boolean::class.java)) {
-                Timber.d("onViewCreated: user already logged in")
-                requireActivity().apply {
-                    start<HomeActivity>()
-                    finish()
+                if (splashViewModel.getFromSP(USER_ID_KEY, String::class.java) == "") {
+                    requireActivity().apply {
+                        start<AdminActivity>()
+                        finish()
+                    }
+                } else {
+                    requireActivity().apply {
+                        start<HomeActivity>()
+                        finish()
+                    }
                 }
             } else { // not logged in
                 Timber.d("onViewCreated: user not logged in")

@@ -21,7 +21,7 @@ class AdProviderProfileViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val blockUserUseCase: BlockUserUseCase,
 
-    ) : ViewModel() {
+) : ViewModel() {
     private var _adProviderProfileState =
         MutableStateFlow<AdProviderProfileState>(AdProviderProfileState.Init)
     val adProviderProfileState = _adProviderProfileState.asStateFlow()

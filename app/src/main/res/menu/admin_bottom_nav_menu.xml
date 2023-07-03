@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/allUsersFragment"
+        android:title="@string/users"
+        android:icon="@drawable/iv_users" />
+    <item
+        android:id="@+id/reportsFragment"
+        android:title="@string/reports"
+        android:icon="@drawable/iv_reports" />
+
+
+
+</menu>

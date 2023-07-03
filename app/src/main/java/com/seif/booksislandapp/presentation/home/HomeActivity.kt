@@ -223,6 +223,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // onBackPressedCallback.isEnabled = false // Disable the callback
         //  onBackPressedCallback.remove() // Unregister the callback
         _binding = null
+
         super.onDestroy()
     }
 }

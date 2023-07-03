@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentLoginBinding
+import com.seif.booksislandapp.presentation.admin.AdminActivity
 import com.seif.booksislandapp.presentation.home.HomeActivity
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginState
 import com.seif.booksislandapp.presentation.intro.authentication.login.viewmodel.LoginViewModel
@@ -20,7 +21,6 @@ import com.seif.booksislandapp.utils.handleNoInternetConnectionState
 import com.seif.booksislandapp.utils.showErrorSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -57,11 +57,20 @@ class LoginFragment : Fragment() {
                     LoginState.Init -> Unit
                     is LoginState.IsLoading -> handleLoadingState(it.isLoading)
                     is LoginState.LoginSuccessfully -> {
-                        loginViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
-                        Timber.d("observeLogin: logged in successfully")
-                        Intent(requireActivity(), HomeActivity::class.java).also { intent ->
-                            startActivity(intent)
-                            requireActivity().finish()
+                        if (it.message == "Welcome Admin") {
+                            loginViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
+
+                            Intent(requireActivity(), AdminActivity::class.java).also { intent ->
+                                startActivity(intent)
+                                requireActivity().finish()
+                            }
+                        } else {
+
+                            loginViewModel.saveInSP(IS_LOGGED_IN_KEY, true)
+                            Intent(requireActivity(), HomeActivity::class.java).also { intent ->
+                                startActivity(intent)
+                                requireActivity().finish()
+                            }
                         }
                     }
                     is LoginState.ShowError -> {

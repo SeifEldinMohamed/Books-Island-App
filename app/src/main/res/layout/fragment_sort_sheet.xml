@@ -36,54 +36,9 @@
             android:textSize="20sp"
             android:textStyle="bold"
             />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_light" />
-        <RadioButton
-            android:id="@+id/idBtnLowestRadio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@string/lowest_price"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:button="@drawable/ic_tick_foreground"
-            android:layoutDirection="rtl"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_light" />
-        <RadioButton
-            android:id="@+id/idBtnHighestRadio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@string/highest_price"
-            android:button="@drawable/ic_tick_foreground"
-            android:layoutDirection="rtl"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_light" />
-        <RadioButton
-            android:id="@+id/idBtnNearRadio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@string/near_by_me"
-            android:button="@drawable/ic_tick_foreground"
-            android:layoutDirection="rtl"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-        />
+
+
+
 
     </RadioGroup>
 

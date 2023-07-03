@@ -167,9 +167,9 @@ class AuctionSheetFragment : BottomSheetDialogFragment() {
         binding.tvCurrentPriceValue.text = getString(
             R.string.egypt_pound,
             (
-                    auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
-                        ?: auctionAdvertisement.startPrice
-                    ).toString()
+                auctionAdvertisement.bidders.maxByOrNull { it.suggestedPrice.toInt() }?.suggestedPrice
+                    ?: auctionAdvertisement.startPrice
+                ).toString()
         )
 
         binding.tvStatus.text =

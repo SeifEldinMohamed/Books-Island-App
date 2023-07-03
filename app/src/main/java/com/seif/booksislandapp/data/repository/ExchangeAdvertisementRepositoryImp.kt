@@ -331,9 +331,9 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
                 Resource.Success(
                     exchangeAdvertisementsDto.filter { ad ->
                         (filterBy.category == null || ad.book?.category == filterBy.category) &&
-                                (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
-                                (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                                (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
                     }
                         .map { it.toExchangeAdvertisement() }
                         .toCollection(ArrayList())

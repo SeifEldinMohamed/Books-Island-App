@@ -13,6 +13,7 @@ import com.seif.booksislandapp.data.remote.dto.ReceivedRateDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.CHAT_LIST_FIIRESTORE_COLLECTION
@@ -22,8 +23,11 @@ import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
 import com.seif.booksislandapp.utils.checkInternetConnection
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserRepositoryImp @Inject constructor(
@@ -52,6 +56,25 @@ class UserRepositoryImp @Inject constructor(
                     .await()
                 saveUserData(user)
                 Resource.Success(user)
+            }
+        } catch (e: Exception) {
+            Resource.Error(message = e.message.toString())
+        }
+    }
+
+    override suspend fun updateUserWishList(
+        userId: String,
+        adType: AdType,
+        wishList: ArrayList<String>
+    ): Resource<String, String> {
+        if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION).document(userId)
+                    .update(getAdType(adType), wishList)
+                    .await()
+                Resource.Success("Added Successfully")
             }
         } catch (e: Exception) {
             Resource.Error(message = e.message.toString())
@@ -243,5 +266,68 @@ class UserRepositoryImp @Inject constructor(
         sharedPrefs.put(Constants.USER_GOVERNORATE_KEY, user.governorate)
         sharedPrefs.put(Constants.USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(Constants.USER_AVATAR_KEY, user.avatarImage)
+    }
+
+    override suspend fun getAllUsers() = callbackFlow {
+        if (!connectivityManager.checkInternetConnection())
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+
+        try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .addSnapshotListener { usersQuerySnapshot, error ->
+                        if (error != null) {
+                            trySend(Resource.Error(error.message.toString()))
+                        }
+                        if (usersQuerySnapshot != null) {
+                            val allUsersDto = arrayListOf<UserDto>()
+                            for (document in usersQuerySnapshot) {
+                                val userDto = document.toObject(UserDto::class.java)
+                                allUsersDto.add(userDto)
+                            }
+                            trySend(
+                                Resource.Success(
+                                    data = allUsersDto.map { userDto ->
+                                        userDto.toUser()
+                                    }.toCollection(java.util.ArrayList())
+                                )
+                            )
+                        }
+                    }
+            }
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message.toString()))
+        }
+        awaitClose { }
+    }
+
+    private fun getAdType(adType: AdType): String {
+        return when (adType) {
+            AdType.Buying -> Constants.WISHLIST_BUY
+            AdType.Donation -> Constants.WISHLIST_DONATE
+            AdType.Exchange -> Constants.WISHLIST_EXCHANGE
+            AdType.Auction -> Constants.WISHLIST_AUCTION
+        }
+    }
+
+    override suspend fun updateSuspendState(
+        suspended: Boolean,
+        userId: String
+    ): Resource<Boolean, String> {
+
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                firestore.collection(USER_FIRESTORE_COLLECTION).document(userId)
+                    .update("suspended", suspended)
+                    .await()
+                Timber.d((suspended).toString())
+                Resource.Success(suspended)
+            }
+        } catch (e: Exception) {
+            Resource.Error(message = e.message.toString())
+        }
     }
 }

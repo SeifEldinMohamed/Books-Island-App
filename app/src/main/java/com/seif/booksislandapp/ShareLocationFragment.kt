@@ -77,7 +77,7 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
+                as AutocompleteSupportFragment
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(

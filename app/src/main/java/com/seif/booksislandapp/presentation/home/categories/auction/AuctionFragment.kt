@@ -18,9 +18,12 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -44,6 +47,8 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private val filterViewModel: FilterViewModel by activityViewModels()
     private val auctionAdapter by lazy { AuctionAdapter() }
     private var auctionsAdvertisements: List<AuctionAdvertisement> = emptyList()
+    private val sortViewModel: SortViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,6 +70,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         listenForSearchEditTextChange()
 
         binding.ivBack.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
@@ -72,6 +78,15 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
 
                 fetchByFilter(it)
             }
+        }
+        sortViewModel.liveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                handleSort(it)
+            }
+        }
+        binding.tvSortBy.setOnClickListener {
+            val bottomSheet = SortBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
         binding.btnFilter.setOnClickListener {
             findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
@@ -88,7 +103,17 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             addDuration = 300
         }
     }
-
+    private fun handleSort(sortBy: String) {
+        when (sortBy) {
+            "Added Recently" -> {
+                auctionAdapter.updateList(
+                    auctionsAdvertisements.sortedByDescending {
+                        it.publishDate
+                    }
+                )
+            }
+        }
+    }
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -256,7 +281,8 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     override fun onDestroyView() {
         auctionViewModel.isSearching = false
         _binding = null
-        // filterViewModel.reset()
+        sortViewModel.setLastSort("")
+        filterViewModel.reset()
         super.onDestroyView()
     }
 }

@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.FetchRelatedAuctionAdsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.user.UpdateUserProfileUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.wish_list.UpdateUserWishListUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ class AuctionAdDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val fetchRelatedAuctionAdsUseCase: FetchRelatedAuctionAdsUseCase,
-    private val updateUserProfileUseCase: UpdateUserProfileUseCase
+    private val updateUserWishListUseCase: UpdateUserWishListUseCase
 ) : ViewModel() {
     private var _auctionDetailsState =
         MutableStateFlow<AuctionDetailsState>(AuctionDetailsState.Init)
@@ -64,7 +65,7 @@ class AuctionAdDetailsViewModel @Inject constructor(
 
     fun updateUserWishList(user: User) {
         viewModelScope.launch {
-            updateUserProfileUseCase.invoke(user).let {
+            updateUserWishListUseCase.invoke(user.id, AdType.Auction, user.wishListAuction).let {
                 when (it) {
                     is Resource.Error -> showError(it.message)
                     is Resource.Success -> {

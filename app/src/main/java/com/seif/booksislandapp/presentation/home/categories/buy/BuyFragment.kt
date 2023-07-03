@@ -18,10 +18,12 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentBuyBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.presentation.home.categories.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.sort.BuyBottomSheetFragment
+import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -43,6 +45,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private val buyViewModel: BuyViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val filterViewModel: FilterViewModel by activityViewModels()
+    private val sortViewModel: SortViewModel by activityViewModels()
     private val buyAdapter by lazy { BuyAdapter() }
     private var sellAdvertisements: List<SellAdvertisement> = emptyList()
 
@@ -65,6 +68,11 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                 fetchByFilter(it)
             }
         }
+        sortViewModel.liveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                handleSort(it)
+            }
+        }
 
         firstTimeFetch()
 
@@ -72,6 +80,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         listenForSearchEditTextChange()
 
         binding.ivBack.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
 
@@ -82,7 +91,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortBottomSheetFragment()
+            val bottomSheet = BuyBottomSheetFragment()
             bottomSheet.show(parentFragmentManager, "")
         }
 
@@ -93,6 +102,32 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = buyAdapter
         binding.rvBuy.itemAnimator = ScaleInTopAnimator().apply {
             addDuration = 300
+        }
+    }
+
+    private fun handleSort(sortBy: String) {
+        when (sortBy) {
+            "Added Recently" -> {
+                buyAdapter.updateList(
+                    sellAdvertisements.sortedByDescending {
+                        it.publishDate
+                    }
+                )
+            }
+            "Lowest Price" -> {
+                buyAdapter.updateList(
+                    sellAdvertisements.sortedBy {
+                        it.price
+                    }
+                )
+            }
+            "Highest Price" -> {
+                buyAdapter.updateList(
+                    sellAdvertisements.sortedByDescending {
+                        it.price
+                    }
+                )
+            }
         }
     }
 
@@ -273,7 +308,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         binding.rvBuy.adapter = null
         dialog.setView(null)
         _binding = null
-        //   filterViewModel.reset()
+        filterViewModel.reset()
         super.onDestroyView()
     }
 }

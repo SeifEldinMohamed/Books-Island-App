@@ -16,9 +16,12 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentDonationBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -42,6 +45,8 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
     private var donateAdvertisements: List<DonateAdvertisement> = emptyList()
+    private val sortViewModel: SortViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,13 +71,22 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
 
         binding.btnFilter.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
             if (it != null) {
-
                 fetchByFilter(it)
             }
+        }
+        sortViewModel.liveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                handleSort(it)
+            }
+        }
+        binding.tvSortBy.setOnClickListener {
+            val bottomSheet = SortBottomSheetFragment()
+            bottomSheet.show(parentFragmentManager, "")
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -115,6 +129,17 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             override fun afterTextChanged(p0: Editable?) {
             }
         })
+    }
+    private fun handleSort(sortBy: String) {
+        when (sortBy) {
+            "Added Recently" -> {
+                donateAdapter.updateList(
+                    donateAdvertisements.sortedByDescending {
+                        it.publishDate
+                    }
+                )
+            }
+        }
     }
 
     private fun firstTimeFetch() {
@@ -247,7 +272,9 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         donateViewModel.isSearching = false
         binding.rvDonate.adapter = null
         dialog.setView(null)
+        sortViewModel.setLastSort("")
         _binding = null
+        filterViewModel.reset()
         super.onDestroyView()
     }
 }

@@ -40,7 +40,7 @@ class WishListFragment : Fragment() {
         for (i in 0..4) {
             val textView =
                 LayoutInflater.from(requireContext()).inflate(R.layout.my_ads_tab_title, null)
-                        as TextView
+                    as TextView
             binding.tlWishlist.getTabAt(i)?.customView = textView
         }
     }

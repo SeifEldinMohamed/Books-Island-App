@@ -74,6 +74,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/roboto_medium"
             android:inputType="none"
+
             android:textSize="@dimen/_12sdp"
             tools:ignore="LabelFor,TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -114,16 +115,25 @@
         app:layout_constraintTop_toBottomOf="@+id/til_district" />
 
     <CheckBox
-        android:id="@+id/cb_used"
+        android:id="@+id/cb_bad_used"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/used"
+        android:text="@string/used_with_bad_condition"
         android:textColor="@color/black"
         android:textSize="@dimen/_16ssp"
         android:buttonTint="@color/primary_dark"
         app:layout_constraintStart_toStartOf="@+id/cb_new"
         app:layout_constraintTop_toBottomOf="@+id/cb_new" />
-
+    <CheckBox
+        android:id="@+id/cb_good_used"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/used_with_good_condition"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16ssp"
+        android:buttonTint="@color/primary_dark"
+        app:layout_constraintStart_toStartOf="@+id/cb_new"
+        app:layout_constraintTop_toBottomOf="@+id/cb_bad_used" />
     <CheckBox
         android:id="@+id/cb_new"
         android:layout_width="wrap_content"
@@ -152,7 +162,7 @@
         app:backgroundTint="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_used"
+        app:layout_constraintTop_toBottomOf="@+id/cb_good_used"
         tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

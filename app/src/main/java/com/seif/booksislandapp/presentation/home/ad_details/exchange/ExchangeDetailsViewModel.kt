@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.FetchAllExchangeRelatedAdvertisementsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.user.GetUserByIdUseCase
-import com.seif.booksislandapp.domain.usecase.usecase.user.UpdateUserProfileUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.wish_list.UpdateUserWishListUseCase
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,7 @@ class ExchangeDetailsViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase,
     private val fetchAllExchangeRelatedAdvertisementsUseCase: FetchAllExchangeRelatedAdvertisementsUseCase,
-    private val updateUserProfileUseCase: UpdateUserProfileUseCase
+    private val updateUserWishListUseCase: UpdateUserWishListUseCase
 ) : ViewModel() {
     private var _exchangeDetailsState = MutableStateFlow<ExchangeDetailsState>(ExchangeDetailsState.Init)
     val exchangeDetailsState = _exchangeDetailsState.asStateFlow()
@@ -61,12 +62,12 @@ class ExchangeDetailsViewModel @Inject constructor(
     }
     fun updateUserWishList(user: User) {
         viewModelScope.launch {
-            updateUserProfileUseCase.invoke(user).let {
+            updateUserWishListUseCase.invoke(user.id, AdType.Exchange, user.wishListExchange).let {
                 when (it) {
                     is Resource.Error -> showError(it.message)
                     is Resource.Success -> {
                         _exchangeDetailsState.value =
-                            ExchangeDetailsState.AddedToFavorite("Added Successfully")
+                            ExchangeDetailsState.AddedToFavorite(it.data)
                     }
                 }
             }
