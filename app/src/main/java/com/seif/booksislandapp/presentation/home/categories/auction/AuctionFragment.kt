@@ -18,12 +18,11 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentAuctionBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
-import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
-import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
 import com.seif.booksislandapp.utils.hide
 import com.seif.booksislandapp.utils.show
@@ -280,6 +279,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
     override fun onDestroyView() {
         auctionViewModel.isSearching = false
+        binding.rvAuctions.adapter = null
         _binding = null
         sortViewModel.setLastSort("")
         filterViewModel.reset()

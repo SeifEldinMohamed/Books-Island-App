@@ -611,7 +611,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_category" />
 
             <TextView
-                android:id="@+id/tv_edition_status"
+                android:id="@+id/tv_edition_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
