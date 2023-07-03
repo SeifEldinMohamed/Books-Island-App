@@ -295,7 +295,8 @@ class ExchangeAdDetailsFragment : Fragment(), OnAdItemClick<ExchangeAdvertisemen
     private fun showAdDetails() {
         val exchangeAdvertisement = args.exchangeAdv
         val bookCondition: String = when (exchangeAdvertisement.book.condition) {
-            "Used" -> "Used"
+            "Used With Good Condition" -> "Used With Good Condition"
+            "Used With Bad Condition" -> "Used With Bad Condition"
             "New" -> "New"
             else -> ""
         }

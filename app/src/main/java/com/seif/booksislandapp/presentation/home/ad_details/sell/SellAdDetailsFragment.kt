@@ -300,7 +300,8 @@ class SellAdDetailsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private fun showAdDetails() {
         val buyAdvertisement = args.buyAdvertisement
         val bookCondition: String = when (buyAdvertisement.book.condition) {
-            "Used" -> "Used"
+            "Used With Good Condition" -> "Used With Good Condition"
+            "Used With Bad Condition" -> "Used With Bad Condition"
             "New" -> "New"
             else -> ""
         }

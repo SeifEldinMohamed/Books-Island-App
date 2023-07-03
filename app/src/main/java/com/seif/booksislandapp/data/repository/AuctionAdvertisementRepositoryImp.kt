@@ -28,6 +28,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -404,6 +405,31 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         }
     }
 
+    private fun filterResult(
+        auctionAdvertisementsDto: ArrayList<AuctionAdvertisementDto>,
+        filterBy: FilterBy
+    ): ArrayList<AuctionAdvertisement> {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+            auctionAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+            }
+                .map { it.toAuctionAdvertisement() }
+                .toCollection(ArrayList())
+        } else {
+            auctionAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+            }
+                .map { it.toAuctionAdvertisement() }
+                .toCollection(ArrayList())
+        }
+    }
+
     override suspend fun getAuctionAdsByFilter(filterBy: FilterBy): Resource<ArrayList<AuctionAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
@@ -423,14 +449,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                     auctionAdvertisementsDto.add(auctionAdvertisementDto)
                 }
                 Resource.Success(
-                    auctionAdvertisementsDto.filter { ad ->
-                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
-                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
-                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
-                    }
-                        .map { it.toAuctionAdvertisement() }
-                        .toCollection(ArrayList())
+                    filterResult(auctionAdvertisementsDto, filterBy)
                 )
             }
         } catch (e: Exception) {

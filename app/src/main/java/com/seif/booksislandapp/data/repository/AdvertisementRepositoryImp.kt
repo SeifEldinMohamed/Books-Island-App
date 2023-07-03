@@ -6,12 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
-import com.seif.booksislandapp.data.mapper.toDonateAdvertisementDto
-import com.seif.booksislandapp.data.mapper.toExchangeAdvertisementDto
-import com.seif.booksislandapp.data.mapper.toSellAdvertisement
-import com.seif.booksislandapp.data.mapper.toSellAdvertisementDto
-import com.seif.booksislandapp.data.mapper.toUser
+import com.seif.booksislandapp.data.mapper.*
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
@@ -97,14 +92,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                     sellAdvertisementsDto.add(sellAdvertisementDto)
                 }
                 Resource.Success(
-                    sellAdvertisementsDto.filter { ad ->
-                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
-                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
-                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
-                    }
-                        .map { it.toSellAdvertisement() }
-                        .toCollection(ArrayList())
+                    buyFilterResult(sellAdvertisementsDto, filterBy)
                 )
             }
         } catch (e: Exception) {
@@ -377,7 +365,55 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+    private fun donateFilterResult(
+        donateAdvertisementsDto: ArrayList<DonateAdvertisementDto>,
+        filterBy: FilterBy
+    ): ArrayList<DonateAdvertisement> {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+            donateAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+            }
+                .map { it.toDonateAdvertisement() }
+                .toCollection(ArrayList())
+        } else {
+            donateAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+            }
+                .map { it.toDonateAdvertisement() }
+                .toCollection(ArrayList())
+        }
+    }
 
+    private fun buyFilterResult(
+        sellAdvertisementsDto: ArrayList<SellAdvertisementDto>,
+        filterBy: FilterBy
+    ): ArrayList<SellAdvertisement> {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+            sellAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+            }
+                .map { it.toSellAdvertisement() }
+                .toCollection(ArrayList())
+        } else {
+            sellAdvertisementsDto.filter { ad ->
+                (filterBy.category == null || ad.book?.category == filterBy.category) &&
+                    (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
+                    (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
+                    (filterBy.condition == null || ad.book?.condition == filterBy.condition)
+            }
+                .map { it.toSellAdvertisement() }
+                .toCollection(ArrayList())
+        }
+    }
     override suspend fun getDonateAdsByFilter(
         filterBy: FilterBy
     ): Resource<ArrayList<DonateAdvertisement>, String> {
@@ -399,14 +435,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                     donateAdvertisementsDto.add(donateAdvertisementDto)
                 }
                 Resource.Success(
-                    donateAdvertisementsDto.filter { ad ->
-                        (filterBy.category == null || ad.book?.category == filterBy.category) &&
-                            (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
-                            (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                            (filterBy.condition == null || ad.book?.condition == filterBy.condition)
-                    }
-                        .map { it.toDonateAdvertisement() }
-                        .toCollection(ArrayList())
+                    donateFilterResult(donateAdvertisementsDto, filterBy)
                 )
             }
         } catch (e: Exception) {
