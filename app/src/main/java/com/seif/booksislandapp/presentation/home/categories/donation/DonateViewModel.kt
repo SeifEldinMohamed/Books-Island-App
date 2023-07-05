@@ -26,6 +26,7 @@ class DonateViewModel @Inject constructor(
 ) : ViewModel() {
     private var _donateState = MutableStateFlow<DonateState>(DonateState.Init)
     val donateState = _donateState.asStateFlow()
+
     private var searchJob: Job? = null
     var firstTime = true
     var isSearching = false

@@ -5,18 +5,22 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.seif.booksislandapp.R
+import com.seif.booksislandapp.data.mapper.toRecommendation
 import com.seif.booksislandapp.data.mapper.toReportDto
 import com.seif.booksislandapp.data.mapper.toUser
 import com.seif.booksislandapp.data.mapper.toUserDto
 import com.seif.booksislandapp.data.remote.dto.RateDto
 import com.seif.booksislandapp.data.remote.dto.ReceivedRateDto
 import com.seif.booksislandapp.data.remote.dto.UserDto
+import com.seif.booksislandapp.data.remote.dto.recommendation.RecommendationDto
+import com.seif.booksislandapp.domain.model.Recommendation
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.CHAT_LIST_FIIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants.Companion.RECOMMENDATION_REQUESTS
 import com.seif.booksislandapp.utils.Constants.Companion.REPORTS_FIIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Constants.Companion.USER_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
@@ -24,6 +28,7 @@ import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.SharedPrefs
 import com.seif.booksislandapp.utils.checkInternetConnection
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
@@ -328,6 +333,27 @@ class UserRepositoryImp @Inject constructor(
             }
         } catch (e: Exception) {
             Resource.Error(message = e.message.toString())
+        }
+    }
+
+    override suspend fun recommendForUser(userId: String): Resource<Recommendation, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+
+                delay(500) // to show loading progress
+                val querySnapshot = firestore.collection(RECOMMENDATION_REQUESTS).document(userId)
+                    .get()
+                    .await()
+                val topCategory = querySnapshot.toObject(RecommendationDto::class.java)
+
+                Resource.Success(
+                    topCategory!!.toRecommendation()
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
         }
     }
 }

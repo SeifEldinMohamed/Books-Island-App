@@ -22,12 +22,10 @@ import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheet
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
@@ -44,6 +42,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private val exchangeViewModel: ExchangeViewModel by viewModels()
     private val filterViewModel: FilterViewModel by activityViewModels()
     private lateinit var dialog: AlertDialog
+    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private var exchangeAdvertisements: List<ExchangeAdvertisement> = emptyList()
     private val sortViewModel: SortViewModel by activityViewModels()
@@ -72,7 +71,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
-
+        observeOnRecommendation()
         binding.btnFilter.setOnClickListener {
             findNavController().navigate(R.id.action_exchangeFragment_to_filterFragment)
         }
@@ -101,7 +100,28 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             addDuration = 300
         }
     }
-
+    private fun observeOnRecommendation() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            recommendationViewModel.recommendationState.collect {
+                when (it) {
+                    RecommendationState.Init -> Unit
+                    is RecommendationState.RecommendedSuccessfully -> {
+                        Timber.d(it.recommendation.topCategory)
+                        val recommendedForYou: ArrayList<ExchangeAdvertisement> =
+                            exchangeAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
+                        val other: ArrayList<ExchangeAdvertisement> =
+                            exchangeAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
+                        recommendedForYou.addAll(other)
+                        exchangeAdapter.updateList(recommendedForYou)
+                    }
+                    is RecommendationState.ShowError -> {
+                        exchangeAdapter.updateList(exchangeAdvertisements)
+                        handleUi(exchangeAdvertisements as ArrayList)
+                    }
+                }
+            }
+        }
+    }
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -109,10 +129,14 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                     when (it) {
                         ExchangeState.Init -> Unit
                         is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
-                            // Log.d("testTwo", it.exchangeAds[0].booksToExchange.toString())
+                            recommendationViewModel.fetchRecommendation(
+                                recommendationViewModel.getFromSP(
+                                    Constants.USER_ID_KEY
+                                )
+                            )
                             exchangeAdvertisements = it.exchangeAds
-                            exchangeAdapter.updateList(it.exchangeAds)
-                            handleUi(it.exchangeAds)
+                            // exchangeAdapter.updateList(it.exchangeAds)
+                            // handleUi(it.exchangeAds)
                         }
                         is ExchangeState.SearchExchangeAdsSuccessfully -> {
                             exchangeAdvertisements = it.searchExchangeAds

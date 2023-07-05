@@ -21,13 +21,11 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
@@ -42,6 +40,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private var _binding: FragmentAuctionBinding? = null
     private val binding get() = _binding!!
     private val auctionViewModel: AuctionViewModel by viewModels()
+    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val filterViewModel: FilterViewModel by activityViewModels()
     private val auctionAdapter by lazy { AuctionAdapter() }
@@ -67,7 +66,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         firstTimeFetch()
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
-
+        observeOnRecommendation()
         binding.ivBack.setOnClickListener {
             sortViewModel.setLastSort("")
             findNavController().navigateUp()
@@ -100,6 +99,28 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         binding.rvAuctions.adapter = auctionAdapter
         binding.rvAuctions.itemAnimator = ScaleInTopAnimator().apply {
             addDuration = 300
+        }
+    }
+    private fun observeOnRecommendation() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            recommendationViewModel.recommendationState.collect {
+                when (it) {
+                    RecommendationState.Init -> Unit
+                    is RecommendationState.RecommendedSuccessfully -> {
+                        Timber.d(it.recommendation.topCategory)
+                        val recommendedForYou: ArrayList<AuctionAdvertisement> =
+                            auctionsAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
+                        val other: ArrayList<AuctionAdvertisement> =
+                            auctionsAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
+                        recommendedForYou.addAll(other)
+                        auctionAdapter.updateList(recommendedForYou)
+                    }
+                    is RecommendationState.ShowError -> {
+                        auctionAdapter.updateList(auctionsAdvertisements)
+                        handleUi(auctionsAdvertisements as ArrayList)
+                    }
+                }
+            }
         }
     }
     private fun handleSort(sortBy: String) {
@@ -168,10 +189,15 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                     when (it) {
                         AuctionState.Init -> Unit
                         is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
+                            recommendationViewModel.fetchRecommendation(
+                                recommendationViewModel.getFromSP(
+                                    Constants.USER_ID_KEY
+                                )
+                            )
                             auctionsAdvertisements = it.auctionAds
-                            auctionAdapter.updateList(it.auctionAds)
+                            //  auctionAdapter.updateList(it.auctionAds)
 
-                            handleUi(it.auctionAds)
+                            // handleUi(it.auctionAds)
 
                             Timber.d("observe: fetched")
                         }

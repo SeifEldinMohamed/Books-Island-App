@@ -23,6 +23,7 @@ class Constants {
         const val WISHLIST_DONATE: String = "wishListDonate"
         const val WISHLIST_AUCTION: String = "wishListAuction"
         const val SELL_ADVERTISEMENT_FIRESTORE_COLLECTION = "Sell Advertisements"
+        const val RECOMMENDATION_REQUESTS = "RecommendationRequests"
         const val EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Exchange Advertisements"
         const val DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION = "Donate Advertisement"
         const val AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION = "Auctions Advertisements"

@@ -84,6 +84,8 @@ class ReportDetailsFragment : Fragment() {
 
     private fun setUserDate() {
         binding.tvCategoryType.text = args.report.category
+        binding.tvReported.text = args.report.reporterName
+        binding.tvReportedToName.text = args.report.reportedPersonName
         binding.tvCommentDetails.text = args.report.comment
         val reportNum = args.position + 1
         binding.tvReportNumber.text = reportNum.toString()
