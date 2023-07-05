@@ -88,6 +88,7 @@ class AuthRepositoryImp @Inject constructor(
         sharedPrefs.put(USER_GOVERNORATE_KEY, user.governorate)
         sharedPrefs.put(USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(USER_AVATAR_KEY, user.avatarImage)
+        sharedPrefs.put(Constants.IS_SUSPENDED_KEY, user.isSuspended)
     }
 
     private fun saveAdminData(admin: Admin) {
@@ -121,16 +122,12 @@ class AuthRepositoryImp @Inject constructor(
                     when (val result = getUserById(auth.currentUser!!.uid)) {
                         is Resource.Error -> Resource.Error(result.message)
                         is Resource.Success -> {
-                            when (result.data.isSuspended) {
-                                true -> Resource.Error("Sorry but your account is suspended")
-                                false -> { // save user data
-                                    saveUserData(result.data)
-                                    // update token
-                                    val token = fcm.token.await()
-                                    updateToken(auth.currentUser!!.uid, token)
-                                    Resource.Success(resourceProvider.string(R.string.welcome_back))
-                                }
-                            }
+                            // save user data
+                            saveUserData(result.data)
+                            // update token
+                            val token = fcm.token.await()
+                            updateToken(auth.currentUser!!.uid, token)
+                            Resource.Success(resourceProvider.string(R.string.welcome_back))
                         }
                     }
                 }

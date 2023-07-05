@@ -83,11 +83,20 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             }
         }
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortBottomSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
+
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                val bottomSheet = SortBottomSheetFragment()
+                bottomSheet.show(parentFragmentManager, "")
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
         binding.btnFilter.setOnClickListener {
-            findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -191,7 +200,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                         is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
                             recommendationViewModel.fetchRecommendation(
                                 recommendationViewModel.getFromSP(
-                                    Constants.USER_ID_KEY
+                                    Constants.USER_ID_KEY, String::class.java
                                 )
                             )
                             auctionsAdvertisements = it.auctionAds
@@ -293,8 +302,12 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
-        val action = AuctionFragmentDirections.actionAuctionFragmentToAuctionAdDetailsFragment(item)
-        findNavController().navigate(action)
+        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action = AuctionFragmentDirections.actionAuctionFragmentToAuctionAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     private fun fetchByFilter(filterBy: FilterBy) {

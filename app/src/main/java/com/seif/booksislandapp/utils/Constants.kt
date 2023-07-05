@@ -56,6 +56,7 @@ class Constants {
         const val USER_AVATAR_KEY = "user_avatar"
         const val IS_FIRST_TIME_KEY = "is_first_time"
         const val IS_LOGGED_IN_KEY = "is_logged_in"
+        const val IS_SUSPENDED_KEY = "is_suspended"
         const val NOT_IN_MYCHATS_OR_CHATROOM = "inChatRoomOrMyChats"
 
         // Upload

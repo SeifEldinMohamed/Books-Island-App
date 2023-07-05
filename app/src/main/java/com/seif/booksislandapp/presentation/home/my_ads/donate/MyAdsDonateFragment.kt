@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.FragmentMyAdsDonateBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -36,6 +37,7 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
     private val myDonateAdsViewModel: MyDonateAdsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     private var myDonationAds: List<DonateAdvertisement>? = null
 
@@ -176,9 +178,13 @@ class MyAdsDonateFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action =
-            MyAdsFragmentDirections.actionMyAdsFragmentToUploadDonateFragment(item)
-        findNavController().navigate(action)
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                MyAdsFragmentDirections.actionMyAdsFragmentToUploadDonateFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     override fun onDestroyView() {

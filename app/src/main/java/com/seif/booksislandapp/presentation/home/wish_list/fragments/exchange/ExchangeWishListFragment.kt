@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.WishlistExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -36,6 +37,7 @@ class ExchangeWishListFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement
     private lateinit var dialog: AlertDialog
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private val exchangeWishListViewModel: ExchangeWishListViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     //   private var myExchangeWishAds: List<ExchangeAdvertisement>? = null
 
@@ -175,8 +177,13 @@ class ExchangeWishListFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement
     }
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        val action =
-            WishListFragmentDirections.actionWishListFragmentToExchangeAdDetailsFragment(item)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                WishListFragmentDirections.actionWishListFragmentToExchangeAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }

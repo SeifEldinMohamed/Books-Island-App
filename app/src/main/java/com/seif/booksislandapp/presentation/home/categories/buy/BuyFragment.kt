@@ -94,12 +94,21 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = BuyBottomSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
+
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                val bottomSheet = BuyBottomSheetFragment()
+                bottomSheet.show(parentFragmentManager, "")
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.btnFilter.setOnClickListener {
-            findNavController().navigate(R.id.action_buyFragment_to_filterFragment)
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                findNavController().navigate(R.id.action_buyFragment_to_filterFragment)
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.rvBuy.adapter = buyAdapter
@@ -229,7 +238,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                         is BuyState.FetchAllSellAdvertisementSuccessfully -> {
                             recommendationViewModel.fetchRecommendation(
                                 recommendationViewModel.getFromSP(
-                                    Constants.USER_ID_KEY
+                                    Constants.USER_ID_KEY, String::class.java
                                 )
                             )
                             sellAdvertisements = it.sellAds
@@ -326,8 +335,13 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
-        val action = BuyFragmentDirections.actionBuyFragmentToAdDetailsFragment(item)
-        findNavController().navigate(action)
+
+        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action = BuyFragmentDirections.actionBuyFragmentToAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     override fun onDestroyView() {

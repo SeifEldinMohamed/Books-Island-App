@@ -15,13 +15,10 @@ import com.seif.booksislandapp.databinding.FragmentMySellAdsBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
+import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.USER_ID_KEY
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
@@ -35,6 +32,7 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val buyAdapter by lazy { BuyAdapter() }
     private val mySellAdsViewModel: MySellAdsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     private var mySellAds: List<SellAdvertisement>? = null
     override fun onCreateView(
@@ -181,8 +179,13 @@ class MySellAdsFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
-        val action =
-            MyAdsFragmentDirections.actionMyAdsFragmentToUploadSellAdvertisementFragment(item)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                MyAdsFragmentDirections.actionMyAdsFragmentToUploadSellAdvertisementFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }

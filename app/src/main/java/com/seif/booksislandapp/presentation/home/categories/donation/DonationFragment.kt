@@ -65,12 +65,16 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         listenForSearchEditTextChange()
         observeOnRecommendation()
         binding.ivBack.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
 
         binding.btnFilter.setOnClickListener {
-            sortViewModel.setLastSort("")
-            findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -83,8 +87,12 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         }
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortBottomSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                val bottomSheet = SortBottomSheetFragment()
+                bottomSheet.show(parentFragmentManager, "")
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -191,7 +199,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
                     is DonateState.FetchAllDonateAdvertisementSuccessfully -> {
                         recommendationViewModel.fetchRecommendation(
                             recommendationViewModel.getFromSP(
-                                Constants.USER_ID_KEY
+                                Constants.USER_ID_KEY, String::class.java
                             )
                         )
                         donateAdvertisements = it.donateAds
@@ -283,9 +291,14 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action =
-            DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
-        findNavController().navigate(action)
+
+        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     private fun fetchByFilter(filterBy: FilterBy) {

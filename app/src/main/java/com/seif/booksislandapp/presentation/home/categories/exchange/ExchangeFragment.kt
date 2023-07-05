@@ -26,6 +26,7 @@ import com.seif.booksislandapp.presentation.home.categories.recommendation.Recom
 import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
+import com.seif.booksislandapp.utils.Constants.Companion.IS_SUSPENDED_KEY
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
@@ -73,7 +74,11 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         }
         observeOnRecommendation()
         binding.btnFilter.setOnClickListener {
-            findNavController().navigate(R.id.action_exchangeFragment_to_filterFragment)
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                findNavController().navigate(R.id.action_exchangeFragment_to_filterFragment)
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -86,8 +91,12 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             }
         }
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortBottomSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                val bottomSheet = SortBottomSheetFragment()
+                bottomSheet.show(parentFragmentManager, "")
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -131,7 +140,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                         is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
                             recommendationViewModel.fetchRecommendation(
                                 recommendationViewModel.getFromSP(
-                                    Constants.USER_ID_KEY
+                                    Constants.USER_ID_KEY, String::class.java
                                 )
                             )
                             exchangeAdvertisements = it.exchangeAds
@@ -299,8 +308,11 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        val action =
-            ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
-        findNavController().navigate(action)
+        if (!recommendationViewModel.getFromSP(IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else
+            handleErrorState("Sorry but your account is suspended")
     }
 }

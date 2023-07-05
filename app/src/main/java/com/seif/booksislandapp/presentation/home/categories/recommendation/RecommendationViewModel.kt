@@ -41,7 +41,8 @@ class RecommendationViewModel @Inject constructor(
             }
         }
     }
-    fun getFromSP(userId: String): String {
-        return getFromSharedPrefUseCase(userId, String::class.java)
+
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPrefUseCase(key, clazz)
     }
 }

@@ -271,6 +271,7 @@ class UserRepositoryImp @Inject constructor(
         sharedPrefs.put(Constants.USER_GOVERNORATE_KEY, user.governorate)
         sharedPrefs.put(Constants.USER_DISTRICT_KEY, user.district)
         sharedPrefs.put(Constants.USER_AVATAR_KEY, user.avatarImage)
+        sharedPrefs.put(Constants.IS_SUSPENDED_KEY, user.isSuspended)
     }
 
     override suspend fun getAllUsers() = callbackFlow {
@@ -306,6 +307,34 @@ class UserRepositoryImp @Inject constructor(
         awaitClose { }
     }
 
+    override suspend fun getUserByIdRealTime(id: String) = callbackFlow {
+        if (!connectivityManager.checkInternetConnection())
+            trySend(Resource.Error(resourceProvider.string(R.string.no_internet_connection)))
+        try {
+            withTimeout(Constants.TIMEOUT) {
+
+                delay(500) // to show loading progress
+                val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(id)
+                    .addSnapshotListener { usersQuerySnapshot, error ->
+                        if (error != null) {
+                            trySend(Resource.Error(error.message.toString()))
+                        }
+                        if (usersQuerySnapshot != null) {
+                            val userDto = usersQuerySnapshot.toObject(UserDto::class.java)
+                            trySend(
+                                Resource.Success(
+                                    data = userDto!!.toUser()
+                                )
+                            )
+                        }
+                    }
+            }
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message.toString()))
+        }
+        awaitClose { }
+    }
     private fun getAdType(adType: AdType): String {
         return when (adType) {
             AdType.Buying -> Constants.WISHLIST_BUY

@@ -28,4 +28,5 @@ interface UserRepository {
     suspend fun updateUserWishList(userId: String, adType: AdType, wishList: ArrayList<String>): Resource<String, String>
     suspend fun updateSuspendState(suspended: Boolean, userId: String): Resource<Boolean, String>
     suspend fun recommendForUser(userId: String): Resource<Recommendation, String>
+    suspend fun getUserByIdRealTime(id: String): Flow<Resource<User, String>>
 }
