@@ -95,7 +95,11 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
         binding.tvSortBy.setOnClickListener {
 
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!recommendationViewModel.getFromSP(
+                    Constants.IS_SUSPENDED_KEY,
+                    Boolean::class.java
+                )
+            ) {
                 val bottomSheet = BuyBottomSheetFragment()
                 bottomSheet.show(parentFragmentManager, "")
             } else {
@@ -104,7 +108,11 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.btnFilter.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!recommendationViewModel.getFromSP(
+                    Constants.IS_SUSPENDED_KEY,
+                    Boolean::class.java
+                )
+            ) {
                 findNavController().navigate(R.id.action_buyFragment_to_filterFragment)
             } else {
                 handleErrorState("Sorry but your account is suspended")
@@ -121,22 +129,18 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 buyAdapter.updateList(
-                    sellAdvertisements.sortedByDescending {
-                        it.publishDate
-                    }
+                    sellAdvertisements
                 )
             }
             "Lowest Price" -> {
                 buyAdapter.updateList(
-                    sellAdvertisements.sortedBy {
-                        it.price
-                    }
+                    sellAdvertisements.sortedBy { it.price.toInt() }
                 )
             }
             "Highest Price" -> {
                 buyAdapter.updateList(
                     sellAdvertisements.sortedByDescending {
-                        it.price
+                        it.price.toInt()
                     }
                 )
             }
@@ -150,7 +154,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         observe()
     }
 
-//    override fun onResume() {
+    //    override fun onResume() {
 //        super.onResume()
 //        listenForSearchEditTextClick()
 //        listenForSearchEditTextChange()
@@ -178,6 +182,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
             }
         }
     }
+
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
