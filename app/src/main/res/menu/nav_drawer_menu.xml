@@ -6,6 +6,11 @@
             android:id="@+id/menu_instructions"
             android:icon="@drawable/ic_instructions"
             android:title="@string/instructions" />
+
+        <item
+            android:id="@+id/menu_complaints"
+            android:icon="@drawable/ic_complaint"
+            android:title="@string/Complaints" />
     </group>
     <group>
         <item android:title="@string/others">
