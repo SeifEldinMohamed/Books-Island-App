@@ -179,6 +179,8 @@ class AdProviderProfileFragment : Fragment() {
             radius("42%")
             sort("desc")
             legend().title().enabled(false)
+            // Set custom colors for each data entry
+            palette(arrayOf("#5ABD8C", "#3D01A4", "#FB9902", "#F1C40F"))
         }
 
         pie.legend()
