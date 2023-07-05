@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -120,7 +121,15 @@ class ReportsFragment : Fragment(), OnAdItemClick<Report>, OnReportReviewedItemC
     }
 
     override fun onReportReviewedItemClick(item: Report) {
-        allReportsViewModel.setReviewed(item.id)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") { _, _, ->
+            allReportsViewModel.setReviewed(item.id)
+            Toast.makeText(requireContext(), "Reviewed", Toast.LENGTH_LONG).show()
+        }
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Reviewed")
+        builder.setMessage("Are you sure you want to remove this report?")
+        builder.create().show()
     }
 
     override fun onDestroyView() {
