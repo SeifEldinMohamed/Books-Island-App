@@ -60,6 +60,7 @@ class ChatRoomFragment : Fragment() {
     lateinit var imageUris: Uri
     private var receiverUserId: String? = null
     private var currentUser: User? = null
+    private var receiverUser: User? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -224,6 +225,7 @@ class ChatRoomFragment : Fragment() {
 
                         is ChatRoomState.FetchReceiverUserSuccessfully -> {
                             receiverUserId = it.user.id
+                            receiverUser = it.user
                             // fetchMessagesBetweenTwoUsers(receiverUserId = it.user.id)
                             showReceiverData(receiverUser = it.user)
 
@@ -234,7 +236,11 @@ class ChatRoomFragment : Fragment() {
 
                         is ChatRoomState.FetchCurrentUserSuccessfully -> {
                             currentUser = it.user
-                            handleIsReceiverBlocked(currentUser!!.blockedUsersIds)
+                            Timber.d("observe: receiver user in collect $receiverUser")
+                            handleIsReceiverBlocked(
+                                currentUser!!.blockedUsersIds,
+                                currentUser!!.usersBlockedMe
+                            )
                         }
 
                         is ChatRoomState.SendMessageSuccessfully -> {
@@ -249,13 +255,17 @@ class ChatRoomFragment : Fragment() {
         }
     }
 
-    private fun handleIsReceiverBlocked(blockedUsersIds: List<String>) {
-        if (blockedUsersIds.contains(receiverUserId)) { // blocked
-            Timber.d("handleIsReceiverBlocked: blocked")
+    private fun handleIsReceiverBlocked(
+        blockedUsersIds: List<String>,
+        receiverUsersBlockedMe: List<String>
+    ) {
+        if (blockedUsersIds.contains(receiverUserId) || receiverUsersBlockedMe.contains(
+                receiverUserId
+            )
+        ) { // blocked
             binding.chatLayout.hide()
             binding.clConversationIsBlocked.show()
         } else {
-            Timber.d("handleIsReceiverBlocked: not blocked")
             binding.chatLayout.show()
             binding.clConversationIsBlocked.hide()
         }
