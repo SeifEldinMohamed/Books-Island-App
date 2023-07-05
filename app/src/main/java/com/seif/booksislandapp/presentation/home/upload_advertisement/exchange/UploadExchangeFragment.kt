@@ -116,7 +116,7 @@ class UploadExchangeFragment : Fragment(), OnImageItemClick<Uri> {
         binding.tvCancelRequest.setOnClickListener {
             uploadExchangeAdvertisementViewModel.cancelRequest(
                 requestId,
-                AdType.Buying,
+                AdType.Exchange,
                 args.exchangeAdvertisement!!.id
             )
         }
