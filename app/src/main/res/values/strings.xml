@@ -390,4 +390,5 @@
     <string name="reject_request_notification_title">Confirmation Request Rejected</string>
     <string name="accept_request_notification_title">Confirmation Request Accepted</string>
     <string name="message_notification_title">New Message</string>
+    <string name="charts">Charts</string>
 </resources>

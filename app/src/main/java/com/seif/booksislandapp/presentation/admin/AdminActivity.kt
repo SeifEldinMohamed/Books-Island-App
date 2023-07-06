@@ -30,7 +30,8 @@ class AdminActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration.Builder(
             setOf(
                 R.id.allUsersFragment,
-                R.id.reportsFragment
+                R.id.reportsFragment,
+                R.id.chartsFragment
             )
         ).build()
         setupNavigationComponent()
