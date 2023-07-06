@@ -6,6 +6,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.GetAllAuctionAdsUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.GetAuctionAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.auction.SearchAuctionsAdsUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -21,7 +22,8 @@ class AuctionViewModel @Inject constructor(
     private val getAllAuctionAdsUseCase: GetAllAuctionAdsUseCase,
     private val searchAuctionsAdsUseCase: SearchAuctionsAdsUseCase,
     private val getAuctionAdsByFilterUseCase: GetAuctionAdsByFilterUseCase,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val getFromSharedPrefUseCase: GetFromSharedPreferenceUseCase,
 ) : ViewModel() {
     private var _auctionState = MutableStateFlow<AuctionState>(AuctionState.Init)
     val auctionState get() = _auctionState.asStateFlow()
@@ -50,7 +52,9 @@ class AuctionViewModel @Inject constructor(
             }
         }
     }
-
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPrefUseCase(key, clazz)
+    }
     fun searchAuctionsAdvertisements(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {

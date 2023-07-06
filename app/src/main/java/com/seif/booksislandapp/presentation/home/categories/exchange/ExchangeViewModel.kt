@@ -6,6 +6,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetAllExchangeAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetExchangeAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.SearchExchangeAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
@@ -21,7 +22,8 @@ class ExchangeViewModel @Inject constructor(
     private val searchExchangeAdvertisementUseCase: SearchExchangeAdvertisementUseCase,
     private val getExchangeAdsByFilterUseCase: GetExchangeAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider,
-    private val dispatcher: DispatcherProvider
+    private val dispatcher: DispatcherProvider,
+    private val getFromSharedPrefUseCase: GetFromSharedPreferenceUseCase,
 ) : ViewModel() {
     private var _exchangeState = MutableStateFlow<ExchangeState>(ExchangeState.Init)
     val exchangeState = _exchangeState.asStateFlow()
@@ -49,7 +51,9 @@ class ExchangeViewModel @Inject constructor(
             }
         }
     }
-
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPrefUseCase(key, clazz)
+    }
     fun searchExchangeAds(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {

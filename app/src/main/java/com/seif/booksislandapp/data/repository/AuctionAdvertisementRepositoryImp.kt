@@ -15,6 +15,7 @@ import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
 import com.seif.booksislandapp.domain.repository.AuctionAdvertisementRepository
+import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION
@@ -34,7 +35,8 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storageReference: StorageReference,
     private val resourceProvider: ResourceProvider,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val userRepository: UserRepository
 ) : AuctionAdvertisementRepository {
     override suspend fun getAllAuctionsAds(): Resource<ArrayList<AuctionAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
@@ -42,41 +44,66 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         return try {
             delay(500) // to show loading progress
             withTimeout(Constants.TIMEOUT) {
-                val docReference = firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                val querySnapshot =
-                    docReference.whereNotEqualTo("auctionStatus", AuctionStatus.CLOSED.toString())
-                        .orderBy("auctionStatus")
-                        .orderBy("publishDate", Query.Direction.DESCENDING)
-                        .get()
-                        .await()
+                when (
+                    val result =
+                        userRepository.recommendForUser(userRepository.getFirebaseCurrentUser()!!.uid)
+                ) {
+                    is Resource.Success -> {
+                        val docReference =
+                            firestore.collection(AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        val querySnapshot =
+                            docReference.whereNotEqualTo(
+                                "auctionStatus",
+                                AuctionStatus.CLOSED.toString()
+                            )
+                                .orderBy("auctionStatus")
+                                .orderBy("publishDate", Query.Direction.DESCENDING)
+                                .get()
+                                .await()
 
-                val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val auctionAdvertisementDto =
-                        document.toObject(AuctionAdvertisementDto::class.java)
-                    // update auction status
-                    auctionAdvertisementDto.auctionStatus = calculateAuctionStatus(
-                        auctionAdvertisementDto.postDuration.toInt(),
-                        auctionAdvertisementDto.closeDate!!
-                    )
-                    val updateMap: MutableMap<String, Any> = HashMap()
-                    updateMap["auctionStatus"] = auctionAdvertisementDto.auctionStatus.toString()
-                    docReference.document(document.id).update(updateMap).await()
-                    // add ad after updating its auctionStatusValue
-                    if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
-                        auctionsAdvertisementsDto.add(auctionAdvertisementDto)
+                        val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
+                        for (document in querySnapshot) {
+                            val auctionAdvertisementDto =
+                                document.toObject(AuctionAdvertisementDto::class.java)
+                            // update auction status
+                            auctionAdvertisementDto.auctionStatus = calculateAuctionStatus(
+                                auctionAdvertisementDto.postDuration.toInt(),
+                                auctionAdvertisementDto.closeDate!!
+                            )
+                            val updateMap: MutableMap<String, Any> = HashMap()
+                            updateMap["auctionStatus"] =
+                                auctionAdvertisementDto.auctionStatus.toString()
+                            docReference.document(document.id).update(updateMap).await()
+                            // add ad after updating its auctionStatusValue
+                            if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
+                                auctionsAdvertisementsDto.add(auctionAdvertisementDto)
+                        }
+                        Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
+                        val data = auctionsAdvertisementsDto.map { auctionAdvertisementDto ->
+                            auctionAdvertisementDto.toAuctionAdvertisement()
+                        }.toCollection(ArrayList())
+                        Resource.Success(
+                            data = handleAuctionRecommendation(data, result.data.topCategory)
+                        )
+                    }
+                    is Resource.Error -> Resource.Error(result.message)
                 }
-                Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
-
-                Resource.Success(
-                    data = auctionsAdvertisementsDto.map { auctionAdvertisementDto ->
-                        auctionAdvertisementDto.toAuctionAdvertisement()
-                    }.toCollection(ArrayList())
-                )
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
+    }
+
+    private fun handleAuctionRecommendation(
+        list: ArrayList<AuctionAdvertisement>,
+        top: String
+    ): ArrayList<AuctionAdvertisement> {
+        val returnedDate = arrayListOf<AuctionAdvertisement>()
+        var other = list.filter { it.book.category == top }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top }
+        returnedDate.addAll(other)
+        return returnedDate
     }
 
     private fun calculateAuctionStatus(postDuration: Int, closeDate: Date): AuctionStatus {
@@ -409,12 +436,17 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
         auctionAdvertisementsDto: ArrayList<AuctionAdvertisementDto>,
         filterBy: FilterBy
     ): ArrayList<AuctionAdvertisement> {
-        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size > 1) {
             auctionAdvertisementsDto.filter { ad ->
                 (filterBy.category == null || ad.book?.category == filterBy.category) &&
                     (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
                     (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+                    (
+                        filterBy.condition.split('&')
+                            .first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split(
+                            '&'
+                        )[1]
+                        )
             }
                 .map { it.toAuctionAdvertisement() }
                 .toCollection(ArrayList())

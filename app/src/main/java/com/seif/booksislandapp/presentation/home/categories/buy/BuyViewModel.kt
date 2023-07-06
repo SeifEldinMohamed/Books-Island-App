@@ -6,6 +6,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllSellAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetSellAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
@@ -26,6 +27,7 @@ class BuyViewModel @Inject constructor(
     private val getSellAdsByFilterUseCase: GetSellAdsByFilterUseCase,
     private val searchSellAdvertisementUseCase: SearchSellAdvertisementUseCase,
     private val resourceProvider: ResourceProvider,
+    private val getFromSharedPrefUseCase: GetFromSharedPreferenceUseCase,
     private val dispatcher: DispatcherProvider
 ) : ViewModel() {
     private var _buyState = MutableStateFlow<BuyState>(BuyState.Init)
@@ -131,5 +133,8 @@ class BuyViewModel @Inject constructor(
 
     fun resetState() {
         _buyState.value = BuyState.Init
+    }
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPrefUseCase(key, clazz)
     }
 }

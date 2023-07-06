@@ -19,7 +19,6 @@ import com.google.android.material.navigation.NavigationView
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ActivityHomeBinding
 import com.seif.booksislandapp.presentation.admin.report_details.GetUserByIdState
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,9 +31,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     lateinit var appBarConfiguration: AppBarConfiguration
     private val homeViewModel: HomeViewModel by viewModels()
-    private val recommendationViewModel: RecommendationViewModel by viewModels()
-    private val TAG = "HomeActivity"
-    //  private lateinit var onBackPressedCallback: OnBackPressedCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +57,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupNavigationComponent()
 
         binding.fabProfile.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(
+            if (!homeViewModel.readFromSP(
                     Constants.IS_SUSPENDED_KEY,
                     Boolean::class.java
                 )
@@ -72,7 +68,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         binding.ivRequests.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(
+            if (!homeViewModel.readFromSP(
                     Constants.IS_SUSPENDED_KEY,
                     Boolean::class.java
                 )

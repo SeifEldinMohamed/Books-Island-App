@@ -46,13 +46,15 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         storageReference: StorageReference,
         resourceProvider: ResourceProvider,
-        connectivityManager: ConnectivityManager
+        connectivityManager: ConnectivityManager,
+        userRepository: UserRepository
     ): AdvertisementRepository {
         return AdvertisementRepositoryImp(
             firestore,
             storageReference,
             resourceProvider,
-            connectivityManager
+            connectivityManager,
+            userRepository
         )
     }
 
@@ -62,13 +64,15 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         storageReference: StorageReference,
         resourceProvider: ResourceProvider,
-        connectivityManager: ConnectivityManager
+        connectivityManager: ConnectivityManager,
+        userRepository: UserRepository
     ): AuctionAdvertisementRepository {
         return AuctionAdvertisementRepositoryImp(
             firestore,
             storageReference,
             resourceProvider,
-            connectivityManager
+            connectivityManager,
+            userRepository
         )
     }
     @Provides
@@ -77,13 +81,15 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         resourceProvider: ResourceProvider,
         storageReference: StorageReference,
-        connectivityManager: ConnectivityManager
+        connectivityManager: ConnectivityManager,
+        userRepository: UserRepository
     ): ExchangeAdvertisementRepository {
         return ExchangeAdvertisementRepositoryImp(
             firestore,
             resourceProvider,
             storageReference,
-            connectivityManager
+            connectivityManager,
+            userRepository
         )
     }
 

@@ -21,8 +21,6 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
@@ -40,7 +38,6 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private var _binding: FragmentAuctionBinding? = null
     private val binding get() = _binding!!
     private val auctionViewModel: AuctionViewModel by viewModels()
-    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private lateinit var dialog: AlertDialog
     private val filterViewModel: FilterViewModel by activityViewModels()
     private val auctionAdapter by lazy { AuctionAdapter() }
@@ -66,7 +63,6 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         firstTimeFetch()
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
-        observeOnRecommendation()
         binding.ivBack.setOnClickListener {
             sortViewModel.setLastSort("")
             findNavController().navigateUp()
@@ -84,7 +80,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         }
         binding.tvSortBy.setOnClickListener {
 
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!auctionViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
                 val bottomSheet = SortBottomSheetFragment()
                 bottomSheet.show(parentFragmentManager, "")
             } else {
@@ -92,7 +88,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             }
         }
         binding.btnFilter.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!auctionViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
                 findNavController().navigate(R.id.action_auctionFragment_to_filterFragment)
             } else {
                 handleErrorState("Sorry but your account is suspended")
@@ -110,28 +106,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
             addDuration = 300
         }
     }
-    private fun observeOnRecommendation() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            recommendationViewModel.recommendationState.collect {
-                when (it) {
-                    RecommendationState.Init -> Unit
-                    is RecommendationState.RecommendedSuccessfully -> {
-                        Timber.d(it.recommendation.topCategory)
-                        val recommendedForYou: ArrayList<AuctionAdvertisement> =
-                            auctionsAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
-                        val other: ArrayList<AuctionAdvertisement> =
-                            auctionsAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
-                        recommendedForYou.addAll(other)
-                        auctionAdapter.updateList(recommendedForYou)
-                    }
-                    is RecommendationState.ShowError -> {
-                        auctionAdapter.updateList(auctionsAdvertisements)
-                        handleUi(auctionsAdvertisements as ArrayList)
-                    }
-                }
-            }
-        }
-    }
+
     private fun handleSort(sortBy: String) {
         when (sortBy) {
             "Added Recently" -> {
@@ -196,11 +171,6 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                     when (it) {
                         AuctionState.Init -> Unit
                         is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
-                            recommendationViewModel.fetchRecommendation(
-                                recommendationViewModel.getFromSP(
-                                    Constants.USER_ID_KEY, String::class.java
-                                )
-                            )
                             auctionsAdvertisements = it.auctionAds
                             //  auctionAdapter.updateList(it.auctionAds)
 
@@ -300,7 +270,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
-        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+        if (!auctionViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
             val action = AuctionFragmentDirections.actionAuctionFragmentToAuctionAdDetailsFragment(item)
             findNavController().navigate(action)
         } else {
