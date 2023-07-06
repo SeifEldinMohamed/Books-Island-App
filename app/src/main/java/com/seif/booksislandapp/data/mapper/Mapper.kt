@@ -16,11 +16,9 @@ import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.auth.DistrictDto
 import com.seif.booksislandapp.data.remote.dto.auth.GovernorateDto
 import com.seif.booksislandapp.data.remote.dto.chat.MessageDto
+import com.seif.booksislandapp.data.remote.dto.recommendation.RecommendationDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
-import com.seif.booksislandapp.domain.model.Rate
-import com.seif.booksislandapp.domain.model.ReceivedRate
-import com.seif.booksislandapp.domain.model.Report
-import com.seif.booksislandapp.domain.model.User
+import com.seif.booksislandapp.domain.model.*
 import com.seif.booksislandapp.domain.model.adv.AdType
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.domain.model.adv.auction.Bidder
@@ -433,5 +431,11 @@ fun ReceivedRateDto.toReceivedRate(): ReceivedRate {
     return ReceivedRate(
         reporterId = reporterId,
         rate = rate
+    )
+}
+fun RecommendationDto.toRecommendation(): Recommendation {
+    return Recommendation(
+        ownerId = ownerId,
+        topCategory = topCategory
     )
 }

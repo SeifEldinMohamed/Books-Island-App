@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.WishlistDonateBinding
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -36,6 +37,7 @@ class DonationWishListFragment : Fragment(), OnAdItemClick<DonateAdvertisement> 
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
     private val donateWishListViewModel: DonateWishListViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     //   private var myDonationWishAds: List<DonateAdvertisement>? = null
 
@@ -175,8 +177,13 @@ class DonationWishListFragment : Fragment(), OnAdItemClick<DonateAdvertisement> 
     }
 
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action =
-            WishListFragmentDirections.actionWishListFragmentToDonateAdDetailsFragment(item)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                WishListFragmentDirections.actionWishListFragmentToDonateAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }

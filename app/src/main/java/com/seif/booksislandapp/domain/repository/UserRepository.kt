@@ -1,6 +1,7 @@
 package com.seif.booksislandapp.domain.repository
 
 import com.google.firebase.auth.FirebaseUser
+import com.seif.booksislandapp.domain.model.Recommendation
 import com.seif.booksislandapp.domain.model.Report
 import com.seif.booksislandapp.domain.model.User
 import com.seif.booksislandapp.domain.model.adv.AdType
@@ -26,4 +27,6 @@ interface UserRepository {
     ): Resource<Pair<String, String>, String>
     suspend fun updateUserWishList(userId: String, adType: AdType, wishList: ArrayList<String>): Resource<String, String>
     suspend fun updateSuspendState(suspended: Boolean, userId: String): Resource<Boolean, String>
+    suspend fun recommendForUser(userId: String): Resource<Recommendation, String>
+    suspend fun getUserByIdRealTime(id: String): Flow<Resource<User, String>>
 }

@@ -7,6 +7,7 @@ import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.Get
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetExchangeAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.SearchExchangeAdvertisementUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ class ExchangeViewModel @Inject constructor(
     private val searchExchangeAdvertisementUseCase: SearchExchangeAdvertisementUseCase,
     private val getExchangeAdsByFilterUseCase: GetExchangeAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider,
+    private val dispatcher: DispatcherProvider
 ) : ViewModel() {
     private var _exchangeState = MutableStateFlow<ExchangeState>(ExchangeState.Init)
     val exchangeState = _exchangeState.asStateFlow()
@@ -28,7 +30,7 @@ class ExchangeViewModel @Inject constructor(
     var isSearching = false
     fun fetchAllExchangeAds() {
         setLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher.io) {
             getAllExchangeAdvertisementUseCase.invoke().let {
                 when (it) {
                     is Resource.Error -> {

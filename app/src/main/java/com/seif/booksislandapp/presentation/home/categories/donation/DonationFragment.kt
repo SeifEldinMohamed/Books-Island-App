@@ -20,13 +20,10 @@ import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheet
 import com.seif.booksislandapp.presentation.home.categories.donation.adapter.DonateAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
-import com.seif.booksislandapp.utils.createLoadingAlertDialog
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
-import com.seif.booksislandapp.utils.showErrorSnackBar
-import com.seif.booksislandapp.utils.showInfoSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.delay
@@ -41,6 +38,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     private var _binding: FragmentDonationBinding? = null
     private val binding get() = _binding!!
     private val donateViewModel: DonateViewModel by viewModels()
+    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private val filterViewModel: FilterViewModel by activityViewModels()
     private lateinit var dialog: AlertDialog
     private val donateAdapter by lazy { DonateAdapter() }
@@ -65,14 +63,18 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         firstTimeFetch()
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
-
+        observeOnRecommendation()
         binding.ivBack.setOnClickListener {
+            sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
 
         binding.btnFilter.setOnClickListener {
-            sortViewModel.setLastSort("")
-            findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                findNavController().navigate(R.id.action_donationFragment_to_filterFragment)
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
         filterViewModel.liveData.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -85,8 +87,12 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         }
         binding.tvSortBy.setOnClickListener {
-            val bottomSheet = SortBottomSheetFragment()
-            bottomSheet.show(parentFragmentManager, "")
+            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                val bottomSheet = SortBottomSheetFragment()
+                bottomSheet.show(parentFragmentManager, "")
+            } else {
+                handleErrorState("Sorry but your account is suspended")
+            }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -130,13 +136,12 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
             }
         })
     }
+
     private fun handleSort(sortBy: String) {
         when (sortBy) {
             "Added Recently" -> {
                 donateAdapter.updateList(
-                    donateAdvertisements.sortedByDescending {
-                        it.publishDate
-                    }
+                    donateAdvertisements
                 )
             }
         }
@@ -161,15 +166,43 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         }
     }
 
+    private fun observeOnRecommendation() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            recommendationViewModel.recommendationState.collect {
+                when (it) {
+                    RecommendationState.Init -> Unit
+                    is RecommendationState.RecommendedSuccessfully -> {
+                        Timber.d(it.recommendation.topCategory)
+                        val recommendedForYou: ArrayList<DonateAdvertisement> =
+                            donateAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
+                        val other: ArrayList<DonateAdvertisement> =
+                            donateAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
+                        recommendedForYou.addAll(other)
+                        donateAdapter.updateList(recommendedForYou)
+                    }
+                    is RecommendationState.ShowError -> {
+                        donateAdapter.updateList(donateAdvertisements)
+                        handleUi(donateAdvertisements as ArrayList)
+                    }
+                }
+            }
+        }
+    }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             donateViewModel.donateState.collectLatest {
                 when (it) {
                     DonateState.Init -> Unit
                     is DonateState.FetchAllDonateAdvertisementSuccessfully -> {
+                        recommendationViewModel.fetchRecommendation(
+                            recommendationViewModel.getFromSP(
+                                Constants.USER_ID_KEY, String::class.java
+                            )
+                        )
                         donateAdvertisements = it.donateAds
-                        donateAdapter.updateList(it.donateAds)
-                        handleUi(it.donateAds)
+                        // donateAdapter.updateList(it.donateAds)
+                        // handleUi(it.donateAds)
                     }
                     is DonateState.SearchDonateAdvertisementSuccessfully -> {
                         // donateAdvertisements = it.searchedDonateAds
@@ -256,9 +289,14 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
     }
 
     override fun onAdItemClick(item: DonateAdvertisement, position: Int) {
-        val action =
-            DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
-        findNavController().navigate(action)
+
+        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                DonationFragmentDirections.actionDonationFragmentToDonateAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     private fun fetchByFilter(filterBy: FilterBy) {

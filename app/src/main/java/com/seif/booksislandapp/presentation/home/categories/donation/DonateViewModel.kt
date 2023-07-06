@@ -7,6 +7,7 @@ import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetAl
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetDonateAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.SearchDonateAdvertisementUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
+import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,16 +21,18 @@ class DonateViewModel @Inject constructor(
     private val getAllDonateAdvertisementUseCase: GetAllDonateAdvertisementUseCase,
     private val searchDonateAdvertisementUseCase: SearchDonateAdvertisementUseCase,
     private val getDonateAdsByFilterUseCase: GetDonateAdsByFilterUseCase,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val dispatcher: DispatcherProvider
 ) : ViewModel() {
     private var _donateState = MutableStateFlow<DonateState>(DonateState.Init)
     val donateState = _donateState.asStateFlow()
+
     private var searchJob: Job? = null
     var firstTime = true
     var isSearching = false
     fun fetchAllDonateAdvertisement() {
         setLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher.io) {
             getAllDonateAdvertisementUseCase.invoke().let {
                 when (it) {
                     is Resource.Error -> {

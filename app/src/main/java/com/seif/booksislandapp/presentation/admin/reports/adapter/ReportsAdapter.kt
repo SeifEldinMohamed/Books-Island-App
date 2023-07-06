@@ -16,6 +16,7 @@ class ReportsAdapter : RecyclerView.Adapter<ReportsAdapter.MyViewHolder>() {
     var onReportReviewedItemClick: OnReportReviewedItemClick<Report>? = null
     var reports: List<Report> = emptyList()
     var reportNum = 0
+    var total = 0
 
     inner class MyViewHolder(private val binding: ReportItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -26,7 +27,7 @@ class ReportsAdapter : RecyclerView.Adapter<ReportsAdapter.MyViewHolder>() {
             binding.tvReportedToName.text = report.reportedPersonName
             binding.tvReportDate.text = report.date?.let { formatter.format(it) }
             binding.tvCategoryType.text = report.category
-            reportNum = position + 1
+            reportNum = total - position
             binding.tvReportNumber.text = reportNum.toString()
             binding.cvAdminReports.setOnClickListener {
                 onAdItemClick?.onAdItemClick(report, position)
@@ -58,6 +59,7 @@ class ReportsAdapter : RecyclerView.Adapter<ReportsAdapter.MyViewHolder>() {
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newReports: List<Report>) {
         this.reports = newReports
+        this.total = newReports.size
         notifyDataSetChanged()
     }
 }
