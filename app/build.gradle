@@ -26,7 +26,7 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
         buildConfigField "String", "PLACES_API_KEY", "\"${properties.getProperty("PLACES_API_KEY")}\""
-        buildConfigField "String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\""
+        manifestPlaceholders = [mapsApiKey: properties.getProperty("MAPS_API_KEY")]
     }
 
     buildTypes {

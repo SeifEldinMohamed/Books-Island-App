@@ -104,7 +104,7 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         binding.tvCancelRequest.setOnClickListener {
             uploadAuctionAdvertisementViewModel.cancelRequest(
                 requestId,
-                AdType.Buying,
+                AdType.Auction,
                 args.auctionAdvertisement!!.id
             )
         }

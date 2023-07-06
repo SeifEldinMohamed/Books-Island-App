@@ -312,6 +312,7 @@ class ProfileFragment : Fragment() {
         binding.etEmail.setText(user.email)
         binding.etUsername.setText(user.username)
         binding.tvUsername.text = user.username
+        binding.tvRate.text = getString(R.string.user_rate_value, user.averageRate)
     }
 
     private fun setUpDistrictsDropDown(districts: List<District>) {

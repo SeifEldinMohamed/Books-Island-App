@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.seif.booksislandapp.R
@@ -18,6 +19,7 @@ class RequestsFragment : Fragment() {
     private val binding get() = _binding!!
     private var viewPager: ViewPager2? = null
     private var mediator: TabLayoutMediator? = null
+    private val args: RequestsFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,6 +54,10 @@ class RequestsFragment : Fragment() {
                 LayoutInflater.from(requireContext())
                     .inflate(R.layout.requests_tab_title, null) as TextView
             binding.tlRequests.getTabAt(i)?.customView = textView
+        }
+
+        if (args.openReceivedRequests) {
+            binding.tlRequests.getTabAt(1)?.select()
         }
     }
 

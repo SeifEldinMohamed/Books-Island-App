@@ -121,7 +121,7 @@ class UploadDonateFragment : Fragment(), OnImageItemClick<Uri> {
         binding.tvCancelRequest2.setOnClickListener {
             uploadDonateAdvertisementViewModel.cancelRequest(
                 requestId,
-                AdType.Buying,
+                AdType.Donation,
                 args.myDonateAdvertisement!!.id
             )
         }

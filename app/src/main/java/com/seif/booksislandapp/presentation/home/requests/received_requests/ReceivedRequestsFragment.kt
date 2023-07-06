@@ -174,20 +174,15 @@ class ReceivedRequestsFragment : Fragment(), OnReceivedRequestItemClick<MyReceiv
     override fun onAcceptButtonClick(item: MyReceivedRequest, position: Int) {
         Timber.d("onAcceptButtonClick: $position - $item")
         receivedRequestsViewModel.acceptConfirmationRequest(
-            item.id,
-            item.senderId,
-            item.adType,
-            "Accepted",
-            item.advertisementId
+            myReceivedRequest = item,
+            acceptStatus = "Accepted",
         )
     }
 
     override fun onRejectButtonClick(item: MyReceivedRequest, position: Int) {
         Timber.d("onRejectButtonClick: $position - $item")
         receivedRequestsViewModel.rejectConfirmationRequest(
-            item.id,
-            item.advertisementId,
-            item.adType,
+            myReceivedRequest = item,
             "Rejected"
         )
     }

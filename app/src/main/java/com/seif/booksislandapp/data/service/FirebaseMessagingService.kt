@@ -3,6 +3,7 @@ package com.seif.booksislandapp.data.service
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -22,8 +23,8 @@ import com.seif.booksislandapp.utils.Constants.Companion.NOT_IN_MYCHATS_OR_CHATR
 import com.seif.booksislandapp.utils.SharedPrefs
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.Date
 import javax.inject.Inject
-import kotlin.random.Random
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 @AndroidEntryPoint
@@ -57,29 +58,50 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
 
     private fun sendNotification(title: String, body: String, image: String, senderId: String) {
 
-        val pendingIntent = NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.main_nav_graph)
-            .setComponentName(HomeActivity::class.java)
-            .setDestination(R.id.chatRoomFragment)
-            .setArguments(
-                Bundle().apply {
+        val pendingIntent = when (title) {
+            getString(R.string.message_notification_title) -> {
+                val bundle = Bundle().apply {
                     putString(
                         "userId",
                         senderId
                     )
                 }
-            ) // replace with deep links to maintain back stack
-            .createPendingIntent()
+                createPendingIntent(bundle, R.id.chatRoomFragment)
+            }
+
+            getString(R.string.request_notification_title) -> { // // inCase of receive confirmation request -> open received requests
+                val bundle = Bundle().apply {
+                    putBoolean(
+                        "openReceivedRequests",
+                        true
+                    )
+                }
+                createPendingIntent(bundle, R.id.requestsFragment)
+            }
+
+            else -> { // inCase of accepted or rejected -> open send requests
+                val bundle = Bundle().apply {
+                    putBoolean(
+                        "openReceivedRequests",
+                        false
+                    )
+                }
+                createPendingIntent(bundle, R.id.requestsFragment)
+            }
+        }
+
         // Display notification
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setAutoCancel(true)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(body)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setStyle(NotificationCompat.BigTextStyle())
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
@@ -90,7 +112,7 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             title,
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_HIGH
         )
 
         if (image != "null") {
@@ -103,8 +125,19 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
         } else {
             // we use the CompletableFuture  instance to wait until we add the large icon then we sent the notification
             notificationManager.createNotificationChannel(channel)
-            notificationManager.notify(Random.nextInt(), notificationBuilder.build())
+            notificationManager.notify(Date().time.toInt(), notificationBuilder.build())
         }
+    }
+
+    private fun createPendingIntent(bundle: Bundle, fragmentId: Int): PendingIntent {
+        return NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.main_nav_graph)
+            .setComponentName(HomeActivity::class.java)
+            .setDestination(fragmentId)
+            .setArguments(
+                bundle
+            ) // replace with deep links to maintain back stack
+            .createPendingIntent()
     }
 
     private fun setBigPictureFromBitmap(
@@ -126,7 +159,7 @@ open class FirebaseMessagingService : FirebaseMessagingService() {
 
                     notificationManager.createNotificationChannel(channel)
                     notificationManager.notify(
-                        0,
+                        Date().time.toInt(),
                         notificationBuilder.build()
                     )
                 }

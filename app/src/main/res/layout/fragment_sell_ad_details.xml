@@ -169,6 +169,7 @@
                         android:fontFamily="@font/roboto_bold"
                         android:text="@string/Title"
                         android:textSize="@dimen/_18ssp"
+                        android:gravity="center"
                         android:textColor="@color/black"
                         app:layout_constraintEnd_toEndOf="@+id/iv_book"
                         app:layout_constraintStart_toStartOf="@+id/iv_book"

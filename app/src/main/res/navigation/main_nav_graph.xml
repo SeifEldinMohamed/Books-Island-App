@@ -332,7 +332,12 @@
         android:id="@+id/requestsFragment"
         android:name="com.seif.booksislandapp.presentation.home.requests.RequestsFragment"
         android:label="Requests"
-        tools:layout="@layout/fragment_requests" />
+        tools:layout="@layout/fragment_requests">
+        <argument
+            android:name="openReceivedRequests"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <fragment
         android:id="@+id/shareLocationFragment"
         android:name="com.seif.booksislandapp.ShareLocationFragment"

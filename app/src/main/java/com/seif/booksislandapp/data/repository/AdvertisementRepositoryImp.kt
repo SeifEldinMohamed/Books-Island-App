@@ -6,7 +6,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.R
-import com.seif.booksislandapp.data.mapper.*
+import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
+import com.seif.booksislandapp.data.mapper.toDonateAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toExchangeAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toSellAdvertisement
+import com.seif.booksislandapp.data.mapper.toSellAdvertisementDto
+import com.seif.booksislandapp.data.mapper.toUser
 import com.seif.booksislandapp.data.remote.dto.UserDto
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
@@ -262,9 +267,10 @@ class AdvertisementRepositoryImp @Inject constructor(
                 val querySnapshot = firestore.collection(USER_FIRESTORE_COLLECTION).document(id)
                     .get()
                     .await()
-                val user = querySnapshot.toObject(UserDto::class.java)
+                val userDto = querySnapshot.toObject(UserDto::class.java)
+                Timber.d("getUserById: userDto = $userDto")
                 Resource.Success(
-                    data = user!!.toUser()
+                    data = userDto!!.toUser()
                 )
             }
         } catch (e: Exception) {

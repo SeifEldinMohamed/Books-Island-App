@@ -11,17 +11,12 @@ interface RequestsRepository {
     suspend fun fetchSentRequests(currentUserId: String): Flow<Resource<List<MySentRequest>, String>>
     suspend fun fetchReceivedRequests(currentUserId: String): Flow<Resource<List<MyReceivedRequest>, String>>
     suspend fun acceptConfirmationRequest(
-        requestId: String,
-        sellerId: String,
-        adType: AdType,
+        myReceivedRequest: MyReceivedRequest,
         acceptStatus: String,
-        advertisementId: String
     ): Resource<String, String>
 
     suspend fun rejectConfirmationRequest(
-        requestId: String,
-        advertisementId: String,
-        adType: AdType,
+        myReceivedRequest: MyReceivedRequest,
         rejectStatus: String
     ): Resource<String, String>
 

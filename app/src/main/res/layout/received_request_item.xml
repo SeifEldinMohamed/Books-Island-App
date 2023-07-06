@@ -85,14 +85,15 @@
 
             <TextView
                 android:id="@+id/tv_category"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
                 android:fontFamily="@font/roboto_regular"
                 android:maxWidth="@dimen/_110sdp"
                 android:text="@string/references_and_research"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView11"
+                app:layout_constraintEnd_toStartOf="@+id/textView13"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toTopOf="@+id/textView11" />
 
@@ -100,7 +101,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_9sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/category_"
                 android:textColor="@color/black"
@@ -135,13 +136,14 @@
 
             <TextView
                 android:id="@+id/tv_condition"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="@string/used"
+                android:text="@string/used_with_bad_condition"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                app:layout_constraintEnd_toStartOf="@+id/textView9"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
                 app:layout_constraintTop_toTopOf="@+id/textView7" />
 

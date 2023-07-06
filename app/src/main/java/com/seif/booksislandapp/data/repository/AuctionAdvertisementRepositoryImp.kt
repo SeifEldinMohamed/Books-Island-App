@@ -22,14 +22,18 @@ import com.seif.booksislandapp.utils.Constants.Companion.AUCTION_ADVERTISEMENT_F
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import timber.log.Timber
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AuctionAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -61,6 +65,35 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                                 .get()
                                 .await()
 
+                val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val auctionAdvertisementDto =
+                        document.toObject(AuctionAdvertisementDto::class.java)
+                    // update auction status
+                    auctionAdvertisementDto.auctionStatus
+                    val newStatus = calculateAuctionStatus(
+                        auctionAdvertisementDto.postDuration.toInt(),
+                        auctionAdvertisementDto.closeDate!!
+                    )
+                    // to only update the changed once ( dec response time to 1/2 )
+                    if (newStatus != auctionAdvertisementDto.auctionStatus) {
+                        auctionAdvertisementDto.auctionStatus = newStatus
+                        val updateMap: MutableMap<String, Any> = HashMap()
+                        updateMap["auctionStatus"] =
+                            auctionAdvertisementDto.auctionStatus.toString()
+                        docReference.document(document.id).update(updateMap).await()
+                    }
+                    // add ad if it's not closed
+                    if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
+                        auctionsAdvertisementsDto.add(auctionAdvertisementDto)
+                }
+                Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
+
+                Resource.Success(
+                    data = auctionsAdvertisementsDto.map { auctionAdvertisementDto ->
+                        auctionAdvertisementDto.toAuctionAdvertisement()
+                    }.toCollection(ArrayList())
+                )
                         val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
                         for (document in querySnapshot) {
                             val auctionAdvertisementDto =
