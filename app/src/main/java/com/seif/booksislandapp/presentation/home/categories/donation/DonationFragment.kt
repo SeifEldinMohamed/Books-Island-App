@@ -137,7 +137,7 @@ class DonationFragment : Fragment(), OnAdItemClick<DonateAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 donateAdapter.updateList(
-                    donateAdvertisements
+                    donateAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
         }

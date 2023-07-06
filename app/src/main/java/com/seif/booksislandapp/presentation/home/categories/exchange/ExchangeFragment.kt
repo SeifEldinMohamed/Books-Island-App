@@ -207,7 +207,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 exchangeAdapter.updateList(
-                    exchangeAdvertisements
+                    exchangeAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
         }

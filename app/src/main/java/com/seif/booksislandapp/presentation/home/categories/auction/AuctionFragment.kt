@@ -111,7 +111,7 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 auctionAdapter.updateList(
-                    auctionsAdvertisements
+                    auctionsAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
         }

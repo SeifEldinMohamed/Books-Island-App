@@ -126,7 +126,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 buyAdapter.updateList(
-                    sellAdvertisements
+                    sellAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
             "Lowest Price" -> {
