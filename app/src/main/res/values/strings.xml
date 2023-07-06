@@ -293,7 +293,7 @@
     <string name="share_your_app_with">Choose the app you want to share with:</string>
     <string name="mail_to_from_books_island">mailto:%1$s%2$s%3$s</string>
     <string name="subject_email">\?subject=</string>
-    <string name="message_from_books_island">Message from Books Island App</string>
+    <string name="Review">Review</string>
     <string name="about">About</string>
     <string name="books_island">Books Island</string>
     <string name="version_1_0_0">Version: 1.0.0</string>
@@ -353,6 +353,7 @@
     <string name="rating_bar_description">rating bar description</string>
     <string name="rate_user_successfully">Your rate added Successfully</string>
     <string name="rate_value">%1$s / 5</string>
+    <string name="user_rate_value">Rate: %1$s / 5</string>
     <string name="edit">Edit</string>
     <string name="no_completed_ads_yet">No Completed Ads Yet</string>
     <string name="search_location">search for location</string>
@@ -380,4 +381,13 @@
     <string name="accused_profile">Accused Profile</string>
     <string name="used_with_good_condition">Used With Good Condition</string>
     <string name="used_with_bad_condition">Used With Bad Condition</string>
+    <string name="rate_4_5">Rate: 4/5</string>
+    <string name="rate_icon">rate icon</string>
+    <string name="Complaints">Complaints</string>
+    <string name="Complaint">Complaint</string>
+    <string name="request_send_notification">send you a confirmation request</string>
+    <string name="request_notification_title">Confirmation Request Received</string>
+    <string name="reject_request_notification_title">Confirmation Request Rejected</string>
+    <string name="accept_request_notification_title">Confirmation Request Accepted</string>
+    <string name="message_notification_title">New Message</string>
 </resources>

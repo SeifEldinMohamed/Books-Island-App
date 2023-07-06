@@ -139,11 +139,13 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         resourceProvider: ResourceProvider,
         connectivityManager: ConnectivityManager,
+        fcmApiService: FCMApiService
     ): RequestsRepository {
         return RequestsRepositoryImp(
             firestore,
             resourceProvider,
             connectivityManager,
+            fcmApiService
         )
     }
 

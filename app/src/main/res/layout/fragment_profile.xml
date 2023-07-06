@@ -192,8 +192,8 @@
                     android:id="@+id/btn__update_profile"
                     android:layout_width="@dimen/_130sdp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
                     android:backgroundTint="@color/gray_light"
                     android:enabled="false"
                     android:padding="@dimen/_6sdp"
@@ -204,8 +204,31 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/til_districts"
                     app:layout_constraintStart_toStartOf="@+id/til_districts"
-                    app:layout_constraintTop_toBottomOf="@+id/til_districts"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_rate"
                     tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/tv_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/rate_4_5"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/til_districts"
+                    app:layout_constraintTop_toBottomOf="@+id/til_districts" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_star_rate"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_rate"
+                    app:layout_constraintStart_toEndOf="@+id/tv_rate"
+                    app:layout_constraintTop_toTopOf="@+id/tv_rate"
+                    app:tint="@color/primary"
+                    android:contentDescription="@string/rate_icon" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,9 +7,14 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.data.mapper.toMyReceivedRequest
 import com.seif.booksislandapp.data.mapper.toMyRequest
 import com.seif.booksislandapp.data.mapper.toRequestDto
+import com.seif.booksislandapp.data.remote.FCMApiService
 import com.seif.booksislandapp.data.remote.dto.UserDto
+import com.seif.booksislandapp.data.remote.dto.notification.FCMMessageDto
+import com.seif.booksislandapp.data.remote.dto.notification.NotificationDto
 import com.seif.booksislandapp.data.remote.dto.request.RequestDto
 import com.seif.booksislandapp.domain.model.adv.AdType
+import com.seif.booksislandapp.domain.model.adv.AdvStatus
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.model.request.MyReceivedRequest
 import com.seif.booksislandapp.domain.model.request.MySentRequest
 import com.seif.booksislandapp.domain.repository.RequestsRepository
@@ -37,7 +42,8 @@ import javax.inject.Inject
 class RequestsRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val resourceProvider: ResourceProvider,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val fcmApiService: FCMApiService
 ) : RequestsRepository {
 
     /** Sent **/
@@ -63,11 +69,67 @@ class RequestsRepositoryImp @Inject constructor(
                         .update("confirmationRequestId", mySentRequest.id)
                         .await()
 
+                    sendNotificationWhenSendRequest(mySentRequest)
+
                     Resource.Success(mySentRequest.id)
                 }
             } catch (e: Exception) {
                 Resource.Error(e.message.toString())
             }
+        }
+    }
+
+    private suspend fun sendNotificationWhenSendRequest(mySentRequest: MySentRequest) {
+        val receiverTokenDocumentSnapshot =
+            firestore.collection(Constants.TOKENS_FIIRESTORE_COLLECTION)
+                .document(mySentRequest.receiverId)
+                .get()
+                .await()
+        if (receiverTokenDocumentSnapshot.exists()) {
+            val token = receiverTokenDocumentSnapshot.get("token").toString()
+
+            val fcmMessageDto = FCMMessageDto(
+                title = resourceProvider.string(R.string.request_notification_title),
+                body = "${mySentRequest.username} ${resourceProvider.string(R.string.request_send_notification)} for your ${mySentRequest.bookTitle} ${mySentRequest.adType} Advertisement",
+                senderId = mySentRequest.senderId,
+                receiverId = mySentRequest.receiverId,
+                image = "null"
+            )
+            val notificationDto = NotificationDto(
+                fcmMessageDto = fcmMessageDto,
+                token = token
+            )
+            Timber.d("sendRequestNotification: = $notificationDto")
+            fcmApiService.sendNotification(notificationDto = notificationDto)
+        }
+    }
+
+    private suspend fun sendNotificationWhenAcceptOrRejectRequest(
+        myReceivedRequest: MyReceivedRequest,
+        message: String,
+        title: String
+    ) {
+        val receiverTokenDocumentSnapshot =
+            firestore.collection(Constants.TOKENS_FIIRESTORE_COLLECTION)
+                .document(myReceivedRequest.senderId)
+                .get()
+                .await()
+        if (receiverTokenDocumentSnapshot.exists()) {
+            val token = receiverTokenDocumentSnapshot.get("token").toString()
+
+            val fcmMessageDto = FCMMessageDto(
+                title = title,
+                body = "${myReceivedRequest.username} $message",
+                senderId = myReceivedRequest.receiverId,
+                receiverId = myReceivedRequest.senderId,
+                image = "null"
+            )
+            val notificationDto = NotificationDto(
+                fcmMessageDto = fcmMessageDto,
+                token = token
+            )
+            Timber.d("sendRequestNotification: = $notificationDto")
+            fcmApiService.sendNotification(notificationDto = notificationDto)
         }
     }
 
@@ -205,51 +267,72 @@ class RequestsRepositoryImp @Inject constructor(
     }
 
     override suspend fun acceptConfirmationRequest(
-        requestId: String,
-        sellerId: String,
-        adType: AdType,
+        myReceivedRequest: MyReceivedRequest,
         acceptStatus: String,
-        advertisementId: String
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         firestore.collection(REQUESTS_FIIRESTORE_COLLECTION)
-            .document(requestId)
+            .document(myReceivedRequest.id)
             .update("status", acceptStatus)
             .await()
+        val statusField = if (myReceivedRequest.adType == AdType.Auction) {
+            "auctionStatus"
+        } else {
+            "status"
+        }
 
-        firestore.collection(getCollectionNameBaseOnAdType(adType)).document(advertisementId)
-            .update("confirmationRequestId", "", "status", "Closed")
+        val statusFieldValue = if (myReceivedRequest.adType == AdType.Auction) {
+            AuctionStatus.CLOSED.toString()
+        } else {
+            AdvStatus.Closed
+        }
+        firestore.collection(getCollectionNameBaseOnAdType(myReceivedRequest.adType))
+            .document(myReceivedRequest.advertisementId)
+            .update("confirmationRequestId", "", statusField, statusFieldValue)
             .await()
 
         // increase totalNumberOfCompletedDealIn(AdType) in the seller profile
         firestore.collection(USER_FIRESTORE_COLLECTION)
-            .document(sellerId)
-            .update(getCounterFieldNameBaseOnAdType(adType), FieldValue.increment(1))
+            .document(myReceivedRequest.senderId)
+            .update(
+                getCounterFieldNameBaseOnAdType(myReceivedRequest.adType),
+                FieldValue.increment(1)
+            )
             .await()
+
+        val message =
+            "accepted your confirmation request for ${myReceivedRequest.bookTitle} ${myReceivedRequest.adType} Advertisement"
+        val title = resourceProvider.string(R.string.accept_request_notification_title)
+        sendNotificationWhenAcceptOrRejectRequest(myReceivedRequest, message, title)
         return Resource.Success("Confirmation Accepted")
     }
 
     override suspend fun rejectConfirmationRequest(
-        requestId: String,
-        advertisementId: String,
-        adType: AdType,
+        myReceivedRequest: MyReceivedRequest,
         rejectStatus: String
     ): Resource<String, String> {
         if (!connectivityManager.checkInternetConnection()) // remove this check if we want get cached data
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
 
         firestore.collection(REQUESTS_FIIRESTORE_COLLECTION)
-            .document(requestId)
+            .document(myReceivedRequest.id)
             .update("status", rejectStatus)
             .await()
 
         // update confirmationMessageSent field of that ad to false so seller have opportunity to send another request
-        updateIsConfirmationRequestSent(adType, advertisementId, false)
+        updateIsConfirmationRequestSent(
+            myReceivedRequest.adType,
+            myReceivedRequest.advertisementId,
+            false
+        )
 
         //  sendConfirmationResultNotification(username,true, sellerId)
-
+        val message =
+            "rejected your confirmation request for ${myReceivedRequest.bookTitle} ${myReceivedRequest.adType} Advertisement"
+        val title = resourceProvider.string(R.string.reject_request_notification_title)
+        sendNotificationWhenAcceptOrRejectRequest(myReceivedRequest, message, title)
         return Resource.Success("Confirmation Rejected")
     }
 

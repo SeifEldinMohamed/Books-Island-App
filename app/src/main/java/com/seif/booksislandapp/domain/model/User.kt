@@ -19,6 +19,7 @@ data class User(
     var wishListAuction: ArrayList<String> = arrayListOf(),
     var reportedPersonsIds: List<String> = emptyList(),
     var blockedUsersIds: List<String> = emptyList(),
+    var usersBlockedMe: List<String> = emptyList(),
     var averageRate: String = "0.0",
     var givenRates: List<Rate> = emptyList(),
     var receivedRates: List<ReceivedRate> = emptyList(),

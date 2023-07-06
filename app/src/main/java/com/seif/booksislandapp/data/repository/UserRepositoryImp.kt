@@ -161,22 +161,32 @@ class UserRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
                 val userDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
                     .document(currentUserId)
-
                 val userDocumentSnapshot = userDocumentReference.get().await()
                 val userDto = userDocumentSnapshot.toObject(UserDto::class.java)
-
                 val blockedUsersIds: List<String> = userDto?.blockedUsersIds ?: emptyList()
                 val blockedIdsArrayList = blockedUsersIds.toCollection(ArrayList())
 
+                val adProviderDocumentReference = firestore.collection(USER_FIRESTORE_COLLECTION)
+                    .document(adProviderId)
+                val adProviderDocumentSnapshot = adProviderDocumentReference.get().await()
+                val adProvider = adProviderDocumentSnapshot.toObject(UserDto::class.java)
+                val usersBlockedMe: List<String> = adProvider?.usersBlockedMe ?: emptyList()
+                val usersBlockedMeArrayList = usersBlockedMe.toCollection(ArrayList())
+
                 val message: String = if (blockUser) {
                     blockedIdsArrayList.add(adProviderId)
+                    usersBlockedMeArrayList.add(currentUserId)
                     resourceProvider.string(R.string.blocked_successfully)
                 } else {
                     blockedIdsArrayList.remove(adProviderId)
+                    usersBlockedMeArrayList.remove(currentUserId)
                     resourceProvider.string(R.string.unBlocked_successfully)
                 }
 
                 userDocumentReference.update("blockedUsersIds", blockedIdsArrayList)
+                    .await()
+
+                adProviderDocumentReference.update("usersBlockedMe", usersBlockedMeArrayList)
                     .await()
 
                 Resource.Success(message)

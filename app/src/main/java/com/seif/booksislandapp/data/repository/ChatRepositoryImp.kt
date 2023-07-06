@@ -183,7 +183,7 @@ class ChatRepositoryImp @Inject constructor(
             Timber.d("sendNotification: exits and it's token =  $token")
 
             val fcmMessageDto = FCMMessageDto(
-                title = "New Message",
+                title = resourceProvider.string(R.string.message_notification_title),
                 body = "$username: ${message.text}",
                 senderId = message.senderId,
                 receiverId = message.receiverId,

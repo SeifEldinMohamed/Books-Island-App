@@ -139,7 +139,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_instructions -> {} // navigate to requests history
+            R.id.menu_instructions -> {}
+            R.id.menu_complaints -> complaints()
             R.id.menu_share -> shareApp()
             R.id.menu_rate -> rateApp()
             R.id.menu_review -> reviewApp()
@@ -148,6 +149,22 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         binding.drawerLayout.close()
         return true
+    }
+
+    private fun complaints() {
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    getString(
+                        R.string.mail_to_from_books_island,
+                        Constants.BOOKS_ISLAND_EMAIL,
+                        getString(R.string.subject_email),
+                        getString(R.string.Complaint)
+                    )
+                )
+            )
+        )
     }
 
 //    private fun handleOnBackPressed() {
@@ -211,7 +228,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         R.string.mail_to_from_books_island,
                         Constants.BOOKS_ISLAND_EMAIL,
                         getString(R.string.subject_email),
-                        getString(R.string.message_from_books_island)
+                        getString(R.string.Review)
                     )
                 )
             )

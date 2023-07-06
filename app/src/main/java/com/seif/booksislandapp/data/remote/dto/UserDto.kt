@@ -15,6 +15,7 @@ data class UserDto(
     var wishListAuction: List<String> = emptyList(),
     var reportedPersonsIds: List<String> = emptyList(),
     var blockedUsersIds: List<String> = emptyList(),
+    var usersBlockedMe: List<String> = emptyList(),
     var averageRate: Double = 0.0,
     var givenRates: List<RateDto> = emptyList(),
     var receivedRates: List<ReceivedRateDto> = emptyList(),
@@ -23,5 +24,4 @@ data class UserDto(
     var numberOfCompletedExchangeAds: Int = 0,
     var numberOfCompletedAuctionAds: Int = 0,
     var isSuspended: Boolean = false
-
 )
