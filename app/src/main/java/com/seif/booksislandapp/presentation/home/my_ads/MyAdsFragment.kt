@@ -7,22 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.FragmentMyAdsBinding
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_ads.adapter.MyAdsPagerAdapter
+import com.seif.booksislandapp.utils.Constants
+import com.seif.booksislandapp.utils.showErrorSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class MyAdsFragment : Fragment() {
     private var _binding: FragmentMyAdsBinding? = null
     private val binding get() = _binding!!
     private var viewPager: ViewPager2? = null
     private var mediator: TabLayoutMediator? = null
-
+    private val homeViewModel: HomeViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,14 +41,19 @@ class MyAdsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupTabLayoutWithViewPager()
         binding.fabAddAdv.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(500)
-                when (viewPager!!.currentItem) {
-                    0 -> navigateToUploadSellAdFragment()
-                    1 -> navigateToUploadDonateAdFragment()
-                    2 -> navigateToUploadExchangeAdFragment()
-                    3 -> navigateToUploadBidAdFragment()
+
+            if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    delay(500)
+                    when (viewPager!!.currentItem) {
+                        0 -> navigateToUploadSellAdFragment()
+                        1 -> navigateToUploadDonateAdFragment()
+                        2 -> navigateToUploadExchangeAdFragment()
+                        3 -> navigateToUploadBidAdFragment()
+                    }
                 }
+            } else {
+                binding.root.showErrorSnackBar("Sorry but your account is suspended")
             }
         }
     }

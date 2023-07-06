@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.FragmentMyadsExchangeBinding
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -36,6 +37,7 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private val myExchangeAdsViewModel: MyExchangeAdsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     private var myExchangeAds: List<ExchangeAdvertisement>? = null
 
@@ -184,8 +186,13 @@ class MyAdsExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        val action =
-            MyAdsFragmentDirections.actionMyAdsFragmentToUploadExchangeFragment(null, item)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                MyAdsFragmentDirections.actionMyAdsFragmentToUploadExchangeFragment(null, item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }

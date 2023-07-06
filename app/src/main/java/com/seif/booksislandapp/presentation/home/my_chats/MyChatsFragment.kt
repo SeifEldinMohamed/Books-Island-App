@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.seif.booksislandapp.databinding.FragmentMyChatsBinding
 import com.seif.booksislandapp.domain.model.chat.MyChat
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsState
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.MyChatsViewModel
 import com.seif.booksislandapp.presentation.home.my_chats.fragments.buying_chats.adapter.MyChatsAdapter
@@ -38,6 +39,7 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     private lateinit var dialog: AlertDialog
     private val myChatsAdapter by lazy { MyChatsAdapter() }
     private val myChatsViewModel: MyChatsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     private var myChats: List<MyChat>? = null
     override fun onCreateView(
@@ -191,9 +193,14 @@ class MyChatsFragment : Fragment(), OnAdItemClick<MyChat> {
     }
 
     override fun onAdItemClick(item: MyChat, position: Int) {
-        val action =
-            MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith.id)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                MyChatsFragmentDirections.actionMyChatsFragmentToChatRoomFragment(item.userIChatWith.id)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 
     override fun onStop() {

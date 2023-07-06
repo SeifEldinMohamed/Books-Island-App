@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.FragmentMyAdsAuctionsBinding
 import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.auction.adapter.AuctionAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.my_ads.MyAdsFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -37,6 +38,7 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val auctionAdapter by lazy { AuctionAdapter() }
     private val myAuctionAdsViewModel: MyAuctionAdsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     private var myAuctionAds: List<AuctionAdvertisement>? = null
 
@@ -189,8 +191,13 @@ class MyAdsAuctionsFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
     }
 
     override fun onAdItemClick(item: AuctionAdvertisement, position: Int) {
-        val action =
-            MyAdsFragmentDirections.actionMyAdsFragmentToUploadAuctionFragment(item)
-        findNavController().navigate(action)
+
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action =
+                MyAdsFragmentDirections.actionMyAdsFragmentToUploadAuctionFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }

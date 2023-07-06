@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.Window
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -16,10 +18,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.seif.booksislandapp.R
 import com.seif.booksislandapp.databinding.ActivityHomeBinding
-import com.seif.booksislandapp.utils.Constants
-import com.seif.booksislandapp.utils.hide
-import com.seif.booksislandapp.utils.show
+import com.seif.booksislandapp.presentation.admin.report_details.GetUserByIdState
+import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
+import com.seif.booksislandapp.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -27,6 +31,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val binding get() = _binding!!
     private lateinit var navController: NavController
     lateinit var appBarConfiguration: AppBarConfiguration
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private val TAG = "HomeActivity"
     //  private lateinit var onBackPressedCallback: OnBackPressedCallback
 
@@ -35,10 +41,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         _binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
+        homeViewModel.currentUser(homeViewModel.readFromSP(Constants.USER_ID_KEY, String::class.java))
+        observe()
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.mainNavHostFragment) as NavHostFragment
         navController = navHostFragment.navController
-
         appBarConfiguration = AppBarConfiguration.Builder(
             setOf(
                 R.id.homeFragment,
@@ -48,16 +55,32 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             )
         ).setOpenableLayout(binding.drawerLayout)
             .build()
+
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
         binding.navView.setNavigationItemSelectedListener(this)
-
         setupNavigationComponent()
 
         binding.fabProfile.setOnClickListener {
-            navController.navigate(R.id.profileFragment)
+            if (!recommendationViewModel.getFromSP(
+                    Constants.IS_SUSPENDED_KEY,
+                    Boolean::class.java
+                )
+            ) {
+                navController.navigate(R.id.profileFragment)
+            } else {
+                binding.root.showErrorSnackBar("Sorry but your account is suspended")
+            }
         }
         binding.ivRequests.setOnClickListener {
-            navController.navigate(R.id.requestsFragment)
+            if (!recommendationViewModel.getFromSP(
+                    Constants.IS_SUSPENDED_KEY,
+                    Boolean::class.java
+                )
+            ) {
+                navController.navigate(R.id.requestsFragment)
+            } else {
+                binding.root.showErrorSnackBar("Sorry but your account is suspended")
+            }
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -92,6 +115,26 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         // handleOnBackPressed()
+    }
+    private fun observe() {
+        lifecycleScope.launch {
+            homeViewModel.userState.collect {
+                when (it) {
+                    is GetUserByIdState.Init -> Unit
+                    is GetUserByIdState.IsLoading -> Unit
+                    is GetUserByIdState.GetUserByIdSuccessfully -> {
+                        homeViewModel.saveInSP(Constants.IS_SUSPENDED_KEY, it.user.isSuspended)
+                    }
+                    is GetUserByIdState.ShowError -> {
+                        handleErrorState(it.message)
+                    }
+                    is GetUserByIdState.NoInternetConnection -> Unit
+                }
+            }
+        }
+    }
+    private fun handleErrorState(message: String) {
+        binding.root.showErrorSnackBar(message)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

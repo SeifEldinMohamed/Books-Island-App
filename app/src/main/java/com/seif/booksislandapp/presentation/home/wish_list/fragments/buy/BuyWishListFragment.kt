@@ -15,6 +15,7 @@ import com.seif.booksislandapp.databinding.WishlistSellBinding
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
+import com.seif.booksislandapp.presentation.home.home.HomeViewModel
 import com.seif.booksislandapp.presentation.home.wish_list.WishListFragmentDirections
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.createLoadingAlertDialog
@@ -36,6 +37,7 @@ class BuyWishListFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private lateinit var dialog: AlertDialog
     private val buyAdapter by lazy { BuyAdapter() }
     private val buyWishListViewModel: BuyWishListViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var userId: String
     // private var myBuyWishAds: List<SellAdvertisement>? = null
 
@@ -175,7 +177,11 @@ class BuyWishListFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     }
 
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
-        val action = WishListFragmentDirections.actionWishListFragmentToSellAdDetailsFragment(item)
-        findNavController().navigate(action)
+        if (!homeViewModel.readFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            val action = WishListFragmentDirections.actionWishListFragmentToSellAdDetailsFragment(item)
+            findNavController().navigate(action)
+        } else {
+            handleErrorState("Sorry but your account is suspended")
+        }
     }
 }
