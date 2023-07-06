@@ -79,12 +79,16 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
     }
     private fun handleAuctionRecommendation(
         list: ArrayList<ExchangeAdvertisement>,
-        top: String
+        top: ArrayList<String>
     ): ArrayList<ExchangeAdvertisement> {
         val returnedDate = arrayListOf<ExchangeAdvertisement>()
-        var other = list.filter { it.book.category == top }
+        var other = list.filter { it.book.category == top[0] }
         returnedDate.addAll(other)
-        other = list.filter { it.book.category != top }
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
         returnedDate.addAll(other)
         return returnedDate
     }

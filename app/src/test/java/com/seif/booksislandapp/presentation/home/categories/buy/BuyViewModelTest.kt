@@ -5,6 +5,7 @@ import com.seif.booksislandapp.FAKE_SELL_ADS_RESPONSE
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetAllSellAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.GetSellAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.sell.SearchSellAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.utils.MainCoroutineRule
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -24,6 +25,7 @@ class BuyViewModelTest {
     private lateinit var testDispatcher: TestDispatchers
 
     private lateinit var getAllSellAdvertisementUseCase: GetAllSellAdvertisementUseCase
+    private lateinit var getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
     private lateinit var resourceProvider: ResourceProvider
 
     @get:Rule
@@ -35,6 +37,7 @@ class BuyViewModelTest {
         // Mock dependencies
         resourceProvider = mockk()
         getAllSellAdvertisementUseCase = mockk(relaxed = true)
+        getFromSharedPreferenceUseCase = mockk(relaxed = true)
         val getSellAdsByFilterUseCase = mockk<GetSellAdsByFilterUseCase>(relaxed = true)
         val searchSellAdvertisementUseCase = mockk<SearchSellAdvertisementUseCase>(relaxed = true)
 
@@ -44,7 +47,8 @@ class BuyViewModelTest {
             getSellAdsByFilterUseCase,
             searchSellAdvertisementUseCase,
             resourceProvider,
-            testDispatcher
+            getFromSharedPreferenceUseCase,
+            testDispatcher,
         )
     }
 

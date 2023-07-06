@@ -65,49 +65,25 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                                 .get()
                                 .await()
 
-                val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val auctionAdvertisementDto =
-                        document.toObject(AuctionAdvertisementDto::class.java)
-                    // update auction status
-                    auctionAdvertisementDto.auctionStatus
-                    val newStatus = calculateAuctionStatus(
-                        auctionAdvertisementDto.postDuration.toInt(),
-                        auctionAdvertisementDto.closeDate!!
-                    )
-                    // to only update the changed once ( dec response time to 1/2 )
-                    if (newStatus != auctionAdvertisementDto.auctionStatus) {
-                        auctionAdvertisementDto.auctionStatus = newStatus
-                        val updateMap: MutableMap<String, Any> = HashMap()
-                        updateMap["auctionStatus"] =
-                            auctionAdvertisementDto.auctionStatus.toString()
-                        docReference.document(document.id).update(updateMap).await()
-                    }
-                    // add ad if it's not closed
-                    if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
-                        auctionsAdvertisementsDto.add(auctionAdvertisementDto)
-                }
-                Timber.d("getAllAuctionsAds: $auctionsAdvertisementsDto")
-
-                Resource.Success(
-                    data = auctionsAdvertisementsDto.map { auctionAdvertisementDto ->
-                        auctionAdvertisementDto.toAuctionAdvertisement()
-                    }.toCollection(ArrayList())
-                )
                         val auctionsAdvertisementsDto = arrayListOf<AuctionAdvertisementDto>()
                         for (document in querySnapshot) {
                             val auctionAdvertisementDto =
                                 document.toObject(AuctionAdvertisementDto::class.java)
                             // update auction status
-                            auctionAdvertisementDto.auctionStatus = calculateAuctionStatus(
+                            auctionAdvertisementDto.auctionStatus
+                            val newStatus = calculateAuctionStatus(
                                 auctionAdvertisementDto.postDuration.toInt(),
                                 auctionAdvertisementDto.closeDate!!
                             )
-                            val updateMap: MutableMap<String, Any> = HashMap()
-                            updateMap["auctionStatus"] =
-                                auctionAdvertisementDto.auctionStatus.toString()
-                            docReference.document(document.id).update(updateMap).await()
-                            // add ad after updating its auctionStatusValue
+                            // to only update the changed once ( dec response time to 1/2 )
+                            if (newStatus != auctionAdvertisementDto.auctionStatus) {
+                                auctionAdvertisementDto.auctionStatus = newStatus
+                                val updateMap: MutableMap<String, Any> = HashMap()
+                                updateMap["auctionStatus"] =
+                                    auctionAdvertisementDto.auctionStatus.toString()
+                                docReference.document(document.id).update(updateMap).await()
+                            }
+                            // add ad if it's not closed
                             if (auctionAdvertisementDto.auctionStatus != AuctionStatus.CLOSED)
                                 auctionsAdvertisementsDto.add(auctionAdvertisementDto)
                         }
@@ -129,13 +105,18 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
 
     private fun handleAuctionRecommendation(
         list: ArrayList<AuctionAdvertisement>,
-        top: String
+        top: ArrayList<String>
     ): ArrayList<AuctionAdvertisement> {
         val returnedDate = arrayListOf<AuctionAdvertisement>()
-        var other = list.filter { it.book.category == top }
+        var other = list.filter { it.book.category == top[0] }
         returnedDate.addAll(other)
-        other = list.filter { it.book.category != top }
+        other = list.filter { it.book.category == top[1] }
         returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
+        returnedDate.addAll(other)
+
         return returnedDate
     }
 

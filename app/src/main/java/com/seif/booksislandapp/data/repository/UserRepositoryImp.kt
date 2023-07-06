@@ -386,7 +386,7 @@ class UserRepositoryImp @Inject constructor(
                     .get()
                     .await()
                 val topCategory = querySnapshot.toObject(RecommendationDto::class.java)
-
+                Timber.d(topCategory.toString())
                 Resource.Success(
                     topCategory!!.toRecommendation()
                 )

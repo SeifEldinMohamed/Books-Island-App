@@ -172,9 +172,8 @@ class AuctionFragment : Fragment(), OnAdItemClick<AuctionAdvertisement> {
                         AuctionState.Init -> Unit
                         is AuctionState.FetchAllAuctionsAdsSuccessfully -> {
                             auctionsAdvertisements = it.auctionAds
-                            //  auctionAdapter.updateList(it.auctionAds)
-
-                            // handleUi(it.auctionAds)
+                            auctionAdapter.updateList(it.auctionAds)
+                            handleUi(it.auctionAds)
 
                             Timber.d("observe: fetched")
                         }

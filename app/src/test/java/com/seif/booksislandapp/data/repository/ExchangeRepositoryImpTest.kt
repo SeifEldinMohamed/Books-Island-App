@@ -13,6 +13,7 @@ import com.seif.booksislandapp.data.repository.ExchangeAdvertisementRepositoryIm
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.repository.ExchangeAdvertisementRepository
+import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.utils.Constants.Companion.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -47,6 +48,8 @@ class ExchangeRepositoryImpTest {
     private lateinit var collectionReference: CollectionReference
     private lateinit var query: Query
 
+    private lateinit var userRepository: UserRepository
+
     @Before
     fun setUp() {
         mockkStatic("com.seif.booksislandapp.data.mapper.MapperKt") // add this so we can mock the mapper extension functions inside this file
@@ -76,11 +79,15 @@ class ExchangeRepositoryImpTest {
         // query
         query = mockk()
 
+        // user repository
+        userRepository = mockk()
+
         advertisementRepositoryImp = ExchangeAdvertisementRepositoryImp(
             firestore = firestore,
             connectivityManager = connectivityManager,
             storageReference = storage,
-            resourceProvider = resourceProvider
+            resourceProvider = resourceProvider,
+            userRepository = userRepository
         )
     }
 

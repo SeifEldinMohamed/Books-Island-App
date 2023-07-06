@@ -80,7 +80,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                         val data = sellAdvertisementsDto.map { sellAdvertisementDto ->
                             sellAdvertisementDto.toSellAdvertisement()
                         }.toCollection(ArrayList())
-
+                        Timber.d(result.data.topCategory.toString())
                         Resource.Success(
                             data = handleSellRecommendation(data, result.data.topCategory)
                         )
@@ -89,30 +89,39 @@ class AdvertisementRepositoryImp @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+
             Resource.Error(e.message.toString())
         }
     }
 
     private fun handleSellRecommendation(
         list: ArrayList<SellAdvertisement>,
-        top: String
+        top: ArrayList<String>
     ): ArrayList<SellAdvertisement> {
         val returnedDate = arrayListOf<SellAdvertisement>()
-        var other = list.filter { it.book.category == top }
+        var other = list.filter { it.book.category == top[0] }
         returnedDate.addAll(other)
-        other = list.filter { it.book.category != top }
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
         returnedDate.addAll(other)
         return returnedDate
     }
 
     private fun handleDonationRecommendation(
         list: ArrayList<DonateAdvertisement>,
-        top: String
+        top: ArrayList<String>
     ): ArrayList<DonateAdvertisement> {
         val returnedDate = arrayListOf<DonateAdvertisement>()
-        var other = list.filter { it.book.category == top }
+        var other = list.filter { it.book.category == top[0] }
         returnedDate.addAll(other)
-        other = list.filter { it.book.category != top }
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
         returnedDate.addAll(other)
         return returnedDate
     }
