@@ -31,7 +31,6 @@ class AdminActivity : AppCompatActivity() {
             setOf(
                 R.id.allUsersFragment,
                 R.id.reportsFragment,
-                R.id.chartsFragment
             )
         ).build()
         setupNavigationComponent()

@@ -432,7 +432,7 @@ class AuctionAdvertisementRepositoryImp @Inject constructor(
                             .await()
                     val auctionAdvertisementDto =
                         querySnapshot.toObject(AuctionAdvertisementDto::class.java)
-                    if (auctionAdvertisementDto!!.status.toString() == "Opened")
+                    if (auctionAdvertisementDto!!.auctionStatus.toString() != "CLOSED")
                         auctionAdvertisementsDto.add(auctionAdvertisementDto)
                 }
                 Resource.Success(

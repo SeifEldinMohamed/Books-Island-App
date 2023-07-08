@@ -9,9 +9,6 @@
         android:title="@string/reports"
         android:icon="@drawable/iv_reports" />
 
-    <item
-        android:id="@+id/chartsFragment"
-        android:title="@string/charts"
-        android:icon="@drawable/iv_charts" />
+
 
 </menu>
