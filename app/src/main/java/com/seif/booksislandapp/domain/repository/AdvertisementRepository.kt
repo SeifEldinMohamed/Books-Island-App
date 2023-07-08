@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AdvertisementRepository {
     suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String>
+    suspend fun getAllDonateAdsByRecommendation(): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun uploadSellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>
     suspend fun editMySellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>

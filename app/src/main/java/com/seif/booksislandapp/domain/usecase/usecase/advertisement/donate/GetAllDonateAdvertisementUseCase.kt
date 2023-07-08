@@ -9,6 +9,6 @@ class GetAllDonateAdvertisementUseCase @Inject constructor(
     private val advertisementRepository: AdvertisementRepository
 ) {
     suspend operator fun invoke(): Resource<ArrayList<DonateAdvertisement>, String> {
-        return advertisementRepository.getAllDonateAds()
+        return advertisementRepository.getAllDonateAdsByRecommendation()
     }
 }

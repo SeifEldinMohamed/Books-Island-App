@@ -5,6 +5,7 @@ import com.seif.booksislandapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface ExchangeAdvertisementRepository {
+    suspend fun getAllExchangeAdvertisementByRecommendation(): Resource<ArrayList<ExchangeAdvertisement>, String>
     suspend fun getAllExchangeAdvertisement(): Resource<ArrayList<ExchangeAdvertisement>, String>
     suspend fun searchExchangeAdv(searchQuery: String): Resource<ArrayList<ExchangeAdvertisement>, String>
     suspend fun fetchRelatedExchangeAdvertisement(

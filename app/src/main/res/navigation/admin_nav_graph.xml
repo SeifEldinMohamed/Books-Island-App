@@ -48,4 +48,9 @@
             android:name="position"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/chartFragment"
+        android:name="com.seif.booksislandapp.presentation.admin.chart.ChartFragment"
+        android:label="fragment_chart"
+        tools:layout="@layout/fragment_chart" />
 </navigation>
