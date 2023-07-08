@@ -12,6 +12,7 @@ import com.seif.booksislandapp.data.remote.dto.adv.exchange.ExchangeAdvertisemen
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.repository.ExchangeAdvertisementRepository
+import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Resource
@@ -33,7 +34,8 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val resourceProvider: ResourceProvider,
     private val storageReference: StorageReference,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val userRepository: UserRepository
 ) :
     ExchangeAdvertisementRepository {
     override suspend fun getAllExchangeAdvertisement(): Resource<ArrayList<ExchangeAdvertisement>, String> {
@@ -42,33 +44,54 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
         return try {
             withTimeout(Constants.TIMEOUT) {
                 delay(500) // to show loading progress
+                when (
+                    val result =
+                        userRepository.recommendForUser(userRepository.getFirebaseCurrentUser()!!.uid)
+                ) {
+                    is Resource.Success -> {
+                        val querySnapshot =
+                            firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                                .orderBy("status")
+                                .orderBy("publishDate", Query.Direction.DESCENDING)
+                                .get()
+                                .await()
+                        val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
+                        for (document in querySnapshot) {
+                            val exchangeAdvertisementDto =
+                                document.toObject(ExchangeAdvertisementDto::class.java)
+                            exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                        }
+                        val data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
+                            exchangeAdvertisementDto.toExchangeAdvertisement()
+                        }.toCollection(ArrayList())
+                        Resource.Success(
+                            handleAuctionRecommendation(data, result.data.topCategory)
 
-                val querySnapshot =
-                    firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
-                        .orderBy("status")
-                        .orderBy("publishDate", Query.Direction.DESCENDING)
-                        .get()
-                        .await()
-                val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val exchangeAdvertisementDto =
-                        document.toObject(ExchangeAdvertisementDto::class.java)
-                    exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                        )
+                    }
+                    is Resource.Error -> Resource.Error(result.message)
                 }
-
-                Resource.Success(
-                    data = exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
-                        exchangeAdvertisementDto.toExchangeAdvertisement()
-                    }.toCollection(ArrayList())
-
-                )
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }
-
+    private fun handleAuctionRecommendation(
+        list: ArrayList<ExchangeAdvertisement>,
+        top: ArrayList<String>
+    ): ArrayList<ExchangeAdvertisement> {
+        val returnedDate = arrayListOf<ExchangeAdvertisement>()
+        var other = list.filter { it.book.category == top[0] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
+        returnedDate.addAll(other)
+        return returnedDate
+    }
     override suspend fun searchExchangeAdv(searchQuery: String): Resource<ArrayList<ExchangeAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))

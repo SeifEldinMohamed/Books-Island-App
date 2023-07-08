@@ -4,6 +4,7 @@ import com.seif.booksislandapp.data.repository.exchangeAdvertisementList
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetAllExchangeAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.GetExchangeAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.exchange.SearchExchangeAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.utils.MainCoroutineRule
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -24,6 +25,7 @@ class ExchangeViewModelTest {
     private lateinit var getAllExchangeAdvertisementUseCase: GetAllExchangeAdvertisementUseCase
     private lateinit var testDispatcher: TestDispatchers
     private lateinit var resourceProvider: ResourceProvider
+    private lateinit var getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
     private lateinit var searchExchangeAdvertisementUseCase: SearchExchangeAdvertisementUseCase
     private lateinit var getExchangeAdsByFilterUseCase: GetExchangeAdsByFilterUseCase
 
@@ -36,13 +38,15 @@ class ExchangeViewModelTest {
         resourceProvider = mockk()
         getAllExchangeAdvertisementUseCase = mockk(relaxed = true)
         searchExchangeAdvertisementUseCase = mockk(relaxed = true)
+        getFromSharedPreferenceUseCase = mockk(relaxed = true)
         getExchangeAdsByFilterUseCase = mockk(relaxed = true)
         classUnderTest = ExchangeViewModel(
             getAllExchangeAdvertisementUseCase,
             searchExchangeAdvertisementUseCase,
             getExchangeAdsByFilterUseCase,
             resourceProvider,
-            testDispatcher
+            testDispatcher,
+            getFromSharedPreferenceUseCase
         )
     }
 

@@ -13,6 +13,7 @@ import com.seif.booksislandapp.data.mapper.toDonateAdvertisement
 import com.seif.booksislandapp.data.remote.dto.adv.donation.DonateAdvertisementDto
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
+import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -40,6 +41,8 @@ class DonationRepositoryImpTest {
     private lateinit var querySnapshot: QuerySnapshot // used in case of get() function and put it in
     private lateinit var queryDocumentSnapshot1: QueryDocumentSnapshot
     private lateinit var queryDocumentSnapshot2: QueryDocumentSnapshot
+
+    private lateinit var userRepository: UserRepository
 
     private lateinit var donateAdvertisement1: DonateAdvertisement
     private lateinit var donateAdvertisement2: DonateAdvertisement
@@ -73,6 +76,9 @@ class DonationRepositoryImpTest {
         // collection reference
         collectionReference = mockk()
 
+        // user repository
+        userRepository = mockk()
+
         // query
         query = mockk()
 
@@ -80,7 +86,8 @@ class DonationRepositoryImpTest {
             firestore = firestore,
             connectivityManager = connectivityManager,
             storageReference = storage,
-            resourceProvider = resourceProvider
+            resourceProvider = resourceProvider,
+            userRepository = userRepository
         )
     }
 

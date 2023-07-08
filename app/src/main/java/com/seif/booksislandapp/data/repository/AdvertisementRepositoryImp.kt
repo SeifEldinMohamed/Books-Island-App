@@ -21,6 +21,7 @@ import com.seif.booksislandapp.domain.model.adv.donation.DonateAdvertisement
 import com.seif.booksislandapp.domain.model.adv.exchange.ExchangeAdvertisement
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.AdvertisementRepository
+import com.seif.booksislandapp.domain.repository.UserRepository
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Constants.Companion.DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION
@@ -46,35 +47,83 @@ class AdvertisementRepositoryImp @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storageReference: StorageReference,
     private val resourceProvider: ResourceProvider,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val userRepository: UserRepository
 ) : AdvertisementRepository {
 
     override suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
+
             delay(500) // to show loading progress
             withTimeout(Constants.TIMEOUT) {
-                val querySnapshot = firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
-                    .orderBy("status")
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val sellAdvertisementDto = document.toObject(SellAdvertisementDto::class.java)
-                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                when (
+                    val result =
+                        userRepository.recommendForUser(userRepository.getFirebaseCurrentUser()!!.uid)
+                ) {
+                    is Resource.Success -> {
+
+                        val querySnapshot =
+                            firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                                .orderBy("status")
+                                .orderBy("publishDate", Query.Direction.DESCENDING)
+                                .get()
+                                .await()
+                        val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                        for (document in querySnapshot) {
+                            val sellAdvertisementDto =
+                                document.toObject(SellAdvertisementDto::class.java)
+                            sellAdvertisementsDto.add(sellAdvertisementDto)
+                        }
+                        val data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                            sellAdvertisementDto.toSellAdvertisement()
+                        }.toCollection(ArrayList())
+                        Timber.d(result.data.topCategory.toString())
+                        Resource.Success(
+                            data = handleSellRecommendation(data, result.data.topCategory)
+                        )
+                    }
+                    is Resource.Error -> Resource.Error(result.message)
                 }
-                Resource.Success(
-                    data = sellAdvertisementsDto.map { sellAdvertisementDto ->
-                        sellAdvertisementDto.toSellAdvertisement()
-                    }.toCollection(ArrayList())
-                )
             }
         } catch (e: Exception) {
+
             Resource.Error(e.message.toString())
         }
+    }
+
+    private fun handleSellRecommendation(
+        list: ArrayList<SellAdvertisement>,
+        top: ArrayList<String>
+    ): ArrayList<SellAdvertisement> {
+        val returnedDate = arrayListOf<SellAdvertisement>()
+        var other = list.filter { it.book.category == top[0] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
+        returnedDate.addAll(other)
+        return returnedDate
+    }
+
+    private fun handleDonationRecommendation(
+        list: ArrayList<DonateAdvertisement>,
+        top: ArrayList<String>
+    ): ArrayList<DonateAdvertisement> {
+        val returnedDate = arrayListOf<DonateAdvertisement>()
+        var other = list.filter { it.book.category == top[0] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[1] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category == top[2] }
+        returnedDate.addAll(other)
+        other = list.filter { it.book.category != top[0] && it.book.category != top[1] && it.book.category != top[2] }
+        returnedDate.addAll(other)
+        return returnedDate
     }
 
     override suspend fun getSellAdsByFilter(
@@ -279,25 +328,34 @@ class AdvertisementRepositoryImp @Inject constructor(
             withTimeout(Constants.TIMEOUT) {
 
                 delay(500) // to show loading progress
-
-                val querySnapshot = firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
-                    .whereNotEqualTo("status", AdvStatus.Closed.toString())
-                    .orderBy("status")
-                    .orderBy("publishDate", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
-                for (document in querySnapshot) {
-                    val donateAdvertisementDto =
-                        document.toObject(DonateAdvertisementDto::class.java)
-                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                when (
+                    val result =
+                        userRepository.recommendForUser(userRepository.getFirebaseCurrentUser()!!.uid)
+                ) {
+                    is Resource.Success -> {
+                        val querySnapshot =
+                            firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                                .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                                .orderBy("status")
+                                .orderBy("publishDate", Query.Direction.DESCENDING)
+                                .get()
+                                .await()
+                        val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                        for (document in querySnapshot) {
+                            val donateAdvertisementDto =
+                                document.toObject(DonateAdvertisementDto::class.java)
+                            donateAdvertisementsDto.add(donateAdvertisementDto)
+                        }
+                        // Log.d(TAG, "getAllDonateAds: ${donateAdvertisementsDto.first()}")
+                        val data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                            donateAdvertisementDto.toDonateAdvertisement()
+                        }.toCollection(ArrayList())
+                        Resource.Success(
+                            data = handleDonationRecommendation(data, result.data.topCategory)
+                        )
+                    }
+                    is Resource.Error -> Resource.Error(result.message)
                 }
-                // Log.d(TAG, "getAllDonateAds: ${donateAdvertisementsDto.first()}")
-                Resource.Success(
-                    data = donateAdvertisementsDto.map { donateAdvertisementDto ->
-                        donateAdvertisementDto.toDonateAdvertisement()
-                    }.toCollection(ArrayList())
-                )
             }
         } catch (e: Exception) {
             Resource.Error(e.message.toString())
@@ -371,16 +429,22 @@ class AdvertisementRepositoryImp @Inject constructor(
             Resource.Error(e.message.toString())
         }
     }
+
     private fun donateFilterResult(
         donateAdvertisementsDto: ArrayList<DonateAdvertisementDto>,
         filterBy: FilterBy
     ): ArrayList<DonateAdvertisement> {
-        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size > 1) {
             donateAdvertisementsDto.filter { ad ->
                 (filterBy.category == null || ad.book?.category == filterBy.category) &&
                     (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
                     (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+                    (
+                        filterBy.condition.split('&')
+                            .first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split(
+                            '&'
+                        )[1]
+                        )
             }
                 .map { it.toDonateAdvertisement() }
                 .toCollection(ArrayList())
@@ -400,12 +464,17 @@ class AdvertisementRepositoryImp @Inject constructor(
         sellAdvertisementsDto: ArrayList<SellAdvertisementDto>,
         filterBy: FilterBy
     ): ArrayList<SellAdvertisement> {
-        return if (filterBy.condition != null && filterBy.condition.split('&').size> 1) {
+        return if (filterBy.condition != null && filterBy.condition.split('&').size > 1) {
             sellAdvertisementsDto.filter { ad ->
                 (filterBy.category == null || ad.book?.category == filterBy.category) &&
                     (filterBy.governorate == null || ad.location.startsWith("${filterBy.governorate}")) &&
                     (filterBy.district == null || ad.location == "${filterBy.governorate} - ${filterBy.district}") &&
-                    (filterBy.condition.split('&').first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split('&')[1])
+                    (
+                        filterBy.condition.split('&')
+                            .first() == ad.book?.condition || ad.book?.condition == filterBy.condition.split(
+                            '&'
+                        )[1]
+                        )
             }
                 .map { it.toSellAdvertisement() }
                 .toCollection(ArrayList())
@@ -420,6 +489,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                 .toCollection(ArrayList())
         }
     }
+
     override suspend fun getDonateAdsByFilter(
         filterBy: FilterBy
     ): Resource<ArrayList<DonateAdvertisement>, String> {

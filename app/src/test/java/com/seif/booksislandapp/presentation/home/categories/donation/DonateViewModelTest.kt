@@ -5,6 +5,7 @@ import com.seif.booksislandapp.data.repository.donateAdvertisementList
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetAllDonateAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.SearchDonateAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetDonateAdsByFilterUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.utils.MainCoroutineRule
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
@@ -25,6 +26,7 @@ class DonateViewModelTest {
     private lateinit var testDispatcher: TestDispatchers
     private lateinit var resourceProvider: ResourceProvider
     private lateinit var searchDonateAdvertisementUseCase: SearchDonateAdvertisementUseCase
+    private lateinit var getFromSharedPreferenceUseCase: GetFromSharedPreferenceUseCase
     private lateinit var getDonateAdsByFilterUseCase: GetDonateAdsByFilterUseCase
 
     @get:Rule
@@ -36,13 +38,15 @@ class DonateViewModelTest {
         resourceProvider = mockk()
         getAllDonateAdvertisementUseCase = mockk(relaxed = true)
         searchDonateAdvertisementUseCase = mockk(relaxed = true)
+        getFromSharedPreferenceUseCase = mockk(relaxed = true)
         getDonateAdsByFilterUseCase = mockk(relaxed = true)
         classUnderTest = DonateViewModel(
             getAllDonateAdvertisementUseCase,
             searchDonateAdvertisementUseCase,
             getDonateAdsByFilterUseCase,
             resourceProvider,
-            testDispatcher
+            testDispatcher,
+            getFromSharedPreferenceUseCase
         )
     }
 

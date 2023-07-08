@@ -6,6 +6,7 @@ import com.seif.booksislandapp.R
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetAllDonateAdvertisementUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.GetDonateAdsByFilterUseCase
 import com.seif.booksislandapp.domain.usecase.usecase.advertisement.donate.SearchDonateAdvertisementUseCase
+import com.seif.booksislandapp.domain.usecase.usecase.shared_preference.GetFromSharedPreferenceUseCase
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.utils.DispatcherProvider
 import com.seif.booksislandapp.utils.Resource
@@ -22,7 +23,8 @@ class DonateViewModel @Inject constructor(
     private val searchDonateAdvertisementUseCase: SearchDonateAdvertisementUseCase,
     private val getDonateAdsByFilterUseCase: GetDonateAdsByFilterUseCase,
     private val resourceProvider: ResourceProvider,
-    private val dispatcher: DispatcherProvider
+    private val dispatcher: DispatcherProvider,
+    private val getFromSharedPrefUseCase: GetFromSharedPreferenceUseCase,
 ) : ViewModel() {
     private var _donateState = MutableStateFlow<DonateState>(DonateState.Init)
     val donateState = _donateState.asStateFlow()
@@ -51,7 +53,9 @@ class DonateViewModel @Inject constructor(
             }
         }
     }
-
+    fun <T> getFromSP(key: String, clazz: Class<T>): T {
+        return getFromSharedPrefUseCase(key, clazz)
+    }
     fun searchDonateAdvertisements(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {

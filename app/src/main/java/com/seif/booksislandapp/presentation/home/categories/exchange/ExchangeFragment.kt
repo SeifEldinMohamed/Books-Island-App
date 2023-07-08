@@ -22,8 +22,6 @@ import com.seif.booksislandapp.presentation.home.categories.sort.SortBottomSheet
 import com.seif.booksislandapp.presentation.home.categories.exchange.adapter.ExchangeAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
 import com.seif.booksislandapp.utils.Constants.Companion.IS_SUSPENDED_KEY
@@ -43,7 +41,6 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     private val exchangeViewModel: ExchangeViewModel by viewModels()
     private val filterViewModel: FilterViewModel by activityViewModels()
     private lateinit var dialog: AlertDialog
-    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private val exchangeAdapter by lazy { ExchangeAdapter() }
     private var exchangeAdvertisements: List<ExchangeAdvertisement> = emptyList()
     private val sortViewModel: SortViewModel by activityViewModels()
@@ -72,9 +69,8 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             sortViewModel.setLastSort("")
             findNavController().navigateUp()
         }
-        observeOnRecommendation()
         binding.btnFilter.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!exchangeViewModel.getFromSP(IS_SUSPENDED_KEY, Boolean::class.java)) {
                 findNavController().navigate(R.id.action_exchangeFragment_to_filterFragment)
             } else {
                 handleErrorState("Sorry but your account is suspended")
@@ -91,7 +87,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             }
         }
         binding.tvSortBy.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+            if (!exchangeViewModel.getFromSP(IS_SUSPENDED_KEY, Boolean::class.java)) {
                 val bottomSheet = SortBottomSheetFragment()
                 bottomSheet.show(parentFragmentManager, "")
             } else {
@@ -109,28 +105,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
             addDuration = 300
         }
     }
-    private fun observeOnRecommendation() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            recommendationViewModel.recommendationState.collect {
-                when (it) {
-                    RecommendationState.Init -> Unit
-                    is RecommendationState.RecommendedSuccessfully -> {
-                        Timber.d(it.recommendation.topCategory)
-                        val recommendedForYou: ArrayList<ExchangeAdvertisement> =
-                            exchangeAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
-                        val other: ArrayList<ExchangeAdvertisement> =
-                            exchangeAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
-                        recommendedForYou.addAll(other)
-                        exchangeAdapter.updateList(recommendedForYou)
-                    }
-                    is RecommendationState.ShowError -> {
-                        exchangeAdapter.updateList(exchangeAdvertisements)
-                        handleUi(exchangeAdvertisements as ArrayList)
-                    }
-                }
-            }
-        }
-    }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -138,14 +113,10 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
                     when (it) {
                         ExchangeState.Init -> Unit
                         is ExchangeState.FetchAllExchangeAdsSuccessfully -> {
-                            recommendationViewModel.fetchRecommendation(
-                                recommendationViewModel.getFromSP(
-                                    Constants.USER_ID_KEY, String::class.java
-                                )
-                            )
+
                             exchangeAdvertisements = it.exchangeAds
-                            // exchangeAdapter.updateList(it.exchangeAds)
-                            // handleUi(it.exchangeAds)
+                            exchangeAdapter.updateList(it.exchangeAds)
+                            handleUi(it.exchangeAds)
                         }
                         is ExchangeState.SearchExchangeAdsSuccessfully -> {
                             exchangeAdvertisements = it.searchExchangeAds
@@ -236,7 +207,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 exchangeAdapter.updateList(
-                    exchangeAdvertisements
+                    exchangeAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
         }
@@ -306,7 +277,7 @@ class ExchangeFragment : Fragment(), OnAdItemClick<ExchangeAdvertisement> {
     }
 
     override fun onAdItemClick(item: ExchangeAdvertisement, position: Int) {
-        if (!recommendationViewModel.getFromSP(IS_SUSPENDED_KEY, Boolean::class.java)) {
+        if (!exchangeViewModel.getFromSP(IS_SUSPENDED_KEY, Boolean::class.java)) {
             val action =
                 ExchangeFragmentDirections.actionExchangeFragmentToExchangeAdDetailsFragment(item)
             findNavController().navigate(action)

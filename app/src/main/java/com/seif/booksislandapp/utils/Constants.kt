@@ -9,10 +9,10 @@ class Constants {
         const val PAGE_SIZE = 15
 
         // Timout
-        const val TIMEOUT = 10000L // 8 seconds to fetch
-        const val TIMEOUT_AUTH = 12000L // 10 seconds to fetch
-        const val TIMEOUT_UPLOAD = 12000L // 10 seconds to upload
-        const val TIMEOUT_RATE = 15000L // 10 seconds to upload
+        const val TIMEOUT = 10000L // 10 seconds to fetch
+        const val TIMEOUT_AUTH = 12000L // 12 seconds to fetch
+        const val TIMEOUT_UPLOAD = 12000L // 12 seconds to upload
+        const val TIMEOUT_RATE = 15000L // 15 seconds to upload
 
         // FireStore
         const val USER_FIRESTORE_COLLECTION = "Users"

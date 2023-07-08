@@ -21,8 +21,6 @@ import com.seif.booksislandapp.presentation.home.categories.OnAdItemClick
 import com.seif.booksislandapp.presentation.home.categories.buy.adapter.BuyAdapter
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterBy
 import com.seif.booksislandapp.presentation.home.categories.filter.FilterViewModel
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationState
-import com.seif.booksislandapp.presentation.home.categories.recommendation.RecommendationViewModel
 import com.seif.booksislandapp.presentation.home.categories.sort.BuyBottomSheetFragment
 import com.seif.booksislandapp.presentation.home.categories.sort.SortViewModel
 import com.seif.booksislandapp.utils.*
@@ -46,7 +44,6 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
     private val binding get() = _binding!!
     private val buyViewModel: BuyViewModel by viewModels()
     private lateinit var dialog: AlertDialog
-    private val recommendationViewModel: RecommendationViewModel by viewModels()
     private val filterViewModel: FilterViewModel by activityViewModels()
     private val sortViewModel: SortViewModel by activityViewModels()
     private val buyAdapter by lazy { BuyAdapter() }
@@ -78,7 +75,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         firstTimeFetch()
-        observeOnRecommendation()
+        // observeOnRecommendation()
         listenForSearchEditTextClick()
         listenForSearchEditTextChange()
 
@@ -95,7 +92,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
         binding.tvSortBy.setOnClickListener {
 
-            if (!recommendationViewModel.getFromSP(
+            if (!buyViewModel.getFromSP(
                     Constants.IS_SUSPENDED_KEY,
                     Boolean::class.java
                 )
@@ -108,7 +105,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         }
 
         binding.btnFilter.setOnClickListener {
-            if (!recommendationViewModel.getFromSP(
+            if (!buyViewModel.getFromSP(
                     Constants.IS_SUSPENDED_KEY,
                     Boolean::class.java
                 )
@@ -129,7 +126,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
         when (sortBy) {
             "Added Recently" -> {
                 buyAdapter.updateList(
-                    sellAdvertisements
+                    sellAdvertisements.sortedByDescending { it.publishDate.time }
                 )
             }
             "Lowest Price" -> {
@@ -159,20 +156,15 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 //        listenForSearchEditTextClick()
 //        listenForSearchEditTextChange()
 //    }
-    private fun observeOnRecommendation() {
+  /*  private fun observeOnRecommendation() {
         viewLifecycleOwner.lifecycleScope.launch {
             recommendationViewModel.recommendationState.collect {
                 when (it) {
                     RecommendationState.Init -> Unit
                     is RecommendationState.RecommendedSuccessfully -> {
-
-                        val recommendedForYou: ArrayList<SellAdvertisement> =
-                            sellAdvertisements.filter { ad -> ad.book.category == it.recommendation.topCategory } as ArrayList
-                        val other: ArrayList<SellAdvertisement> =
-                            sellAdvertisements.filter { ad -> ad.book.category != it.recommendation.topCategory } as ArrayList
-                        recommendedForYou.addAll(other)
+                        // recommendationViewModel.recommend(sellAdvertisements as ArrayList,it.recommendation.topCategory)
                         //  Timber.d(recommendedForYou[0].toString())
-                        buyAdapter.updateList(recommendedForYou)
+                        // buyAdapter.updateList(recommendedForYou)
                     }
                     is RecommendationState.ShowError -> {
                         buyAdapter.updateList(sellAdvertisements)
@@ -181,7 +173,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                 }
             }
         }
-    }
+    }*/
 
     private fun listenForSearchEditTextChange() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
@@ -241,14 +233,14 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
                     when (it) {
                         BuyState.Init -> Unit
                         is BuyState.FetchAllSellAdvertisementSuccessfully -> {
-                            recommendationViewModel.fetchRecommendation(
+                           /*recommendationViewModel.fetchRecommendation(
                                 recommendationViewModel.getFromSP(
                                     Constants.USER_ID_KEY, String::class.java
                                 )
-                            )
+                            )*/
                             sellAdvertisements = it.sellAds
-//                            buyAdapter.updateList(it.sellAds)
-//                            handleUi(it.sellAds)
+                            buyAdapter.updateList(it.sellAds)
+                            handleUi(it.sellAds)
                             Timber.d("observe: fetched")
                         }
                         is BuyState.SearchSellAdvertisementSuccessfully -> {
@@ -341,7 +333,7 @@ class BuyFragment : Fragment(), OnAdItemClick<SellAdvertisement> {
 
     override fun onAdItemClick(item: SellAdvertisement, position: Int) {
 
-        if (!recommendationViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
+        if (!buyViewModel.getFromSP(Constants.IS_SUSPENDED_KEY, Boolean::class.java)) {
             val action = BuyFragmentDirections.actionBuyFragmentToAdDetailsFragment(item)
             findNavController().navigate(action)
         } else {
