@@ -152,6 +152,7 @@ class ProfileFragment : Fragment() {
                         is ProfileState.UpdateUserProfileSuccessfully -> {
                             binding.root.showSuccessSnackBar(getString(R.string.profile_updated_successfully))
                             user = it.user
+                            binding.tvUsername.text = user.username
                             enableUpdateProfileButton()
                         }
 

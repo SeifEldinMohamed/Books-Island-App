@@ -29,10 +29,6 @@ class RegisterViewModel @Inject constructor(
     private var _registerState = MutableStateFlow<RegisterState>(RegisterState.Init)
     val registerState = _registerState.asStateFlow()
 
-    init {
-        getGovernorates()
-    }
-
     fun getGovernorates() {
         setLoading(true)
         viewModelScope.launch(Dispatchers.IO) {

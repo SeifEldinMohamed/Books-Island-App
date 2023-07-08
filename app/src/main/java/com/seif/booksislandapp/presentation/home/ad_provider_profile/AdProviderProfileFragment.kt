@@ -148,7 +148,13 @@ class AdProviderProfileFragment : Fragment() {
         binding.ivAvatar.load(user.avatarImage) {
             crossfade(200)
         }
-        binding.tvRate.text = "${user.averageRate} / 5"
+        val length = user.averageRate.length
+        binding.tvRate.text = when {
+            length >= 4 -> "${user.averageRate.substring(0, 4)} / 5"
+            length == 3 -> "${user.averageRate.substring(0, 3)} / 5"
+            else -> "${user.averageRate} / 5"
+        }
+
         binding.ratingbar.rating = user.averageRate.toFloat()
 
         if (user.numberOfCompletedAuctionAds == 0 && user.numberOfCompletedSellAds == 0 &&

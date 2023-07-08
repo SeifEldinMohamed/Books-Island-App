@@ -9,6 +9,7 @@ import com.seif.booksislandapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AdvertisementRepository {
+    suspend fun getAllSellAdsWithRecommendation(): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String>
     suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String>
     suspend fun uploadSellAdv(sellAdvertisement: SellAdvertisement): Resource<String, String>

@@ -33,6 +33,7 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
     private var _binding: FragmentShareLocationBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ShareLocationFragmentArgs>()
+    private var zoomLevel: Float = 15f
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,14 +64,21 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
         }
 
         val startPlace = getStartLocation(args.governorate)
-        addMarker(googleMap = googleMap, title = startPlace.first, latlng = startPlace.second)
+        addMarker(
+            googleMap = googleMap,
+            title = startPlace.first,
+            latlng = startPlace.second,
+            zoomLevel
+        )
 
         // Add click listener on marker
         googleMap.setOnMapClickListener { latLng ->
             googleMap.clear() // Clear existing markers
 
             val address = getAddressFromLocation(latLng)
-            val marker = addMarker(googleMap = googleMap, title = address, latlng = latLng)
+            zoomLevel = googleMap.cameraPosition.zoom
+            val marker =
+                addMarker(googleMap = googleMap, title = address, latlng = latLng, zoomLevel)
             listenShareLocation(marker)
         }
 
@@ -96,8 +104,14 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
                 Timber.d("Place: ${place.name}, ${place.id}, ${place.address}, ${place.latLng}")
                 place.latLng?.let { placeLatLng ->
                     place.address?.let { address ->
+                        zoomLevel = googleMap.cameraPosition.zoom
                         val marker =
-                            addMarker(googleMap = googleMap, title = address, latlng = placeLatLng)
+                            addMarker(
+                                googleMap = googleMap,
+                                title = address,
+                                latlng = placeLatLng,
+                                zoomLevel
+                            )
                         listenShareLocation(marker)
                     }
                 }
@@ -110,11 +124,16 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
         })
     }
 
-    private fun addMarker(googleMap: GoogleMap, title: String, latlng: LatLng): Marker {
+    private fun addMarker(
+        googleMap: GoogleMap,
+        title: String,
+        latlng: LatLng,
+        zoomLevel: Float
+    ): Marker {
         googleMap.clear() // remove any markers in map
         val addedMarker =
             googleMap.addMarker(MarkerOptions().position(latlng).title(title).draggable(true))
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15f))
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoomLevel))
         return addedMarker!!
     }
 
@@ -174,16 +193,17 @@ class ShareLocationFragment : Fragment(), GoogleMap.OnMarkerDragListener {
     }
 
     override fun onMarkerDragEnd(marker: Marker) {
-        binding.btnShareLocation.setOnClickListener {
-            val address = getAddressFromLocation(marker.position)
-            shareLocation(address, marker.position)
-        }
+        val address = getAddressFromLocation(marker.position)
+        marker.title = address
+        marker.showInfoWindow()
+        listenShareLocation(marker)
     }
 
     override fun onMarkerDrag(marker: Marker) {
     }
 
     override fun onMarkerDragStart(marker: Marker) {
+        marker.hideInfoWindow()
     }
 
     override fun onDestroyView() {

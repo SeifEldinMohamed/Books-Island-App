@@ -254,6 +254,12 @@ class UploadAuctionFragment : Fragment(), OnImageItemClick<Uri> {
         binding.etAuthor.setText(myAuctionAdvertisement.book.author)
         binding.etStartPrice.setText(myAuctionAdvertisement.startPrice.toString())
         binding.tilStartPrice.disable()
+        binding.etStartPrice.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gray_light
+            )
+        )
         binding.etStartPrice.disable()
         binding.etDescription.setText(myAuctionAdvertisement.book.description)
         itemCategoryViewModel.selectItem(myAuctionAdvertisement.book.category)

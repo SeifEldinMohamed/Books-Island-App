@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -286,10 +288,12 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
         itemCategoryViewModel.selectItem(mySellAdvertisement.book.category)
     }
 
+    // @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun pickPhoto() {
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -300,8 +304,9 @@ class UploadSellAdvertisementFragment : Fragment(), OnImageItemClick<Uri> {
             startForProfileImageResult.launch(galleryIntent)
         } else {
             // PERMISSION NOT GRANTED
+
             ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                requireActivity(), arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
                 1
             )
         }

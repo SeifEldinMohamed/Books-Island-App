@@ -394,6 +394,7 @@
                         android:gravity="start"
                         android:inputType="textMultiLine"
                         android:maxLength="500"
+                        android:isScrollContainer="true"
                         android:textColor="@color/black"
                         tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>

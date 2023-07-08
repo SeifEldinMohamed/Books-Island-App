@@ -344,7 +344,7 @@
     <string name="rate_value_4.3">4.3</string>
     <string name="num">12</string>
     <string name="userblock">User Blocked Successfully !</string>
-    <string name="share_location">Share Location</string>
+    <string name="share_location">Share Location With Others</string>
     <string name="unblock_user">UnBlock User</string>
     <string name="blocked_successfully">Blocked Successfully!</string>
     <string name="unBlocked_successfully">UnBlocked Successfully!</string>

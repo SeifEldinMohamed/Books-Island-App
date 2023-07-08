@@ -9,12 +9,12 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.StorageReference
-import com.seif.booksislandapp.data.mapper.toSellAdvertisement
-import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
-import com.seif.booksislandapp.domain.model.adv.AdvStatus
-import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
+import com.seif.booksislandapp.data.mapper.toAuctionAdvertisement
+import com.seif.booksislandapp.data.remote.dto.adv.auction.AuctionAdvertisementDto
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionAdvertisement
+import com.seif.booksislandapp.domain.model.adv.auction.AuctionStatus
 import com.seif.booksislandapp.domain.repository.UserRepository
-import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRESTORE_COLLECTION
+import com.seif.booksislandapp.utils.Constants
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
@@ -28,24 +28,24 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class AdvertisementRepositoryImpTest {
-    private lateinit var advertisementRepositoryImp: AdvertisementRepositoryImp
+class AuctionAdvertisementRepositoryImpTest {
+    private lateinit var auctionAdvertisemntRepositoryImp: AuctionAdvertisementRepositoryImp
 
     // Mock dependencies
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: StorageReference
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var resourceProvider: ResourceProvider
-    private lateinit var sellAdvertisementDto1: SellAdvertisementDto
-    private lateinit var sellAdvertisementDto2: SellAdvertisementDto
+    private lateinit var auctionAdvertisementDto1: AuctionAdvertisementDto
+    private lateinit var auctionAdvertisementDto2: AuctionAdvertisementDto
     private lateinit var querySnapshot: QuerySnapshot // used in case of get() function and put it in
     private lateinit var queryDocumentSnapshot1: QueryDocumentSnapshot
     private lateinit var queryDocumentSnapshot2: QueryDocumentSnapshot
 
     private lateinit var userRepository: UserRepository
 
-    private lateinit var sellAdvertisement1: SellAdvertisement
-    private lateinit var sellAdvertisement2: SellAdvertisement
+    private lateinit var auctionAdvertisement: AuctionAdvertisement
+    private lateinit var auctionAdvertisement2: AuctionAdvertisement
 
     private lateinit var collectionReference: CollectionReference
     private lateinit var query: Query
@@ -61,12 +61,12 @@ class AdvertisementRepositoryImpTest {
             mockk(relaxed = true) // allows you to create a mock object that ignores any method calls that are not explicitly stubbed
 
         // mock dto ads
-        sellAdvertisementDto1 = mockk()
-        sellAdvertisementDto2 = mockk()
+        auctionAdvertisementDto1 = mockk()
+        auctionAdvertisementDto2 = mockk()
 
         // mock ads
-        sellAdvertisement1 = mockk()
-        sellAdvertisement2 = mockk()
+        auctionAdvertisement = mockk()
+        auctionAdvertisement2 = mockk()
 
         // querySnapshot and queryDocumentSnapshot
         querySnapshot = mockk()
@@ -82,7 +82,7 @@ class AdvertisementRepositoryImpTest {
         // user repository
         userRepository = mockk(relaxed = true)
 
-        advertisementRepositoryImp = AdvertisementRepositoryImp(
+        auctionAdvertisemntRepositoryImp = AuctionAdvertisementRepositoryImp(
             firestore = firestore,
             connectivityManager = connectivityManager,
             storageReference = storage,
@@ -91,16 +91,66 @@ class AdvertisementRepositoryImpTest {
         )
     }
 
+
     @Test
-    fun `getAllSellAds(), when there is an internet connection, then return ResourceSuccess with Array List of SellAdvertisement`() =
+    fun `searchAuctionsAdv(), when there is no internet connection, then return ResourceFailure with no internet connection message`() =
         runBlocking {
             /** Arrange **/
+            /** Arrange **/
+            val errorMessage = "No internet connection"
+            // Mock network connectivity
+            every { connectivityManager.checkInternetConnection() } returns false
+            // Mock resource strings
+            every { resourceProvider.string(any()) } returns errorMessage
+
+            /** Act **/
+            /** Act **/
+            val result = auctionAdvertisemntRepositoryImp.searchAuctionsAdv("dfsdf")
+
+            /** Assert **/
+
+            /** Assert **/
+            println(result.toString())
+            assertTrue(result is Resource.Error)
+            val successResult = result as Resource.Error
+            assertEquals(errorMessage, successResult.message)
+        }
+
+    @Test
+    fun `searchAuctionsAdv(), when there is internet connection but there is a thrown exception, then return ResourceFailure with no internet connection message`() =
+        runBlocking {
+            /** Arrange **/
+            /** Arrange **/
+            val firebaseErrorMessage = "firebase exception"
+            every { connectivityManager.checkInternetConnection() } returns true
+            every { firestore.collection(any()) } throws FirebaseException(firebaseErrorMessage)
+
+            /** Act **/
+            /** Act **/
+            val result = auctionAdvertisemntRepositoryImp.searchAuctionsAdv("sadf")
+
+            /** Assert **/
+
+            /** Assert **/
+            println(result.toString())
+            assertTrue(result is Resource.Error)
+            val successResult = result as Resource.Error
+            assertEquals(firebaseErrorMessage, successResult.message)
+        }
+
+
+    @Test
+    fun `searchAuctionsAdv(), when there is an internet connection, then return ResourceSuccess with Array List of SellAdvertisement`() =
+        runBlocking {
+            /** Arrange **/
+            /** Arrange **/
+
             // Mock network connectivity
             every { connectivityManager.checkInternetConnection() } returns true
 
-// Mock Firestore query snapshot and QueryDocumentSnapshot
-            every { queryDocumentSnapshot1.toObject(SellAdvertisementDto::class.java) } returns sellAdvertisementDto1 // ==> document.toObject(SellAdvertisementDto::class.java)
-            every { queryDocumentSnapshot2.toObject(SellAdvertisementDto::class.java) } returns sellAdvertisementDto2
+            // Mock Firestore query snapshot and QueryDocumentSnapshot
+            every { queryDocumentSnapshot1.toObject(AuctionAdvertisementDto::class.java) } returns auctionAdvertisementDto1 // ==> document.toObject(SellAdvertisementDto::class.java)
+            every { queryDocumentSnapshot2.toObject(AuctionAdvertisementDto::class.java) } returns auctionAdvertisementDto2
             //  every { querySnapshot.documents } returns listOf(queryDocumentSnapshot1, queryDocumentSnapshot2)
 
             every { querySnapshot.iterator() } returns mutableListOf(
@@ -128,17 +178,33 @@ class AdvertisementRepositoryImpTest {
             every { query.get() } returns Tasks.forResult(querySnapshot) // ==> .get()
 
             // Mock SellAdvertisement mapping
-            every { sellAdvertisementDto1.toSellAdvertisement() } returns sellAdvertisement1
-            every { sellAdvertisementDto2.toSellAdvertisement() } returns sellAdvertisement2
+            every { auctionAdvertisementDto1.toAuctionAdvertisement() } returns auctionAdvertisement
+            every { auctionAdvertisementDto2.toAuctionAdvertisement() } returns auctionAdvertisement2
+
+            val filteredAuctions = arrayListOf(auctionAdvertisementDto1)
+            every {
+                arrayListOf(
+                    auctionAdvertisementDto1,
+                    auctionAdvertisementDto1
+                ).filter(any())
+            } returns filteredAuctions
+            every { auctionAdvertisementDto1.toAuctionAdvertisement() } returns auctionAdvertisement
 
             /** Act **/
-            val result = advertisementRepositoryImp.getAllSellAds()
+            /** Act **/
+            val result = auctionAdvertisemntRepositoryImp.searchAuctionsAdv("sld")
             println(result)
             /** Assert **/
+            /** Assert **/
             // Verify the expected interactions
-            coVerify { firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION) }
-            coVerify { collectionReference.whereNotEqualTo("status", AdvStatus.Closed.toString()) }
-            coVerify { query.orderBy("status") }
+            coVerify { firestore.collection(Constants.AUCTION_ADVERTISEMENT_FIRESTORE_COLLECTION) }
+            coVerify {
+                collectionReference.whereNotEqualTo(
+                    "auctionStatus",
+                    AuctionStatus.CLOSED.toString()
+                )
+            }
+            coVerify { query.orderBy("auctionStatus") }
             coVerify { query.orderBy("publishDate", Query.Direction.DESCENDING) }
             coVerify { query.get() }
 
@@ -147,45 +213,7 @@ class AdvertisementRepositoryImpTest {
             assertTrue(result is Resource.Success)
             val successResult = result as Resource.Success
             assertEquals(2, successResult.data.size)
-            assertEquals(sellAdvertisement1, successResult.data[0])
-            assertEquals(sellAdvertisement2, successResult.data[1])
-        }
-
-    @Test
-    fun `getAllSellAds(), when there is no internet connection, then return ResourceFailure with no internet connection message`() =
-        runBlocking {
-            /** Arrange **/
-            val errorMessage = "No internet connection"
-            // Mock network connectivity
-            every { connectivityManager.checkInternetConnection() } returns false
-            // Mock resource strings
-            every { resourceProvider.string(any()) } returns errorMessage
-
-            /** Act **/
-            val result = advertisementRepositoryImp.getAllSellAds()
-
-            /** Assert **/
-            println(result.toString())
-            assertTrue(result is Resource.Error)
-            val successResult = result as Resource.Error
-            assertEquals(errorMessage, successResult.message)
-        }
-
-    @Test
-    fun `getAllSellAds(), when there is internet connection but there is a thrown exception, then return ResourceFailure with no internet connection message`() =
-        runBlocking {
-            /** Arrange **/
-            val firebaseErrorMessage = "firebase exception"
-            every { connectivityManager.checkInternetConnection() } returns true
-            every { firestore.collection(any()) } throws FirebaseException(firebaseErrorMessage)
-
-            /** Act **/
-            val result = advertisementRepositoryImp.getAllSellAds()
-
-            /** Assert **/
-            println(result.toString())
-            assertTrue(result is Resource.Error)
-            val successResult = result as Resource.Error
-            assertEquals(firebaseErrorMessage, successResult.message)
+            assertEquals(auctionAdvertisement, successResult.data[0])
+            assertEquals(auctionAdvertisement2, successResult.data[1])
         }
 }
