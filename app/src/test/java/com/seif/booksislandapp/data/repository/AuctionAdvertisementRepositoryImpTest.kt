@@ -91,7 +91,6 @@ class AuctionAdvertisementRepositoryImpTest {
         )
     }
 
-
     @Test
     fun `searchAuctionsAdv(), when there is no internet connection, then return ResourceFailure with no internet connection message`() =
         runBlocking {
@@ -137,7 +136,6 @@ class AuctionAdvertisementRepositoryImpTest {
             val successResult = result as Resource.Error
             assertEquals(firebaseErrorMessage, successResult.message)
         }
-
 
     @Test
     fun `searchAuctionsAdv(), when there is an internet connection, then return ResourceSuccess with Array List of SellAdvertisement`() =
