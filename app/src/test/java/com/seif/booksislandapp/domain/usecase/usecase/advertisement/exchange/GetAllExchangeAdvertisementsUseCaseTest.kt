@@ -24,7 +24,7 @@ class GetAllExchangeAdvertisementsUseCaseTest {
         runBlocking {
             // Given
             val expected = Resource.Success(exchangeAdvertisementList)
-            coEvery { exchangeAdvertisementRepository.getAllExchangeAdvertisement() } returns expected
+            coEvery { exchangeAdvertisementRepository.getAllExchangeAdvertisementByRecommendation() } returns expected
 
             // When
             val actual = getAllExchangeAdvertisementUseCase()
@@ -38,7 +38,7 @@ class GetAllExchangeAdvertisementsUseCaseTest {
         runBlocking {
             // Given
             val expected = Resource.Error("Error")
-            coEvery { exchangeAdvertisementRepository.getAllExchangeAdvertisement() } returns expected
+            coEvery { exchangeAdvertisementRepository.getAllExchangeAdvertisementByRecommendation() } returns expected
 
             // When
             val actual = getAllExchangeAdvertisementUseCase()
