@@ -51,7 +51,7 @@ class AdvertisementRepositoryImp @Inject constructor(
     private val userRepository: UserRepository
 ) : AdvertisementRepository {
 
-    override suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String> {
+    override suspend fun getAllSellAdsWithRecommendation(): Resource<ArrayList<SellAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
@@ -85,6 +85,7 @@ class AdvertisementRepositoryImp @Inject constructor(
                             data = handleSellRecommendation(data, result.data.topCategory)
                         )
                     }
+
                     is Resource.Error -> Resource.Error(result.message)
                 }
             }
@@ -94,7 +95,39 @@ class AdvertisementRepositoryImp @Inject constructor(
         }
     }
 
-    private fun handleSellRecommendation(
+    override suspend fun getAllSellAds(): Resource<ArrayList<SellAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+
+            delay(500) // to show loading progress
+            withTimeout(Constants.TIMEOUT) {
+                val querySnapshot =
+                    firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
+                val sellAdvertisementsDto = arrayListOf<SellAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val sellAdvertisementDto =
+                        document.toObject(SellAdvertisementDto::class.java)
+                    sellAdvertisementsDto.add(sellAdvertisementDto)
+                }
+                val data = sellAdvertisementsDto.map { sellAdvertisementDto ->
+                    sellAdvertisementDto.toSellAdvertisement()
+                }.toCollection(ArrayList())
+                Resource.Success(
+                    data = data
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    fun handleSellRecommendation(
         list: ArrayList<SellAdvertisement>,
         top: ArrayList<String>
     ): ArrayList<SellAdvertisement> {

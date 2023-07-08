@@ -133,7 +133,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_username"
                     app:startIconDrawable="@drawable/ic_email_line"
-                    app:startIconTint="@color/primary">
+                    app:startIconTint="@color/gray_light">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email"

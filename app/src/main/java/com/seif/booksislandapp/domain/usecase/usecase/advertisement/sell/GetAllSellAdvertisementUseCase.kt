@@ -9,6 +9,6 @@ class GetAllSellAdvertisementUseCase @Inject constructor(
     private val advertisementRepositoryImp: AdvertisementRepositoryImp
 ) {
     suspend operator fun invoke(): Resource<ArrayList<SellAdvertisement>, String> {
-        return advertisementRepositoryImp.getAllSellAds()
+        return advertisementRepositoryImp.getAllSellAdsWithRecommendation()
     }
 }

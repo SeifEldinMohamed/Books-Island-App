@@ -106,13 +106,8 @@ class AdvertisementRepositoryImpTest {
             /** Arrange **/
             // Mock network connectivity
             every { connectivityManager.checkInternetConnection() } returns true
-            // coEvery { userRepository.getFirebaseCurrentUser() } returns firebaseUser
-            val returned = Resource.Success(
-                Recommendation("", arrayListOf())
-            )
-            coEvery { userRepository.recommendForUser("") } returns returned
-            println(returned)
-            // Mock Firestore query snapshot and QueryDocumentSnapshot
+
+// Mock Firestore query snapshot and QueryDocumentSnapshot
             every { queryDocumentSnapshot1.toObject(SellAdvertisementDto::class.java) } returns sellAdvertisementDto1 // ==> document.toObject(SellAdvertisementDto::class.java)
             every { queryDocumentSnapshot2.toObject(SellAdvertisementDto::class.java) } returns sellAdvertisementDto2
             //  every { querySnapshot.documents } returns listOf(queryDocumentSnapshot1, queryDocumentSnapshot2)
@@ -126,7 +121,6 @@ class AdvertisementRepositoryImpTest {
             // Mock Firestore query
 
             every { firestore.collection(any()) } returns collectionReference // ==>  firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION)
-
             every {
                 collectionReference.whereNotEqualTo(
                     any<String>(),
@@ -147,9 +141,8 @@ class AdvertisementRepositoryImpTest {
             every { sellAdvertisementDto2.toSellAdvertisement() } returns sellAdvertisement2
 
             /** Act **/
-
             val result = advertisementRepositoryImp.getAllSellAds()
-            print(result)
+            println(result)
             /** Assert **/
             // Verify the expected interactions
             coVerify { firestore.collection(SELL_ADVERTISEMENT_FIRESTORE_COLLECTION) }
