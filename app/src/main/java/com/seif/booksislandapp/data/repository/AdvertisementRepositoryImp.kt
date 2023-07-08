@@ -354,7 +354,7 @@ class AdvertisementRepositoryImp @Inject constructor(
 
     /** Donation ( extract donation functions to another repository ) **/
 
-    override suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String> {
+    override suspend fun getAllDonateAdsByRecommendation(): Resource<ArrayList<DonateAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
@@ -835,6 +835,40 @@ class AdvertisementRepositoryImp @Inject constructor(
                 }
                 Resource.Success(
                     data = donateAdvertisementsDto.map { donateAdvertisementDto ->
+                        donateAdvertisementDto.toDonateAdvertisement()
+                    }.toCollection(ArrayList())
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getAllDonateAds(): Resource<ArrayList<DonateAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+
+                delay(500) // to show loading progress
+
+                val querySnapshot =
+                    firestore.collection(DONATE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
+                val donateAdvertisementsDto = arrayListOf<DonateAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val donateAdvertisementDto =
+                        document.toObject(DonateAdvertisementDto::class.java)
+                    donateAdvertisementsDto.add(donateAdvertisementDto)
+                }
+                // Log.d(TAG, "getAllDonateAds: ${donateAdvertisementsDto.first()}")
+
+                Resource.Success(
+                    donateAdvertisementsDto.map { donateAdvertisementDto ->
                         donateAdvertisementDto.toDonateAdvertisement()
                     }.toCollection(ArrayList())
                 )

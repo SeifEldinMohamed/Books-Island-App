@@ -31,7 +31,12 @@ class AllUsersAdapter : RecyclerView.Adapter<AllUsersAdapter.MyViewHolder>() {
                     binding.cvStatusBackground.setCardBackgroundColor(binding.root.context.getColor(R.color.light_green))
                 }
             }
-            binding.tvStar.text = user.averageRate
+            val length = user.averageRate.length
+            binding.tvStar.text = when {
+                length >= 4 -> "${user.averageRate.substring(0,4)} / 5"
+                length == 3 -> "${user.averageRate.substring(0,3)} / 5"
+                else -> "${user.averageRate} / 5"
+            }
             binding.ivAvatarImage.load(user.avatarImage) {
                 crossfade(200)
                 placeholder(R.drawable.person_placeholder)

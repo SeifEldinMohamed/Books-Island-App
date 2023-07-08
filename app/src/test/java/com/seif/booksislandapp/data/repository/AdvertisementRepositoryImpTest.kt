@@ -11,6 +11,8 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.StorageReference
 import com.seif.booksislandapp.data.mapper.toSellAdvertisement
 import com.seif.booksislandapp.data.remote.dto.adv.sell.SellAdvertisementDto
+import com.seif.booksislandapp.data.remote.dto.recommendation.RecommendationDto
+import com.seif.booksislandapp.domain.model.Recommendation
 import com.seif.booksislandapp.domain.model.adv.AdvStatus
 import com.seif.booksislandapp.domain.model.adv.sell.SellAdvertisement
 import com.seif.booksislandapp.domain.repository.UserRepository
@@ -18,10 +20,7 @@ import com.seif.booksislandapp.utils.Constants.Companion.SELL_ADVERTISEMENT_FIRE
 import com.seif.booksislandapp.utils.Resource
 import com.seif.booksislandapp.utils.ResourceProvider
 import com.seif.booksislandapp.utils.checkInternetConnection
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -33,11 +32,15 @@ class AdvertisementRepositoryImpTest {
 
     // Mock dependencies
     private lateinit var firestore: FirebaseFirestore
+    // private lateinit var firebaseUser: FirebaseUser
     private lateinit var storage: StorageReference
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var resourceProvider: ResourceProvider
     private lateinit var sellAdvertisementDto1: SellAdvertisementDto
     private lateinit var sellAdvertisementDto2: SellAdvertisementDto
+
+    private lateinit var recommendationDto: RecommendationDto
+
     private lateinit var querySnapshot: QuerySnapshot // used in case of get() function and put it in
     private lateinit var queryDocumentSnapshot1: QueryDocumentSnapshot
     private lateinit var queryDocumentSnapshot2: QueryDocumentSnapshot
@@ -47,6 +50,8 @@ class AdvertisementRepositoryImpTest {
     private lateinit var sellAdvertisement1: SellAdvertisement
     private lateinit var sellAdvertisement2: SellAdvertisement
 
+    private lateinit var recommendation: Recommendation
+
     private lateinit var collectionReference: CollectionReference
     private lateinit var query: Query
 
@@ -55,6 +60,8 @@ class AdvertisementRepositoryImpTest {
         mockkStatic("com.seif.booksislandapp.data.mapper.MapperKt") // add this so we can mock the mapper extension functions inside this file
 
         firestore = mockk()
+        // firebaseUser = mockk()
+
         storage = mockk()
         resourceProvider = mockk()
         connectivityManager =
@@ -63,10 +70,12 @@ class AdvertisementRepositoryImpTest {
         // mock dto ads
         sellAdvertisementDto1 = mockk()
         sellAdvertisementDto2 = mockk()
+        recommendationDto = mockk()
 
         // mock ads
         sellAdvertisement1 = mockk()
         sellAdvertisement2 = mockk()
+        recommendation = mockk()
 
         // querySnapshot and queryDocumentSnapshot
         querySnapshot = mockk()

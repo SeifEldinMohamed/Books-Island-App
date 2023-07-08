@@ -26,7 +26,7 @@ class GetAllDonateAdvertisementUseCaseTest {
         runBlocking {
             // Given
             val expected = Resource.Success(donateAdvertisementList)
-            coEvery { donateAdvertisementRepository.getAllDonateAds() } returns expected
+            coEvery { donateAdvertisementRepository.getAllDonateAdsByRecommendation() } returns expected
 
             // When
             val actual = getAllDonateAdvertisementUseCase()
@@ -40,7 +40,7 @@ class GetAllDonateAdvertisementUseCaseTest {
         runBlocking {
             // Given
             val expected = Resource.Error("Error")
-            coEvery { donateAdvertisementRepository.getAllDonateAds() } returns expected
+            coEvery { donateAdvertisementRepository.getAllDonateAdsByRecommendation() } returns expected
 
             // When
             val actual = getAllDonateAdvertisementUseCase()

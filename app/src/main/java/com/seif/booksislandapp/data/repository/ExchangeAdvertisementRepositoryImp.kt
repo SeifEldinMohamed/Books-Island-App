@@ -38,7 +38,7 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
     private val userRepository: UserRepository
 ) :
     ExchangeAdvertisementRepository {
-    override suspend fun getAllExchangeAdvertisement(): Resource<ArrayList<ExchangeAdvertisement>, String> {
+    override suspend fun getAllExchangeAdvertisementByRecommendation(): Resource<ArrayList<ExchangeAdvertisement>, String> {
         if (!connectivityManager.checkInternetConnection())
             return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
         return try {
@@ -376,6 +376,37 @@ class ExchangeAdvertisementRepositoryImp @Inject constructor(
                 }
                 Resource.Success(
                     exchangeFilterResult(exchangeAdvertisementsDto, filterBy)
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getAllExchangeAdvertisement(): Resource<ArrayList<ExchangeAdvertisement>, String> {
+        if (!connectivityManager.checkInternetConnection())
+            return Resource.Error(resourceProvider.string(R.string.no_internet_connection))
+        return try {
+            withTimeout(Constants.TIMEOUT) {
+                delay(500) // to show loading progress
+                val querySnapshot =
+                    firestore.collection(Constants.EXCHANGE_ADVERTISEMENT_FIRESTORE_COLLECTION)
+                        .whereNotEqualTo("status", AdvStatus.Closed.toString())
+                        .orderBy("status")
+                        .orderBy("publishDate", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
+                val exchangeAdvertisementsDto = arrayListOf<ExchangeAdvertisementDto>()
+                for (document in querySnapshot) {
+                    val exchangeAdvertisementDto =
+                        document.toObject(ExchangeAdvertisementDto::class.java)
+                    exchangeAdvertisementsDto.add(exchangeAdvertisementDto)
+                }
+
+                Resource.Success(
+                    exchangeAdvertisementsDto.map { exchangeAdvertisementDto ->
+                        exchangeAdvertisementDto.toExchangeAdvertisement()
+                    }.toCollection(ArrayList())
                 )
             }
         } catch (e: Exception) {
