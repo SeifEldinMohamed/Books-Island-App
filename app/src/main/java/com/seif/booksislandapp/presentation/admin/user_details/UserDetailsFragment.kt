@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -56,17 +57,25 @@ class UserDetailsFragment : Fragment(), OnAdItemClick<Report> {
             findNavController().popBackStack()
         }
         binding.btnSuspend.setOnClickListener {
-            isSuspended?.let {
-                isSuspended = !it
-            }
-            isSuspended?.let {
-                if (it) {
-                    binding.btnSuspend.text = getString(R.string.un_suspend)
-                } else {
-                    binding.btnSuspend.text = getString(R.string.suspend)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes") { _, _, ->
+                isSuspended?.let {
+                    isSuspended = !it
                 }
-                userDetailsViewModel.handleSuspendState(it, args.user.id)
+                isSuspended?.let {
+                    if (it) {
+                        binding.btnSuspend.text = getString(R.string.un_suspend)
+                    } else {
+                        binding.btnSuspend.text = getString(R.string.suspend)
+                    }
+                    userDetailsViewModel.handleSuspendState(it, args.user.id)
+                }
+                Toast.makeText(requireContext(), "Done", Toast.LENGTH_LONG).show()
             }
+            builder.setNegativeButton("No") { _, _ -> }
+            builder.setTitle("Suspend!")
+            builder.setMessage("Are you sure you want to suspend/un suspend this user?")
+            builder.create().show()
         }
         setUserDate()
         observeOnSuspendState()
